@@ -69,6 +69,89 @@ static const char fileid[] = "$Id$";
 /* =============================================================  module code */
 
 /*------------------------------------------------------------------------------
+ *  Constructor
+ *----------------------------------------------------------------------------*/
+Exception :: Exception (    const char            * file,
+                            unsigned int            line,
+                            const char            * description1,
+                            const char            * description2,
+                            int                     code = 0 )      throw ()
+{
+    size_t      len = 0;
+
+    if ( description1 ) {
+        len += strlen( description1);
+    }
+    if ( description2 ) {
+        len += strlen( description2);
+    }
+
+    if ( len ) {
+        char        str[len+1];
+
+        str[0] = '\0';
+        if ( description1 ) {
+            strcat( str, description1);
+        }
+        if ( description2 ) {
+            strcat( str, description2);
+        }
+
+        init( file, line, str, code);
+
+    } else {
+
+        init( file, line, 0, code);
+    }
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Constructor
+ *----------------------------------------------------------------------------*/
+Exception :: Exception (    const char            * file,
+                            unsigned int            line,
+                            const char            * description1,
+                            const char            * description2,
+                            const char            * description3,
+                            int                     code = 0 )      throw ()
+{
+    size_t      len = 0;
+
+    if ( description1 ) {
+        len += strlen( description1);
+    }
+    if ( description2 ) {
+        len += strlen( description2);
+    }
+    if ( description3 ) {
+        len += strlen( description3);
+    }
+
+    if ( len ) {
+        char        str[len+1];
+
+        str[0] = '\0';
+        if ( description1 ) {
+            strcat( str, description1);
+        }
+        if ( description2 ) {
+            strcat( str, description2);
+        }
+        if ( description3 ) {
+            strcat( str, description3);
+        }
+
+        init( file, line, str, code);
+
+    } else {
+
+        init( file, line, 0, code);
+    }
+}
+
+
+/*------------------------------------------------------------------------------
  *  Initialize the class
  *----------------------------------------------------------------------------*/
 void
@@ -129,6 +212,9 @@ Exception :: strip ( void )                         throw ()
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/09 22:05:44  darkeye
+  added multiple-string constructors
+
   Revision 1.2  2000/11/05 14:08:27  darkeye
   changed builting to an automake / autoconf environment
 

@@ -117,6 +117,21 @@ class Exception
         }
 
 
+        Exception ( const char            * file,
+                    unsigned int            line,
+                    const char            * description1,
+                    const char            * description2,
+                    int                     code = 0 )          throw ();
+
+
+        Exception ( const char            * file,
+                    unsigned int            line,
+                    const char            * description1,
+                    const char            * description2,
+                    const char            * description3,
+                    int                     code = 0 )          throw ();
+
+
         inline
         ~Exception ( void )                                 throw ()
         {
@@ -191,6 +206,9 @@ operator<< (        ostream &           os,
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/09 22:05:44  darkeye
+  added multiple-string constructors
+
   Revision 1.2  2000/11/05 14:08:27  darkeye
   changed builting to an automake / autoconf environment
 
