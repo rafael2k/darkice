@@ -4,7 +4,7 @@
 
    Tyrell DarkIce
 
-   File     : IceCast.cpp
+   File     : ShoutCast.cpp
    Version  : $Revision$
    Author   : $Author$
    Location : $Source$
@@ -50,7 +50,7 @@
 #include "Source.h"
 #include "Sink.h"
 #include "Util.h"
-#include "IceCast.h"
+#include "ShoutCast.h"
 
 
 /* ===================================================  local data structures */
@@ -79,14 +79,14 @@ static const char fileid[] = "$Id$";
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-IceCast :: init (   const char            * mountPoint,
-                    const char            * description,
-                    const char            * remoteDumpFile )
+ShoutCast :: init ( const char            * irc,
+                    const char            * aim,
+                    const char            * icq )
                                                         throw ( Exception )
 {
-    this->mountPoint     = Util::strDup( mountPoint);
-    this->description    = description    ? Util::strDup( description) : 0;
-    this->remoteDumpFile = remoteDumpFile ? Util::strDup( remoteDumpFile) : 0;
+    this->irc    = irc   ? Util::strDup( irc) : 0;
+    this->aim    = aim   ? Util::strDup( aim) : 0;
+    this->icq    = icq   ? Util::strDup( icq) : 0;
 }
 
 
@@ -94,23 +94,25 @@ IceCast :: init (   const char            * mountPoint,
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-IceCast :: strip ( void )                           throw ( Exception )
+ShoutCast :: strip ( void )                             throw ( Exception )
 {
-    delete[] mountPoint;
-    if ( description ) {
-        delete[] description;
+    if ( irc ) {
+        delete[] irc;
     }
-    if ( remoteDumpFile ) {
-        delete[] remoteDumpFile;
+    if ( aim ) {
+        delete[] aim;
+    }
+    if ( icq ) {
+        delete[] icq;
     }
 }
 
 
 /*------------------------------------------------------------------------------
- *  Log in to the IceCast server
+ *  Log in to the ShoutCast server using the icy login scheme
  *----------------------------------------------------------------------------*/
 bool
-IceCast :: sendLogin ( void )                           throw ( Exception )
+ShoutCast :: sendLogin ( void )                           throw ( Exception )
 {
     Sink          * sink   = getSink();
     Source        * source = getSocket();
@@ -125,66 +127,67 @@ IceCast :: sendLogin ( void )                           throw ( Exception )
         return false;
     }
 
-    /* send the request, a string like:
-     * "SOURCE <password> /<mountpoint>\n" */
-    str = "SOURCE ";
-    sink->write( str, strlen( str));
+    /* first line is the password in itself */
     str = getPassword();
-    sink->write( str, strlen( str));
-    str = " /";
-    sink->write( str, strlen( str));
-    str = getMountPoint();
     sink->write( str, strlen( str));
     str = "\n";
     sink->write( str, strlen( str));
+    sink->flush();
 
-    /* send the x-audiocast headers */
+    /* send the icy headers */
     if ( getName() ) {
-        str = "x-audiocast-name: ";
+        str = "icy-name:";
         sink->write( str, strlen( str));
         str = getName();
         sink->write( str, strlen( str));
     }
 
-    if ( getDescription() ) {
-        str = "\nx-audiocast-description: ";
-        sink->write( str, strlen( str));
-        str = getDescription();
-        sink->write( str, strlen( str));
-    }
-
     if ( getUrl() ) {
-        str = "\nx-audiocast-url: ";
+        str = "\nicy-url:";
         sink->write( str, strlen( str));
         str = getUrl();
         sink->write( str, strlen( str));
     }
 
     if ( getGenre() ) {
-        str = "\nx-audiocast-genre: ";
+        str = "\nicy-genre:";
         sink->write( str, strlen( str));
         str = getGenre();
         sink->write( str, strlen( str));
     }
 
-    str = "\nx-audiocast-bitrate: ";
+    if ( getIrc() ) {
+        str = "\nicy-irc:";
+        sink->write( str, strlen( str));
+        str = getIrc();
+        sink->write( str, strlen( str));
+    }
+
+    if ( getAim() ) {
+        str = "\nicy-aim:";
+        sink->write( str, strlen( str));
+        str = getAim();
+        sink->write( str, strlen( str));
+    }
+
+    if ( getIcq() ) {
+        str = "\nicy-icq:";
+        sink->write( str, strlen( str));
+        str = getIcq();
+        sink->write( str, strlen( str));
+    }
+
+    str = "\nicy-br:";
     sink->write( str, strlen( str));
     if ( snprintf( resp, STRBUF_SIZE, "%d", getBitRate()) == -1 ) {
         throw Exception( __FILE__, __LINE__, "snprintf overflow");
     }
     sink->write( resp, strlen( resp));
 
-    str = "\nx-audiocast-public: ";
+    str = "\nicy-pub:";
     sink->write( str, strlen( str));
     str = getIsPublic() ? "yes" : "no";
     sink->write( str, strlen( str));
-
-    if ( getRemoteDumpFile() ) {
-        str = "\nx-audiocast-dumpfile: ";
-        sink->write( str, strlen( str));
-        str = getRemoteDumpFile();
-        sink->write( str, strlen( str));
-    }
 
     str = "\n\n";
     sink->write( str, strlen( str));
@@ -202,7 +205,6 @@ IceCast :: sendLogin ( void )                           throw ( Exception )
         ;
     }
 
-
     return true;
 }
 
@@ -213,26 +215,9 @@ IceCast :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
-  Revision 1.7  2001/09/09 11:27:31  darkeye
+  Revision 1.1  2001/09/09 11:27:31  darkeye
   added support for ShoutCast servers
 
-  Revision 1.6  2001/08/30 17:25:56  darkeye
-  renamed configure.h to config.h
-
-  Revision 1.5  2001/08/29 21:08:30  darkeye
-  made some description options in the darkice config file optional
-
-  Revision 1.4  2000/11/12 14:54:50  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.3  2000/11/10 20:14:11  darkeye
-  added support for remote dump file
-
-  Revision 1.2  2000/11/05 14:08:28  darkeye
-  changed builting to an automake / autoconf environment
-
-  Revision 1.1.1.1  2000/11/05 10:05:52  darkeye
-  initial version
 
   
 ------------------------------------------------------------------------------*/

@@ -72,6 +72,8 @@
 
 
 #include "Util.h"
+#include "IceCast.h"
+#include "ShoutCast.h"
 #include "DarkIce.h"
 
 
@@ -146,31 +148,33 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
                                         channel );
     encConnector    = new Connector( dsp.get());
 
-    configLameLib( config, bufferSecs);
+    configIceCast( config, bufferSecs);
+    configShoutCast( config, bufferSecs);
 }
 
 
 /*------------------------------------------------------------------------------
- *  Look for the lame library outputs from the config file.
+ *  Look for the IceCast stream outputs in the config file
  *----------------------------------------------------------------------------*/
 void
-DarkIce :: configLameLib (  const Config      & config,
+DarkIce :: configIceCast (  const Config      & config,
                             unsigned int        bufferSecs  )
                                                         throw ( Exception )
 {
-    // look for lame encoder output streams, sections [lamelib0], [lamelib1]...
-    char            lame[]          = "lame ";
-    size_t          lameLen         = Util::strLen( lame);
+    // look for IceCast encoder output streams,
+    // sections [icecast-0], [icecast-1], ...
+    char            stream[]        = "icecast- ";
+    size_t          streamLen       = Util::strLen( stream);
     unsigned int    u;
 
     for ( u = 0; u < maxOutput; ++u ) {
         const ConfigSection    * cs;
         const char             * str;
 
-        // ugly hack to change the section name to "lame0", "lame1", etc.
-        lame[lameLen-1] = '0' + u;
+        // ugly hack to change the section name to "stream0", "stream1", etc.
+        stream[streamLen-1] = '0' + u;
 
-        if ( !(cs = config.get( lame)) ) {
+        if ( !(cs = config.get( stream)) ) {
             break;
         }
 
@@ -188,13 +192,15 @@ DarkIce :: configLameLib (  const Config      & config,
         unsigned int    lowpass         = 0;
         unsigned int    highpass        = 0;
 
-        str         = cs->getForSure( "bitrate", " missing in section ", lame);
+        str         = cs->getForSure("bitrate", " missing in section ", stream);
         bitrate     = Util::strToL( str);
-        server      = cs->getForSure( "server", " missing in section ", lame);
-        str         = cs->getForSure( "port", " missing in section ", lame);
+        server      = cs->getForSure( "server", " missing in section ", stream);
+        str         = cs->getForSure( "port", " missing in section ", stream);
         port        = Util::strToL( str);
-        password    = cs->getForSure( "password", " missing in section ", lame);
-        mountPoint  = cs->getForSure( "mountPoint"," missing in section ",lame);
+        password    = cs->getForSure("password"," missing in section ",stream);
+        mountPoint  = cs->getForSure( "mountPoint",
+                                      " missing in section ",
+                                      stream);
         remoteDumpFile = cs->get( "remoteDumpFile");
         name        = cs->get( "name");
         description = cs->get("description");
@@ -217,25 +223,120 @@ DarkIce :: configLameLib (  const Config      & config,
         reportEvent( 6, "using buffer size", bs);
 
         // streaming related stuff
-        lameLibOuts[u].socket     = new TcpSocket( server, port);
-        lameLibOuts[u].ice        = new IceCast( lameLibOuts[u].socket.get(),
-                                                 password,
-                                                 mountPoint,
-                                                 bitrate,
-                                                 name,
-                                                 description,
-                                                 url,
-                                                 genre,
-                                                 isPublic,
-                                                 remoteDumpFile );
+        lameLibOuts[u].socket = new TcpSocket( server, port);
+        lameLibOuts[u].server = new IceCast( lameLibOuts[u].socket.get(),
+                                             password,
+                                             mountPoint,
+                                             bitrate,
+                                             name,
+                                             description,
+                                             url,
+                                             genre,
+                                             isPublic,
+                                             remoteDumpFile );
 
-        lameLibOuts[u].encoder = new LameLibEncoder( lameLibOuts[u].ice.get(),
-                                                     dsp.get(),
-                                                     bitrate,
-                                                     dsp->getSampleRate(),
-                                                     dsp->getChannel(),
-                                                     lowpass,
-                                                     highpass );
+        lameLibOuts[u].encoder = new LameLibEncoder(lameLibOuts[u].server.get(),
+                                                    dsp.get(),
+                                                    bitrate,
+                                                    dsp->getSampleRate(),
+                                                    dsp->getChannel(),
+                                                    lowpass,
+                                                    highpass );
+
+        encConnector->attach( lameLibOuts[u].encoder.get());
+    }
+
+    noLameLibOuts = u;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Look for the ShoutCast stream outputs in the config file
+ *----------------------------------------------------------------------------*/
+void
+DarkIce :: configShoutCast (    const Config      & config,
+                                unsigned int        bufferSecs  )
+                                                        throw ( Exception )
+{
+    // look for IceCast encoder output streams,
+    // sections [shoutcast-0], [shoutcast-1], ...
+    char            stream[]        = "shoutcast- ";
+    size_t          streamLen       = Util::strLen( stream);
+    unsigned int    u;
+
+    for ( u = 0; u < maxOutput; ++u ) {
+        const ConfigSection    * cs;
+        const char             * str;
+
+        // ugly hack to change the section name to "stream0", "stream1", etc.
+        stream[streamLen-1] = '0' + u;
+
+        if ( !(cs = config.get( stream)) ) {
+            break;
+        }
+
+        unsigned int    bitrate         = 0;
+        const char    * server          = 0;
+        unsigned int    port            = 0;
+        const char    * password        = 0;
+        const char    * name            = 0;
+        const char    * url             = 0;
+        const char    * genre           = 0;
+        bool            isPublic        = false;
+        unsigned int    lowpass         = 0;
+        unsigned int    highpass        = 0;
+        const char    * irc             = 0;
+        const char    * aim             = 0;
+        const char    * icq             = 0;
+
+        str         = cs->getForSure("bitrate", " missing in section ", stream);
+        bitrate     = Util::strToL( str);
+        server      = cs->getForSure( "server", " missing in section ", stream);
+        str         = cs->getForSure( "port", " missing in section ", stream);
+        port        = Util::strToL( str);
+        password    = cs->getForSure("password"," missing in section ",stream);
+        name        = cs->get( "name");
+        url         = cs->get( "url");
+        genre       = cs->get( "genre");
+        str         = cs->get( "public");
+        isPublic    = str ? (Util::strEq( str, "yes") ? true : false) : false;
+        str         = cs->get( "lowpass");
+        lowpass     = str ? Util::strToL( str) : 0;
+        str         = cs->get( "highpass");
+        highpass    = str ? Util::strToL( str) : 0;
+        irc         = cs->get( "irc");
+        aim         = cs->get( "aim");
+        icq         = cs->get( "icq");
+
+        // go on and create the things
+
+        // encoder related stuff
+        unsigned int bs = bufferSecs *
+                          (dsp->getBitsPerSample() / 8) *
+                          dsp->getChannel() *
+                          dsp->getSampleRate();
+        reportEvent( 6, "using buffer size", bs);
+
+        // streaming related stuff
+        lameLibOuts[u].socket = new TcpSocket( server, port);
+        lameLibOuts[u].server = new ShoutCast( lameLibOuts[u].socket.get(),
+                                               password,
+                                               bitrate,
+                                               name,
+                                               url,
+                                               genre,
+                                               isPublic,
+                                               irc,
+                                               aim,
+                                               icq );
+
+        lameLibOuts[u].encoder = new LameLibEncoder(lameLibOuts[u].server.get(),
+                                                    dsp.get(),
+                                                    bitrate,
+                                                    dsp->getSampleRate(),
+                                                    dsp->getChannel(),
+                                                    lowpass,
+                                                    highpass );
 
         encConnector->attach( lameLibOuts[u].encoder.get());
     }
@@ -376,6 +477,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.17  2001/09/09 11:27:31  darkeye
+  added support for ShoutCast servers
+
   Revision 1.16  2001/09/05 20:11:15  darkeye
   removed dependency on locally stored SGI STL header files
   now compiler-supplied C++ library STL header files are used

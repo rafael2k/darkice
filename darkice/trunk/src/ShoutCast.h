@@ -4,7 +4,7 @@
 
    Tyrell DarkIce
 
-   File     : IceCast.h
+   File     : ShoutCast.h
    Version  : $Revision$
    Author   : $Author$
    Location : $Source$
@@ -26,8 +26,8 @@
     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ------------------------------------------------------------------------------*/
-#ifndef ICE_CAST_H
-#define ICE_CAST_H
+#ifndef SHOUT_CAST_H
+#define SHOUT_CAST_H
 
 #ifndef __cplusplus
 #error This is a C++ include file
@@ -50,43 +50,43 @@
 /* =============================================================== data types */
 
 /**
- *  Class representing output to an IceCast server with
- *  x-audiocast login
+ *  Class representing output to a ShoutCast server with
+ *  icy login
  *
  *  @author  $Author$
  *  @version $Revision$
  */
-class IceCast : public CastSink
+class ShoutCast : public CastSink
 {
     private:
 
         /**
-         *  Mount point of the stream on the server.
+         *  IRC info string for the stream
          */
-        char              * mountPoint;
+        char              * irc;
 
         /**
-         *  Remote dump file if any.
+         *  AIM info string for the stream
          */
-        char              * remoteDumpFile;
+        char              * aim;
 
         /**
-         *  Description of the stream.
+         *  ICQ info string for the stream
          */
-        char              * description;
+        char              * icq;
 
         /**
          *  Initalize the object.
          *
-         *  @param mountPoint mount point of the stream on the server.
-         *  @param remoteDumpFile remote dump file (may be NULL).
-         *  @param description description of the stream.
+         *  @param irc IRC info string for the stream.
+         *  @param aim AIM info string for the stream.
+         *  @param icq ICQ info string for the stream.
          *  @exception Exception
          */
         void
-        init (  const char            * mountPoint,
-                const char            * description,
-                const char            * remoteDumpFile )
+        init (  const char            * irc,
+                const char            * aim,
+                const char            * icq )
                                                     throw ( Exception );
 
         /**
@@ -106,7 +106,7 @@ class IceCast : public CastSink
          *  @exception Exception
          */
         inline
-        IceCast ( void )                            throw ( Exception )
+        ShoutCast ( void )                            throw ( Exception )
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -128,29 +128,29 @@ class IceCast : public CastSink
          *
          *  @param socket socket connection to the server.
          *  @param password password to the server.
-         *  @param mountPoint mount point of the stream on the server.
-         *  @param remoteDumpFile remote dump file (may be NULL).
          *  @param name name of the stream.
-         *  @param description description of the stream.
          *  @param url URL associated with the stream.
          *  @param genre genre of the stream.
          *  @param bitRate bitrate of the stream (e.g. mp3 bitrate).
          *  @param isPublic is the stream public?
+         *  @param irc IRC info string for the stream.
+         *  @param aim AIM info string for the stream.
+         *  @param icq ICQ info string for the stream.
          *  @param bufferDuration duration of the BufferedSink buffer
          *                        in seconds.
          *  @exception Exception
          */
         inline
-        IceCast (   TcpSocket         * socket,
+        ShoutCast ( TcpSocket         * socket,
                     const char        * password,
-                    const char        * mountPoint,
                     unsigned int        bitRate,
                     const char        * name           = 0,
-                    const char        * description    = 0,
                     const char        * url            = 0,
                     const char        * genre          = 0,
                     bool                isPublic       = false,
-                    const char        * remoteDumpFile = 0,
+                    const char        * irc            = 0,
+                    const char        * aim            = 0,
+                    const char        * icq            = 0,
                     unsigned int        bufferDuration = 10 )
                                                         throw ( Exception )
               : CastSink( socket,
@@ -162,21 +162,19 @@ class IceCast : public CastSink
                           isPublic,
                           bufferDuration )
         {
-            init( mountPoint, description, remoteDumpFile);
+            init( irc, aim, icq);
         }
 
         /**
          *  Copy constructor.
          *
-         *  @param cs the IceCast to copy.
+         *  @param cs the ShoutCast to copy.
          */
         inline
-        IceCast(   const IceCast &    cs )        throw ( Exception )
+        ShoutCast(   const ShoutCast &    cs )        throw ( Exception )
                 : CastSink( cs )
         {
-            init( cs.getMountPoint(),
-                  cs.getDescription(),
-                  cs.getRemoteDumpFile() );
+            init( cs.getIrc(), cs.getAim(), cs.getIcq());
         }
 
         /**
@@ -185,7 +183,7 @@ class IceCast : public CastSink
          *  @exception Exception
          */
         inline virtual
-        ~IceCast( void )                           throw ( Exception )
+        ~ShoutCast( void )                           throw ( Exception )
         {
             strip();
         }
@@ -193,54 +191,52 @@ class IceCast : public CastSink
         /**
          *  Assignment operator.
          *
-         *  @param cs the IceCast to assign this to.
-         *  @return a reference to this IceCast.
+         *  @param cs the ShoutCast to assign this to.
+         *  @return a reference to this ShoutCast.
          *  @exception Exception
          */
-        inline virtual IceCast &
-        operator= ( const IceCast &    cs )        throw ( Exception )
+        inline virtual ShoutCast &
+        operator= ( const ShoutCast &    cs )        throw ( Exception )
         {
             if ( this != &cs ) {
                 strip();
                 CastSink::operator=( cs );
-                init( cs.getMountPoint(),
-                      cs.getDescription(),
-                      cs.getRemoteDumpFile() );
+                init( cs.getIrc(), cs.getAim(), cs.getIcq());
             }
             return *this;
         }
 
         /**
-         *  Get the mount point of the stream on the server.
+         *  Get the IRC info string for the stream.
          *
-         *  @return the mount point of the stream on the server.
+         *  @return the IRC info string for the stream.
          */
         inline const char *
-        getMountPoint ( void ) const                throw ()
+        getIrc ( void ) const                   throw ()
         {
-            return mountPoint;
+            return irc;
         }
 
         /**
-         *  Get the remote dump file if any.
+         *  Get the AIM info string for the stream.
          *
-         *  @return the remote dump file. May be NULL.
+         *  @return the AIM info string for the stream.
          */
         inline const char *
-        getRemoteDumpFile ( void ) const            throw ()
+        getAim ( void ) const                   throw ()
         {
-            return remoteDumpFile;
+            return aim;
         }
 
         /**
-         *  Get the description of the stream.
+         *  Get the ICQ info string for the stream.
          *
-         *  @return the description of the stream.
+         *  @return the ICQ info string for the stream.
          */
         inline const char *
-        getDescription ( void ) const               throw ()
+        getIcq ( void ) const                   throw ()
         {
-            return description;
+            return icq;
         }
 
 };
@@ -253,7 +249,7 @@ class IceCast : public CastSink
 
 
 
-#endif  /* ICE_CAST_H */
+#endif  /* SHOUT_CAST_H */
 
 
 /*------------------------------------------------------------------------------
@@ -261,23 +257,9 @@ class IceCast : public CastSink
   $Source$
 
   $Log$
-  Revision 1.6  2001/09/09 11:27:31  darkeye
+  Revision 1.1  2001/09/09 11:27:31  darkeye
   added support for ShoutCast servers
 
-  Revision 1.5  2001/08/29 21:08:30  darkeye
-  made some description options in the darkice config file optional
-
-  Revision 1.4  2000/11/12 14:54:50  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.3  2000/11/10 20:14:11  darkeye
-  added support for remote dump file
-
-  Revision 1.2  2000/11/05 17:37:24  darkeye
-  removed clone() functions
-
-  Revision 1.1.1.1  2000/11/05 10:05:52  darkeye
-  initial version
 
   
 ------------------------------------------------------------------------------*/

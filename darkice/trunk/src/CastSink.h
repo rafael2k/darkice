@@ -83,24 +83,9 @@ class CastSink : public Sink
         char              * password;
 
         /**
-         *  Mount point of the stream on the server.
-         */
-        char              * mountPoint;
-
-        /**
-         *  Remote dump file if any.
-         */
-        char              * remoteDumpFile;
-
-        /**
          *  Name of the stream.
          */
         char              * name;
-
-        /**
-         *  Description of the stream.
-         */
-        char              * description;
 
         /**
          *  URL associated with the stream.
@@ -127,10 +112,7 @@ class CastSink : public Sink
          *
          *  @param socket socket connection to the server.
          *  @param password password to the server.
-         *  @param mountPoint mount point of the stream on the server.
-         *  @param remoteDumpFile remote dump file (may be NULL).
          *  @param name name of the stream.
-         *  @param description description of the stream.
          *  @param url URL associated with the stream.
          *  @param genre genre of the stream.
          *  @param bitRate bitrate of the stream (e.g. mp3 bitrate).
@@ -142,14 +124,11 @@ class CastSink : public Sink
         void
         init (  TcpSocket             * socket,
                 const char            * password,
-                const char            * mountPoint,
                 unsigned int            bitRate,
                 const char            * name,
-                const char            * description,
                 const char            * url,
                 const char            * genre,
                 bool                    isPublic,
-                const char            * remoteDumpFile,
                 unsigned int            bufferDuration )
                                                     throw ( Exception );
 
@@ -214,10 +193,7 @@ class CastSink : public Sink
          *
          *  @param socket socket connection to the server.
          *  @param password password to the server.
-         *  @param mountPoint mount point of the stream on the server.
-         *  @param remoteDumpFile remote dump file (may be NULL).
          *  @param name name of the stream.
-         *  @param description description of the stream.
          *  @param url URL associated with the stream.
          *  @param genre genre of the stream.
          *  @param bitRate bitrate of the stream (e.g. mp3 bitrate).
@@ -229,27 +205,21 @@ class CastSink : public Sink
         inline
         CastSink (  TcpSocket         * socket,
                     const char        * password,
-                    const char        * mountPoint,
                     unsigned int        bitRate,
                     const char        * name           = 0,
-                    const char        * description    = 0,
                     const char        * url            = 0,
                     const char        * genre          = 0,
                     bool                isPublic       = false,
-                    const char        * remoteDumpFile = 0,
                     unsigned int        bufferDuration = 10 )
                                                         throw ( Exception )
         {
             init( socket,
                   password,
-                  mountPoint,
                   bitRate,
                   name,
-                  description,
                   url,
                   genre,
                   isPublic,
-                  remoteDumpFile,
                   bufferDuration );
         }
 
@@ -264,14 +234,11 @@ class CastSink : public Sink
         {
             init( cs.socket.get(),
                   cs.password,
-                  cs.mountPoint,
                   cs.bitRate,
                   cs.name,
-                  cs.description,
                   cs.url,
                   cs.genre,
                   cs.isPublic,
-                  cs.remoteDumpFile,
                   cs.bufferDuration );
         }
 
@@ -301,14 +268,11 @@ class CastSink : public Sink
                 Sink::operator=( cs );
                 init( cs.socket.get(),
                       cs.password,
-                      cs.mountPoint,
                       cs.bitRate,
                       cs.name,
-                      cs.description,
                       cs.url,
                       cs.genre,
                       cs.isPublic,
-                      cs.remoteDumpFile,
                       cs.bufferDuration );
             }
             return *this;
@@ -401,28 +365,6 @@ class CastSink : public Sink
         }
 
         /**
-         *  Get the mount point of the stream on the server.
-         *
-         *  @return the mount point of the stream on the server.
-         */
-        inline const char *
-        getMountPoint ( void ) const                throw ()
-        {
-            return mountPoint;
-        }
-
-        /**
-         *  Get the remote dump file if any.
-         *
-         *  @return the remote dump file. May be NULL.
-         */
-        inline const char *
-        getRemoteDumpFile ( void ) const            throw ()
-        {
-            return remoteDumpFile;
-        }
-
-        /**
          *  Get the name of the stream.
          *
          *  @return the name of the stream.
@@ -431,17 +373,6 @@ class CastSink : public Sink
         getName ( void ) const                      throw ()
         {
             return name;
-        }
-
-        /**
-         *  Get the description of the stream.
-         *
-         *  @return the description of the stream.
-         */
-        inline const char *
-        getDescription ( void ) const               throw ()
-        {
-            return description;
         }
 
         /**
@@ -516,6 +447,9 @@ class CastSink : public Sink
   $Source$
 
   $Log$
+  Revision 1.6  2001/09/09 11:27:31  darkeye
+  added support for ShoutCast servers
+
   Revision 1.5  2001/08/29 21:08:30  darkeye
   made some description options in the darkice config file optional
 

@@ -57,7 +57,7 @@
 #include "Connector.h"
 #include "LameLibEncoder.h"
 #include "TcpSocket.h"
-#include "IceCast.h"
+#include "CastSink.h"
 #include "Config.h"
 
 
@@ -90,7 +90,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
         typedef struct {
             Ref<LameLibEncoder>     encoder;
             Ref<TcpSocket>          socket;
-            Ref<IceCast>            ice;
+            Ref<CastSink>           server;
         } LameLibOutput;
 
         /**
@@ -139,7 +139,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
         init (  const Config   & config )            throw ( Exception );
 
         /**
-         *  Look for the lame library outputs from the config file.
+         *  Look for the icecast stream outputs from the config file.
          *  Called from init()
          *
          *  @param config the config Object to read initialization
@@ -147,8 +147,20 @@ class DarkIce : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         void
-        configLameLib (  const Config   & config,
+        configIceCast (  const Config   & config,
                          unsigned int     bufferSecs  )     throw ( Exception );
+
+        /**
+         *  Look for the shoutcast stream outputs from the config file.
+         *  Called from init()
+         *
+         *  @param config the config Object to read initialization
+         *                information from.
+         *  @exception Exception
+         */
+        void
+        configShoutCast (   const Config   & config,
+                            unsigned int     bufferSecs )   throw ( Exception );
 
         /**
          *  Set POSIX real-time scheduling for the encoding process,
@@ -269,6 +281,9 @@ class DarkIce : public virtual Referable, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.10  2001/09/09 11:27:31  darkeye
+  added support for ShoutCast servers
+
   Revision 1.9  2001/08/30 17:25:56  darkeye
   renamed configure.h to config.h
 

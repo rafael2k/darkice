@@ -56,27 +56,21 @@ static const char fileid[] = "$Id$";
 void
 CastSink :: init (  TcpSocket             * socket,
                     const char            * password,
-                    const char            * mountPoint,
                     unsigned int            bitRate,
                     const char            * name,
-                    const char            * description,
                     const char            * url,
                     const char            * genre,
                     bool                    isPublic,
-                    const char            * remoteDumpFile,
                     unsigned int            bufferDuration )
                                                         throw ( Exception )
 {
     this->socket         = socket;
     this->password       = Util::strDup( password);
-    this->mountPoint     = Util::strDup( mountPoint);
     this->bitRate        = bitRate;
     this->name           = name           ? Util::strDup( name) : 0;
-    this->description    = description    ? Util::strDup( description) : 0;
     this->url            = url            ? Util::strDup( url) : 0;
     this->genre          = genre          ? Util::strDup( genre) : 0;
     this->isPublic       = isPublic;
-    this->remoteDumpFile = remoteDumpFile ? Util::strDup( remoteDumpFile) : 0;
     this->bufferDuration = bufferDuration;
 
     bufferedSink = new BufferedSink( socket,
@@ -96,21 +90,14 @@ CastSink :: strip ( void )                          throw ( Exception )
     }
 
     delete[] password;
-    delete[] mountPoint;
     if ( name ) {
         delete[] name;
-    }
-    if ( description ) {
-        delete[] description;
     }
     if ( url ) {
         delete[] url;
     }
     if ( genre ) {
         delete[] genre;
-    }
-    if ( remoteDumpFile ) {
-        delete[] remoteDumpFile;
     }
 }
 
@@ -144,6 +131,9 @@ CastSink :: open ( void )                       throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.5  2001/09/09 11:27:31  darkeye
+  added support for ShoutCast servers
+
   Revision 1.4  2001/08/29 21:08:30  darkeye
   made some description options in the darkice config file optional
 

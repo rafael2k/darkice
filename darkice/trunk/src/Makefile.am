@@ -17,6 +17,8 @@ darkice_SOURCES =   AudioEncoder.h\
                     Exception.h\
                     IceCast.cpp\
                     IceCast.h\
+                    ShoutCast.cpp\
+                    ShoutCast.h\
                     LameLibEncoder.cpp\
                     LameLibEncoder.h\
                     OssDspSource.cpp\
