@@ -7,7 +7,7 @@
    File     : AudioEncoder.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $AudioEncoder$
+   Location : $Source$
    
    Copyright notice:
 
@@ -385,6 +385,9 @@ class AudioEncoder : public Sink, public virtual Referable
   $Source$
 
   $Log$
+  Revision 1.5  2002/02/19 15:23:59  darkeye
+  fixed typo
+
   Revision 1.4  2001/09/18 14:57:19  darkeye
   finalized Solaris port
 
