@@ -8,3 +8,4 @@ o set comment fields for Ogg Vorbis streams as in
   http://www.xiph.org/ogg/vorbis/doc/v-comment.html
 o change config file to separate descriptions of input, streams and
   stream targets (servers, files, etc.)
+o add support for 24 and 32 bit input and higher sample rates (up to 96kHz)

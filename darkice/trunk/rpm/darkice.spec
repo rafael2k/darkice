@@ -36,7 +36,7 @@ Summary : DarkIce live IceCast / ShoutCast streamer
 Name: darkice
 Vendor: Tyrell Hungary
 Packager: Akos Maroy <darkeye@tyrell.hu>
-Version: 0.14beta
+Version: 0.14
 Release: 1
 Copyright: GPL
 Group: Applications/Multimedia
@@ -52,6 +52,9 @@ takes audio input from a sound card, encodes it into mp3 and/or Ogg Vorbis,
 and sends the mp3 stream to one or more IceCast and/or ShoutCast servers,
 the Ogg Vorbis stream to one or more IceCast2 servers.
 
+This RPM is compiled without ALSA support, as there are no official RPM
+packages for ALSA. To utilize ALSA, you must compile darkice manually.
+
 
 
 # =================================================================== prep stage
@@ -61,7 +64,7 @@ the Ogg Vorbis stream to one or more IceCast2 servers.
 
 # ================================================================== build stage
 %build
-%configure
+%configure --with-alsa=no
 make all
 
 
@@ -97,6 +100,9 @@ make clean
 # =================================================================== change log
 #
 #   $Log$
+#   Revision 1.23  2004/02/15 22:30:08  darkeye
+#   for version 0.14
+#
 #   Revision 1.22  2004/02/15 12:06:29  darkeye
 #   added ALSA support, thanks to Christian Forster
 #
