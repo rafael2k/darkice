@@ -40,8 +40,11 @@
 #include "config.h"
 #endif
 
-// TODO
+#ifdef HAVE_VORBIS_VORBISENC_H
 #include <vorbis/vorbisenc.h>
+#else
+#error need vorbis/vorbisenc.h
+#endif
 
 
 #include "Ref.h"
@@ -147,8 +150,8 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *                   channels are interleaved
          *  @param lenPcmBuffer length of pcmBuffer
          *  @param leftBuffer put the left channel here (must be big enough)
-         *  @param rightBuffer put the right channel here (if mono, same
-         *                     as leftChannel, must be big enough)
+         *  @param rightBuffer put the right channel here (if mono, not
+         *                     touched, must be big enough)
          *  @param channels number of channels (1 = mono, 2 = stereo)
          */
         void
@@ -165,8 +168,8 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *                   channels are interleaved
          *  @param lenPcmBuffer length of pcmBuffer
          *  @param leftBuffer put the left channel here (must be big enough)
-         *  @param rightBuffer put the right channel here (if mono, same
-         *                     as leftChannel, must be big enough)
+         *  @param rightBuffer put the right channel here (if mono, not
+         *                     touched, must be big enough)
          *  @param channels number of channels (1 = mono, 2 = stereo)
          */
         void
@@ -175,6 +178,12 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
                     float             * leftBuffer,
                     float             * rightBuffer,
                     unsigned int        channels );
+
+        /**
+         *  Send pending Vorbis blocks to the underlying stream
+         */
+        void
+        vorbisBlocksOut( void )                         throw ();
 
 
     protected:
@@ -433,6 +442,9 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.2  2001/09/15 11:36:22  darkeye
+  added function vorbisBlocksOut(), finalized vorbis support
+
   Revision 1.1  2001/09/14 19:31:06  darkeye
   added IceCast2 / vorbis support
 

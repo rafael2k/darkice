@@ -33,12 +33,6 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_STRING_H
-#include <string.h>
-#else
-#error need string.h
-#endif
-
 
 #include "Exception.h"
 #include "Util.h"
@@ -154,9 +148,8 @@ VorbisLibEncoder :: conv8 ( unsigned char     * pcmBuffer,
         for ( i = 0, j = 0; i < lenPcmBuffer; ) {
             short int  value;
 
-            value       = pcmBuffer[i++];
-            leftBuffer[j] = ((float) value) / 32768.f;
-            rightBuffer[j] = leftBuffer[j];
+            value          = pcmBuffer[i++];
+            leftBuffer[j]  = ((float) value) / 128.f;
             ++j;
         }
     } else {
@@ -165,10 +158,10 @@ VorbisLibEncoder :: conv8 ( unsigned char     * pcmBuffer,
         for ( i = 0, j = 0; i < lenPcmBuffer; ) {
             short int  value;
 
-            value  = pcmBuffer[i++];
-            leftBuffer[j] = ((float) value) / 32768.f;
-            value  = pcmBuffer[i++];
-            rightBuffer[j] = ((float) value) / 32768.f;
+            value          = pcmBuffer[i++];
+            leftBuffer[j]  = ((float) value) / 128.f;
+            value          = pcmBuffer[i++];
+            rightBuffer[j] = ((float) value) / 128.f;
             ++j;
         }
     }
@@ -192,10 +185,9 @@ VorbisLibEncoder :: conv16 (    unsigned char     * pcmBuffer,
         for ( i = 0, j = 0; i < lenPcmBuffer; ) {
             short int   value;
 
-            value  = pcmBuffer[i++];
-            value += pcmBuffer[i++] << 8;
-            leftBuffer[j] = ((float) value) / 32768.f;
-            rightBuffer[j] = leftBuffer[j];
+            value           = pcmBuffer[i++];
+            value          |= pcmBuffer[i++] << 8;
+            leftBuffer[j]   = ((float) value) / 32768.f;
             ++j;
         }
     } else {
@@ -204,12 +196,12 @@ VorbisLibEncoder :: conv16 (    unsigned char     * pcmBuffer,
         for ( i = 0, j = 0; i < lenPcmBuffer; ) {
             short int   value;
 
-            value  = pcmBuffer[i++];
-            value += pcmBuffer[i++] << 8;
-            leftBuffer[j] = ((float) value) / 32768.f;
-            value  = pcmBuffer[i++];
-            value += pcmBuffer[i++] << 8;
-            rightBuffer[j] = ((float) value) / 32768.f;
+            value           = pcmBuffer[i++];
+            value          |= pcmBuffer[i++] << 8;
+            leftBuffer[j]   = ((float) value) / 32768.f;
+            value           = pcmBuffer[i++];
+            value          |= pcmBuffer[i++] << 8;
+            rightBuffer[j]  = ((float) value) / 32768.f;
             ++j;
         }
     }
@@ -255,36 +247,7 @@ VorbisLibEncoder :: write ( const void    * buf,
     }
 
     vorbis_analysis_wrote( &vorbisDspState, nSamples);
-
-    while ( 1 == vorbis_analysis_blockout( &vorbisDspState, &vorbisBlock) ) {
-        ogg_packet      oggPacket;
-        ogg_page        oggPage;
-
-        vorbis_analysis( &vorbisBlock, &oggPacket);
-        ogg_stream_packetin( &oggStreamState, &oggPacket);
-
-        while ( ogg_stream_pageout( &oggStreamState, &oggPage) ) {
-            int    written;
-            
-            written = sink->write( oggPage.header, oggPage.header_len);
-reportEvent( 5, "written to server ", written, " bytes.");
-            if ( written < oggPage.header_len ) {
-                // just let go data that could not be written
-                reportEvent( 2,
-                         "couldn't write full vorbis header to underlying sink",
-                             oggPage.header_len - written);
-            }
-
-            written = sink->write( oggPage.body, oggPage.body_len);
-reportEvent( 5, "written to server ", written, " bytes.");
-            if ( written < oggPage.body_len ) {
-                // just let go data that could not be written
-                reportEvent( 2,
-                         "couldn't write full vorbis body to underlying sink",
-                             oggPage.body_len - written);
-            }
-        }
-    }
+    vorbisBlocksOut();
 
     return processed;
 }
@@ -302,7 +265,38 @@ VorbisLibEncoder :: flush ( void )
     }
 
     vorbis_analysis_wrote( &vorbisDspState, 0);
-    // ???
+    vorbisBlocksOut();
+    sink->flush();
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Send pending Vorbis blocks to the underlying stream
+ *----------------------------------------------------------------------------*/
+void
+VorbisLibEncoder :: vorbisBlocksOut ( void )                throw ()
+{
+    while ( 1 == vorbis_analysis_blockout( &vorbisDspState, &vorbisBlock) ) {
+        ogg_packet      oggPacket;
+        ogg_page        oggPage;
+
+        vorbis_analysis( &vorbisBlock, &oggPacket);
+        ogg_stream_packetin( &oggStreamState, &oggPacket);
+
+        while ( ogg_stream_pageout( &oggStreamState, &oggPage) ) {
+            int    written;
+            
+            written  = sink->write( oggPage.header, oggPage.header_len);
+            written += sink->write( oggPage.body, oggPage.body_len);
+
+            if ( written < oggPage.header_len + oggPage.body_len ) {
+                // just let go data that could not be written
+                reportEvent( 2,
+                           "couldn't write full vorbis data to underlying sink",
+                             oggPage.header_len + oggPage.body_len - written);
+            }
+        }
+    }
 }
 
 
@@ -331,6 +325,9 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.2  2001/09/15 11:36:22  darkeye
+  added function vorbisBlocksOut(), finalized vorbis support
+
   Revision 1.1  2001/09/14 19:31:06  darkeye
   added IceCast2 / vorbis support
 
