@@ -36,7 +36,7 @@ Summary : DarkIce live IceCast / ShoutCast streamer
 Name: darkice
 Vendor: Tyrell Hungary
 Packager: Akos Maroy <darkeye@tyrell.hu>
-Version: 0.10.2beta
+Version: 0.11
 Release: 1
 Copyright: GPL
 Group: Applications/Multimedia
@@ -97,6 +97,9 @@ make clean
 # =================================================================== change log
 #
 #   $Log$
+#   Revision 1.17  2002/08/20 20:45:08  darkeye
+#   for version 0.11
+#
 #   Revision 1.16  2002/08/03 10:32:04  darkeye
 #   for version 0.10.2beta
 #
