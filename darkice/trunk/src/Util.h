@@ -251,7 +251,7 @@ class Util
                     unsigned int        lenPcmBuffer,
                     short int         * leftBuffer,
                     short int         * rightBuffer,
-                    unsigned int        channels );
+                    unsigned int        channels )          throw ( Exception );
 
         /**
          *  Convert a char buffer holding 16 bit PCM values to a short buffer
@@ -271,7 +271,7 @@ class Util
                     short int         * leftBuffer,
                     short int         * rightBuffer,
                     unsigned int        channels,
-                    bool                isBigEndian );
+                    bool                isBigEndian )       throw ( Exception );
 
 };
 
@@ -291,6 +291,9 @@ class Util
   $Source$
 
   $Log$
+  Revision 1.6  2002/07/21 08:47:06  darkeye
+  some exception cleanup (throw clauses in function declarations)
+
   Revision 1.5  2002/03/28 16:45:46  darkeye
   added functions strToD(), conv8(), conv16() and conv()
 

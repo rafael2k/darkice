@@ -178,7 +178,7 @@ class BufferedSink : public Sink, public virtual Reporter
          *  @see #chunkSize
          */
         inline bool
-        align ( void )
+        align ( void )                                      throw ( Exception )
         {
             char    b[] = { 0 };
 
@@ -391,6 +391,9 @@ class BufferedSink : public Sink, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.7  2002/07/21 08:47:06  darkeye
+  some exception cleanup (throw clauses in function declarations)
+
   Revision 1.6  2002/05/28 12:35:41  darkeye
   code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
 

@@ -289,7 +289,7 @@ Util :: conv8 (     unsigned char     * pcmBuffer,
                     unsigned int        lenPcmBuffer,
                     short int         * leftBuffer,
                     short int         * rightBuffer,
-                    unsigned int        channels )
+                    unsigned int        channels )          throw ( Exception )
 {
     if ( channels == 1 ) {
         unsigned int    i, j;
@@ -301,7 +301,7 @@ Util :: conv8 (     unsigned char     * pcmBuffer,
             leftBuffer[j] = (short int) value;
             ++j;
         }
-    } else {
+    } else if ( channels == 2 ) {
         unsigned int    i, j;
 
         for ( i = 0, j = 0; i < lenPcmBuffer; ) {
@@ -313,6 +313,9 @@ Util :: conv8 (     unsigned char     * pcmBuffer,
             rightBuffer[j] = (short int) value;
             ++j;
         }
+    } else {
+        throw Exception( __FILE__, __LINE__,
+                         "this number of channels not supported", channels);
     }
 }
 
@@ -327,7 +330,7 @@ Util :: conv16 (    unsigned char     * pcmBuffer,
                     short int         * leftBuffer,
                     short int         * rightBuffer,
                     unsigned int        channels,
-                    bool                isBigEndian )
+                    bool                isBigEndian )       throw ( Exception )
 {
     if ( isBigEndian ) {
         if ( channels == 1 ) {
@@ -393,6 +396,9 @@ Util :: conv16 (    unsigned char     * pcmBuffer,
   $Source$
 
   $Log$
+  Revision 1.8  2002/07/21 08:47:06  darkeye
+  some exception cleanup (throw clauses in function declarations)
+
   Revision 1.7  2002/03/28 16:45:46  darkeye
   added functions strToD(), conv8(), conv16() and conv()
 
