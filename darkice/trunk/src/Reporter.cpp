@@ -29,7 +29,7 @@
 
 /* ============================================================ include files */
 
-#include <iostream.h>
+#include <iostream>
 
 #include "Reporter.h"
 
@@ -49,7 +49,7 @@ static const char fileid[] = "$Id$";
  *  Initial values for static members of the class
  *----------------------------------------------------------------------------*/
 unsigned int    Reporter::verbosity = 1;
-ostream       * Reporter::os        = &cout;
+std::ostream  * Reporter::os        = &std::cout;
 
 
 /* ===============================================  local function prototypes */
@@ -64,6 +64,9 @@ ostream       * Reporter::os        = &cout;
   $Source$
 
   $Log$
+  Revision 1.2  2002/05/28 12:35:41  darkeye
+  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
+
   Revision 1.1  2000/11/16 08:48:43  darkeye
   added multiple verbosity-level event reporting and verbosity command
   line option

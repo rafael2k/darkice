@@ -22,6 +22,8 @@ AC_CHECK_LIB( socket, socket)
 AC_CHECK_LIB( nsl, gethostbyname)
 AC_CHECK_LIB( rt, sched_getscheduler)
 
+SYSTEM_INCLUDE=/usr/include
+
 
 dnl-----------------------------------------------------------------------------
 dnl link the lame library if requested
@@ -44,7 +46,9 @@ if test "x${USE_LAME}" = "xyes" ; then
                    ${CONFIG_LAME_PREFIX})
     if test "x${LAME_LIB_LOC}" != "x" ; then
         AC_DEFINE( HAVE_LAME_LIB, 1, [build with lame library] )
-        LAME_INCFLAGS="-I${LAME_INC_LOC}"
+        if test "x${LAME_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
+            LAME_INCFLAGS="-I${LAME_INC_LOC}"
+        fi
         LAME_LDFLAGS="-L${LAME_LIB_LOC} -lmp3lame"
         AC_MSG_RESULT( [found at ${CONFIG_LAME_PREFIX}] )
     else
@@ -85,7 +89,9 @@ if test "x${USE_VORBIS}" = "xyes" ; then
             "x${VORBISENC_LIB_LOC}" != "x" ; then
 
         AC_DEFINE( HAVE_VORBIS_LIB, 1, [build with Ogg Vorbis library] )
-        VORBIS_INCFLAGS="-I${OGG_INC_LOC}"
+        if test "x${OGG_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
+            LAME_INCFLAGS="-I${OGG_INC_LOC}"
+        fi
         VORBIS_LDFLAGS="-L${OGG_LIB_LOC} -logg -lvorbis -lvorbisenc"
         AC_MSG_RESULT( [found at ${CONFIG_VORBIS_PREFIX}] )
     else
@@ -114,7 +120,7 @@ if test "x${USE_VORBIS_LIB}" = "xrc3" ; then
 fi
 
 dnl make sure at least one of lame and vorbis present
-if test "x${LAME_INCFLAGS}" = "x" -a "x${VORBIS_INCFLAGS}" = "x" ; then
+if test "x${LAME_LDFLAGS}" = "x" -a "x${VORBIS_LDFLAGS}" = "x" ; then
     AC_MSG_ERROR( [neither lame nor Ogg Vorbis configured])
 fi
 

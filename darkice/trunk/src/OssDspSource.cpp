@@ -217,9 +217,10 @@ OssDspSource :: canRead ( unsigned int    sec,
 
     if ( !running ) {
         /* ugly workaround to get the dsp into recording state */
-        unsigned char   b[getChannel()*getBitsPerSample()/8];
-
+        unsigned char * b =
+                          new unsigned char[getChannel()*getBitsPerSample()/8];
         read( b, getChannel()*getBitsPerSample()/8);
+        delete[] b;
     }
     
     FD_ZERO( &fdset);
@@ -284,6 +285,9 @@ OssDspSource :: close ( void )                  throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.11  2002/05/28 12:35:41  darkeye
+  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
+
   Revision 1.10  2001/09/26 16:55:30  darkeye
   BSD port
 

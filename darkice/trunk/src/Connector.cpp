@@ -255,7 +255,7 @@ Connector :: transfer ( unsigned long       bytes,
 {
     unsigned int    u;
     unsigned long   b;
-    unsigned char   buf[bufSize];
+    unsigned char * buf = new unsigned char[bufSize];
 
     if ( numSinks == 0 ) {
         return 0;
@@ -308,6 +308,7 @@ Connector :: transfer ( unsigned long       bytes,
         }
     }
 
+    delete[] buf;
     return b;
 }
 
@@ -333,6 +334,9 @@ Connector :: close ( void )                         throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.7  2002/05/28 12:35:41  darkeye
+  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
+
   Revision 1.6  2001/08/26 20:44:30  darkeye
   removed external command-line encoder support
   replaced it with a shared-object support for lame with the possibility

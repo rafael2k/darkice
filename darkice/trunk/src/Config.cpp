@@ -35,7 +35,7 @@
 
 #include <iterator>
 
-#include <iostream.h>
+#include <iostream>
 
 
 #include "Config.h"
@@ -146,7 +146,7 @@ Config :: addLine (  const char    * line )          throw ( Exception )
  *  Add a configuration line
  *----------------------------------------------------------------------------*/
 void
-Config :: read (    istream &     is  )                 throw ( Exception )
+Config :: read (    std::istream  & is  )               throw ( Exception )
 {
     char            line[LINE_SIZE];
     unsigned int    num;
@@ -170,6 +170,9 @@ Config :: read (    istream &     is  )                 throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.7  2002/05/28 12:35:41  darkeye
+  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
+
   Revision 1.6  2001/10/19 09:20:09  darkeye
   config file now may contain tabs also as white space
 

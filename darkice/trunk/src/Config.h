@@ -39,7 +39,7 @@
 #include <map>
 #include <string>
 
-#include <iostream.h>
+#include <iostream>
 
 #include "Referable.h"
 #include "ConfigSection.h"
@@ -123,7 +123,7 @@ class Config : public virtual Referable
          *  @exception Exception
          */
         inline
-        Config (    istream   & is )                throw ( Exception )
+        Config (    std::istream  & is )            throw ( Exception )
         {
             read( is );
         }
@@ -184,7 +184,7 @@ class Config : public virtual Referable
          *  @exception Exception
          */
         virtual void
-        read (   istream &    is )                      throw ( Exception );
+        read (   std::istream     & is )                throw ( Exception );
 
         /**
          *  Get a ConfigSection by name.
@@ -213,6 +213,9 @@ class Config : public virtual Referable
   $Source$
 
   $Log$
+  Revision 1.5  2002/05/28 12:35:41  darkeye
+  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
+
   Revision 1.4  2001/09/05 20:11:15  darkeye
   removed dependency on locally stored SGI STL header files
   now compiler-supplied C++ library STL header files are used

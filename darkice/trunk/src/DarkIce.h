@@ -46,7 +46,7 @@
 #error need unistd.h
 #endif
 
-#include <iostream.h>
+#include <iostream>
 
 #include "Referable.h"
 #include "Reporter.h"
@@ -309,6 +309,9 @@ class DarkIce : public virtual Referable, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.14  2002/05/28 12:35:41  darkeye
+  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
+
   Revision 1.13  2002/02/28 09:49:25  darkeye
   added possibility to save the encoded stream to a local file only
   (no streaming server needed)

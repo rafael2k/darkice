@@ -66,7 +66,7 @@ Exception :: Exception (    const char            * file,
                             unsigned int            line,
                             const char            * description1,
                             const char            * description2,
-                            int                     code = 0 )      throw ()
+                            int                     code )          throw ()
 {
     size_t      len = 0;
 
@@ -78,7 +78,7 @@ Exception :: Exception (    const char            * file,
     }
 
     if ( len ) {
-        char        str[len+1];
+        char      * str = new char[len+1];
 
         str[0] = '\0';
         if ( description1 ) {
@@ -89,6 +89,7 @@ Exception :: Exception (    const char            * file,
         }
 
         init( file, line, str, code);
+        delete[] str;
 
     } else {
 
@@ -105,7 +106,7 @@ Exception :: Exception (    const char            * file,
                             const char            * description1,
                             const char            * description2,
                             const char            * description3,
-                            int                     code = 0 )      throw ()
+                            int                     code )          throw ()
 {
     size_t      len = 0;
 
@@ -120,7 +121,7 @@ Exception :: Exception (    const char            * file,
     }
 
     if ( len ) {
-        char        str[len+1];
+        char      * str = new char[len+1];
 
         str[0] = '\0';
         if ( description1 ) {
@@ -134,6 +135,7 @@ Exception :: Exception (    const char            * file,
         }
 
         init( file, line, str, code);
+        delete[] str;
 
     } else {
 
@@ -203,6 +205,9 @@ Exception :: strip ( void )                         throw ()
   $Source$
 
   $Log$
+  Revision 1.6  2002/05/28 12:35:41  darkeye
+  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
+
   Revision 1.5  2001/08/30 17:25:56  darkeye
   renamed configure.h to config.h
 

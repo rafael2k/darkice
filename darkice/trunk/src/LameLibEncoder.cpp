@@ -280,8 +280,8 @@ LameLibEncoder :: write (   const void    * buf,
     unsigned char * b = (unsigned char*) buf;
     unsigned int    processed = len - (len % sampleSize);
     unsigned int    nSamples = processed / sampleSize;
-    short int       leftBuffer[nSamples];
-    short int       rightBuffer[nSamples];
+    short int     * leftBuffer  = new short int[nSamples];
+    short int     * rightBuffer = new short int[nSamples];
 
     if ( bitsPerSample == 8 ) {
         Util::conv8( b, processed, leftBuffer, rightBuffer, channels);
@@ -293,6 +293,8 @@ LameLibEncoder :: write (   const void    * buf,
                       channels,
                       isInBigEndian());
     } else {
+        delete[] leftBuffer;
+        delete[] rightBuffer;
         throw Exception( __FILE__, __LINE__,
                         "unsupported number of bits per sample for the encoder",
                          bitsPerSample );
@@ -300,7 +302,7 @@ LameLibEncoder :: write (   const void    * buf,
 
     // data chunk size estimate according to lame documentation
     unsigned int    mp3Size = (unsigned int) (1.25 * nSamples + 7200);
-    unsigned char   mp3Buf[mp3Size];
+    unsigned char * mp3Buf  = new unsigned char[mp3Size];
     int             ret;
 
     ret = lame_encode_buffer( lameGlobalFlags,
@@ -309,7 +311,11 @@ LameLibEncoder :: write (   const void    * buf,
                               nSamples,
                               mp3Buf,
                               mp3Size );
-    
+
+    delete[] mp3Buf;
+    delete[] leftBuffer;
+    delete[] rightBuffer;
+
     if ( ret < 0 ) {
         reportEvent( 3, "lame encoding error", ret);
         return 0;
@@ -340,12 +346,14 @@ LameLibEncoder :: flush ( void )
 
     // data chunk size estimate according to lame documentation
     unsigned int    mp3Size = 7200;
-    unsigned char   mp3Buf[mp3Size];
+    unsigned char * mp3Buf  = new unsigned char[mp3Size];
     int             ret;
 
     ret = lame_encode_flush( lameGlobalFlags, mp3Buf, mp3Size );
 
     unsigned int    written = sink->write( mp3Buf, ret);
+    delete[] mp3Buf;
+
     // just let go data that could not be written
     if ( written < (unsigned int) ret ) {
         reportEvent( 2,
@@ -379,6 +387,9 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.12  2002/05/28 12:35:41  darkeye
+  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
+
   Revision 1.11  2002/04/13 11:26:00  darkeye
   added cbr, abr and vbr setting feature with encoding quality
 

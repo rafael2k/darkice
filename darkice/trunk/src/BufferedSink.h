@@ -361,7 +361,7 @@ class BufferedSink : public Sink, public virtual Reporter
         inline virtual void
         flush ( void )                                  throw ( Exception )
         {
-            unsigned char   b[0];
+            unsigned char   b[1];
 
             write( b, 0);
         }
@@ -391,6 +391,9 @@ class BufferedSink : public Sink, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.6  2002/05/28 12:35:41  darkeye
+  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
+
   Revision 1.5  2000/11/15 18:08:42  darkeye
   added multiple verbosity-level event reporting and verbosity command
   line option

@@ -199,14 +199,14 @@ VorbisLibEncoder :: write ( const void    * buf,
     // convert the byte-based raw input into a short buffer
     // with channels still interleaved
     unsigned int    totalSamples = nSamples * channels;
-    short int       shortBuffer[totalSamples];
+    short int     * shortBuffer  = new short int[totalSamples];
     Util::conv( bitsPerSample, b, processed, shortBuffer, isInBigEndian());
     
     if ( converter ) {
         // resample if needed
         int         inCount  = totalSamples;
         int         outCount = (int) (inCount * resampleRatio);
-        short int   resampledBuffer[outCount * channels];
+        short int * resampledBuffer = new short int[outCount * channels];
         int         converted;
 
         converted = converter->resample( inCount,
@@ -217,6 +217,8 @@ VorbisLibEncoder :: write ( const void    * buf,
         vorbisBuffer = vorbis_analysis_buffer( &vorbisDspState,
                                                converted / channels);
         Util::conv( resampledBuffer, converted, vorbisBuffer, channels);
+        delete[] resampledBuffer;
+
         vorbis_analysis_wrote( &vorbisDspState, converted / channels);
 
     } else {
@@ -226,6 +228,7 @@ VorbisLibEncoder :: write ( const void    * buf,
         vorbis_analysis_wrote( &vorbisDspState, nSamples);
     }
 
+    delete[] shortBuffer;
     vorbisBlocksOut();
 
     return processed;
@@ -316,6 +319,9 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.9  2002/05/28 12:35:41  darkeye
+  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
+
   Revision 1.8  2002/04/13 11:26:00  darkeye
   added cbr, abr and vbr setting feature with encoding quality
 

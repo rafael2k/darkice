@@ -43,8 +43,8 @@
 #error needs stdlib.h
 #endif
 
-#include <iostream.h>
-#include <fstream.h>
+#include <iostream>
+#include <fstream>
 
 #include "Ref.h"
 #include "Exception.h"
@@ -69,7 +69,7 @@ static const char fileid[] = "$Id$";
  *  Show program usage
  *----------------------------------------------------------------------------*/
 static void
-showUsage (     ostream   & os );
+showUsage (     std::ostream  & os );
 
 
 /* =============================================================  module code */
@@ -84,10 +84,11 @@ main (
 {
     int     res = -1;
 
-    cout << "DarkIce " << VERSION
-         << " live audio streamer, http://darkice.sourceforge.net" << endl;
-    cout << "Copyright (c) 2000-2002, Tyrell Hungary, http://tyrell.hu" << endl;
-    cout << endl;
+    std::cout << "DarkIce " << VERSION
+         << " live audio streamer, http://darkice.sourceforge.net"
+         << std::endl
+         << "Copyright (c) 2000-2002, Tyrell Hungary, http://tyrell.hu"
+         << std::endl << std::endl;
 
     try {
         const char    * configFileName = 0;
@@ -109,29 +110,29 @@ main (
                 case ':':
                 case '?':
                 case 'h':
-                    showUsage( cout);
+                    showUsage( std::cout);
                     return 1;
             }
         }
 
         if ( !configFileName ) {
-            showUsage( cout);
+            showUsage( std::cout);
             throw Exception( __FILE__, __LINE__,
                              "no configuration file specified");
         }
 
-        cout << "Using config file: " << configFileName << endl;
+        std::cout << "Using config file: " << configFileName << std::endl;
 
-        ifstream            configFile( configFileName);
+        std::ifstream       configFile( configFileName);
         Config              config( configFile);
         Ref<DarkIce>        di = new DarkIce( config);
         di->setReportVerbosity( verbosity );
-        di->setReportOutputStream( cout );
+        di->setReportOutputStream( std::cout );
 
         res = di->run();
 
     } catch ( Exception   & e ) {
-        cout << "DarkIce: " << e << endl << flush;
+        std::cout << "DarkIce: " << e << std::endl << std::flush;
     }
 
     return res;
@@ -142,21 +143,21 @@ main (
  *  Show program usage
  *----------------------------------------------------------------------------*/
 static void
-showUsage (     ostream   & os )
+showUsage (     std::ostream      & os )
 {
     os
     << "usage: darkice [-v n] -c config.file"
-    << endl
-    << endl
+    << std::endl
+    << std::endl
     << "options:"
-    << endl
+    << std::endl
     << "   -c config.file     use configuration file config.file"
-    << endl
+    << std::endl
     << "   -v n               verbosity level (0 = silent, 10 = loud)"
-    << endl
+    << std::endl
     << "   -h                 print this message and exit"
-    << endl
-    << endl;
+    << std::endl
+    << std::endl;
 }
 
 
@@ -165,6 +166,9 @@ showUsage (     ostream   & os )
   $Source$
 
   $Log$
+  Revision 1.11  2002/05/28 12:35:41  darkeye
+  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
+
   Revision 1.10  2002/02/20 15:08:52  darkeye
   minor changes
 

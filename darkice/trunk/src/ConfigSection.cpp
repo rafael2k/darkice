@@ -35,7 +35,7 @@
 
 #include <iterator>
 
-#include <iostream.h>
+#include <iostream>
 
 
 #include "ConfigSection.h"
@@ -106,9 +106,9 @@ ConfigSection :: get (  const char    * key ) const         throw ( Exception )
  *----------------------------------------------------------------------------*/
 const char *
 ConfigSection :: getForSure (   const char    * key,
-                                const char    * message1 = 0,
-                                const char    * message2 = 0,
-                                int             code     = 0 ) const
+                                const char    * message1,
+                                const char    * message2,
+                                int             code ) const
                                                         throw ( Exception )
 {
     const char      * value;
@@ -177,6 +177,9 @@ ConfigSection :: addLine (  const char    * line )          throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.8  2002/05/28 12:35:41  darkeye
+  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
+
   Revision 1.7  2001/10/19 09:20:09  darkeye
   config file now may contain tabs also as white space
 

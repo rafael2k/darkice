@@ -53,7 +53,7 @@
 #endif
 
 
-#include <iostream.h>
+#include <iostream>
 
 
 #include "Exception.h"
@@ -93,7 +93,7 @@ class Reporter
         /**
          *  The output stream to report to.
          */
-        static ostream        * os;
+        static std::ostream    * os;
 
         /**
          *  Print timestamp for every report only if verbosity level
@@ -164,7 +164,7 @@ class Reporter
          *  @param os the output stream
          */
         inline void
-        setReportOutputStream ( ostream   & os )            throw ()
+        setReportOutputStream ( std::ostream  & os )        throw ()
         {
             Reporter::os = &os;
         }
@@ -174,7 +174,7 @@ class Reporter
          *
          *  @return the output stream
          */
-        inline ostream &
+        inline std::ostream &
         getReportOutputStream ( void )                      throw ()
         {
             return *(Reporter::os);
@@ -196,7 +196,7 @@ class Reporter
         {
             if ( Reporter::verbosity >= verbosity ) {
                 printPrefix();
-                (*(Reporter::os)) << t <<  endl;
+                (*(Reporter::os)) << t <<  std::endl;
             }
         }
 
@@ -221,7 +221,7 @@ class Reporter
             if ( Reporter::verbosity >= verbosity ) {
                 printPrefix();
                 (*(Reporter::os)) << t << " "
-                                  << u <<  endl;
+                                  << u <<  std::endl;
             }
         }
 
@@ -251,7 +251,7 @@ class Reporter
                 printPrefix();
                 (*(Reporter::os)) << t << " "
                                   << u << " "
-                                  << v <<  endl;
+                                  << v <<  std::endl;
             }
         }
 
@@ -286,7 +286,7 @@ class Reporter
                 (*(Reporter::os)) << t << " "
                                   << u << " "
                                   << v << " "
-                                  << w <<  endl;
+                                  << w <<  std::endl;
             }
         }
 };
@@ -309,6 +309,9 @@ class Reporter
   $Source$
 
   $Log$
+  Revision 1.6  2002/05/28 12:35:41  darkeye
+  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
+
   Revision 1.5  2001/09/05 20:11:15  darkeye
   removed dependency on locally stored SGI STL header files
   now compiler-supplied C++ library STL header files are used

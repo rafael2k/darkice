@@ -36,7 +36,7 @@
 
 /* ============================================================ include files */
 
-#include <iostream.h>
+#include <iostream>
 
 
 /* ================================================================ constants */
@@ -282,8 +282,8 @@ class Exception
  *  @param e the Exception to print.
  *  @return a reference to the supplied output stream.
  */
-inline ostream &
-operator<< (        ostream &           os,
+inline std::ostream &
+operator<< (        std::ostream &      os,
                     const Exception &   e )
 {
     os << e.getFile() << ":" << e.getLine() << ": "
@@ -302,6 +302,9 @@ operator<< (        ostream &           os,
   $Source$
 
   $Log$
+  Revision 1.6  2002/05/28 12:35:41  darkeye
+  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
+
   Revision 1.5  2000/11/17 15:33:54  darkeye
   bug fix: ostream << operator overload didn't return the ostream
 

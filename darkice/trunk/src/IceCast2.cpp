@@ -45,6 +45,12 @@
 #error need string.h
 #endif
 
+#ifdef HAVE_MATH_H
+#include <math.h>
+#else
+#error need math.h
+#endif
+
 
 #include "Exception.h"
 #include "Source.h"
@@ -157,9 +163,11 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
 
     str = "\nice-bitrate: ";
     sink->write( str, strlen( str));
-    if ( snprintf( resp, STRBUF_SIZE, "%d", getBitRate()) == -1 ) {
-        throw Exception( __FILE__, __LINE__, "snprintf overflow");
+    if ( log10(getBitRate()) >= (STRBUF_SIZE-2) ) {
+        throw Exception( __FILE__, __LINE__,
+                         "bitrate does not fit string buffer", getBitRate());
     }
+    sprintf( resp, "%d", getBitRate());
     sink->write( resp, strlen( resp));
 
     str = "\nice-public: ";
@@ -209,6 +217,9 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.5  2002/05/28 12:35:41  darkeye
+  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
+
   Revision 1.4  2002/02/20 10:35:35  darkeye
   updated to work with Ogg Vorbis libs rc3 and current IceCast2 cvs
 
