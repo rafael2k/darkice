@@ -7,7 +7,7 @@
    File     : LameLibEncoder.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $RCSFile$
+   Location : $Source$
    
    Copyright notice:
 
@@ -389,6 +389,9 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.5  2001/09/02 09:54:12  darkeye
+  fixed typos in CVS substition keywords
+
   Revision 1.4  2001/08/31 20:09:05  darkeye
   added funcitons conv8() and conv16()
 
