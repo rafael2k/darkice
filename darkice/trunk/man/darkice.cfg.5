@@ -1,4 +1,4 @@
-.TH darkice.cfg 5 "February 28, 2002" "DarkIce" "DarkIce live audio streamer"
+.TH darkice.cfg 5 "March 28, 2002" "DarkIce" "DarkIce live audio streamer"
 .SH NAME
 darkice.cfg \- configuration file for darkice
 .SH DESCRIPTION
@@ -160,6 +160,14 @@ There may be at most 8 outputs, numbered from 0 ... 7.
 The number is included in the section name (e.g. [icecast2-0] ... [icecast2-7]).
 The stream will be reachable at
 .I http://<server>:<port>/<mountPoint>
+.P
+.B DarkIce
+supports both fixed bitrate and variable bitrate vorbis streams. When
+using fixed bitrate, specify the bitrate using the
+.I bitrate
+field. When using variable bitrate, specify the quality of the stream by the
+.I quality
+field, which is a value between 0.0 and 1.0.
 
 Required values:
 
@@ -171,6 +179,12 @@ server. Currently the only supported value here is 'vorbis'.
 .TP
 .I bitrate
 Bit rate to encode to in kBits / sec (e.g. 96)
+If specified, the quality field may not be specified.
+.TP
+.I quality
+Quality of a variable bitrate stream, a number between 0.0 ... 1.0
+(e.g. 0.8).
+If specified, the bitrate field may not be specified.
 .TP
 .I server
 The
