@@ -312,8 +312,11 @@ TcpSocket :: write (    const void    * buf,
         return 0;
     }
 
-//    ret = send( sockfd, buf, len, MSG_DONTWAIT);
+#ifdef HAVE_MSG_NOSIGNAL
     ret = send( sockfd, buf, len, MSG_NOSIGNAL);
+#else
+    ret = send( sockfd, buf, len, 0);
+#endif
 
     if ( ret == -1 ) {
         if ( errno == EAGAIN ) {
@@ -349,6 +352,9 @@ TcpSocket :: close ( void )                          throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.8  2002/08/28 18:24:46  darkeye
+  ported to FreeBSD (removed reference to MSG_NOSIGNAL in TcpSocket.cpp)
+
   Revision 1.7  2002/07/20 16:37:06  darkeye
   added fault tolerance in case a server connection is dropped
 

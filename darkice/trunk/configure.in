@@ -102,10 +102,29 @@ else
 fi
 
 
+dnl-----------------------------------------------------------------------------
 dnl make sure at least one of lame and vorbis present
+dnl-----------------------------------------------------------------------------
 if test "x${LAME_LDFLAGS}" = "x" -a "x${VORBIS_LDFLAGS}" = "x" ; then
     AC_MSG_ERROR( [neither lame nor Ogg Vorbis configured])
 fi
+
+
+dnl-----------------------------------------------------------------------------
+dnl check for MSG_NOSIGNAL for the send() function in libsocket
+dnl-----------------------------------------------------------------------------
+AC_MSG_CHECKING(for MSG_NOSIGNAL)
+AC_TRY_COMPILE([#include <sys/socket.h>], [
+    int f = MSG_NOSIGNAL;
+], [
+    # Yes, we have it...
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_MSG_NOSIGNAL, 1, [use MSG_NOSIGNAL for send()])
+], [
+    # We'll have to use signals
+    AC_MSG_RESULT(no)
+])
+
 
 
 AC_OUTPUT(Makefile src/Makefile man/Makefile)
