@@ -93,17 +93,31 @@ class Util
 
     public:
 
+        static unsigned int
+        strLen (        const char    * str )       throw ( Exception );
+
+
+        static void
+        strCpy (    char          * dest,
+                    const char    * src )           throw ( Exception );
+
+
+        static void
+        strCat (    char          * dest,
+                    const char    * src )           throw ( Exception );
+
+
         static char *
-        strDup(         const char    * str )       throw ( Exception );
+        strDup (        const char    * str )       throw ( Exception );
 
 
         static bool
-        strEq(  const char    * str1,
+        strEq ( const char    * str1,
                 const char    * str2 )               throw ( Exception );
 
 
         static long int
-        strToL(  const char    * str,
+        strToL ( const char    * str,
                  int             base = 10 )         throw ( Exception );
 };
 
@@ -123,6 +137,9 @@ class Util
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/09 22:04:33  darkeye
+  added functions strLen strCpy and strCat
+
   Revision 1.2  2000/11/09 06:44:21  darkeye
   added strEq and strToL functions
 

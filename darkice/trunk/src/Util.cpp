@@ -77,11 +77,60 @@ static const char fileid[] = "$Id$";
 /* =============================================================  module code */
 
 /*------------------------------------------------------------------------------
+ *  Calculate the length of a zero-terminated C string,
+ *  w/o the zero-termination
+ *----------------------------------------------------------------------------*/
+unsigned int
+Util :: strLen( const char    * str )                   throw ( Exception )
+{
+    size_t      len;
+
+    if ( !str ) {
+        throw Exception( __FILE__, __LINE__, "no str");
+    }
+
+    len = strlen( str);
+
+    return len;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Copy the contents of a string into another
+ *----------------------------------------------------------------------------*/
+void
+Util :: strCpy (    char          * dest,
+                    const char    * src )               throw ( Exception )
+{
+    if ( !dest || !src ) {
+        throw Exception( __FILE__, __LINE__, "no src or dest");
+    }
+
+    strcpy( dest, src);
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Concatenate the contents of a string onto another
+ *----------------------------------------------------------------------------*/
+void
+Util :: strCat (    char          * dest,
+                    const char    * src )               throw ( Exception )
+{
+    if ( !dest || !src ) {
+        throw Exception( __FILE__, __LINE__, "no src or dest");
+    }
+
+    strcat( dest, src);
+}
+
+
+/*------------------------------------------------------------------------------
  *  Duplicate a string by allocating space with new[]
  *  The returned string must be freed with delete[]
  *----------------------------------------------------------------------------*/
 char *
-Util :: strDup( const char    * str ) throw ( Exception )
+Util :: strDup( const char    * str )                   throw ( Exception )
 {
     size_t      len;
     char      * s;
@@ -103,7 +152,7 @@ Util :: strDup( const char    * str ) throw ( Exception )
  *----------------------------------------------------------------------------*/
 bool
 Util :: strEq( const char    * str1,
-               const char    * str2 )           throw ( Exception )
+               const char    * str2 )                   throw ( Exception )
 {
     if ( !str1 || !str2 ) {
         throw Exception( __FILE__, __LINE__, "no str1 or no str2");
@@ -142,6 +191,9 @@ Util :: strToL( const char    * str,
   $Source$
 
   $Log$
+  Revision 1.4  2000/11/09 22:04:33  darkeye
+  added functions strLen strCpy and strCat
+
   Revision 1.3  2000/11/09 06:44:21  darkeye
   added strEq and strToL functions
 
