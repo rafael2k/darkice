@@ -1,7 +1,6 @@
 bin_PROGRAMS = darkice
-INCLUDES = @LAME_INCFLAGS@
 CXXFLAGS = -O2 -Wall
-LDADD = @LAME_LDFLAGS@ @LINK_STATIC@
+LDADD = @LINK_STATIC@
 
 darkice_SOURCES =   AudioEncoder.h\
                     AudioSource.h\

@@ -13,13 +13,12 @@ AC_HAVE_HEADERS(signal.h time.h sys/time.h sys/types.h sys/wait.h)
 AC_HAVE_HEADERS(netdb.h netinet/in.h sys/ioctl.h sys/socket.h sys/stat.h)
 AC_HAVE_HEADERS(sched.h)
 AC_HAVE_HEADERS(sys/soundcard.h sys/audio.h)
+AC_HAVE_HEADERS(lame/lame.h vorbis/vorbisenc.h)
 AC_HEADER_SYS_WAIT()
 
 AC_TYPE_PID_T()
 AC_TYPE_SIZE_T()
 
-AC_SUBST(LAME_INCFLAGS)
-AC_SUBST(LAME_LDFLAGS)
 AC_SUBST(LINK_STATIC)
 
 AC_CHECK_LIB( socket, socket)
@@ -27,30 +26,7 @@ AC_CHECK_LIB( nsl, gethostbyname)
 AC_CHECK_LIB( rt, sched_getscheduler)
 AC_CHECK_LIB( vorbis, vorbis_info_init)
 AC_CHECK_LIB( vorbisenc, vorbis_encode_init)
-
-dnl checkin for lame library
-AC_MSG_CHECKING(lame library)
-AC_ARG_WITH(lame-prefix,
-[  --with-lame-prefix=DIR  alternate location for lame [/usr]
-                          files looked for: LAME-PREFIX/lib/libmp3lame.a
-                                            LAME-PREFIX/include/lame/lame.h],
-  CONFIG_LAME_PREFIX="${withval}", CONFIG_LAME_PREFIX="/usr")
-  if test "x${CONFIG_LAME_PREFIX}" != "x" ; then
-    # look for lame lib. This overrides any standard location
-    LA_SEARCH_LIB(LAME_LIB_LOC, LAME_INC_LOC, libmp3lame.a, lame/lame.h, ${CONFIG_LAME_PREFIX})
-    if test "x${LAME_LIB_LOC}" != "x" ; then
-      AC_DEFINE(HAVE_LAME_LIB, 1, build with lame library calls)
-      if test "x${LAME_INC_LOC}" != "x/usr/include" ; then
-          LAME_INCFLAGS="-I${LAME_INC_LOC}"
-          LAME_LDFLAGS="-L${LAME_LIB_LOC} -lmp3lame"
-      else
-          LAME_LDFLAGS="-lmp3lame"
-      fi
-      AC_MSG_RESULT( "lame found at ${LAME_LIB_LOC}")
-    else
-      AC_MSG_ERROR( "lame library not found")
-    fi
-  fi
+AC_CHECK_LIB( mp3lame, lame_init)
 
 AC_ARG_ENABLE( static,
 [  --enable-static         link everything into the executable statically [no]],
