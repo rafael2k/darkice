@@ -78,8 +78,7 @@ CastSink :: init (  TcpSocket             * socket,
     int       bufferSize = bitRate ? (bitRate * 1024 / 8) * bufferDuration
                                    : (128 * 1024 / 8) * bufferDuration;
 
-    bufferedSink = socket ?  new BufferedSink( socket,
-                                     (bufferSize * 1024 / 8) * bufferDuration)
+    bufferedSink = socket ?  new BufferedSink( socket, bufferSize)
                           : 0;
 }
 
@@ -146,6 +145,9 @@ CastSink :: open ( void )                       throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.9  2002/04/09 13:10:43  darkeye
+  resolved memory leak issue introduced in 0.9
+
   Revision 1.8  2002/03/28 16:40:55  darkeye
   slight changes to allow for variable bitrate streams
   (where the value of bitrate is 0)

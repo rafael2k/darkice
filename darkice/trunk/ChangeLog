@@ -1,3 +1,9 @@
+09-04-2001: DarkIce 0.9.1 released
+
+    o bugfix: a memory leak was introduced in 0.9, which is fixed thanks to
+      Kristjan G. Bjarnason <kgb@gangverk.is> and Nicu Pavel <npavel@ituner.com>
+    o minor documentation fix
+
 28-03-2002: DarkIce 0.9 released
 
     o added possibility to simply read from the soundcard, encode, and
