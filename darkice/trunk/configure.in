@@ -24,7 +24,6 @@ AC_SUBST(VERSION)
 
 dnl checkin for lame library
 AC_MSG_CHECKING(lame library)
-WARNING=
 AC_ARG_WITH(lame-prefix,
 [  --with-lame-prefix=DIR  alternate location for lame [/usr]
                           files looked for: LAME-PREFIX/lib/libmp3lame.a
@@ -53,8 +52,6 @@ AC_ARG_ENABLE( static,
     LINK_STATIC=""
     AC_MSG_RESULT( "creating dinamically linked executable")
   fi
-
-
 
 
 AC_OUTPUT(Makefile src/Makefile man/Makefile)
