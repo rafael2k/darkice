@@ -54,6 +54,7 @@
 #include "PipeSource.h"
 #include "TcpSocket.h"
 #include "IceCast.h"
+#include "Config.h"
 
 
 /* ================================================================ constants */
@@ -71,20 +72,29 @@ class DarkIce : public virtual Referable
 {
     private:
 
-        Ref<OssDspSource>       dsp;
-        Ref<PipeSink>           encInPipe;
-        Ref<BufferedSink>       encIn;
-        Ref<Connector>          encConnector;
-        Ref<LameEncoder>        encoder;
+        static const unsigned int       maxOutput = 8;
+        
+        typedef struct {
+            Ref<PipeSink>           encInPipe;
+            Ref<BufferedSink>       encIn;
+            Ref<LameEncoder>        encoder;
+            Ref<PipeSource>         encOutPipe;
+            Ref<TcpSocket>          socket;
+            Ref<IceCast>            ice;
+            Ref<Connector>          shoutConnector;
+        } Output;
 
-        Ref<PipeSource>         encOutPipe;
-        Ref<TcpSocket>          socket;
-        Ref<IceCast>            ice;
-        Ref<Connector>          shoutConnector;
+
+        unsigned int            duration;
+        Ref<OssDspSource>       dsp;
+        Ref<Connector>          encConnector;
+
+        Output                  outputs[maxOutput];
+        unsigned int            noOutputs;
 
 
         void
-        init ( void )                               throw ( Exception );
+        init (  const Config   & config )            throw ( Exception );
 
 
         bool
@@ -92,7 +102,7 @@ class DarkIce : public virtual Referable
 
 
         bool
-        shout ( void )                              throw ( Exception );
+        shout ( unsigned int )                      throw ( Exception );
 
 
     protected:
@@ -109,11 +119,8 @@ class DarkIce : public virtual Referable
         }
 
 
-        inline
         DarkIce (   int         argc,
-                    char      * argv[] )            throw ()
-        {
-        }
+                    char      * argv[] )            throw ( Exception );
 
 
         inline virtual
@@ -157,8 +164,13 @@ class DarkIce : public virtual Referable
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:50  darkeye
-  Initial revision
+  Revision 1.2  2000/11/09 22:09:46  darkeye
+  added multiple outputs
+  added configuration reading
+  added command line processing
+
+  Revision 1.1.1.1  2000/11/05 10:05:50  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

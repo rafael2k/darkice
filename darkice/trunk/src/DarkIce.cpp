@@ -73,9 +73,10 @@
 #include <string>
 
 #include <iostream.h>
+#include <fstream.h>
 
 
-#include "Config.h"
+#include "Util.h"
 #include "DarkIce.h"
 
 
@@ -108,50 +109,184 @@ static const char fileid[] = "$Id$";
 /* =============================================================  module code */
 
 /*------------------------------------------------------------------------------
+ *  Constructor
+ *----------------------------------------------------------------------------*/
+DarkIce :: DarkIce ( int        argc,
+                     char     * argv[] )            throw ( Exception )
+{
+    const char    * configFileName = 0;
+    int             i;
+
+    while ( (i = getopt( argc, argv, "c:")) != -1 ) {
+        switch ( i ) {
+            case 'c':
+                configFileName = optarg;
+                break;
+
+            default:
+            case ':':
+            case '?':
+                throw Exception( __FILE__, __LINE__,
+                                 "error parsing command line options");
+                break;
+        }
+    }
+
+    if ( !configFileName ) {
+        throw Exception( __FILE__, __LINE__, "no configuration file specified");
+    }
+
+    cout << "configFileName: " << configFileName << endl;
+
+    ifstream    configFile( configFileName);
+    Config      config( configFile);
+
+    init( config);
+
+    cout << "no. of outputs: " << noOutputs << endl;
+}
+
+
+/*------------------------------------------------------------------------------
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-DarkIce :: init ( void )                            throw ( Exception )
+DarkIce :: init ( const Config      & config )              throw ( Exception )
 {
-    /* the pipes */
-    encOutPipe      = new PipeSource( "enc.out");
-    encInPipe       = new PipeSink( "enc.in");
+    const ConfigSection    * cs;
+    const char             * str;
+    unsigned int             u, v, w;
+    int                      i;
+
+    // the [general] section
+    if ( !(cs = config.get( "general")) ) {
+        throw Exception( __FILE__, __LINE__, "no section [general] in config");
+    }
+    str = cs->getForSure( "duration", " missing in section [general]");
+    duration = Util::strToL( str);
+
+
+    // the [input] section
+    if ( !(cs = config.get( "input")) ) {
+        throw Exception( __FILE__, __LINE__, "no section [general] in config");
+    }
     
-    if ( !encOutPipe->exists() ) {
-        if ( !encOutPipe->create() ) {
-            throw Exception( __FILE__, __LINE__, "can't create out pipe");
-        }
-    }
+    str = cs->getForSure( "sampleRate", " missing in section [input]");
+    u = Util::strToL( str);
 
-    if ( !encInPipe->exists() ) {
-        if ( !encInPipe->create() ) {
-            throw Exception( __FILE__, __LINE__, "can't create in pipe");
-        }
-    }
+    str = cs->getForSure( "bitsPerSample", " missing in section [input]");
+    v = Util::strToL( str);
 
-    /* encoder related stuff */
-    dsp             = new OssDspSource( "/dev/dsp", 22050, 16, 2);
-    encIn           = new BufferedSink( encInPipe.get(), 64 * 1024);
-    encConnector    = new Connector( dsp.get(), encInPipe.get());
-    encoder         = new LameEncoder( "notlame",
-                                        encInPipe->getFileName(),
+    str = cs->getForSure( "channel", " missing in section [input]");
+    w = Util::strToL( str);
+
+    str = cs->getForSure( "device", " missing in section [input]");
+
+    dsp             = new OssDspSource( str, u, v, w);
+    encConnector    = new Connector( dsp.get());
+
+
+    // look for lame encoder output streams, sections [lame0], [lame1], etc.
+    char    lame[]          = "lame ";
+    size_t  lameLen         = Util::strLen( lame);
+    char  * pipeOutExt      = ".out";
+    size_t  pipeOutExtLen   = Util::strLen( pipeOutExt);
+    char  * pipeInExt       = ".in";
+    size_t  pipeInExtLen    = Util::strLen( pipeInExt);
+
+    for ( i = 0; i < maxOutput; ++i ) {
+        // ugly hack to change the section name to "lame0", "lame1", etc.
+        lame[lameLen-1] = '0' + i;
+
+        if ( !(cs = config.get( lame)) ) {
+            break;
+        }
+
+        const char    * encoder     = 0;
+        unsigned int    bitrate     = 0;
+        const char    * server      = 0;
+        unsigned int    port        = 0;
+        const char    * password    = 0;
+        const char    * mountPoint  = 0;
+        const char    * name        = 0;
+        const char    * description = 0;
+        const char    * url         = 0;
+        const char    * genre       = 0;
+        bool            isPublic    = false;
+
+        encoder     = cs->getForSure( "encoder", " missing in section ", lame);
+        str         = cs->getForSure( "bitrate", " missing in section ", lame);
+        bitrate     = Util::strToL( str);
+        server      = cs->getForSure( "server", " missing in section ", lame);
+        str         = cs->getForSure( "port", " missing in section ", lame);
+        port        = Util::strToL( str);
+        password    = cs->getForSure( "password", " missing in section ", lame);
+        mountPoint  = cs->getForSure( "mountPoint"," missing in section ",lame);
+        name        = cs->getForSure( "name", " missing in section ", lame);
+        description = cs->getForSure("description"," missing in section ",lame);
+        url         = cs->getForSure( "url", " missing in section ", lame);
+        genre       = cs->getForSure( "genre", " missing in section ", lame);
+        str         = cs->getForSure( "public", " missing in section ", lame);
+        isPublic    = Util::strEq( str, "yes") ? true : false;
+
+        // generate the pipe names
+        char  pipeOutName[lameLen + pipeOutExtLen + 1];
+        char  pipeInName[lameLen + pipeInExtLen + 1];
+
+        Util::strCpy( pipeOutName, lame);
+        Util::strCat( pipeOutName, pipeOutExt);
+        Util::strCpy( pipeInName, lame);
+        Util::strCat( pipeInName, pipeInExt);
+
+        // go on and create the things
+
+        // the pipes
+        outputs[i].encOutPipe      = new PipeSource( pipeOutName);
+        outputs[i].encInPipe       = new PipeSink( pipeInName);
+        
+        if ( !outputs[i].encOutPipe->exists() ) {
+            if ( !outputs[i].encOutPipe->create() ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "can't create out pipe ",
+                                 pipeOutName );
+            }
+        }
+
+        if ( !outputs[i].encInPipe->exists() ) {
+            if ( !outputs[i].encInPipe->create() ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "can't create in pipe",
+                                 pipeInName );
+            }
+        }
+
+        // encoder related stuff
+        outputs[i].encIn    = new BufferedSink( outputs[i].encInPipe.get(),
+                                                64 * 1024);
+        encConnector->attach( outputs[i].encIn.get());
+        outputs[i].encoder     = new LameEncoder( encoder,
+                                        outputs[i].encInPipe->getFileName(),
                                         dsp.get(),
-                                        encOutPipe->getFileName(),
-                                        96 );
+                                        outputs[i].encOutPipe->getFileName(),
+                                        bitrate );
 
 
-    /* streaming related stuff */
-    socket          = new TcpSocket( "susi", 8000);
-    ice             = new IceCast( socket.get(),
-                                   "hackme",
-                                   "sample",
-                                   "name",
-                                   "description",
-                                   "http://ez.az/",
-                                   "sajat",
-                                   128,
-                                   false );
-    shoutConnector  = new Connector( encOutPipe.get(), ice.get());
+        // streaming related stuff
+        outputs[i].socket          = new TcpSocket( server, port);
+        outputs[i].ice             = new IceCast( outputs[i].socket.get(),
+                                       password,
+                                       mountPoint,
+                                       name,
+                                       description,
+                                       url,
+                                       genre,
+                                       bitrate,
+                                       isPublic );
+        outputs[i].shoutConnector  = new Connector( outputs[i].encOutPipe.get(),
+                                                    outputs[i].ice.get());
+    }
+
+    noOutputs = i;
 }
 
 
@@ -162,8 +297,11 @@ bool
 DarkIce :: encode ( void )                          throw ( Exception )
 {
     unsigned int       len;
+    int                i;
 
-    encoder->start();
+    for ( i = 0; i < noOutputs; ++i ) {
+        outputs[i].encoder->start();
+    }
 
     sleep( 1 );
 
@@ -171,13 +309,21 @@ DarkIce :: encode ( void )                          throw ( Exception )
         throw Exception( __FILE__, __LINE__, "can't open connector");
     }
     
-    len = encConnector->transfer( 22050 * 2 * 2 * 120, 4096, 1, 0 );
+    len = encConnector->transfer( dsp->getSampleRate() *
+                                    (dsp->getBitsPerSample() / 8) *
+                                    dsp->getChannel() *
+                                    duration,
+                                  4096,
+                                  1,
+                                  0 );
 
     cout << len << " bytes transfered" << endl;
 
     encConnector->close();
 
-    encoder->stop();
+    for ( i = 0; i < noOutputs; ++i ) {
+        outputs[i].encoder->stop();
+    }
 
     return true;
 }
@@ -187,19 +333,29 @@ DarkIce :: encode ( void )                          throw ( Exception )
  *  Run the encoder
  *----------------------------------------------------------------------------*/
 bool
-DarkIce :: shout ( void )                           throw ( Exception )
+DarkIce :: shout ( unsigned int     ix )                throw ( Exception )
 {
     unsigned int       len;
 
-    if ( !shoutConnector->open() ) {
+    if ( ix >= noOutputs ) {
+        return false;
+    }
+
+    if ( !outputs[ix].shoutConnector->open() ) {
         throw Exception( __FILE__, __LINE__, "can't open connector");
     }
     
-    len = shoutConnector->transfer( 128 * 1024 / 8 * 120, 4096, 1, 0 );
+    len = outputs[ix].shoutConnector->transfer (
+                                            outputs[ix].encoder->getOutBitrate()
+                                                * (1024 / 8)
+                                                * duration,
+                                               4096,
+                                               1,
+                                               0 );
 
     cout << len << " bytes transfered" << endl;
 
-    shoutConnector->close();
+    outputs[ix].shoutConnector->close();
 
     return true;
 }
@@ -214,32 +370,6 @@ DarkIce :: run ( void )                             throw ( Exception )
     pid_t   pid;
     
     cout << "DarkIce" << endl << endl << flush;
-/*
-    Config                  config;
-    const ConfigSection   * cs;
-    const char            * str;
-
-    config.read( cin);
-    
-    cs = config.get( "first");
-    if ( cs ) {
-        str = cs->get( "blahblah");
-        cout << str << endl;
-        str = cs->get( "ejj");
-        cout << str << endl;
-        str = cs->get( "ojj");
-        cout << str << endl;
-    }
-    
-    cs = config.get( "second");
-    if ( cs ) {
-        str = cs->get( "blahblah");
-        cout << str << endl;
-    }
-*/
-    init();
-
-    cout << "init OK" << endl << flush;
 
     pid = fork();
 
@@ -248,11 +378,14 @@ DarkIce :: run ( void )                             throw ( Exception )
         
     } else if ( pid == 0 ) {
         // this is the child
+        int     i;
 
         sleep ( 2 );
 
         cout << "shouting" << endl << flush;
-        shout();
+        for ( i = 0; i < noOutputs; ++i ) {
+            shout( i);
+        }
         cout << "shouting ends" << endl << flush;
 
         exit(0);
@@ -280,6 +413,11 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.4  2000/11/09 22:09:46  darkeye
+  added multiple outputs
+  added configuration reading
+  added command line processing
+
   Revision 1.3  2000/11/08 17:29:50  darkeye
   added configuration file reader
 
