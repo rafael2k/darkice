@@ -5,8 +5,9 @@
     o added variable bitrate support for vorbis streams
     o support for both rc2 and rc3 versions of vorbis libraries
     o added support for resampling when encoding to vorbis
-      (thanks to the OSALP project for the resampling class,
-       http://osalp.sourceforge.net/)
+      thanks to the OSALP project for the resampling class,
+      http://osalp.sourceforge.net/ and
+      Julius O. Smith, <jos@ccrma.stanford.edu> for the original code
 
 20-02-2002: DarkIce 0.8 released
 
