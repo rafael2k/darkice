@@ -18,7 +18,6 @@ Contents
 1. Compiling and installing
 ---------------------------
 
-
 On how to compile and install, please read the file INSTALL. If you're
 impatient, try:
 
@@ -27,6 +26,10 @@ make
 make install
 
 The executable built is src/darkice.
+
+For command line syntax, try:
+
+darkice --help
 
 
 
