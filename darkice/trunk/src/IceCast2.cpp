@@ -76,6 +76,12 @@ static const char fileid[] = "$Id$";
 #define STRBUF_SIZE         32
 
 
+/*------------------------------------------------------------------------------
+ *  Expected positive response from server begins like this.
+ *----------------------------------------------------------------------------*/
+static const char responseOK[] = "HTTP/1.0 200";
+
+
 /* ===============================================  local function prototypes */
 
 
@@ -119,6 +125,8 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     Source        * source = getSocket();
     const char    * str;
     char            resp[STRBUF_SIZE];
+    unsigned int    len;
+    unsigned int    lenExpected;
 
     if ( !source->isOpen() ) {
         return false;
@@ -127,8 +135,8 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
         return false;
     }
 
-    /* send the request, a string like:
-     * "SOURCE <mountpoint> ICE/1.0" */
+    // send the request, a string like:
+    // "SOURCE <mountpoint> ICE/1.0"
     str = "SOURCE /";
     sink->write( str, strlen( str));
     str = getMountPoint();
@@ -136,7 +144,7 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     str = " HTTP/1.0";
     sink->write( str, strlen( str));
 
-    /* send the content type, Ogg Vorbis */
+    // send the content type, Ogg Vorbis
     str = "\nContent-type: ";
     sink->write( str, strlen( str));
     switch ( format ) {
@@ -155,11 +163,11 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     }
     sink->write( str, strlen( str));
 
-    /* send the authentication info */
+    // send the authentication info
     str = "\nAuthorization: Basic ";
     sink->write( str, strlen(str));
     {
-        /* send source:<password> encoded as base64 */
+        // send source:<password> encoded as base64
         char        * source = "source:";
         const char  * pwd    = getPassword();
         char        * tmp    = new char[Util::strLen(source) +
@@ -172,11 +180,11 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
         delete[] base64;
     }
 
-    /* send user agent info */
+    // send user agent info
     str = "\nUser-Agent: DarkIce/" VERSION " (http://darkice.sourceforge.net/)";
     sink->write( str, strlen( str));
 
-    /* send the ice- headers */
+    // send the ice- headers
     str = "\nice-bitrate: ";
     sink->write( str, strlen( str));
     if ( log10(getBitRate()) >= (STRBUF_SIZE-2) ) {
@@ -223,6 +231,20 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     sink->write( str, strlen( str));
     sink->flush();
 
+    // read the response, expected response begins with responseOK
+    lenExpected = Util::strLen( responseOK);
+    if ( (len = source->read( resp, STRBUF_SIZE-1)) < lenExpected ) {
+        return false;
+    }
+    resp[lenExpected] = 0;
+    if ( !Util::strEq( resp, responseOK) ) {
+        return false;
+    }
+    
+    // suck anything that the other side has to say
+    while ( source->canRead( 0, 0) && 
+           (len = source->read( resp, STRBUF_SIZE-1)) );
+
     return true;
 }
 
@@ -233,6 +255,9 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.9  2002/10/20 21:09:35  darkeye
+  added processing of server response
+
   Revision 1.8  2002/08/20 20:16:59  darkeye
   added User-Agent header to HTTP login
 
