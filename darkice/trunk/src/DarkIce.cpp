@@ -242,7 +242,7 @@ DarkIce :: configIceCast (  const Config      & config,
                 throw Exception( __FILE__, __LINE__,
                                  "bitrate not specified for CBR encoding");
             }
-            if ( quality == 0 ) {
+            if ( cs->get( "quality" ) == 0 ) {
                 throw Exception( __FILE__, __LINE__,
                                  "quality not specified for CBR encoding");
             }
@@ -256,7 +256,7 @@ DarkIce :: configIceCast (  const Config      & config,
         } else if ( Util::strEq( str, "vbr") ) {
             bitrateMode = AudioEncoder::vbr;
 
-            if ( quality == 0 ) {
+            if ( cs->get( "quality" ) == 0 ) {
                 throw Exception( __FILE__, __LINE__,
                                  "quality not specified for VBR encoding");
             }
@@ -430,7 +430,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
         } else if ( Util::strEq( str, "vbr") ) {
             bitrateMode = AudioEncoder::vbr;
 
-            if ( quality == 0 ) {
+            if ( cs->get( "quality" ) == 0 ) {
                 throw Exception( __FILE__, __LINE__,
                                  "quality not specified for VBR encoding");
             }
@@ -617,7 +617,7 @@ DarkIce :: configShoutCast (    const Config      & config,
                 throw Exception( __FILE__, __LINE__,
                                  "bitrate not specified for CBR encoding");
             }
-            if ( quality == 0 ) {
+            if ( cs->get( "quality" ) == 0 ) {
                 throw Exception( __FILE__, __LINE__,
                                  "quality not specified for CBR encoding");
             }
@@ -631,7 +631,7 @@ DarkIce :: configShoutCast (    const Config      & config,
         } else if ( Util::strEq( str, "vbr") ) {
             bitrateMode = AudioEncoder::vbr;
 
-            if ( quality == 0 ) {
+            if ( cs->get( "quality" ) == 0 ) {
                 throw Exception( __FILE__, __LINE__,
                                  "quality not specified for VBR encoding");
             }
@@ -778,7 +778,7 @@ DarkIce :: configFileCast (  const Config      & config )
                 throw Exception( __FILE__, __LINE__,
                                  "bitrate not specified for CBR encoding");
             }
-            if ( quality == 0 ) {
+            if ( cs->get( "quality" ) == 0 ) {
                 throw Exception( __FILE__, __LINE__,
                                  "quality not specified for CBR encoding");
             }
@@ -792,7 +792,7 @@ DarkIce :: configFileCast (  const Config      & config )
         } else if ( Util::strEq( str, "vbr") ) {
             bitrateMode = AudioEncoder::vbr;
 
-            if ( quality == 0 ) {
+            if ( cs->get( "quality" ) == 0 ) {
                 throw Exception( __FILE__, __LINE__,
                                  "quality not specified for VBR encoding");
             }
@@ -1010,6 +1010,10 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.41  2005/04/03 05:12:20  jbebel
+  Changed mechanism for testing the presence of the quality value such that
+  zero is a valid option.
+
   Revision 1.40  2004/02/23 19:12:51  darkeye
   ported to NetBSD
 
