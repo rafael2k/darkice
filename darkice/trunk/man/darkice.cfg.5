@@ -60,8 +60,12 @@ Required values:
 
 .TP
 .I device
-OSS DSP audio device to record from (e.g. /dev/dsp) or ALSA DSP device name
-(e.g. hwplug:0,0)
+Specify the device to record from, which can be an OSS DSP device,
+an ALSA source or you can use Jack audio.
+- OSS DSP audio device to record from (e.g. /dev/dsp)
+- ALSA DSP device name (e.g. hwplug:0,0)
+- the string 'jack', to have an unconnected Jack port, or
+  'jack_auto' to automatically make Jack connect to the first source.
 .TP
 .I sampleRate
 The sample rate to record with, samples per second

@@ -27,7 +27,7 @@
 #define _AFLIBCONVERTER_H_
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "config.h"
 #endif
 
 #ifndef MAX
@@ -222,8 +222,8 @@ static short LARGE_FILTER_IMP[];
 bool    interpFilt;
 bool    largeFilter;
 bool    linearInterp;
-short  ** _I;
-short  ** _J;
+short  ** _II;
+short  ** _JJ;
 unsigned int _Time;
 double  _factor;
 int     _nChans;

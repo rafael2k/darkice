@@ -260,7 +260,7 @@ AlsaDspSource :: read (    void          * buf,
     } while (ret == -EAGAIN);
 
     if ( ret < 0 ) {
-        throw new Exception(__FILE__, __LINE__, snd_strerror(ret));
+        throw Exception(__FILE__, __LINE__, snd_strerror(ret));
     }
 
     running = true;
@@ -292,6 +292,10 @@ AlsaDspSource :: close ( void )                  throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.4  2005/04/04 08:36:16  darkeye
+  commited changes to enable Jack support
+  thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk
+
   Revision 1.3  2005/04/03 05:00:14  jbebel
   Fixing code documentation of buffer overruns
 

@@ -1,9 +1,11 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(src/DarkIce.cpp)
-AM_INIT_AUTOMAKE(darkice, 0.15beta)
+AC_INIT(darkice, 0.15beta)
+AC_CONFIG_SRCDIR(src/DarkIce.cpp)
+AM_CONFIG_HEADER(src/config.h)
 
-AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE
 
+AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL
 
@@ -156,6 +158,24 @@ fi
 
 
 dnl-----------------------------------------------------------------------------
+dnl link JACK sound server if requested 
+dnl-----------------------------------------------------------------------------
+AC_SUBST(JACK_CFLAGS)
+AC_SUBST(JACK_LIBS)
+AC_ARG_WITH( jack,
+[  --with-jack             use JACK audio server [yes] ],
+    USE_JACK=${withval}, USE_JACK="yes" )
+
+if test "x${USE_JACK}" = "xyes" ; then
+	PKG_CHECK_MODULES(JACK, jack,
+			AC_DEFINE( HAVE_JACK_LIB, 1, [build with JACK audio server support] )
+	)
+else
+    AC_MSG_RESULT( [building without JACK support] )
+fi
+
+
+dnl-----------------------------------------------------------------------------
 dnl check for MSG_NOSIGNAL for the send() function in libsocket
 dnl-----------------------------------------------------------------------------
 AC_MSG_CHECKING(for MSG_NOSIGNAL)
@@ -169,6 +189,12 @@ AC_TRY_COMPILE([#include <sys/socket.h>], [
     # We'll have to use signals
     AC_MSG_RESULT(no)
 ])
+
+
+dnl-----------------------------------------------------------------------------
+dnl check for POSIX real-time scheduling
+dnl-----------------------------------------------------------------------------
+AC_CHECK_FUNCS( sched_getscheduler sched_getparam )
 
 
 dnl-----------------------------------------------------------------------------

@@ -33,6 +33,9 @@
 #error This is a C++ include file
 #endif
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 /* ============================================================ include files */
 
@@ -50,21 +53,27 @@
  *----------------------------------------------------------------------------*/
 #if defined( HAVE_ALSA_LIB )
 // we have an ALSA sound system available
-#define SUPPORT_ALSA_DSP
+#define SUPPORT_ALSA_DSP 1
 #endif
 
 #if defined( HAVE_SYS_SOUNDCARD_H )
 // we have an OSS DSP sound source device available
-#define SUPPORT_OSS_DSP
+#define SUPPORT_OSS_DSP 1
 #endif
 
 #if defined( HAVE_SYS_AUDIO_H ) || defined( HAVE_SYS_AUDIOIO_H )
 // we have a Solaris DSP sound device available (same for OpenBSD)
-#define SUPPORT_SOLARIS_DSP
+#define SUPPORT_SOLARIS_DSP 1
+#endif
+
+#if defined( HAVE_JACK_LIB )
+// we have JACK audio server
+#define SUPPORT_JACK_DSP 1
 #endif
 
 #if !defined( SUPPORT_ALSA_DSP ) \
     && !defined( SUPPORT_OSS_DSP ) \
+    && !defined( SUPPORT_JACK_DSP ) \
     && !defined( SUPPORT_SOLARIS_DSP )
 // there was no DSP audio system found
 #error No DSP audio input device found on system
@@ -212,7 +221,14 @@ class AudioSource : public Source, public virtual Reporter
          *  @return true if the data is big endian, false if little endian
          */
         virtual bool
-        isBigEndian ( void ) const           throw ()    = 0;
+        isBigEndian ( void ) const           throw ()
+        {
+#ifdef WORDS_BIGENDIAN
+            return true;
+#else
+            return false;
+#endif
+        }
 
         /**
          *  Get the sample rate per seconds for this AudioSource.
@@ -275,6 +291,9 @@ class AudioSource : public Source, public virtual Reporter
 #include "SolarisDspSource.h"
 #endif
 
+#if defined( SUPPORT_JACK_DSP )
+#include "JackDspSource.h"
+#endif
 
 /* ====================================================== function prototypes */
 
@@ -288,6 +307,10 @@ class AudioSource : public Source, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.8  2005/04/04 08:36:16  darkeye
+  commited changes to enable Jack support
+  thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk
+
   Revision 1.7  2004/02/18 21:08:11  darkeye
   ported to OpenBSD (real-time scheduling not yet supported)
 

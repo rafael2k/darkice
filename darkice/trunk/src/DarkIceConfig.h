@@ -4,7 +4,7 @@
 
    Tyrell Config
 
-   File     : Config.h
+   File     : DarkIceConfig.h
    Version  : $Revision$
    Author   : $Author$
    Location : $Source$
@@ -213,6 +213,10 @@ class Config : public virtual Referable
   $Source$
 
   $Log$
+  Revision 1.1  2005/04/04 08:36:17  darkeye
+  commited changes to enable Jack support
+  thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk
+
   Revision 1.5  2002/05/28 12:35:41  darkeye
   code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
 

@@ -873,9 +873,8 @@ DarkIce :: configFileCast (  const Config      & config )
 void
 DarkIce :: setRealTimeScheduling ( void )               throw ( Exception )
 {
-// don't include the following on OpenBSD / NetBSD, as the scheduling
-// functions are not implemented.
-#if !defined( __OpenBSD__ ) && !defined( __NetBSD__ )
+// Only if the OS has the POSIX real-time scheduling functions implemented.
+#if defined( HAVE_SCHED_GETSCHEDULER ) && defined( HAVE_SCHED_GETPARAM )
     uid_t   euid;
 
     euid = geteuid();
@@ -921,9 +920,9 @@ DarkIce :: setRealTimeScheduling ( void )               throw ( Exception )
         "It is recommended that you run this program as super-user");
     }
 #else
-    reportEvent( 1, "POSIX scheduling not supported on OpenBSD / NetBSD, "
+    reportEvent( 1, "POSIX scheduling not supported on this system, "
                     "this may cause recording skips");
-#endif // !__OpenBSD__ && !__NetBSD__
+#endif // HAVE_SCHED_GETSCHEDULER && HAVE_SCHED_GETPARAM
 }
 
 
@@ -935,9 +934,8 @@ DarkIce :: setRealTimeScheduling ( void )               throw ( Exception )
 void
 DarkIce :: setOriginalScheduling ( void )               throw ( Exception )
 {
-// don't include the following on OpenBSD / NetBSD, as the scheduling
-// functions are not implemented.
-#if !defined( __OpenBSD__ ) && !defined( __NetBSD__ )
+// Only if the OS has the POSIX real-time scheduling functions implemented.
+#if defined( HAVE_SCHED_GETSCHEDULER ) && defined( HAVE_SCHED_GETPARAM )
     uid_t   euid;
 
     euid = geteuid();
@@ -957,7 +955,7 @@ DarkIce :: setOriginalScheduling ( void )               throw ( Exception )
 
         reportEvent( 5, "reverted to original scheduling");
     }
-#endif // !__OpenBSD__ && !__NetBSD__
+#endif // HAVE_SCHED_GETSCHEDULER && HAVE_SCHED_GETPARAM
 }
 
 
@@ -1010,6 +1008,10 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.42  2005/04/04 08:36:17  darkeye
+  commited changes to enable Jack support
+  thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk
+
   Revision 1.41  2005/04/03 05:12:20  jbebel
   Changed mechanism for testing the presence of the quality value such that
   zero is a valid option.

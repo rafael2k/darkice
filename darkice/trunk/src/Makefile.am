@@ -1,7 +1,7 @@
 bin_PROGRAMS = darkice
-CXXFLAGS = -O2 -pedantic -Wall @DEBUG_CXXFLAGS@ @PTHREAD_CFLAGS@
+AM_CXXFLAGS = -O2 -pedantic -Wall @DEBUG_CXXFLAGS@ @PTHREAD_CFLAGS@ @JACK_CFLAGS@
 INCLUDES = @LAME_INCFLAGS@ @VORBIS_INCFLAGS@ @ALSA_INCFLAGS@
-LDADD = @PTHREAD_LIBS@ @LAME_LDFLAGS@ @VORBIS_LDFLAGS@ @ALSA_LDFLAGS@
+LDADD = @PTHREAD_LIBS@ @LAME_LDFLAGS@ @VORBIS_LDFLAGS@ @ALSA_LDFLAGS@ @JACK_LIBS@
 
 darkice_SOURCES =   AudioEncoder.h\
                     AudioSource.h\
@@ -52,11 +52,13 @@ darkice_SOURCES =   AudioEncoder.h\
                     Util.h\
                     ConfigSection.h\
                     ConfigSection.cpp\
-                    Config.h\
-                    Config.cpp\
+                    DarkIceConfig.h\
+                    DarkIceConfig.cpp\
                     Reporter.h\
                     Reporter.cpp\
                     AlsaDspSource.h\
                     AlsaDspSource.cpp\
+					JackDspSource.h\
+					JackDspSource.cpp\
                     main.cpp
 

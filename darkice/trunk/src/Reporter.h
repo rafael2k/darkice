@@ -43,7 +43,7 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #else
-#error need unistdt.h
+#error need unistd.h
 #endif
 
 #ifdef HAVE_TIME_H
@@ -309,6 +309,10 @@ class Reporter
   $Source$
 
   $Log$
+  Revision 1.9  2005/04/04 08:36:17  darkeye
+  commited changes to enable Jack support
+  thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk
+
   Revision 1.8  2005/04/03 05:14:07  jbebel
   Changed timestamp on reported events to include date in addition to time.
 

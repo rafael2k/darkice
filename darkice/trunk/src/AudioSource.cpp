@@ -65,6 +65,7 @@ AudioSource :: createDspSource( const char    * deviceName,
                                 int             channel)
                                                             throw ( Exception )
 {
+    
     if ( Util::strEq( deviceName, "/dev", 4) ) {
 #if defined( SUPPORT_OSS_DSP )
         Reporter::reportEvent( 1, "Using OSS DSP input device:", deviceName);
@@ -79,9 +80,21 @@ AudioSource :: createDspSource( const char    * deviceName,
                                      bitsPerSample,
                                      channel);
 #else
-        throw new Exception( __FILE__, __LINE__,
+        throw Exception( __FILE__, __LINE__,
                              "trying to open OSS or Solaris DSP device "
                              "without support compiled", deviceName);
+#endif
+	} else if ( Util::strEq( deviceName, "jack", 4) ) {
+#if defined( SUPPORT_JACK_DSP )
+        Reporter::reportEvent( 1, "Using JACK audio server as input device.");
+        return new JackDspSource( deviceName,
+                                  sampleRate,
+                                  bitsPerSample,
+                                  channel);
+#else
+        throw Exception( __FILE__, __LINE__,
+                             "trying to open JACK device without "
+                             "support compiled", deviceName);
 #endif
     } else {
 #if defined( SUPPORT_ALSA_DSP )
@@ -91,7 +104,7 @@ AudioSource :: createDspSource( const char    * deviceName,
                                   bitsPerSample,
                                   channel);
 #else
-        throw new Exception( __FILE__, __LINE__,
+        throw Exception( __FILE__, __LINE__,
                              "trying to open ALSA DSP device without "
                              "support compiled", deviceName);
 #endif
@@ -104,6 +117,10 @@ AudioSource :: createDspSource( const char    * deviceName,
   $Source$
 
   $Log$
+  Revision 1.3  2005/04/04 08:36:16  darkeye
+  commited changes to enable Jack support
+  thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk
+
   Revision 1.2  2004/02/15 22:26:16  darkeye
   fixed typo, minimal cosmetic change
 

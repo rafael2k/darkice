@@ -58,7 +58,7 @@
 #include "AudioEncoder.h"
 #include "TcpSocket.h"
 #include "CastSink.h"
-#include "Config.h"
+#include "DarkIceConfig.h"
 
 
 /* ================================================================ constants */
@@ -309,6 +309,10 @@ class DarkIce : public virtual Referable, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.15  2005/04/04 08:36:17  darkeye
+  commited changes to enable Jack support
+  thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk
+
   Revision 1.14  2002/05/28 12:35:41  darkeye
   code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
 
