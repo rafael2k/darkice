@@ -32,7 +32,7 @@
 
 /* ============================================================ include files */
 
-#include "AlsaDspSource.h"
+#include "AudioSource.h"
 
 // compile only if configured for ALSA
 #ifdef SUPPORT_ALSA_DSP
@@ -43,6 +43,7 @@
 
 #include "Util.h"
 #include "Exception.h"
+#include "AlsaDspSource.h"
 
 
 /* ===================================================  local data structures */
@@ -291,6 +292,9 @@ AlsaDspSource :: close ( void )                  throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.2  2004/02/15 22:36:57  darkeye
+  proper checking to see if ALSA support is present / needed
+
   Revision 1.1  2004/02/15 12:06:29  darkeye
   added ALSA support, thanks to Christian Forster
 
