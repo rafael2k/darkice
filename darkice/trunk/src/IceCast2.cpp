@@ -133,7 +133,7 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     sink->write( str, strlen( str));
     str = getMountPoint();
     sink->write( str, strlen( str));
-    str = " ICE/1.0";
+    str = " HTTP/1.0";
     sink->write( str, strlen( str));
 
     /* send the content type, Ogg Vorbis */
@@ -155,12 +155,23 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     }
     sink->write( str, strlen( str));
 
-    /* send the ice- headers */
-    str = "\nice-password: ";
+    /* send the authentication info */
+    str = "\nAuthorization: Basic ";
     sink->write( str, strlen(str));
-    str = getPassword();
-    sink->write( str, strlen(str));
+    {
+        /* send source:<password> encoded as base64 */
+        char  * source = "source:";
+        char  * pwd    = getPassword();
+        char  * tmp    = new char[Util::strLen(source) + Util::strLen(str) + 1];
+        Util::strCpy( tmp, source);
+        Util::strCat( tmp, pwd);
+        char  * base64 = Util::base64Encode( tmp);
+        delete[] tmp;
+        sink->write( base64, strlen(base64));
+        delete[] base64;
+    }
 
+    /* send the ice- headers */
     str = "\nice-bitrate: ";
     sink->write( str, strlen( str));
     if ( log10(getBitRate()) >= (STRBUF_SIZE-2) ) {
@@ -217,6 +228,9 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.6  2002/08/20 18:39:13  darkeye
+  added HTTP Basic authentication for icecast2 logins
+
   Revision 1.5  2002/05/28 12:35:41  darkeye
   code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
 

@@ -77,6 +77,15 @@ static const char fileid[] = "$Id$";
 
 /* =============================================================  module code */
 
+char
+Util :: base64Table[] = {
+    'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P',
+    'Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f',
+    'g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v',
+    'w','x','y','z','0','1','2','3','4','5','6','7','8','9','+','/'
+};
+
+
 /*------------------------------------------------------------------------------
  *  Calculate the length of a zero-terminated C string,
  *  w/o the zero-termination
@@ -145,6 +154,50 @@ Util :: strDup( const char    * str )                   throw ( Exception )
     memcpy( s, str, len);
 
     return s;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Convert a string into base64 encoding.
+ *----------------------------------------------------------------------------*/
+char *
+Util :: base64Encode( const char  * str )               throw ( Exception )
+{
+    if ( !str ) {
+        throw Exception( __FILE__, __LINE__, "no str");
+    }
+
+    const char    * data    = str;
+    size_t          len     = strlen( data);
+    char          * out     = new char[len * 4 / 3 + 4];
+    char          * result  = out;
+    unsigned        chunk;
+
+    while ( len > 0 ) {
+        chunk = (len > 3) ? 3 : len;
+        *out++ = base64Table[(*data & 0xfc) >> 2];
+        *out++ = base64Table[((*data & 0x03) << 4) | ((*(data+1) & 0xf0) >> 4)];
+        switch ( chunk ) {
+            case 3:
+                *out++ = base64Table[((*(data+1) & 0x0f) << 2) |
+                                     ((*(data+2) & 0xc0) >> 6)];
+                *out++ = base64Table[(*(data+2)) & 0x3f];
+                break;
+            case 2:
+                *out++ = base64Table[((*(data+1) & 0x0f) << 2)];
+                *out++ = '=';
+                break;
+            case 1:
+                *out++ = '=';
+                *out++ = '=';
+                break;
+        }
+        data += chunk;
+        len  -= chunk;
+    }
+    *out = 0;
+
+    return result;
 }
 
 
@@ -396,6 +449,9 @@ Util :: conv16 (    unsigned char     * pcmBuffer,
   $Source$
 
   $Log$
+  Revision 1.9  2002/08/20 18:39:14  darkeye
+  added HTTP Basic authentication for icecast2 logins
+
   Revision 1.8  2002/07/21 08:47:06  darkeye
   some exception cleanup (throw clauses in function declarations)
 

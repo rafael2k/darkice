@@ -67,6 +67,10 @@ class Util
 {
     private:
 
+        /**
+         *  Helper table for base64 encoding.
+         */
+        static char base64Table[];
 
     protected:
 
@@ -199,6 +203,18 @@ class Util
         strToD ( const char    * str )              throw ( Exception );
 
         /**
+         *  Convert a string into base64 encoding.
+         *  base64 is described in RFC 2045, section 6.8
+         *  The returned string must be freed with delete[].
+         *
+         *  @param str the string to convert.
+         *  @return the supplied string in base64 encoding.
+         *  @exception Exception
+         */
+        static char *
+        base64Encode ( const char     * str )       throw ( Exception );
+
+        /**
          *  Convert an unsigned char buffer holding 8 or 16 bit PCM values
          *  with channels interleaved to a short int buffer, still
          *  with channels interleaved.
@@ -291,6 +307,9 @@ class Util
   $Source$
 
   $Log$
+  Revision 1.7  2002/08/20 18:39:14  darkeye
+  added HTTP Basic authentication for icecast2 logins
+
   Revision 1.6  2002/07/21 08:47:06  darkeye
   some exception cleanup (throw clauses in function declarations)
 
