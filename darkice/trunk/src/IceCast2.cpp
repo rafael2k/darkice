@@ -160,9 +160,10 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     sink->write( str, strlen(str));
     {
         /* send source:<password> encoded as base64 */
-        char  * source = "source:";
-        char  * pwd    = getPassword();
-        char  * tmp    = new char[Util::strLen(source) + Util::strLen(str) + 1];
+        char        * source = "source:";
+        const char  * pwd    = getPassword();
+        char        * tmp    = new char[Util::strLen(source) +
+                                        Util::strLen(str) + 1];
         Util::strCpy( tmp, source);
         Util::strCat( tmp, pwd);
         char  * base64 = Util::base64Encode( tmp);
@@ -228,6 +229,9 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.7  2002/08/20 19:34:43  darkeye
+  minor fix
+
   Revision 1.6  2002/08/20 18:39:13  darkeye
   added HTTP Basic authentication for icecast2 logins
 
