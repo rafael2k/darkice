@@ -1,3 +1,9 @@
+DarkIce 0.11
+
+    o bug fix for LameLibEncoder: the mp3 encoding buffer was deleted too
+      early, resulting in mp3 data corruption.
+      thanks to Nicu Pavel <npavel@ituner.com>
+
 20-07-2002: DarkIce 0.10 released
 
     o added possibility to select constant, average and variable bit rate

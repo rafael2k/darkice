@@ -312,7 +312,6 @@ LameLibEncoder :: write (   const void    * buf,
                               mp3Buf,
                               mp3Size );
 
-    delete[] mp3Buf;
     delete[] leftBuffer;
     delete[] rightBuffer;
 
@@ -322,6 +321,7 @@ LameLibEncoder :: write (   const void    * buf,
     }
 
     unsigned int    written = sink->write( mp3Buf, ret);
+    delete[] mp3Buf;
     // just let go data that could not be written
     if ( written < (unsigned int) ret ) {
         reportEvent( 2,
@@ -387,6 +387,9 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.13  2002/07/28 00:08:37  darkeye
+  bugfix: mp3Buf was deleted too early
+
   Revision 1.12  2002/05/28 12:35:41  darkeye
   code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
 
