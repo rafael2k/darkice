@@ -313,7 +313,7 @@ Connector :: transfer ( unsigned long       bytes,
 
 
 /*------------------------------------------------------------------------------
- *  Open the source and all the sinks if needed
+ *  Close the source and all the sinks if needed
  *----------------------------------------------------------------------------*/
 void
 Connector :: close ( void )                         throw ( Exception )
@@ -333,6 +333,11 @@ Connector :: close ( void )                         throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.6  2001/08/26 20:44:30  darkeye
+  removed external command-line encoder support
+  replaced it with a shared-object support for lame with the possibility
+  of static linkage
+
   Revision 1.5  2001/08/26 08:43:13  darkeye
   added support for unlimited time encoding
 

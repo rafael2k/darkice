@@ -53,11 +53,9 @@
 #include "Exception.h"
 #include "Ref.h"
 #include "OssDspSource.h"
-#include "PipeSink.h"
 #include "BufferedSink.h"
 #include "Connector.h"
-#include "LameEncoder.h"
-#include "PipeSource.h"
+#include "LameLibEncoder.h"
 #include "TcpSocket.h"
 #include "IceCast.h"
 #include "Config.h"
@@ -87,18 +85,23 @@ class DarkIce : public virtual Referable, public virtual Reporter
         static const unsigned int       maxOutput = 8;
         
         /**
-         *  Type describing each output.
+         *  Type describing each lame library output.
          */
         typedef struct {
-            Ref<PipeSink>           encInPipe;
-            Ref<BufferedSink>       encIn;
-            Ref<LameEncoder>        encoder;
-            Ref<PipeSource>         encOutPipe;
+            Ref<LameLibEncoder>     encoder;
             Ref<TcpSocket>          socket;
             Ref<IceCast>            ice;
-            Ref<Connector>          shoutConnector;
-            pid_t                   pid;
-        } Output;
+        } LameLibOutput;
+
+        /**
+         *  The lame library outputs.
+         */
+        LameLibOutput           lameLibOuts[maxOutput];
+
+        /**
+         *  Number of lame library outputs.
+         */
+        unsigned int            noLameLibOuts;
 
         /**
          *  Duration of playing, in seconds.
@@ -114,16 +117,6 @@ class DarkIce : public virtual Referable, public virtual Reporter
          *  The encoding Connector, connecting the dsp to the encoders.
          */
         Ref<Connector>          encConnector;
-
-        /**
-         *  The outputs.
-         */
-        Output                  outputs[maxOutput];
-
-        /**
-         *  Number of outputs.
-         */
-        unsigned int            noOutputs;
 
         /**
          *  Original scheduling policy
@@ -144,6 +137,18 @@ class DarkIce : public virtual Referable, public virtual Reporter
          */
         void
         init (  const Config   & config )            throw ( Exception );
+
+        /**
+         *  Look for the lame library outputs from the config file.
+         *  Called from init()
+         *
+         *  @param config the config Object to read initialization
+         *                information from.
+         *  @exception Exception
+         */
+        void
+        configLameLib (  const Config   & config,
+                         unsigned int     bufferSecs  )     throw ( Exception );
 
         /**
          *  Set POSIX real-time scheduling for the encoding process,
@@ -264,6 +269,11 @@ class DarkIce : public virtual Referable, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.8  2001/08/26 20:44:30  darkeye
+  removed external command-line encoder support
+  replaced it with a shared-object support for lame with the possibility
+  of static linkage
+
   Revision 1.7  2000/12/20 12:36:47  darkeye
   added POSIX real-time scheduling
 

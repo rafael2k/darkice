@@ -75,3 +75,6 @@
 /* Version number of package */
 #undef VERSION
 
+/* build with lame library calls */
+#undef HAVE_LAME_LIB
+

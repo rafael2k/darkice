@@ -3,5 +3,6 @@
 #   Update the automake / autoconf configuration
 #
 
-automake && aclocal && autoconf && ./configure
+rm config.* configure configure.h aclocal.m4
+autoheader && automake && aclocal && autoconf && ./configure
 

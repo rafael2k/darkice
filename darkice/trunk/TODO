@@ -1,6 +1,4 @@
-o make FIFO pipes in /tmp with valid temp filenames
 o change Ref to follow inheritance
-o add "extra encoder options" option into config file
 o make a master config file, and a small one
 o add support for shared object lame
 o add support for VBR encoding

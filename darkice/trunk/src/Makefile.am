@@ -1,6 +1,7 @@
 bin_PROGRAMS = darkice
-INCLUDES = -I../stl
+INCLUDES = -I../stl @LAME_INCFLAGS@
 CXXFLAGS = -g -Wall
+LDADD = @LAME_LDFLAGS@ @LINK_STATIC@
 
 darkice_SOURCES =   AudioEncoder.h\
                     AudioSource.h\
@@ -14,22 +15,12 @@ darkice_SOURCES =   AudioEncoder.h\
                     DarkIce.h\
                     Exception.cpp\
                     Exception.h\
-                    ExternalEncoder.cpp\
-                    ExternalEncoder.h\
-                    FileSink.cpp\
-                    FileSink.h\
-                    FileSource.cpp\
-                    FileSource.h\
                     IceCast.cpp\
                     IceCast.h\
-                    LameEncoder.cpp\
-                    LameEncoder.h\
+                    LameLibEncoder.cpp\
+                    LameLibEncoder.h\
                     OssDspSource.cpp\
                     OssDspSource.h\
-                    PipeSink.cpp\
-                    PipeSink.h\
-                    PipeSource.cpp\
-                    PipeSource.h\
                     Ref.h\
                     Referable.h\
                     Sink.h\

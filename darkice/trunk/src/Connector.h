@@ -214,7 +214,8 @@ class Connector : public virtual Referable, public virtual Reporter
          *  rest of the Sinks. If no Sinks remain, or an error is encountered
          *  with the Source, the function returns prematurely.
          *
-         *  @param bytes the amount of data to transfer, in bytes
+         *  @param bytes the amount of data to transfer, in bytes.
+         *               If 0, transfer forever.
          *  @param bufSize the size of the buffer to use for transfering.
          *                 This amount of data is read from the Source and
          *                 written to each Sink on each turn.
@@ -258,6 +259,11 @@ class Connector : public virtual Referable, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.5  2001/08/26 20:44:30  darkeye
+  removed external command-line encoder support
+  replaced it with a shared-object support for lame with the possibility
+  of static linkage
+
   Revision 1.4  2000/11/15 18:37:37  darkeye
   changed the transferable number of bytes to unsigned long
 

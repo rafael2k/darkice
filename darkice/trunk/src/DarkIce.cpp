@@ -120,7 +120,6 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
     unsigned int             bitsPerSample;
     unsigned int             channel;
     const char             * device;
-    unsigned int             u;
 
     // the [general] section
     if ( !(cs = config.get( "general")) ) {
@@ -151,16 +150,27 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
                                         channel );
     encConnector    = new Connector( dsp.get());
 
+    configLameLib( config, bufferSecs);
+}
 
-    // look for lame encoder output streams, sections [lame0], [lame1], etc.
-    char    lame[]          = "lame ";
-    size_t  lameLen         = Util::strLen( lame);
-    char  * pipeOutExt      = ".out";
-    size_t  pipeOutExtLen   = Util::strLen( pipeOutExt);
-    char  * pipeInExt       = ".in";
-    size_t  pipeInExtLen    = Util::strLen( pipeInExt);
+
+/*------------------------------------------------------------------------------
+ *  Look for the lame library outputs from the config file.
+ *----------------------------------------------------------------------------*/
+void
+DarkIce :: configLameLib (  const Config      & config,
+                            unsigned int        bufferSecs  )
+                                                        throw ( Exception )
+{
+    // look for lame encoder output streams, sections [lamelib0], [lamelib1]...
+    char            lame[]          = "lame ";
+    size_t          lameLen         = Util::strLen( lame);
+    unsigned int    u;
 
     for ( u = 0; u < maxOutput; ++u ) {
+        const ConfigSection    * cs;
+        const char             * str;
+
         // ugly hack to change the section name to "lame0", "lame1", etc.
         lame[lameLen-1] = '0' + u;
 
@@ -168,7 +178,6 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
             break;
         }
 
-        const char    * encoder         = 0;
         unsigned int    bitrate         = 0;
         const char    * server          = 0;
         unsigned int    port            = 0;
@@ -183,7 +192,6 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
         unsigned int    lowpass         = 0;
         unsigned int    highpass        = 0;
 
-        encoder     = cs->getForSure( "encoder", " missing in section ", lame);
         str         = cs->getForSure( "bitrate", " missing in section ", lame);
         bitrate     = Util::strToL( str);
         server      = cs->getForSure( "server", " missing in section ", lame);
@@ -203,76 +211,40 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
         str         = cs->get( "highpass");
         highpass    = str ? Util::strToL( str) : 0;
 
-        // generate the pipe names
-        char  pipeOutName[lameLen + pipeOutExtLen + 1];
-        char  pipeInName[lameLen + pipeInExtLen + 1];
-
-        Util::strCpy( pipeOutName, lame);
-        Util::strCat( pipeOutName, pipeOutExt);
-        Util::strCpy( pipeInName, lame);
-        Util::strCat( pipeInName, pipeInExt);
-
         // go on and create the things
-
-        outputs[u].pid = 0;
-
-        // the pipes
-        outputs[u].encOutPipe      = new PipeSource( pipeOutName);
-        outputs[u].encInPipe       = new PipeSink( pipeInName);
-        
-        if ( !outputs[u].encOutPipe->exists() ) {
-            if ( !outputs[u].encOutPipe->create() ) {
-                throw Exception( __FILE__, __LINE__,
-                                 "can't create out pipe ",
-                                 pipeOutName );
-            }
-        }
-
-        if ( !outputs[u].encInPipe->exists() ) {
-            if ( !outputs[u].encInPipe->create() ) {
-                throw Exception( __FILE__, __LINE__,
-                                 "can't create in pipe",
-                                 pipeInName );
-            }
-        }
 
         // encoder related stuff
         unsigned int bs = bufferSecs *
-                          (bitsPerSample / 8) * channel * sampleRate;
-        outputs[u].encIn    = new BufferedSink( outputs[u].encInPipe.get(),
-                                                bs,
-                                                (bitsPerSample / 8) * channel );
+                          (dsp->getBitsPerSample() / 8) *
+                          dsp->getChannel() *
+                          dsp->getSampleRate();
         reportEvent( 6, "using buffer size", bs);
 
-        encConnector->attach( outputs[u].encIn.get());
-        outputs[u].encoder     = new LameEncoder( encoder,
-                                        outputs[u].encInPipe->getFileName(),
-                                        dsp.get(),
-                                        outputs[u].encOutPipe->getFileName(),
-                                        bitrate,
-                                        sampleRate,
-                                        channel,
-                                        lowpass,
-                                        highpass );
-
-
         // streaming related stuff
-        outputs[u].socket          = new TcpSocket( server, port);
-        outputs[u].ice             = new IceCast( outputs[u].socket.get(),
-                                                  password,
-                                                  mountPoint,
-                                                  remoteDumpFile,
-                                                  name,
-                                                  description,
-                                                  url,
-                                                  genre,
-                                                  bitrate,
-                                                  isPublic );
-        outputs[u].shoutConnector  = new Connector( outputs[u].encOutPipe.get(),
-                                                    outputs[u].ice.get());
+        lameLibOuts[u].socket     = new TcpSocket( server, port);
+        lameLibOuts[u].ice        = new IceCast( lameLibOuts[u].socket.get(),
+                                                 password,
+                                                 mountPoint,
+                                                 remoteDumpFile,
+                                                 name,
+                                                 description,
+                                                 url,
+                                                 genre,
+                                                 bitrate,
+                                                 isPublic );
+
+        lameLibOuts[u].encoder = new LameLibEncoder( lameLibOuts[u].ice.get(),
+                                                     dsp.get(),
+                                                     bitrate,
+                                                     dsp->getSampleRate(),
+                                                     dsp->getChannel(),
+                                                     lowpass,
+                                                     highpass );
+
+        encConnector->attach( lameLibOuts[u].encoder.get());
     }
 
-    noOutputs = u;
+    noLameLibOuts = u;
 }
 
 
@@ -366,14 +338,7 @@ bool
 DarkIce :: encode ( void )                          throw ( Exception )
 {
     unsigned int       len;
-    unsigned int       u;
     unsigned long      bytes;
-
-    for ( u = 0; u < noOutputs; ++u ) {
-        outputs[u].encoder->start();
-    }
-
-    sleep( 1 );
 
     if ( !encConnector->open() ) {
         throw Exception( __FILE__, __LINE__, "can't open connector");
@@ -390,38 +355,6 @@ DarkIce :: encode ( void )                          throw ( Exception )
 
     encConnector->close();
 
-    for ( u = 0; u < noOutputs; ++u ) {
-        outputs[u].encoder->stop();
-    }
-
-    return true;
-}
-
-
-/*------------------------------------------------------------------------------
- *  Run the encoder
- *----------------------------------------------------------------------------*/
-bool
-DarkIce :: shout ( unsigned int     ix )                throw ( Exception )
-{
-    unsigned int       len;
-    unsigned long      bytes;
-
-    if ( ix >= noOutputs ) {
-        return false;
-    }
-
-    if ( !outputs[ix].shoutConnector->open() ) {
-        throw Exception( __FILE__, __LINE__, "can't open connector");
-    }
-    
-    bytes = outputs[ix].encoder->getOutBitrate() * (1024UL / 8UL) * duration;
-    len = outputs[ix].shoutConnector->transfer ( bytes, 4096, 10, 0 );
-
-    reportEvent( 1, len, "bytes transfered to stream", ix);
-
-    outputs[ix].shoutConnector->close();
-
     return true;
 }
 
@@ -432,45 +365,11 @@ DarkIce :: shout ( unsigned int     ix )                throw ( Exception )
 int
 DarkIce :: run ( void )                             throw ( Exception )
 {
-    unsigned int    u;
-    
-    for ( u = 0; u < noOutputs; ++u ) {
-        outputs[u].pid = fork();
-
-        if ( outputs[u].pid == -1 ) {
-            throw Exception( __FILE__, __LINE__, "fork error", errno);
-            
-        } else if ( outputs[u].pid == 0 ) {
-            // this is the child
-
-            sleep ( 1 );
-
-            reportEvent( 3, "shouting", u);
-            shout( u);
-            reportEvent( 3, "shouting ends", u);
-
-            exit(0);
-        }
-    }
-
-    // this is the parent
-
     reportEvent( 3, "encoding");
     setRealTimeScheduling();
     encode();
     setOriginalScheduling();
     reportEvent( 3, "encoding ends");
-
-    for ( u = 0; u < noOutputs; ++u ) {
-        int     status;
-
-        waitpid( outputs[u].pid, &status, 0);
-
-        if ( !WIFEXITED(status) ) {
-            throw Exception( __FILE__, __LINE__,
-                             "child exited abnormally", WEXITSTATUS(status));
-        }
-    }
 
     return 0;
 }
@@ -481,6 +380,11 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.13  2001/08/26 20:44:30  darkeye
+  removed external command-line encoder support
+  replaced it with a shared-object support for lame with the possibility
+  of static linkage
+
   Revision 1.12  2000/12/20 12:36:47  darkeye
   added POSIX real-time scheduling
 
