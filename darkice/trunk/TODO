@@ -4,3 +4,6 @@ o add support for VBR encoding
 o reconnect to server if connection is dropped
 o add support for multiple servers for one stream ?
 o libtoolize ?
+o add IceCast 2 support w/ ogg vorbis
+o revisit real-time scheduling and one-thread-per-connection
+o look into performance
