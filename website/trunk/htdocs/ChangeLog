@@ -1,3 +1,14 @@
+09-02-2003: DarkIce 0.13 released
+
+    o added feature for setting the TITLE comment field for vorbis
+      streams. thanks to Ricardo Galli <gallir@uib.es>
+    o bugfix: fixed minor bug in IcecCast2.cpp, which could have lead to
+      a buffer overflow. thanks to Atsuhiko Yamanaka <ymnk@jcraft.com>
+    o bugfix: MultiThreadedConnector::sinkThread() was private, now public
+    o added fileAddDate configuration option
+      thanks to Nicu Pavel <npavel@ituner.com>
+    o added support for big endian OSS devices (like Linux PowerPC)
+
 20-10-2002: DarkIce 0.12 released
 
     o ported to FreeBSD (removed reference to MSG_NOSIGNAL in TcpSocket.cpp)
