@@ -45,7 +45,15 @@ AC_ARG_WITH(lame-prefix,
 
 AC_ARG_ENABLE( static,
 [  --enable-static         link everything into the executable statically [no]],
-  LINK_STATIC="--static", LINK_STATIC="")
+  CONFIG_LINK_STATIC="${enableval}", CONFIG_LINK_STATIC="")
+  if test "${CONFIG_LINK_STATIC}" == "yes" ; then
+    LINK_STATIC="--static"
+    AC_MSG_RESULT( "creating statically linked executable")
+  else
+    LINK_STATIC=""
+    AC_MSG_RESULT( "creating dinamically linked executable")
+  fi
+
 
 
 
