@@ -18,10 +18,13 @@
  *   Julius O. Smith  jos@ccrma.stanford.edu
  *
  */
-/* This code was modified by Bruce Forsberg (forsberg@adnc.com) to make it
+/* This code was modified by Bruce Forsberg (forsberg@tns.net) to make it
    into a C++ class
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -32,6 +35,7 @@
 #include "aflibConverterLargeFilter.h"
 #include "aflibConverterSmallFilter.h"
 
+#include "aflibDebug.h"
 
 #if (!defined(TRUE) || !defined(FALSE))
 # define TRUE 1
@@ -112,12 +116,16 @@ aflibConverter::aflibConverter(
    bool  linear_interpolation,
    bool  filter_interpolation)
 {
+	/* TODO put all these into an enum as it only makes sense to have 
+	 * one true at a time. - DAS
+	 */
    interpFilt = filter_interpolation;
    largeFilter = high_quality;
    linearInterp = linear_interpolation;
 
-   X = NULL;
-   Y = NULL;
+   _X = NULL;
+   _Y = NULL;
+   _vol = 1.0;
 }
 
 aflibConverter::~aflibConverter()
@@ -131,65 +139,65 @@ aflibConverter::deleteMemory()
 {
    int i;
 
-
    // Delete memory for the input and output arrays
-   if (X != NULL)
+   if (_X != NULL)
    {
-      for (i = 0; i < nChans; i++)
+      for (i = 0; i < _nChans; i++)
       {
-         delete [] X[i];
-         X[i] = NULL;
-         delete [] Y[i];
-         Y[i] = NULL;
+         delete [] _X[i];
+         _X[i] = NULL;
+         delete [] _Y[i];
+         _Y[i] = NULL;
       }
-      delete [] X;
-      X = NULL;
-      delete [] Y;
-      Y = NULL;
+      delete [] _X;
+      _X = NULL;
+      delete [] _Y;
+      _Y = NULL;
    }
 }
-
 
 void
 aflibConverter::initialize(
    double fac,
-   int    channels)
+   int    channels,
+   double volume)
 {
-   // This function will allow one to stream data. When a new data stream is to
-   // be input then this function should be called. Even if the factor and number
-   // of channels don't change. Otherwise each new data block sent to resample
-   // will be considered part of the previous data block.
+// This function will allow one to stream data. When a new data stream is to
+// be input then this function should be called. Even if the factor and number
+// of channels don't change. Otherwise each new data block sent to resample
+// will be considered part of the previous data block. This function also allows
+// one to specified a multiplication factor to adjust the final output. This
+// applies to the small and large filter.
 
    int i;
-
 
    // Delete all previous allocated input and output buffer memory
    deleteMemory();
 
-   factor = fac;
-   nChans = channels;
-   initial = TRUE;
+   _factor = fac;
+   _nChans = channels;
+   _initial = TRUE;
+   _vol = volume;
 
    // Allocate all new memory
-   X = new HWORD * [nChans];
-   Y = new HWORD * [nChans];
+   _X = new short * [_nChans];
+   _Y = new short * [_nChans];
 
-   for (i = 0; i < nChans; i++)
+   for (i = 0; i < _nChans; i++)
    {
       // Add extra to allow of offset of input data (Xoff in main routine)
-      X[i] = new HWORD[IBUFFSIZE + 256];
-      Y[i] = new HWORD[(int)(((double)IBUFFSIZE)*factor)];
-      memset(X[i], 0, sizeof(HWORD) * (IBUFFSIZE + 256));    
+      _X[i] = new short[IBUFFSIZE + 256];
+      _Y[i] = new short[(int)(((double)IBUFFSIZE)*_factor)];
+      memset(_X[i], 0, sizeof(short) * (IBUFFSIZE + 256));    
    }
 }
-
 
 int
 aflibConverter::resample(       /* number of output samples returned */
     int& inCount,               /* number of input samples to convert */
     int outCount,               /* number of output samples to compute */
-    HWORD inArray[],            /* input data */
-    HWORD outArray[])           /* output data */
+    short inArray[],            /* input data */
+    short outArray[])           /* output data */
 {
    int Ycount;
 
@@ -200,40 +208,42 @@ aflibConverter::resample(       /* number of output samples returned */
    // Use small filtering. Good qulaity
    else if (largeFilter == FALSE)
       Ycount = resampleWithFilter(inCount,outCount,inArray,outArray,
-         SMALL_FILTER_IMP, SMALL_FILTER_IMPD, (UHWORD)(SMALL_FILTER_SCALE * 0.95),
+         SMALL_FILTER_IMP, SMALL_FILTER_IMPD, 
+	(unsigned short)(SMALL_FILTER_SCALE * _vol),
          SMALL_FILTER_NMULT, SMALL_FILTER_NWING);
    // Use large filtering Great quality
    else
       Ycount = resampleWithFilter(inCount,outCount,inArray,outArray,
-         LARGE_FILTER_IMP, LARGE_FILTER_IMPD, (UHWORD)(LARGE_FILTER_SCALE * 0.95),
+         LARGE_FILTER_IMP, LARGE_FILTER_IMPD, 
+	(unsigned short)(LARGE_FILTER_SCALE * _vol),
          LARGE_FILTER_NMULT, LARGE_FILTER_NWING);                               
 
-   initial = FALSE;
+   _initial = FALSE;
 
    return (Ycount);
 }
 
 
+
 int
 aflibConverter::err_ret(char *s)
 {
-    fprintf(stderr,"resample: %s \n\n",s); /* Display error message  */
+    aflib_debug("resample: %s \n\n",s); /* Display error message  */
     return -1;
 }
-
 
 int
 aflibConverter::readData(
          int   inCount,       /* _total_ number of frames in input file */
-         HWORD inArray[],     /* input data */
-         HWORD *outPtr[],     /* array receiving chan samps */
+         short inArray[],     /* input data */
+         short *outPtr[],     /* array receiving chan samps */
          int   dataArraySize, /* size of these arrays */
          int   Xoff,          /* read into input array starting at this index */
          bool  init_count) 
 {
    int    i, Nsamps, c;
    static unsigned int framecount;  /* frames previously read */
-   HWORD *ptr;
+   short *ptr;
 
    if (init_count == TRUE)
       framecount = 0;       /* init this too */
@@ -246,13 +256,13 @@ aflibConverter::readData(
       Nsamps = inCount - framecount;
    }
 
-   for (c = 0; c < nChans; c++)
+   for (c = 0; c < _nChans; c++)
    {
       ptr = outPtr[c];
       ptr += Xoff;        /* Start at designated sample number */
 
       for (i = 0; i < Nsamps; i++)
-         *ptr++ = (HWORD) inArray[c * inCount + i + framecount];
+         *ptr++ = (short) inArray[c * inCount + i + framecount];
    }
 
    framecount += Nsamps;
@@ -263,144 +273,162 @@ aflibConverter::readData(
       return 0;
 }
 
-
-int 
+int
 aflibConverter::SrcLinear(
-   HWORD X[],
-   HWORD Y[],
+   short X[],
+   short Y[],
    double factor,
-   UWORD *Time,
-   UHWORD& Nx,
-   UHWORD Nout)
+   unsigned int *Time,
+   unsigned short& Nx,
+   unsigned short Nout)
 {
-    HWORD iconst;
-    HWORD *Xp, *Ystart;
-    WORD v,x1,x2;
-    
-    double dt;                  /* Step through input signal */ 
-    UWORD dtb;                  /* Fixed-point version of Dt */
-    UWORD endTime;              /* When Time reaches EndTime, return to user */
-    UWORD start_sample, end_sample;
-    
-    dt = 1.0/factor;            /* Output sampling period */
-    dtb = (UWORD)(dt*(1<<Np) + 0.5); /* Fixed-point representation */
+	short iconst;
+	short *Xp, *Ystart;
+	int v,x1,x2;
 
-    start_sample = (*Time)>>Np;
-    Ystart = Y;
-    endTime = *Time + (1<<Np)*(WORD)Nx;
-    while (Y - Ystart != Nout)
-    {
-	iconst = (*Time) & Pmask;
-	Xp = &X[(*Time)>>Np];      /* Ptr to current input sample */
-	x1 = *Xp++;
-	x2 = *Xp;
-	x1 *= ((1<<Np)-iconst);
-	x2 *= iconst;
-	v = x1 + x2;
-	*Y++ = WordToHword(v,Np);   /* Deposit output */
-	*Time += dtb;		    /* Move to next sample by time increment */
-    }
-    end_sample = (*Time)>>Np;
-    Nx = end_sample - start_sample;
-    return (Y - Ystart);            /* Return number of output samples */
+	double dt;                  /* Step through input signal */ 
+	unsigned int dtb;           /* Fixed-point version of Dt */
+//	unsigned int endTime;       /* When Time reaches EndTime, return to user */
+	unsigned int start_sample, end_sample;
+
+	dt = 1.0/factor;            /* Output sampling period */
+	dtb = (unsigned int)(dt*(1<<Np) + 0.5); /* Fixed-point representation */
+
+	start_sample = (*Time)>>Np;
+	Ystart = Y;
+//	endTime = *Time + (1<<Np)*(int)Nx;
+	/* 
+	* TODO
+	* DAS: not sure why this was changed from *Time < endTime
+	* update: *Time < endTime causes seg fault.  Also adds a clicking sound.
+	*/
+	while (Y - Ystart != Nout)
+//	while (*Time < endTime)
+	{
+		iconst = (*Time) & Pmask;
+		Xp = &X[(*Time)>>Np];      /* Ptr to current input sample */
+		x1 = *Xp++;
+		x2 = *Xp;
+		x1 *= ((1<<Np)-iconst);
+		x2 *= iconst;
+		v = x1 + x2;
+		*Y++ = WordToHword(v,Np);   /* Deposit output */
+		*Time += dtb;		    /* Move to next sample by time increment */
+	}
+	end_sample = (*Time)>>Np;
+	Nx = end_sample - start_sample;
+	return (Y - Ystart);            /* Return number of output samples */
 }
 
 
 int
 aflibConverter::SrcUp(
-   HWORD X[],
-   HWORD Y[],
+   short X[],
+   short Y[],
    double factor,
-   UWORD *Time,
-   UHWORD& Nx,
-   UHWORD  Nout,
-   UHWORD Nwing,
-   UHWORD LpScl,
-   HWORD Imp[],
-   HWORD ImpD[],
-   BOOL Interp)
+   unsigned int *Time,
+   unsigned short& Nx,
+   unsigned short Nout,
+   unsigned short Nwing,
+   unsigned short LpScl,
+   short Imp[],
+   short ImpD[],
+   bool Interp)
 {
-    HWORD *Xp, *Ystart;
-    WORD v;
-    
-    double dt;                  /* Step through input signal */ 
-    UWORD dtb;                  /* Fixed-point version of Dt */
-    UWORD endTime;              /* When Time reaches EndTime, return to user */
-    UWORD start_sample, end_sample;
+	short *Xp, *Ystart;
+	int v;
 
-    dt = 1.0/factor;            /* Output sampling period */
-    dtb = (UWORD)(dt*(1<<Np) + 0.5); /* Fixed-point representation */
+	double dt;                  /* Step through input signal */ 
+	unsigned int dtb;           /* Fixed-point version of Dt */
+//	unsigned int endTime;       /* When Time reaches EndTime, return to user */
+	unsigned int start_sample, end_sample;
 
-    start_sample = (*Time)>>Np;
-    Ystart = Y;
-    endTime = *Time + (1<<Np)*(WORD)Nx;
-    while (Y - Ystart != Nout)
-    {
-	Xp = &X[*Time>>Np];      /* Ptr to current input sample */
-	/* Perform left-wing inner product */
-	v = FilterUp(Imp, ImpD, Nwing, Interp, Xp, (HWORD)(*Time&Pmask),-1);
-	/* Perform right-wing inner product */
-	v += FilterUp(Imp, ImpD, Nwing, Interp, Xp+1, 
-		      (HWORD)((-*Time)&Pmask),1);
-	v >>= Nhg;		/* Make guard bits */
-	v *= LpScl;		/* Normalize for unity filter gain */
-	*Y++ = WordToHword(v,NLpScl);   /* strip guard bits, deposit output */
-	*Time += dtb;		/* Move to next sample by time increment */
-    }
-    end_sample = (*Time)>>Np;
-    Nx = end_sample - start_sample;
-    return (Y - Ystart);        /* Return the number of output samples */
+	dt = 1.0/factor;            /* Output sampling period */
+	dtb = (unsigned int)(dt*(1<<Np) + 0.5); /* Fixed-point representation */
+
+	start_sample = (*Time)>>Np;
+	Ystart = Y;
+//	endTime = *Time + (1<<Np)*(int)Nx;
+	/* 
+	* TODO
+	* DAS: not sure why this was changed from *Time < endTime
+	* update: *Time < endTime causes seg fault.  Also adds a clicking sound.
+	*/
+	while (Y - Ystart != Nout)
+//	while (*Time < endTime)
+	{
+		Xp = &X[*Time>>Np];      /* Ptr to current input sample */
+		/* Perform left-wing inner product */
+		v = FilterUp(Imp, ImpD, Nwing, Interp, Xp, (short)(*Time&Pmask),-1);
+		/* Perform right-wing inner product */
+		v += FilterUp(Imp, ImpD, Nwing, Interp, Xp+1, 
+                       (short)((((*Time)^Pmask)+1)&Pmask), 1);
+		v >>= Nhg;		/* Make guard bits */
+		v *= LpScl;		/* Normalize for unity filter gain */
+		*Y++ = WordToHword(v,NLpScl);   /* strip guard bits, deposit output */
+		*Time += dtb;		/* Move to next sample by time increment */
+	}
+	end_sample = (*Time)>>Np;
+	Nx = end_sample - start_sample;
+	return (Y - Ystart);        /* Return the number of output samples */
 }
 
 
 
 int
 aflibConverter::SrcUD(
-   HWORD X[],
-   HWORD Y[],
+   short X[],
+   short Y[],
    double factor,
-   UWORD *Time,
-   UHWORD& Nx,
-   UHWORD Nout,
-   UHWORD Nwing,
-   UHWORD LpScl,
-   HWORD Imp[],
-   HWORD ImpD[],
-   BOOL Interp)
+   unsigned int *Time,
+   unsigned short& Nx,
+   unsigned short Nout,
+   unsigned short Nwing,
+   unsigned short LpScl,
+   short Imp[],
+   short ImpD[],
+   bool Interp)
 {
-    HWORD *Xp, *Ystart;
-    WORD v;
-    
-    double dh;                  /* Step through filter impulse response */
-    double dt;                  /* Step through input signal */
-    UWORD endTime;              /* When Time reaches EndTime, return to user */
-    UWORD dhb, dtb;             /* Fixed-point versions of Dh,Dt */
-    UWORD start_sample, end_sample;
+	short *Xp, *Ystart;
+	int v;
 
-    dt = 1.0/factor;            /* Output sampling period */
-    dtb = (UWORD)(dt*(1<<Np) + 0.5); /* Fixed-point representation */
-    
-    dh = MIN(Npc, factor*Npc);  /* Filter sampling period */
-    dhb = (UWORD)(dh*(1<<Na) + 0.5); /* Fixed-point representation */
-    
-    start_sample = (*Time)>>Np;
-    Ystart = Y;
-    endTime = *Time + (1<<Np)*(WORD)Nx;
-    while (Y - Ystart != Nout)
-    {
-	Xp = &X[*Time>>Np];	/* Ptr to current input sample */
-	v = FilterUD(Imp, ImpD, Nwing, Interp, Xp, (HWORD)(*Time&Pmask),
-		     -1, dhb);	/* Perform left-wing inner product */
-	v += FilterUD(Imp, ImpD, Nwing, Interp, Xp+1, (HWORD)((-*Time)&Pmask),
-		      1, dhb);	/* Perform right-wing inner product */
-	v >>= Nhg;		/* Make guard bits */
-	v *= LpScl;		/* Normalize for unity filter gain */
-	*Y++ = WordToHword(v,NLpScl);   /* strip guard bits, deposit output */
-	*Time += dtb;		/* Move to next sample by time increment */
-    }
-    end_sample = (*Time)>>Np;
-    Nx = end_sample - start_sample;
-    return (Y - Ystart);        /* Return the number of output samples */
+	double dh;                  /* Step through filter impulse response */
+	double dt;                  /* Step through input signal */
+//	unsigned int endTime;       /* When Time reaches EndTime, return to user */
+	unsigned int dhb, dtb;      /* Fixed-point versions of Dh,Dt */
+	unsigned int start_sample, end_sample;
+
+	dt = 1.0/factor;            /* Output sampling period */
+	dtb = (unsigned int)(dt*(1<<Np) + 0.5); /* Fixed-point representation */
+
+	dh = MIN(Npc, factor*Npc);  /* Filter sampling period */
+	dhb = (unsigned int)(dh*(1<<Na) + 0.5); /* Fixed-point representation */
+
+	start_sample = (*Time)>>Np;
+	Ystart = Y;
+//	endTime = *Time + (1<<Np)*(int)Nx;
+	/* 
+	* TODO
+	* DAS: not sure why this was changed from *Time < endTime
+	* update: *Time < endTime causes seg fault.  Also adds a clicking sound.
+	*/
+	while (Y - Ystart != Nout)
+//	while (*Time < endTime)
+	{
+		Xp = &X[*Time>>Np];	/* Ptr to current input sample */
+		v = FilterUD(Imp, ImpD, Nwing, Interp, Xp, (short)(*Time&Pmask),
+				  -1, dhb);	/* Perform left-wing inner product */
+		v += FilterUD(Imp, ImpD, Nwing, Interp, Xp+1, 
+                       (short)((((*Time)^Pmask)+1)&Pmask), 1, dhb);	/* Perform right-wing inner product */
+		v >>= Nhg;		/* Make guard bits */
+		v *= LpScl;		/* Normalize for unity filter gain */
+		*Y++ = WordToHword(v,NLpScl);   /* strip guard bits, deposit output */
+		*Time += dtb;		/* Move to next sample by time increment */
+	}
+	
+	end_sample = (*Time)>>Np;
+	Nx = end_sample - start_sample;
+	return (Y - Ystart);        /* Return the number of output samples */
 }
 
 
@@ -408,17 +436,17 @@ int
 aflibConverter::resampleFast(  /* number of output samples returned */
     int& inCount,		/* number of input samples to convert */
     int outCount,		/* number of output samples to compute */
-    HWORD inArray[],            /* input data */
-    HWORD outArray[])           /* output data */
+    short inArray[],            /* input data */
+    short outArray[])           /* output data */
 {
-    UWORD Time2;		/* Current time/pos in input sample */
+    unsigned int Time2;		/* Current time/pos in input sample */
 #if 0
-    UHWORD Ncreep;
+    unsigned short Ncreep;
 #endif
-    UHWORD Xp, Xoff, Xread;
-    int OBUFFSIZE = (int)(((double)IBUFFSIZE)*factor);
-    UHWORD Nout = 0, Nx;
-    UHWORD maxOutput;
+    unsigned short Xp, Xoff, Xread;
+    int OBUFFSIZE = (int)(((double)IBUFFSIZE)*_factor);
+    unsigned short Nout = 0, Nx, orig_Nx;
+    unsigned short maxOutput;
     int total_inCount = 0;
     int c, i, Ycount, last;
     bool first_pass = TRUE;
@@ -433,36 +461,39 @@ aflibConverter::resampleFast(  /* number of output samples returned */
     Xp = Xoff;			/* Current "now"-sample pointer for input */
     Xread = Xoff;		/* Position in input array to read into */
 
-    if (initial == TRUE)
-       Time = (Xoff<<Np);	/* Current-time pointer for converter */
+    if (_initial == TRUE)
+       _Time = (Xoff<<Np);	/* Current-time pointer for converter */
 
     do {
-	if (!last)		/* If haven't read last sample yet */
-	{
-	    last = readData(inCount, inArray, X, IBUFFSIZE, (int)Xread,first_pass);
-            first_pass = FALSE;
-	    if (last && (last-Xoff<Nx)) { /* If last sample has been read... */
-		Nx = last-Xoff;	/* ...calc last sample affected by filter */
-		if (Nx <= 0)
-		  break;
-	    }
-	}
+		if (!last)		/* If haven't read last sample yet */
+		{
+	   	 last = readData(inCount, inArray, _X, 
+					 IBUFFSIZE, (int)Xread,first_pass);
+          first_pass = FALSE;
+	    	 if (last && (last-Xoff<Nx)) { /* If last sample has been read... */
+				Nx = last-Xoff;	/* ...calc last sample affected by filter */
+			 	if (Nx <= 0)
+		  			break;
+	    	 }
+		}
 
-        if ((outCount-Ycount) > (OBUFFSIZE - (2*Xoff*factor)) )
-           maxOutput = OBUFFSIZE - (UHWORD)(2*Xoff*factor);
-        else
-           maxOutput = outCount-Ycount;
+      if ((outCount-Ycount) > (OBUFFSIZE - (2*Xoff*_factor)) )
+      	maxOutput = OBUFFSIZE - (unsigned short)(2*Xoff*_factor);
+      else
+      	maxOutput = outCount-Ycount;
 
-        for (c = 0; c < nChans; c++)
-        {
-	   Time2 = Time;
+      for (c = 0; c < _nChans; c++)
+      {
+			orig_Nx = Nx;
+	   	Time2 = _Time;
 	   /* Resample stuff in input buffer */
-	   Nout=SrcLinear(X[c],Y[c],factor,&Time2,Nx,maxOutput);
-        }
-        Time = Time2;
+	   	Nout=SrcLinear(_X[c],_Y[c],_factor,&Time2,orig_Nx,maxOutput);
+      }
+		Nx = orig_Nx;
+      _Time = Time2;
 
-	Time -= (Nx<<Np);	/* Move converter Nx samples back in time */
-	Xp += Nx;		/* Advance by number of samples processed */
+		_Time -= (Nx<<Np);	/* Move converter Nx samples back in time */
+		Xp += Nx;		/* Advance by number of samples processed */
 #if 0
 	Ncreep = (Time>>Np) - Xoff; /* Calc time accumulation in Time */
 	if (Ncreep) {
@@ -470,36 +501,36 @@ aflibConverter::resampleFast(  /* number of output samples returned */
 	    Xp += Ncreep;            /* and add it to read pointer */
 	}
 #endif
-        for (c = 0; c < nChans; c++)
-        {
-	   for (i=0; i<IBUFFSIZE-Xp+Xoff; i++) { /* Copy part of input signal */
-	       X[c][i] = X[c][i+Xp-Xoff]; /* that must be re-used */
-	   }
-        }
-	if (last) {		/* If near end of sample... */
-	    last -= Xp;		/* ...keep track were it ends */
-	    if (!last)		/* Lengthen input by 1 sample if... */
-	      last++;		/* ...needed to keep flag TRUE */
-	}
-	Xread = IBUFFSIZE - Nx;	/* Pos in input buff to read new data into */
-	Xp = Xoff;
+      for (c = 0; c < _nChans; c++)
+      {
+	   	for (i=0; i<IBUFFSIZE-Xp+Xoff; i++) { /* Copy part of input signal */
+	       	_X[c][i] = _X[c][i+Xp-Xoff]; /* that must be re-used */
+	   	}
+      }
+		if (last) {		/* If near end of sample... */
+	    	last -= Xp;		/* ...keep track were it ends */
+	    	if (!last)		/* Lengthen input by 1 sample if... */
+	      	last++;		/* ...needed to keep flag TRUE */
+		}
+		Xread = IBUFFSIZE - Nx;	/* Pos in input buff to read new data into */
+		Xp = Xoff;
 	
-	Ycount += Nout;
-	if (Ycount>outCount) {
-	    Nout -= (Ycount-outCount);
-	    Ycount = outCount;
-	}
+		Ycount += Nout;
+		if (Ycount>outCount) {
+	    	Nout -= (Ycount-outCount);
+	    	Ycount = outCount;
+		}
 
-	if (Nout > OBUFFSIZE) /* Check to see if output buff overflowed */
-	  return err_ret("Output array overflow");
+		if (Nout > OBUFFSIZE) /* Check to see if output buff overflowed */
+	 		return err_ret("Output array overflow");
 
-        for (c = 0; c < nChans; c++)
-	   for (i = 0; i < Nout; i++)
-              outArray[c * outCount + i + Ycount - Nout] = Y[c][i];
+      for (c = 0; c < _nChans; c++)
+	   	for (i = 0; i < Nout; i++)
+            outArray[c * outCount + i + Ycount - Nout] = _Y[c][i];
 
-       total_inCount += Nx;
+      total_inCount += Nx;
 
-    } while (Ycount<outCount); /* Continue until done */
+    } while (Ycount < outCount); /* Continue until done */
 
     inCount = total_inCount;
 
@@ -511,30 +542,30 @@ int
 aflibConverter::resampleWithFilter(  /* number of output samples returned */
     int& inCount,		/* number of input samples to convert */
     int outCount,		/* number of output samples to compute */
-    HWORD inArray[],            /* input data */
-    HWORD outArray[],           /* output data */
-    HWORD Imp[], HWORD ImpD[],
-    UHWORD LpScl, UHWORD Nmult, UHWORD Nwing)
+    short inArray[],            /* input data */
+    short outArray[],           /* output data */
+    short Imp[], short ImpD[],
+    unsigned short LpScl, unsigned short Nmult, unsigned short Nwing)
 {
-    UWORD Time2;		/* Current time/pos in input sample */
+    unsigned int Time2;		/* Current time/pos in input sample */
 #if 0
-    UHWORD Ncreep;
+    unsigned short Ncreep;
 #endif
-    UHWORD Xp, Xoff, Xread;
-    int OBUFFSIZE = (int)(((double)IBUFFSIZE)*factor);
-    UHWORD Nout = 0, Nx;
-    UHWORD maxOutput;
+    unsigned short Xp, Xoff, Xread;
+    int OBUFFSIZE = (int)(((double)IBUFFSIZE)*_factor);
+    unsigned short Nout = 0, Nx, orig_Nx;
+    unsigned short maxOutput;
     int total_inCount = 0;
     int c, i, Ycount, last;
     bool first_pass = TRUE;
 
 
     /* Account for increased filter gain when using factors less than 1 */
-    if (factor < 1)
-      LpScl = (UHWORD)(LpScl*factor + 0.5);
+    if (_factor < 1)
+      LpScl = (unsigned short)(LpScl*_factor + 0.5);
 
     /* Calc reach of LP filter wing & give some creeping room */
-    Xoff = (UHWORD)(((Nmult+1)/2.0) * MAX(1.0,1.0/factor) + 10);
+    Xoff = (unsigned short)(((Nmult+1)/2.0) * MAX(1.0,1.0/_factor) + 10);
 
     if (IBUFFSIZE < 2*Xoff)      /* Check input buffer size */
       return err_ret("IBUFFSIZE (or factor) is too small");
@@ -546,41 +577,45 @@ aflibConverter::resampleWithFilter(  /* number of output samples returned */
     Xp = Xoff;			/* Current "now"-sample pointer for input */
     Xread = Xoff;		/* Position in input array to read into */
 
-    if (initial == TRUE)
-       Time = (Xoff<<Np);	/* Current-time pointer for converter */
+    if (_initial == TRUE)
+       _Time = (Xoff<<Np);	/* Current-time pointer for converter */
     
     do {
-	if (!last)		/* If haven't read last sample yet */
-	{
-	    last = readData(inCount, inArray, X, IBUFFSIZE, (int)Xread,first_pass);
-            first_pass = FALSE;
-	    if (last && (last-Xoff<Nx)) { /* If last sample has been read... */
-		Nx = last-Xoff;	/* ...calc last sample affected by filter */
-		if (Nx <= 0)
-		  break;
-	    }
-	}
+		if (!last)		/* If haven't read last sample yet */
+		{
+	    	last = readData(inCount, inArray, _X, 
+					IBUFFSIZE, (int)Xread,first_pass);
+         first_pass = FALSE;
+	    	if (last && (last-Xoff<Nx)) { /* If last sample has been read... */
+				Nx = last-Xoff;	/* ...calc last sample affected by filter */
+				if (Nx <= 0)
+		  			break;
+	    	}
+		}
 
-        if ( (outCount-Ycount) > (OBUFFSIZE - (2*Xoff*factor)) )
-           maxOutput = OBUFFSIZE  - (UHWORD)(2*Xoff*factor);
-        else
-           maxOutput = outCount-Ycount;
+      if ( (outCount-Ycount) > (OBUFFSIZE - (2*Xoff*_factor)) )
+      	maxOutput = OBUFFSIZE  - (unsigned short)(2*Xoff*_factor);
+      else
+      	maxOutput = outCount-Ycount;
 
-        for (c = 0; c < nChans; c++)
-        {
-	   Time2 = Time;
+      for (c = 0; c < _nChans; c++)
+      {
+			orig_Nx = Nx;
+	   	Time2 = _Time;
            /* Resample stuff in input buffer */
-	   if (factor >= 1) {	/* SrcUp() is faster if we can use it */
-	       Nout=SrcUp(X[c],Y[c],factor,&Time2,Nx,maxOutput,Nwing,LpScl,Imp,ImpD,interpFilt);
-	   }
-	   else {
-	       Nout=SrcUD(X[c],Y[c],factor,&Time2,Nx,maxOutput,Nwing,LpScl,Imp,ImpD,interpFilt);
-	   }
-        }
-        Time = Time2;
+	   	if (_factor >= 1) {	/* SrcUp() is faster if we can use it */
+	       	Nout=SrcUp(_X[c],_Y[c],_factor,
+						&Time2,Nx,maxOutput,Nwing,LpScl,Imp,ImpD,interpFilt);
+	   	}
+	   	else {
+	       	Nout=SrcUD(_X[c],_Y[c],_factor,
+						&Time2,Nx,maxOutput,Nwing,LpScl,Imp,ImpD,interpFilt);
+	   	}
+      }
+      _Time = Time2;
 
-	Time -= (Nx<<Np);	/* Move converter Nx samples back in time */
-	Xp += Nx;		/* Advance by number of samples processed */
+		_Time -= (Nx<<Np);	/* Move converter Nx samples back in time */
+		Xp += Nx;		/* Advance by number of samples processed */
 #if 0
 	Ncreep = (Time>>Np) - Xoff; /* Calc time accumulation in Time */
 	if (Ncreep) {
@@ -588,148 +623,175 @@ aflibConverter::resampleWithFilter(  /* number of output samples returned */
 	    Xp += Ncreep;            /* and add it to read pointer */
 	}
 #endif
-	if (last) {		/* If near end of sample... */
-	    last -= Xp;		/* ...keep track were it ends */
-	    if (!last)		/* Lengthen input by 1 sample if... */
-	      last++;		/* ...needed to keep flag TRUE */
-	}
-	
-	Ycount += Nout;
-	if (Ycount>outCount) {
-	    Nout -= (Ycount-outCount);
-	    Ycount = outCount;
-	}
+		if (last) {		/* If near end of sample... */
+			 last -= Xp;		/* ...keep track were it ends */
+			 if (!last)		/* Lengthen input by 1 sample if... */
+				last++;		/* ...needed to keep flag TRUE */
+		}
+		
+		Ycount += Nout;
+		if (Ycount > outCount) {
+			 Nout -= (Ycount - outCount);
+			 Ycount = outCount;
+		}
 
-	if (Nout > OBUFFSIZE) /* Check to see if output buff overflowed */
-	  return err_ret("Output array overflow");
-	
-        for (c = 0; c < nChans; c++)
-        {
-	   for (i = 0; i < Nout; i++)
-           {
-              outArray[c * outCount + i + Ycount - Nout] = Y[c][i];
-           }
-        }
+		if (Nout > OBUFFSIZE) /* Check to see if output buff overflowed */
+		  return err_ret("Output array overflow");
+		
+	   for (c = 0; c < _nChans; c++)
+		{
+			for (i = 0; i < Nout; i++)
+			{
+				outArray[c * outCount + i + Ycount - Nout] = _Y[c][i];
+			}
+		}
 
-        int act_incount = (int)Nx;
+		int act_incount = (int)Nx;
 
-        for (c = 0; c < nChans; c++)
-        {
- 	   for (i=0; i<IBUFFSIZE-act_incount+Xoff; i++) { /* Copy part of input signal */
-	       X[c][i] = X[c][i+act_incount]; /* that must be re-used */
-           }
-	}
-        Xread = IBUFFSIZE - Nx; /* Pos in input buff to read new data into */
-        Xp = Xoff;
+		for (c = 0; c < _nChans; c++)
+		{
+			for (i=0; i<IBUFFSIZE-act_incount+Xoff; i++) { /* Copy part of input signal */
+				 _X[c][i] = _X[c][i+act_incount]; /* that must be re-used */
+			}
+		}
+		Xread = IBUFFSIZE - Nx; /* Pos in input buff to read new data into */
+		Xp = Xoff;
 
-       total_inCount += Nx;
+		total_inCount += Nx;
 
-    } while (Ycount<outCount); /* Continue until done */
+    } while (Ycount < outCount); /* Continue until done */
 
     inCount = total_inCount;
 
     return(Ycount);		/* Return # of samples in output file */
 }
 
-
-WORD
-aflibConverter::FilterUp(HWORD Imp[], HWORD ImpD[], 
-		     UHWORD Nwing, BOOL Interp,
-		     HWORD *Xp, HWORD Ph, HWORD Inc)
+int
+aflibConverter::FilterUp(
+	short Imp[], 
+	short ImpD[], 
+	unsigned short Nwing, 
+	bool Interp,
+	short *Xp, 
+	short Ph, 
+	short Inc)
 {
-    HWORD *Hp, *Hdp = NULL, *End;
-    HWORD a = 0;
-    WORD v, t;
-    
-    v=0;
-    Hp = &Imp[Ph>>Na];
-    End = &Imp[Nwing];
-    if (Interp) {
-	Hdp = &ImpD[Ph>>Na];
-	a = Ph & Amask;
-    }
-    if (Inc == 1)		/* If doing right wing...              */
-    {				/* ...drop extra coeff, so when Ph is  */
-	End--;			/*    0.5, we don't do too many mult's */
-	if (Ph == 0)		/* If the phase is zero...           */
-	{			/* ...then we've already skipped the */
-	    Hp += Npc;		/*    first sample, so we must also  */
-	    Hdp += Npc;		/*    skip ahead in Imp[] and ImpD[] */
+	short *Hp, *Hdp = NULL, *End;
+	short a = 0;
+	int v, t;
+
+	v=0;
+	Hp = &Imp[Ph>>Na];
+	End = &Imp[Nwing];
+	
+	if (Interp) 
+	{
+		Hdp = &ImpD[Ph>>Na];
+		a = Ph & Amask;
 	}
-    }
-    if (Interp)
-      while (Hp < End) {
-	  t = *Hp;		/* Get filter coeff */
-	  t += (((WORD)*Hdp)*a)>>Na; /* t is now interp'd filter coeff */
-	  Hdp += Npc;		/* Filter coeff differences step */
-	  t *= *Xp;		/* Mult coeff by input sample */
-	  if (t & (1<<(Nhxn-1)))  /* Round, if needed */
-	    t += (1<<(Nhxn-1));
-	  t >>= Nhxn;		/* Leave some guard bits, but come back some */
-	  v += t;			/* The filter output */
-	  Hp += Npc;		/* Filter coeff step */
-	  Xp += Inc;		/* Input signal step. NO CHECK ON BOUNDS */
-      } 
-    else 
-      while (Hp < End) {
-	  t = *Hp;		/* Get filter coeff */
-	  t *= *Xp;		/* Mult coeff by input sample */
-	  if (t & (1<<(Nhxn-1)))  /* Round, if needed */
-	    t += (1<<(Nhxn-1));
-	  t >>= Nhxn;		/* Leave some guard bits, but come back some */
-	  v += t;			/* The filter output */
-	  Hp += Npc;		/* Filter coeff step */
-	  Xp += Inc;		/* Input signal step. NO CHECK ON BOUNDS */
-      }
-    return(v);
+	
+	if (Inc == 1)		/* If doing right wing...              */
+	{				/* ...drop extra coeff, so when Ph is  */
+		End--;			/*    0.5, we don't do too many mult's */
+		if (Ph == 0)		/* If the phase is zero...           */
+		{			/* ...then we've already skipped the */
+			 Hp += Npc;		/*    first sample, so we must also  */
+			 Hdp += Npc;		/*    skip ahead in Imp[] and ImpD[] */
+		}
+	}
+	
+	if (Interp)
+	{
+		while (Hp < End) 
+		{
+			t = *Hp;		/* Get filter coeff */
+			t += (((int)*Hdp)*a)>>Na; /* t is now interp'd filter coeff */
+			Hdp += Npc;		/* Filter coeff differences step */
+			t *= *Xp;		/* Mult coeff by input sample */
+			if (t & (1<<(Nhxn-1)))  /* Round, if needed */
+				t += (1<<(Nhxn-1));
+			t >>= Nhxn;		/* Leave some guard bits, but come back some */
+			v += t;			/* The filter output */
+			Hp += Npc;		/* Filter coeff step */
+			Xp += Inc;		/* Input signal step. NO CHECK ON BOUNDS */
+		}
+	}	
+	else 
+	{
+		while (Hp < End) 
+		{
+			t = *Hp;		/* Get filter coeff */
+			t *= *Xp;		/* Mult coeff by input sample */
+			if (t & (1<<(Nhxn-1)))  /* Round, if needed */
+				t += (1<<(Nhxn-1));
+			t >>= Nhxn;		/* Leave some guard bits, but come back some */
+			v += t;			/* The filter output */
+			Hp += Npc;		/* Filter coeff step */
+			Xp += Inc;		/* Input signal step. NO CHECK ON BOUNDS */
+		}
+	}
+	return(v);
 }
 
 
-WORD
-aflibConverter::FilterUD( HWORD Imp[], HWORD ImpD[],
-		     UHWORD Nwing, BOOL Interp,
-		     HWORD *Xp, HWORD Ph, HWORD Inc, UHWORD dhb)
+int
+aflibConverter::FilterUD( 
+	short Imp[], 
+	short ImpD[],
+	unsigned short Nwing, 
+	bool Interp,
+	short *Xp, 
+	short Ph, 
+	short Inc, 
+	unsigned short dhb)
 {
-    HWORD a;
-    HWORD *Hp, *Hdp, *End;
-    WORD v, t;
-    UWORD Ho;
-    
-    v=0;
-    Ho = (Ph*(UWORD)dhb)>>Np;
-    End = &Imp[Nwing];
-    if (Inc == 1)		/* If doing right wing...              */
-    {				/* ...drop extra coeff, so when Ph is  */
-	End--;			/*    0.5, we don't do too many mult's */
-	if (Ph == 0)		/* If the phase is zero...           */
-	  Ho += dhb;		/* ...then we've already skipped the */
-    }				/*    first sample, so we must also  */
-				/*    skip ahead in Imp[] and ImpD[] */
-    if (Interp)
-      while ((Hp = &Imp[Ho>>Na]) < End) {
-	  t = *Hp;		/* Get IR sample */
-	  Hdp = &ImpD[Ho>>Na];  /* get interp (lower Na) bits from diff table*/
-	  a = Ho & Amask;	/* a is logically between 0 and 1 */
-	  t += (((WORD)*Hdp)*a)>>Na; /* t is now interp'd filter coeff */
-	  t *= *Xp;		/* Mult coeff by input sample */
-	  if (t & 1<<(Nhxn-1))	/* Round, if needed */
-	    t += 1<<(Nhxn-1);
-	  t >>= Nhxn;		/* Leave some guard bits, but come back some */
-	  v += t;			/* The filter output */
-	  Ho += dhb;		/* IR step */
-	  Xp += Inc;		/* Input signal step. NO CHECK ON BOUNDS */
-      }
-    else 
-      while ((Hp = &Imp[Ho>>Na]) < End) {
-	  t = *Hp;		/* Get IR sample */
-	  t *= *Xp;		/* Mult coeff by input sample */
-	  if (t & 1<<(Nhxn-1))	/* Round, if needed */
-	    t += 1<<(Nhxn-1);
-	  t >>= Nhxn;		/* Leave some guard bits, but come back some */
-	  v += t;			/* The filter output */
-	  Ho += dhb;		/* IR step */
-	  Xp += Inc;		/* Input signal step. NO CHECK ON BOUNDS */
-      }
-    return(v);
+	short a;
+	short *Hp, *Hdp, *End;
+	int v, t;
+	unsigned int Ho;
+
+	v=0;
+	Ho = (Ph*(unsigned int)dhb)>>Np;
+	End = &Imp[Nwing];
+	if (Inc == 1)		/* If doing right wing...              */
+	{				/* ...drop extra coeff, so when Ph is  */
+		End--;			/*    0.5, we don't do too many mult's */
+		if (Ph == 0)		/* If the phase is zero...           */
+			Ho += dhb;		/* ...then we've already skipped the */
+	}				/*    first sample, so we must also  */
+			/*    skip ahead in Imp[] and ImpD[] */
+	
+	if (Interp)
+	{
+		while ((Hp = &Imp[Ho>>Na]) < End) 
+		{
+			t = *Hp;		/* Get IR sample */
+			Hdp = &ImpD[Ho>>Na];  /* get interp (lower Na) bits from diff table*/
+			a = Ho & Amask;	/* a is logically between 0 and 1 */
+			t += (((int)*Hdp)*a)>>Na; /* t is now interp'd filter coeff */
+			t *= *Xp;		/* Mult coeff by input sample */
+			if (t & 1<<(Nhxn-1))	/* Round, if needed */
+				t += 1<<(Nhxn-1);
+			t >>= Nhxn;		/* Leave some guard bits, but come back some */
+			v += t;			/* The filter output */
+			Ho += dhb;		/* IR step */
+			Xp += Inc;		/* Input signal step. NO CHECK ON BOUNDS */
+		}
+	}
+	else 
+	{
+		while ((Hp = &Imp[Ho>>Na]) < End) 
+		{
+			t = *Hp;		/* Get IR sample */
+			t *= *Xp;		/* Mult coeff by input sample */
+			if (t & 1<<(Nhxn-1))	/* Round, if needed */
+				t += 1<<(Nhxn-1);
+			t >>= Nhxn;		/* Leave some guard bits, but come back some */
+			v += t;			/* The filter output */
+			Ho += dhb;		/* IR step */
+			Xp += Inc;		/* Input signal step. NO CHECK ON BOUNDS */
+		}
+	}
+	return(v);
 }
 

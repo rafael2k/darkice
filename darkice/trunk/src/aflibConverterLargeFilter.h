@@ -34,11 +34,16 @@ well for its level of computational expense.
 
 */
 
-#define LARGE_FILTER_NMULT ((HWORD)65)
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+
+#define LARGE_FILTER_NMULT ((short)65)
 #define LARGE_FILTER_SCALE 14746 /* Unity-gain scale factor */
 #define LARGE_FILTER_NWING 8192 /* Filter table length */
 
-HWORD aflibConverter::LARGE_FILTER_IMP[] /* Impulse response */ = {
+short aflibConverter::LARGE_FILTER_IMP[] /* Impulse response */ = {
 32767,
 32766,
 32764,
@@ -8232,7 +8237,7 @@ HWORD aflibConverter::LARGE_FILTER_IMP[] /* Impulse response */ = {
 0,
 0};
 
-static HWORD LARGE_FILTER_IMPD[] /* Impulse response differences */ = {
+static short LARGE_FILTER_IMPD[] /* Impulse response differences */ = {
 -1,
 -2,
 -3,

@@ -18,13 +18,17 @@
  *   Julius O. Smith  jos@ccrma.stanford.edu
  *
  */
-/* This code was modified by Bruce Forsberg (forsberg@adnc.com) to make it
+/* This code was modified by Bruce Forsberg (forsberg@tns.net) to make it
    into a C++ class
 */
 
 
 #ifndef _AFLIBCONVERTER_H_
 #define _AFLIBCONVERTER_H_
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #ifndef MAX
 #define MAX(x,y) ((x)>(y) ?(x):(y))
@@ -36,11 +40,6 @@
 #define MAX_HWORD (32767)
 #define MIN_HWORD (-32768)
 
-typedef char           BOOL;
-typedef short          HWORD;
-typedef unsigned short UHWORD;
-typedef int            WORD;
-typedef unsigned int   UWORD;
 #define IBUFFSIZE 4096                         /* Input buffer size */
 
 /*! \class aflibConverter
@@ -58,18 +57,22 @@ typedef unsigned int   UWORD;
 
  This class was designed to stream audio data. It also expects audio data as 16 bit values.
  Each time a new stream is started some initialization needs to be done. Thus the function
- initialize should be called to initialize everything. This class will work on any
- number of channels. Once everything is specified then resample should be called as many
- times as is necessary to process all the data. The value inCount will be returned
- indicating how many inArray samples were actually used to produce the output. This
- value can be used to indicate where the next block of inArray data should start. The
- resample function is driven by the outCount value specified. The inArray should
- contain at least:
+ initialize should be called to initialize everything. This initialize function will set
+ the conversion factor as well as a multiplecation factor for volume. The volume only
+ applies to the small and large filter. Since this filter uses a history of the audio data
+ it is possible for it to vary in amplitude. This allows users to scale the data. This
+ class will work on any number of channels. Once everything is specified then resample
+ should be called as many times as is necessary to process all the data. The value
+ inCount will be returned indicating how many inArray samples were actually used to
+ produce the output. This value can be used to indicate where the next block of
+ inArray data should start. The resample function is driven by the outCount value
+ specified. The inArray should contain at least:
     outCount / factor + extra_samples.
  extra_samples depends on the type of filtering done. As a rule of thumb 50 should be
  adequate for any type of filter.
 */
 
+class aflibData;
 
 class aflibConverter {
 
@@ -86,14 +89,15 @@ public:
    void
    initialize(
       double factor,   /* factor = Sndout/Sndin */
-      int    channels);/* number of sound channels */
+      int    channels, /* number of sound channels */
+      double volume = 1.0); /* factor to multiply amplitude */
 
    int
    resample(           /* number of output samples returned */
       int& inCount,    /* number of input samples to convert */
-      int outCount,    /* number of output samples to compute */
-      HWORD inArray[], /* input array data (length inCount * nChans) */
-      HWORD outArray[]);/* output array data (length outCount * nChans) */
+    	int outCount,    /* number of output samples to compute */
+      short inArray[], /* input array data (length inCount * nChans) */
+      short outArray[]);/* output array data (length outCount * nChans) */
  
  
 private:
@@ -114,130 +118,117 @@ private:
    int
    readData(
       int   inCount,       /* _total_ number of frames in input file */
-      HWORD inArray[],     /* input data */
-      HWORD *outPtr[],     /* array receiving chan samps */
+      short inArray[],     /* input data */
+      short *outPtr[],     /* array receiving chan samps */
       int   dataArraySize, /* size of these arrays */
       int   Xoff,          /* read into input array starting at this index */
       bool  init_count);
 
 
-   inline HWORD
-   WordToHword(WORD v, int scl)
+   inline short
+   WordToHword(int v, int scl)
    {
-       HWORD out;
-       WORD llsb = (1<<(scl-1));
+       short out;
+       int llsb = (1<<(scl-1));
        v += llsb;          /* round */
        v >>= scl;
        if (v>MAX_HWORD) {
-#ifdef DEBUG
-           if (pof == 0)
-             fprintf(stderr, "*** resample: sound sample overflow\n");
-           else if ((pof % 10000) == 0)
-             fprintf(stderr, "*** resample: another ten thousand overflows\n");
-           pof++;
-#endif
            v = MAX_HWORD;
        } else if (v < MIN_HWORD) {
-#ifdef DEBUG
-           if (nof == 0)
-             fprintf(stderr, "*** resample: sound sample (-) overflow\n");
-           else if ((nof % 1000) == 0)
-             fprintf(stderr, "*** resample: another thousand (-) overflows\n");
-           nof++;
-#endif
            v = MIN_HWORD;
        }
-       out = (HWORD) v;
+       out = (short) v;
        return out;
    };
 
    int
    SrcLinear(
-      HWORD X[],
-      HWORD Y[],
+      short X[],
+      short Y[],
       double factor,
-      UWORD *Time,
-      UHWORD& Nx,
-      UHWORD Nout);
+      unsigned int *Time,
+      unsigned short& Nx,
+      unsigned short Nout);
 
    int
    SrcUp(
-      HWORD X[],
-      HWORD Y[],
+      short X[],
+      short Y[],
       double factor,
-      UWORD *Time,
-      UHWORD& Nx,
-      UHWORD Nout,
-      UHWORD Nwing,
-      UHWORD LpScl,
-      HWORD Imp[],
-      HWORD ImpD[],
-      BOOL Interp);
+      unsigned int *Time,
+      unsigned short& Nx,
+      unsigned short Nout,
+      unsigned short Nwing,
+      unsigned short LpScl,
+      short Imp[],
+      short ImpD[],
+      bool Interp);
 
    int
    SrcUD(
-      HWORD X[],
-      HWORD Y[],
+      short X[],
+      short Y[],
       double factor,
-      UWORD *Time,
-      UHWORD& Nx,
-      UHWORD Nout,
-      UHWORD Nwing,
-      UHWORD LpScl,
-      HWORD Imp[],
-      HWORD ImpD[],
-      BOOL Interp);
+      unsigned int *Time,
+      unsigned short& Nx,
+      unsigned short Nout,
+      unsigned short Nwing,
+      unsigned short LpScl,
+      short Imp[],
+      short ImpD[],
+      bool Interp);
 
-   WORD
+   int
    FilterUp(
-      HWORD Imp[],
-      HWORD ImpD[],
-      UHWORD Nwing,
-      BOOL Interp,
-      HWORD *Xp,
-      HWORD Ph,
-      HWORD Inc);
+      short Imp[],
+      short ImpD[],
+      unsigned short Nwing,
+      bool Interp,
+      short *Xp,
+      short Ph,
+      short Inc);
 
-   WORD
+   int
    FilterUD(
-      HWORD Imp[],
-      HWORD ImpD[],
-      UHWORD Nwing,
-      BOOL Interp,
-      HWORD *Xp,
-      HWORD Ph,
-      HWORD Inc,
-      UHWORD dhb);
+      short Imp[],
+      short ImpD[],
+      unsigned short Nwing,
+      bool Interp,
+      short *Xp,
+      short Ph,
+      short Inc,
+      unsigned short dhb);
 
    int
    resampleFast(  /* number of output samples returned */
       int& inCount,     /* number of input samples to convert */
       int outCount,    /* number of output samples to compute */
-      HWORD inArray[], /* input array data (length inCount * nChans) */
-      HWORD outArray[]);/* output array data (length outCount * nChans) */
+      short inArray[], /* input array data (length inCount * nChans) */
+      short outArray[]);/* output array data (length outCount * nChans) */
  
    int
    resampleWithFilter(  /* number of output samples returned */
       int& inCount,      /* number of input samples to convert */
       int outCount,     /* number of output samples to compute */
-      HWORD inArray[],  /* input array data (length inCount * nChans) */
-      HWORD outArray[], /* output array data (length outCount * nChans) */
-      HWORD Imp[], HWORD ImpD[],
-      UHWORD LpScl, UHWORD Nmult, UHWORD Nwing);
+      short inArray[],  /* input array data (length inCount * nChans) */
+      short outArray[], /* output array data (length outCount * nChans) */
+      short Imp[], short ImpD[],
+      unsigned short LpScl, unsigned short Nmult, unsigned short Nwing);
 
 
-static HWORD SMALL_FILTER_IMP[];
-static HWORD LARGE_FILTER_IMP[];
+static short SMALL_FILTER_IMP[];
+static short LARGE_FILTER_IMP[];
 
 bool    interpFilt;
 bool    largeFilter;
 bool    linearInterp;
-HWORD  ** X;
-HWORD  ** Y;
-UWORD   Time;
-double  factor;
-int     nChans;
-bool    initial;
+short  ** _X;
+short  ** _Y;
+unsigned int _Time;
+double  _factor;
+int     _nChans;
+bool    _initial;
+double  _vol;
 
 };
 

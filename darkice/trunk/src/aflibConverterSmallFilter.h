@@ -19,11 +19,16 @@
  *
  */
               
-#define SMALL_FILTER_NMULT ((HWORD)13)
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#define SMALL_FILTER_NMULT ((short)13)
 #define SMALL_FILTER_SCALE 13128 /* Unity-gain scale factor */
 #define SMALL_FILTER_NWING 1536 /* Filter table length */
 
-HWORD aflibConverter::SMALL_FILTER_IMP[] /* Impulse response */ = {
+short aflibConverter::SMALL_FILTER_IMP[] /* Impulse response */ = {
 32767,
 32766,
 32764,
@@ -1562,7 +1567,7 @@ HWORD aflibConverter::SMALL_FILTER_IMP[] /* Impulse response */ = {
 -1
 };
 
-static HWORD SMALL_FILTER_IMPD[] = {
+static short SMALL_FILTER_IMPD[] = {
 -1,
 -2,
 -4,

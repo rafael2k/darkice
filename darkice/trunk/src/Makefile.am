@@ -29,6 +29,8 @@ darkice_SOURCES =   AudioEncoder.h\
                     LameLibEncoder.h\
                     VorbisLibEncoder.cpp\
                     VorbisLibEncoder.h\
+                    aflibDebug.h\
+                    aflibDebug.cc\
                     aflibConverter.h\
                     aflibConverter.cc\
                     aflibConverterLargeFilter.h\
