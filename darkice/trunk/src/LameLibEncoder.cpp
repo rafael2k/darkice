@@ -269,19 +269,7 @@ LameLibEncoder :: write (   const void    * buf,
 
     unsigned int    bitsPerSample = getInBitsPerSample();
     unsigned int    inChannels    = getInChannel();
-    unsigned int    outChannels   = getOutChannel();
 
-    if ( inChannels != 1 && inChannels != 2 ) {
-        throw Exception( __FILE__, __LINE__,
-                         "unsupported number of input channels for the encoder",
-                         inChannels );
-    }
-    if ( outChannels != 1 && outChannels != 2 ) {
-        throw Exception( __FILE__, __LINE__,
-                        "unsupported number of output channels for the encoder",
-                         outChannels );
-    }
- 
     unsigned int    sampleSize = (bitsPerSample / 8) * inChannels;
     unsigned char * b = (unsigned char*) buf;
     unsigned int    processed = len - (len % sampleSize);
@@ -307,6 +295,8 @@ LameLibEncoder :: write (   const void    * buf,
     }
 
     // data chunk size estimate according to lame documentation
+    // NOTE: mp3Size is calculated based on the number of input channels
+    //       which may be bigger than need, as output channels can be less
     unsigned int    mp3Size = (unsigned int) (1.25 * nSamples + 7200);
     unsigned char * mp3Buf  = new unsigned char[mp3Size];
     int             ret;
@@ -394,6 +384,9 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.16  2002/08/04 10:26:06  darkeye
+  added additional error checking to make sure that outChannel < inChannel
+
   Revision 1.15  2002/08/03 12:41:18  darkeye
   added possibility to stream in mono when recording in stereo
 

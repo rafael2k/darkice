@@ -123,6 +123,22 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                                  "specified bits per sample not supported",
                                  getInBitsPerSample() );
             }
+
+            if ( getInChannel() != 1 && getInChannel() != 2 ) {
+                throw Exception( __FILE__, __LINE__,
+                         "unsupported number of input channels for the encoder",
+                                 getInChannel() );
+            }
+            if ( getOutChannel() != 1 && getOutChannel() != 2 ) {
+                throw Exception( __FILE__, __LINE__,
+                        "unsupported number of output channels for the encoder",
+                                 getOutChannel() );
+            }
+            if ( getInChannel() < getOutChannel() ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "output channels greater then input channels",
+                                 getOutChannel() );
+            }
         }
 
         /**
@@ -431,6 +447,9 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.14  2002/08/04 10:26:06  darkeye
+  added additional error checking to make sure that outChannel < inChannel
+
   Revision 1.13  2002/08/03 12:41:18  darkeye
   added possibility to stream in mono when recording in stereo
 
