@@ -395,7 +395,7 @@ class AudioEncoder : public Sink, public virtual Referable
          *
          *  @return the bit rate of the output.
          */
-        inline int
+        inline unsigned int
         getOutBitrate ( void ) const        throw ()
         {
             return outBitrate;
@@ -456,6 +456,9 @@ class AudioEncoder : public Sink, public virtual Referable
   $Source$
 
   $Log$
+  Revision 1.8  2002/08/20 19:35:37  darkeye
+  added possibility to specify maximum bitrate for Ogg Vorbis streams
+
   Revision 1.7  2002/04/13 11:26:00  darkeye
   added cbr, abr and vbr setting feature with encoding quality
 

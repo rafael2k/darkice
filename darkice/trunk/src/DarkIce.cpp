@@ -361,6 +361,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
         unsigned int                sampleRate      = 0;
         AudioEncoder::BitrateMode   bitrateMode;
         unsigned int                bitrate         = 0;
+        unsigned int                maxBitrate      = 0;
         double                      quality         = 0.0;
         const char                * server          = 0;
         unsigned int                port            = 0;
@@ -390,6 +391,8 @@ DarkIce :: configIceCast2 (  const Config      & config,
         // determine fixed bitrate or variable bitrate quality
         str         = cs->get( "bitrate");
         bitrate     = str ? Util::strToL( str) : 0;
+        str         = cs->get( "maxBitrate");
+        maxBitrate  = str ? Util::strToL( str) : 0;
         str         = cs->get( "quality");
         quality     = str ? Util::strToD( str) : 0.0;
         
@@ -499,7 +502,8 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                                 bitrate,
                                                 quality,
                                                 sampleRate,
-                                                dsp->getChannel() );
+                                                dsp->getChannel(),
+                                                maxBitrate);
 #endif // HAVE_VORBIS_LIB
                 break;
 
@@ -960,6 +964,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.31  2002/08/20 19:35:37  darkeye
+  added possibility to specify maximum bitrate for Ogg Vorbis streams
+
   Revision 1.30  2002/08/20 18:37:49  darkeye
   added mp3 streaming possibility for icecast2
 

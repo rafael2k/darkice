@@ -1,4 +1,4 @@
-.TH darkice.cfg 5 "August 3, 2002" "DarkIce" "DarkIce live audio streamer"
+.TH darkice.cfg 5 "August 20, 2002" "DarkIce" "DarkIce live audio streamer"
 .SH NAME
 darkice.cfg \- configuration file for darkice
 .SH DESCRIPTION
@@ -191,7 +191,7 @@ Required values:
 .I format
 Format of the stream sent to the
 .B IceCast2
-server. Currently the only supported value here is 'vorbis'.
+server. Supported formats are 'vorbis' and 'mp3'.
 .TP
 .I bitrateMode
 The bit rate mode of the encoding, either "cbr", "abr" or "vbr",
@@ -206,7 +206,8 @@ abr bit rate modes are specified.
 .I quality
 The quality of encoding a value between 0.0 .. 1.0 (e.g. 0.8), with 1.0 being
 the highest quality. Use a value greater than 0.0. Only used when vbr
-bit rate mode is specified.
+bit rate mode is specified for Ogg Vorbis format, or in vbr and abr
+modes for mp3 format.
 .TP
 .I server
 The
@@ -231,6 +232,10 @@ Optional values:
 .I sampleRate
 The sample rate of the encoded mp3 output. If not specified, defaults
 to the value of the input sample rate.
+.TP
+.I maxBitrate
+The maximum bitrate of the stream. Only used when in cbr mode and in
+Ogg Vorbis format.
 .TP
 .I name
 Name of the stream

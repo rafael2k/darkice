@@ -105,9 +105,14 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
         ogg_stream_state                oggStreamState;
 
         /**
-         *  The Sink to dump mp3 data to
+         *  The Sink to dump encoded data to
          */
         Ref<Sink>                       sink;
+
+        /**
+         *  Maximum bitrate of the output in kbits/sec. If 0, don't care.
+         */
+        unsigned int                    outMaxBitrate;
 
         /**
          *  Resample ratio
@@ -122,40 +127,13 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
         /**
          *  Initialize the object.
          *
-         *  @param sink the sink to send mp3 output to
+         *  @param sink the sink to send encoded output to
+         *  @param the maximum bit rate
          *  @exception Exception
          */
-        inline void
-        init ( Sink           * sink )                  throw ( Exception )
-        {
-            this->sink     = sink;
-
-            if ( getInBitsPerSample() != 16 && getInBitsPerSample() != 8 ) {
-                throw Exception( __FILE__, __LINE__,
-                                 "specified bits per sample not supported",
-                                 getInBitsPerSample() );
-            }
-
-            if ( getOutSampleRate() == getInSampleRate() ) {
-                resampleRatio = 1;
-                converter     = 0;
-            } else {
-                resampleRatio = ( (double) getOutSampleRate() /
-                                  (double) getInSampleRate() );
-                // open the aflibConverter in
-                // - high quality
-                // - not linear (quadratic) interpolation
-                // - not filter interpolation
-                converter = new aflibConverter( true, true, false);
-            }
-
-            if ( getInChannel() != getOutChannel() ) {
-                throw Exception( __FILE__, __LINE__,
-                                 "different in and out channels not supported");
-            }
-
-            encoderOpen = false;
-        }
+        void
+        init ( Sink           * sink,
+               unsigned int     outMaxBitrate )         throw ( Exception );
 
         /**
          *  De-initialize the object.
@@ -193,7 +171,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
         /**
          *  Constructor.
          *
-         *  @param sink the sink to send mp3 output to
+         *  @param sink the sink to send encoded output to
          *  @param inSampleRate sample rate of the input.
          *  @param inBitsPerSample number of bits per sample of the input.
          *  @param inChannel number of channels  of the input.
@@ -203,6 +181,8 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @param outQuality the quality of the stream.
          *  @param outSampleRate sample rate of the output.
          *                       If 0, inSampleRate is used.
+         *  @param outMaxBitrate maximum output bitrate.
+         *                       0 if not used.
          *  @param outChannel number of channels of the output.
          *                    If 0, inChannel is used.
          *  @exception Exception
@@ -217,7 +197,8 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int    outBitrate,
                             double          outQuality,
                             unsigned int    outSampleRate = 0,
-                            unsigned int    outChannel    = 0 )
+                            unsigned int    outChannel    = 0,
+                            unsigned int    outMaxBitrate = 0 )
                                                         throw ( Exception )
             
                     : AudioEncoder ( inSampleRate,
@@ -230,13 +211,13 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
                                      outSampleRate,
                                      outChannel )
         {
-            init( sink);
+            init( sink, outMaxBitrate);
         }
 
         /**
          *  Constructor.
          *
-         *  @param sink the sink to send mp3 output to
+         *  @param sink the sink to send encoded output to
          *  @param as get input sample rate, bits per sample and channels
          *            from this AudioSource.
          *  @param outBitrateMode the bit rate mode of the output.
@@ -244,6 +225,8 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @param outQuality the quality of the stream.
          *  @param outSampleRate sample rate of the output.
          *                       If 0, input sample rate is used.
+         *  @param outMaxBitrate maximum output bitrate.
+         *                       0 if not used.
          *  @param outChannel number of channels of the output.
          *                    If 0, input channel is used.
          *  @exception Exception
@@ -255,7 +238,8 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int            outBitrate,
                             double                  outQuality,
                             unsigned int            outSampleRate = 0,
-                            unsigned int            outChannel    = 0 )
+                            unsigned int            outChannel    = 0,
+                            unsigned int            outMaxBitrate = 0 )
                                                             throw ( Exception )
             
                     : AudioEncoder ( as,
@@ -265,7 +249,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
                                      outSampleRate,
                                      outChannel )
         {
-            init( sink);
+            init( sink, outMaxBitrate);
         }
 
         /**
@@ -281,7 +265,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
             if( encoder.isOpen() ) {
                 throw Exception(__FILE__, __LINE__, "don't copy open encoders");
             }
-            init( encoder.sink.get());
+            init( encoder.sink.get(), encoder.getOutMaxBitrate() );
         }
 
         /**
@@ -315,10 +299,22 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
             if ( this != &encoder ) {
                 strip();
                 AudioEncoder::operator=( encoder);
-                init( encoder.sink.get());
+                init( encoder.sink.get(), encoder.getOutMaxBitrate() );
             }
 
             return *this;
+        }
+
+        /**
+         *  Get the maximum bit rate of the output in kbits/sec,
+         *  for fixed / average bitrate encodings.
+         *
+         *  @return the maximum bit rate of the output, or 0 if not set.
+         */
+        inline unsigned int
+        getOutMaxBitrate ( void ) const        throw ()
+        {
+            return outMaxBitrate;
         }
 
         /**
@@ -445,6 +441,9 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.7  2002/08/20 19:35:37  darkeye
+  added possibility to specify maximum bitrate for Ogg Vorbis streams
+
   Revision 1.6  2002/07/20 16:37:06  darkeye
   added fault tolerance in case a server connection is dropped
 

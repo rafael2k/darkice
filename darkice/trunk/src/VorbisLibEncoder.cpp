@@ -59,6 +59,56 @@ static const char fileid[] = "$Id$";
 /* =============================================================  module code */
 
 /*------------------------------------------------------------------------------
+ *  Initialize the encoder
+ *----------------------------------------------------------------------------*/
+void
+VorbisLibEncoder :: init ( Sink           * sink,
+                           unsigned int     outMaxBitrate )
+                                                            throw ( Exception )
+{
+    this->sink          = sink;
+    this->outMaxBitrate = outMaxBitrate;
+
+    if ( getInBitsPerSample() != 16 && getInBitsPerSample() != 8 ) {
+        throw Exception( __FILE__, __LINE__,
+                         "specified bits per sample not supported",
+                         getInBitsPerSample() );
+    }
+
+    if ( getInChannel() != 1 && getInChannel() != 2 ) {
+        throw Exception( __FILE__, __LINE__,
+                         "unsupported number of channels for the encoder",
+                         getInChannel() );
+    }
+    if ( getInChannel() != getOutChannel() ) {
+        throw Exception( __FILE__, __LINE__,
+                         "different number of input and output channels",
+                         getOutChannel() );
+    }
+
+    if ( getOutSampleRate() == getInSampleRate() ) {
+        resampleRatio = 1;
+        converter     = 0;
+    } else {
+        resampleRatio = ( (double) getOutSampleRate() /
+                          (double) getInSampleRate() );
+        // open the aflibConverter in
+        // - high quality
+        // - not linear (quadratic) interpolation
+        // - not filter interpolation
+        converter = new aflibConverter( true, true, false);
+    }
+
+    if ( getInChannel() != getOutChannel() ) {
+        throw Exception( __FILE__, __LINE__,
+                         "different in and out channels not supported");
+    }
+
+    encoderOpen = false;
+}
+
+
+/*------------------------------------------------------------------------------
  *  Open an encoding session
  *----------------------------------------------------------------------------*/
 bool
@@ -75,28 +125,33 @@ VorbisLibEncoder :: open ( void )
 
     switch ( getOutBitrateMode() ) {
 
-        case cbr:
+        case cbr: {
+                int     maxBitrate = getOutMaxBitrate() * 1000;
+                if ( !maxBitrate ) {
+                    maxBitrate = -1;
+                }
+                if ( (ret = vorbis_encode_init( &vorbisInfo,
+                                                getInChannel(),
+                                                getOutSampleRate(),
+                                                -1,
+                                                getOutBitrate() * 1000,
+                                                maxBitrate)) ) {
+                    throw Exception( __FILE__, __LINE__,
+                                     "vorbis encode init error", ret);
+                }
+            } break;
+
+        case abr:
+            /* set non-managed VBR around the average bitrate */
             ret = vorbis_encode_setup_managed( &vorbisInfo,
                                                getInChannel(),
                                                getOutSampleRate(),
                                                -1,
                                                getOutBitrate() * 1000,
-                                               -1)
-               || vorbis_encode_ctl( &vorbisInfo, OV_ECTL_RATEMANAGE_AVG, NULL)
+                                               -1 )
+               || vorbis_encode_ctl( &vorbisInfo, OV_ECTL_RATEMANAGE_SET, NULL)
                || vorbis_encode_setup_init( &vorbisInfo);
             if ( ret ) {
-                throw Exception( __FILE__, __LINE__,
-                                 "vorbis encode init error", ret);
-            }
-            break;
-
-        case abr:
-            if ( (ret = vorbis_encode_init( &vorbisInfo,
-                                            getInChannel(),
-                                            getOutSampleRate(),
-                                            -1,
-                                            getOutBitrate() * 1000,
-                                            -1 )) ) {
                 throw Exception( __FILE__, __LINE__,
                                  "vorbis encode init error", ret);
             }
@@ -184,12 +239,6 @@ VorbisLibEncoder :: write ( const void    * buf,
     unsigned int    bitsPerSample = getInBitsPerSample();
     unsigned int    channels      = getInChannel();
 
-    if ( channels != 1 && channels != 2 ) {
-        throw Exception( __FILE__, __LINE__,
-                         "unsupported number of channels for the encoder",
-                         channels );
-    }
- 
     unsigned int    sampleSize = (bitsPerSample / 8) * channels;
     unsigned char * b = (unsigned char*) buf;
     unsigned int    processed = len - (len % sampleSize);
@@ -319,6 +368,9 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.13  2002/08/20 19:35:37  darkeye
+  added possibility to specify maximum bitrate for Ogg Vorbis streams
+
   Revision 1.12  2002/08/03 10:30:46  darkeye
   resampling bugs fixed for vorbis streams
 
