@@ -183,6 +183,7 @@ DarkIce :: configIceCast (  const Config      & config,
             break;
         }
 
+        unsigned int    sampleRate      = 0;
         unsigned int    bitrate         = 0;
         const char    * server          = 0;
         unsigned int    port            = 0;
@@ -197,6 +198,8 @@ DarkIce :: configIceCast (  const Config      & config,
         unsigned int    lowpass         = 0;
         unsigned int    highpass        = 0;
 
+        str         = cs->get( "sampleRate");
+        sampleRate  = str ? Util::strToL( str) : dsp->getSampleRate();
         str         = cs->getForSure("bitrate", " missing in section ", stream);
         bitrate     = Util::strToL( str);
         server      = cs->getForSure( "server", " missing in section ", stream);
@@ -243,7 +246,7 @@ DarkIce :: configIceCast (  const Config      & config,
         audioOuts[u].encoder = new LameLibEncoder( audioOuts[u].server.get(),
                                                    dsp.get(),
                                                    bitrate,
-                                                   dsp->getSampleRate(),
+                                                   sampleRate,
                                                    dsp->getChannel(),
                                                    lowpass,
                                                    highpass );
@@ -366,6 +369,7 @@ DarkIce :: configShoutCast (    const Config      & config,
             break;
         }
 
+        unsigned int    sampleRate      = 0;
         unsigned int    bitrate         = 0;
         const char    * server          = 0;
         unsigned int    port            = 0;
@@ -380,6 +384,8 @@ DarkIce :: configShoutCast (    const Config      & config,
         const char    * aim             = 0;
         const char    * icq             = 0;
 
+        str         = cs->get( "sampleRate");
+        sampleRate  = str ? Util::strToL( str) : dsp->getSampleRate();
         str         = cs->getForSure("bitrate", " missing in section ", stream);
         bitrate     = Util::strToL( str);
         server      = cs->getForSure( "server", " missing in section ", stream);
@@ -424,7 +430,7 @@ DarkIce :: configShoutCast (    const Config      & config,
         audioOuts[u].encoder = new LameLibEncoder( audioOuts[u].server.get(),
                                                    dsp.get(),
                                                    bitrate,
-                                                   dsp->getSampleRate(),
+                                                   sampleRate,
                                                    dsp->getChannel(),
                                                    lowpass,
                                                    highpass );
@@ -568,6 +574,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.20  2001/10/19 09:03:39  darkeye
+  added support for resampling mp3 streams
+
   Revision 1.19  2001/09/14 19:31:06  darkeye
   added IceCast2 / vorbis support
 

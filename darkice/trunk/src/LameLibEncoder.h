@@ -124,11 +124,6 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                                  getInBitsPerSample() );
             }
 
-            if ( getOutSampleRate() != getInSampleRate() ) {
-                throw Exception( __FILE__, __LINE__,
-                              "different in and out sample rate not supported");
-            }
-
             if ( getInChannel() != getOutChannel() ) {
                 throw Exception( __FILE__, __LINE__,
                                  "different in and out channels not supported");
@@ -462,6 +457,9 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.8  2001/10/19 09:03:39  darkeye
+  added support for resampling mp3 streams
+
   Revision 1.7  2001/09/15 11:35:08  darkeye
   minor fixes
 

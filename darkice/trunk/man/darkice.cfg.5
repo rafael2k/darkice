@@ -109,6 +109,10 @@ Mount point for the stream on the server
 Optional values:
 
 .TP
+.I sampleRate
+The sample rate of the encoded mp3 output. If not specified, defaults
+to the value of the input sample rate.
+.TP
 .I name
 Name of the stream
 .TP
@@ -226,6 +230,10 @@ server
 Optional values:
 
 .TP
+.I sampleRate
+The sample rate of the encoded mp3 output. If not specified, defaults
+to the value of the input sample rate.
+.TP
 .I name
 Name of the stream
 .TP
@@ -260,7 +268,7 @@ A sample configuration file follows. This file makes
 .B DarkIce
 stream for 1 minute (60 seconds) from the audio device
 .I /dev/dsp
-at 22kHz, 16 bit stereo.
+at 22.05kHz, 16 bit stereo.
 It will build up a connection to the
 .B IceCast
 server yp.yourserver.com on port 8000 with the password "hackme".
@@ -304,13 +312,14 @@ A bit more complicated sample follows. This one makes
 .B DarkIce
 stream for 1 hour (3600 seconds) from the audio device
 .I /dev/dsp
-at 22kHz, 16 bit stereo.
+at 44.1kHz, 16 bit stereo.
 
 It will build up a connection to an
 .B IceCast
 server yp.your-ice-server.com on port 8000 with the password "ice-hackme".
 The sound for this stream will be cut at 10500 Hz from above.
-The stream will be encoded to 96 kb/s mp3, and will be reachable at
+The stream will be encoded to 96 kb/s mp3 and resampled to 22.05kHz.
+The stream will be reachable at
 .I http://yp.your-ice-server.com:8000/live96
 to mp3 players.
 The encoding session will be stored by
@@ -338,6 +347,7 @@ bitsPerSample   = 16
 channel         = 2
 
 [icecast-0]
+sampleRate      = 22050
 bitrate         = 96
 lowpass         = 10500
 server          = yp.your-ice-server.com
