@@ -66,6 +66,7 @@ class CastSink : public Sink
         Ref<BufferedSink>   bufferedSink;
         char              * password;
         char              * mountPoint;
+        char              * remoteDumpFile;
 
         char              * name;
         char              * description;
@@ -80,6 +81,7 @@ class CastSink : public Sink
         init (  TcpSocket             * socket,
                 const char            * password,
                 const char            * mountPoint,
+                const char            * remoteDumpFile,
                 const char            * name,
                 const char            * description,
                 const char            * url,
@@ -113,6 +115,7 @@ class CastSink : public Sink
         CastSink (  TcpSocket         * socket,
                     const char        * password,
                     const char        * mountPoint,
+                    const char        * remoteDumpFile,
                     const char        * name,
                     const char        * description,
                     const char        * url,
@@ -125,6 +128,7 @@ class CastSink : public Sink
             init( socket,
                   password,
                   mountPoint,
+                  remoteDumpFile,
                   name,
                   description,
                   url,
@@ -142,6 +146,7 @@ class CastSink : public Sink
             init( cs.socket.get(),
                   cs.password,
                   cs.mountPoint,
+                  cs.remoteDumpFile,
                   cs.name,
                   cs.description,
                   cs.url,
@@ -168,6 +173,7 @@ class CastSink : public Sink
                 init( cs.socket.get(),
                       cs.password,
                       cs.mountPoint,
+                      cs.remoteDumpFile,
                       cs.name,
                       cs.description,
                       cs.url,
@@ -250,6 +256,13 @@ class CastSink : public Sink
 
 
         inline const char *
+        getRemoteDumpFile ( void ) const            throw ()
+        {
+            return remoteDumpFile;
+        }
+
+
+        inline const char *
         getName ( void ) const                      throw ()
         {
             return name;
@@ -314,6 +327,9 @@ class CastSink : public Sink
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/10 20:14:11  darkeye
+  added support for remote dump file
+
   Revision 1.2  2000/11/05 17:37:24  darkeye
   removed clone() functions
 

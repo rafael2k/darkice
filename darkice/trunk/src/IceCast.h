@@ -82,6 +82,7 @@ class IceCast : public CastSink
         IceCast (   TcpSocket         * socket,
                     const char        * password,
                     const char        * mountPoint,
+                    const char        * remoteDumpFile,
                     const char        * name,
                     const char        * description,
                     const char        * url,
@@ -93,6 +94,7 @@ class IceCast : public CastSink
               : CastSink( socket,
                           password,
                           mountPoint,
+                          remoteDumpFile,
                           name,
                           description,
                           url,
@@ -143,6 +145,9 @@ class IceCast : public CastSink
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/10 20:14:11  darkeye
+  added support for remote dump file
+
   Revision 1.2  2000/11/05 17:37:24  darkeye
   removed clone() functions
 

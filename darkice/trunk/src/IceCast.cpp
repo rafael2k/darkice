@@ -158,6 +158,13 @@ IceCast :: sendLogin ( void )                           throw ( Exception )
     str = getIsPublic() ? "yes" : "no";
     sink->write( str, strlen( str));
 
+    if ( getRemoteDumpFile() ) {
+        str = "\nx-audiocast-dumpfile: ";
+        sink->write( str, strlen( str));
+        str = getRemoteDumpFile();
+        sink->write( str, strlen( str));
+    }
+
     str = "\n\n";
     sink->write( str, strlen( str));
     sink->flush();
@@ -185,6 +192,9 @@ IceCast :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/10 20:14:11  darkeye
+  added support for remote dump file
+
   Revision 1.2  2000/11/05 14:08:28  darkeye
   changed builting to an automake / autoconf environment
 

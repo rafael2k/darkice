@@ -62,6 +62,7 @@ void
 CastSink :: init (  TcpSocket             * socket,
                     const char            * password,
                     const char            * mountPoint,
+                    const char            * remoteDumpFile,
                     const char            * name,
                     const char            * description,
                     const char            * url,
@@ -74,6 +75,7 @@ CastSink :: init (  TcpSocket             * socket,
     this->socket         = socket;
     this->password       = Util::strDup( password);
     this->mountPoint     = Util::strDup( mountPoint);
+    this->remoteDumpFile = remoteDumpFile ? Util::strDup( remoteDumpFile) : 0;
     this->name           = Util::strDup( name);
     this->description    = Util::strDup( description);
     this->url            = Util::strDup( url);
@@ -83,7 +85,7 @@ CastSink :: init (  TcpSocket             * socket,
     this->bufferDuration = bufferDuration;
 
     bufferedSink = new BufferedSink( socket,
-                                     (bitRate * 1024 / 8) * bufferDuration );
+                                     (bitRate * 1024 / 8) * bufferDuration);
 
 }
 
@@ -100,6 +102,9 @@ CastSink :: strip ( void )                          throw ( Exception )
 
     delete[] password;
     delete[] mountPoint;
+    if ( remoteDumpFile ) {
+        delete[] remoteDumpFile;
+    }
     delete[] name;
     delete[] description;
     delete[] url;
@@ -136,8 +141,11 @@ CastSink :: open ( void )                       throw ( Exception )
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:48  darkeye
-  Initial revision
+  Revision 1.2  2000/11/10 20:14:11  darkeye
+  added support for remote dump file
+
+  Revision 1.1.1.1  2000/11/05 10:05:48  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/
