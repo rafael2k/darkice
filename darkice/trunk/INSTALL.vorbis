@@ -18,18 +18,18 @@ options.
 Grab the latest Ogg Vorbis tarballs from
 http://www.xiph.org/ogg/vorbis/download.html
 
-I took libogg-1.0rc2.tar.gz and libvorbis-1.0rc2.tar.gz. Go to the
+I took libogg-1.0rc3.tar.gz and libvorbis-1.0rc3.tar.gz. Go to the
 directory where you saved them, and issue the following commands:
 
-tar xfz libogg-1.0rc2.tar.gz
-cd libogg-1.0rc2
+tar xfz libogg-1.0rc3.tar.gz
+cd libogg-1.0rc3
 ./configure --prefix=/usr
 make
 make install
 cd ..
 
-tar xfz libvorbis-1.0rc2.tar.gz
-cd libvorbis-1.0rc2
+tar xfz libvorbis-1.0rc3.tar.gz
+cd libvorbis-1.0rc3
 ./configure --prefix=/usr
 make
 make install
