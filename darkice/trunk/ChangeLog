@@ -1,3 +1,9 @@
+DarkIce 0.7
+
+    o added support for FreeBSD
+      thanks to Robin P. Blanchard, <Robin_Blanchard@gactr.uga.edu>
+
+
 18-09-2001: DarkIce 0.6 released
 
     o added support for IceCast2 server with Ogg Vorbis streaming

@@ -44,6 +44,12 @@
 #error need unistd.h
 #endif
 
+#ifdef HAVE_STRING_H
+#include <string.h>
+#else
+#error need string.h
+#endif
+
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #else
@@ -278,6 +284,9 @@ OssDspSource :: close ( void )                  throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.10  2001/09/26 16:55:30  darkeye
+  BSD port
+
   Revision 1.9  2001/09/11 15:05:21  darkeye
   added Solaris support
 
