@@ -208,6 +208,7 @@ TcpSocket :: open ( void )                       throw ( Exception )
 
     if ( connect( sockfd, (struct sockaddr*)&addr, sizeof(addr)) == -1 ) {
         ::close( sockfd);
+        sockfd = 0;
         throw Exception( __FILE__, __LINE__, "connect error", errno);
     }
 
@@ -348,6 +349,9 @@ TcpSocket :: close ( void )                          throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.6  2001/09/18 16:44:10  darkeye
+  TcpSocket did not report closed state when could not connect()
+
   Revision 1.5  2001/08/30 17:25:56  darkeye
   renamed configure.h to config.h
 
