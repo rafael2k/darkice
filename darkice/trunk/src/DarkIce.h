@@ -41,6 +41,16 @@
 
 /* ============================================================ include files */
 
+#ifdef HAVE_CONFIG_H
+#include "configure.h"
+#endif
+
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#else
+#error need unistd.h
+#endif
+
 #include <iostream.h>
 
 #include "Referable.h"
@@ -82,6 +92,7 @@ class DarkIce : public virtual Referable
             Ref<TcpSocket>          socket;
             Ref<IceCast>            ice;
             Ref<Connector>          shoutConnector;
+            pid_t                   pid;
         } Output;
 
 
@@ -164,6 +175,9 @@ class DarkIce : public virtual Referable
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/10 20:16:21  darkeye
+  first real tests with multiple streaming
+
   Revision 1.2  2000/11/09 22:09:46  darkeye
   added multiple outputs
   added configuration reading

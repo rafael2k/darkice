@@ -38,12 +38,6 @@
 #include "configure.h"
 #endif
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#else
-#error need unistd.h
-#endif
-
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #else
@@ -153,9 +147,13 @@ DarkIce :: DarkIce ( int        argc,
 void
 DarkIce :: init ( const Config      & config )              throw ( Exception )
 {
+    unsigned int             bufferSecs;
     const ConfigSection    * cs;
     const char             * str;
-    unsigned int             u, v, w;
+    unsigned int             sampleRate;
+    unsigned int             bitsPerSample;
+    unsigned int             channel;
+    const char             * device;
     int                      i;
 
     // the [general] section
@@ -164,6 +162,8 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
     }
     str = cs->getForSure( "duration", " missing in section [general]");
     duration = Util::strToL( str);
+    str = cs->getForSure( "bufferSecs", " missing in section [general]");
+    bufferSecs = Util::strToL( str);
 
 
     // the [input] section
@@ -172,17 +172,17 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
     }
     
     str = cs->getForSure( "sampleRate", " missing in section [input]");
-    u = Util::strToL( str);
-
+    sampleRate = Util::strToL( str);
     str = cs->getForSure( "bitsPerSample", " missing in section [input]");
-    v = Util::strToL( str);
-
+    bitsPerSample = Util::strToL( str);
     str = cs->getForSure( "channel", " missing in section [input]");
-    w = Util::strToL( str);
+    channel = Util::strToL( str);
+    device = cs->getForSure( "device", " missing in section [input]");
 
-    str = cs->getForSure( "device", " missing in section [input]");
-
-    dsp             = new OssDspSource( str, u, v, w);
+    dsp             = new OssDspSource( device,
+                                        sampleRate,
+                                        bitsPerSample,
+                                        channel );
     encConnector    = new Connector( dsp.get());
 
 
@@ -202,17 +202,20 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
             break;
         }
 
-        const char    * encoder     = 0;
-        unsigned int    bitrate     = 0;
-        const char    * server      = 0;
-        unsigned int    port        = 0;
-        const char    * password    = 0;
-        const char    * mountPoint  = 0;
-        const char    * name        = 0;
-        const char    * description = 0;
-        const char    * url         = 0;
-        const char    * genre       = 0;
-        bool            isPublic    = false;
+        const char    * encoder         = 0;
+        unsigned int    bitrate         = 0;
+        const char    * server          = 0;
+        unsigned int    port            = 0;
+        const char    * password        = 0;
+        const char    * mountPoint      = 0;
+        const char    * remoteDumpFile  = 0;
+        const char    * name            = 0;
+        const char    * description     = 0;
+        const char    * url             = 0;
+        const char    * genre           = 0;
+        bool            isPublic        = false;
+        unsigned int    lowpass         = 0;
+        unsigned int    highpass        = 0;
 
         encoder     = cs->getForSure( "encoder", " missing in section ", lame);
         str         = cs->getForSure( "bitrate", " missing in section ", lame);
@@ -222,12 +225,17 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
         port        = Util::strToL( str);
         password    = cs->getForSure( "password", " missing in section ", lame);
         mountPoint  = cs->getForSure( "mountPoint"," missing in section ",lame);
+        remoteDumpFile = cs->get( "remoteDumpFile");
         name        = cs->getForSure( "name", " missing in section ", lame);
         description = cs->getForSure("description"," missing in section ",lame);
         url         = cs->getForSure( "url", " missing in section ", lame);
         genre       = cs->getForSure( "genre", " missing in section ", lame);
         str         = cs->getForSure( "public", " missing in section ", lame);
         isPublic    = Util::strEq( str, "yes") ? true : false;
+        str         = cs->get( "lowpass");
+        lowpass     = str ? Util::strToL( str) : 0;
+        str         = cs->get( "highpass");
+        highpass    = str ? Util::strToL( str) : 0;
 
         // generate the pipe names
         char  pipeOutName[lameLen + pipeOutExtLen + 1];
@@ -239,6 +247,8 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
         Util::strCat( pipeInName, pipeInExt);
 
         // go on and create the things
+
+        outputs[i].pid = 0;
 
         // the pipes
         outputs[i].encOutPipe      = new PipeSource( pipeOutName);
@@ -262,26 +272,32 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
 
         // encoder related stuff
         outputs[i].encIn    = new BufferedSink( outputs[i].encInPipe.get(),
-                                                64 * 1024);
+                        bufferSecs * (bitsPerSample / 8) * channel * sampleRate,
+                                                (bitsPerSample / 8) * channel );
         encConnector->attach( outputs[i].encIn.get());
         outputs[i].encoder     = new LameEncoder( encoder,
                                         outputs[i].encInPipe->getFileName(),
                                         dsp.get(),
                                         outputs[i].encOutPipe->getFileName(),
-                                        bitrate );
+                                        bitrate,
+                                        sampleRate,
+                                        channel,
+                                        lowpass,
+                                        highpass );
 
 
         // streaming related stuff
         outputs[i].socket          = new TcpSocket( server, port);
         outputs[i].ice             = new IceCast( outputs[i].socket.get(),
-                                       password,
-                                       mountPoint,
-                                       name,
-                                       description,
-                                       url,
-                                       genre,
-                                       bitrate,
-                                       isPublic );
+                                                  password,
+                                                  mountPoint,
+                                                  remoteDumpFile,
+                                                  name,
+                                                  description,
+                                                  url,
+                                                  genre,
+                                                  bitrate,
+                                                  isPublic );
         outputs[i].shoutConnector  = new Connector( outputs[i].encOutPipe.get(),
                                                     outputs[i].ice.get());
     }
@@ -350,7 +366,7 @@ DarkIce :: shout ( unsigned int     ix )                throw ( Exception )
                                                 * (1024 / 8)
                                                 * duration,
                                                4096,
-                                               1,
+                                               10,
                                                0 );
 
     cout << len << " bytes transfered" << endl;
@@ -367,37 +383,40 @@ DarkIce :: shout ( unsigned int     ix )                throw ( Exception )
 int
 DarkIce :: run ( void )                             throw ( Exception )
 {
-    pid_t   pid;
+    int     i;
     
     cout << "DarkIce" << endl << endl << flush;
 
-    pid = fork();
+    for ( i = 0; i < noOutputs; ++i ) {
+        outputs[i].pid = fork();
 
-    if ( pid == -1 ) {
-        throw Exception( __FILE__, __LINE__, "fork error", errno);
-        
-    } else if ( pid == 0 ) {
-        // this is the child
-        int     i;
+        if ( outputs[i].pid == -1 ) {
+            throw Exception( __FILE__, __LINE__, "fork error", errno);
+            
+        } else if ( outputs[i].pid == 0 ) {
+            // this is the child
 
-        sleep ( 2 );
+            sleep ( 1 );
 
-        cout << "shouting" << endl << flush;
-        for ( i = 0; i < noOutputs; ++i ) {
+            cout << "shouting " << i << endl << flush;
             shout( i);
-        }
-        cout << "shouting ends" << endl << flush;
+            cout << "shouting ends " << i << endl << flush;
 
-        exit(0);
-    } else {
-        // this is the parent
+            exit(0);
+        }
+    }
+
+    // this is the parent
+
+    cout << "encoding" << endl << flush;
+    encode();
+    cout << "encoding ends" << endl << flush;
+
+    for ( i = 0; i < noOutputs; ++i ) {
         int     status;
 
-        cout << "encoding" << endl << flush;
-        encode();
-        cout << "encoding ends" << endl << flush;
+        waitpid( outputs[i].pid, &status, 0);
 
-        waitpid( pid, &status, 0);
         if ( !WIFEXITED(status) ) {
             throw Exception( __FILE__, __LINE__,
                              "child exited abnormally", WEXITSTATUS(status));
@@ -413,6 +432,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.5  2000/11/10 20:16:21  darkeye
+  first real tests with multiple streaming
+
   Revision 1.4  2000/11/09 22:09:46  darkeye
   added multiple outputs
   added configuration reading

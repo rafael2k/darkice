@@ -66,6 +66,10 @@ class BufferedSink : public Sink
         unsigned char     * buffer;
         unsigned char     * bufferEnd;
         unsigned int        bufferSize;
+        unsigned int        peak;
+        
+        unsigned int        chunkSize;
+        unsigned int        misalignment;
 
         unsigned char     * inp;
         unsigned char     * outp;
@@ -76,11 +80,12 @@ class BufferedSink : public Sink
 
         void
         init (  Sink              * sink,
-                unsigned int        size )          throw ( Exception );
+                unsigned int        size,
+                unsigned int        chunkSize )         throw ( Exception );
 
 
         void
-        strip ( void )                              throw ( Exception );
+        strip ( void )                                  throw ( Exception );
 
 
         inline unsigned char *
@@ -95,7 +100,42 @@ class BufferedSink : public Sink
 
             return p;
         }
-        
+
+
+        inline void
+        updatePeak ( void )
+        {
+            unsigned int    u;
+
+            u = outp <= inp ? inp - outp : (bufferEnd - outp) + (inp - buffer);
+            if ( peak < u ) {
+                peak = u;
+            }
+        }
+
+
+        inline bool
+        align ( void )
+        {
+            char    b[] = { 0 };
+
+            while ( misalignment ) {
+                if ( sink->canWrite( 0, 0) ) {
+                    unsigned int    ret;
+                    
+                    if ( !(ret = sink->write( b, 1)) ) {
+                        return false;
+                    }
+                    --misalignment;
+
+                } else {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
 
     protected:
 
@@ -122,9 +162,10 @@ class BufferedSink : public Sink
 
         inline 
         BufferedSink (  Sink              * sink,
-                        unsigned int        size )      throw ( Exception )
+                        unsigned int        size,
+                        unsigned int        chunkSize = 1 ) throw ( Exception )
         {
-            init( sink, size);
+            init( sink, size, chunkSize);
         }
 
 
@@ -140,6 +181,13 @@ class BufferedSink : public Sink
 
         virtual BufferedSink &
         operator= ( const BufferedSink &    bs )        throw ( Exception );
+
+
+        inline unsigned int
+        getPeak ( void ) const                          throw ()
+        {
+            return peak;
+        }
 
 
         inline virtual bool
@@ -198,6 +246,9 @@ class BufferedSink : public Sink
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/10 20:16:21  darkeye
+  first real tests with multiple streaming
+
   Revision 1.2  2000/11/05 17:37:24  darkeye
   removed clone() functions
 

@@ -89,18 +89,24 @@ static const char fileid[] = "$Id$";
  *----------------------------------------------------------------------------*/
 void
 BufferedSink :: init (  Sink          * sink,
-                        unsigned int    size )          throw ( Exception )
+                        unsigned int    size,
+                        unsigned int    chunkSize )     throw ( Exception )
 {
     if ( !sink ) {
         throw Exception( __FILE__, __LINE__, "no sink");
     }
 
-    this->sink       = sink;                    // create a reference
-    this->bufferSize = size;
-    this->buffer     = new unsigned char[bufferSize];
-    this->bufferEnd  = buffer + bufferSize;
-    this->inp        = buffer;
-    this->outp       = buffer;
+    this->sink         = sink;                    // create a reference
+    this->chunkSize    = chunkSize ? chunkSize : 1;
+    this->bufferSize   = size;
+    // make bufferSize a multiple of chunkSize
+    this->bufferSize  -= this->bufferSize % this->chunkSize;
+    this->peak         = 0;
+    this->misalignment = 0;
+    this->buffer       = new unsigned char[bufferSize];
+    this->bufferEnd    = buffer + bufferSize;
+    this->inp          = buffer;
+    this->outp         = buffer;
 }
 
 
@@ -110,8 +116,10 @@ BufferedSink :: init (  Sink          * sink,
 BufferedSink :: BufferedSink (  const BufferedSink &  buffer )
                                                         throw ( Exception )
 {
-    init( buffer.sink.get(), buffer.bufferSize);
+    init( buffer.sink.get(), buffer.bufferSize, buffer.chunkSize);
 
+    this->peak         = buffer.peak;
+    this->misalignment = buffer.misalignment;
     memcpy( this->buffer, buffer.buffer, this->bufferSize);
 }
 
@@ -141,8 +149,10 @@ BufferedSink :: operator= (     const BufferedSink &  buffer )
     if ( this != &buffer ) {
         strip();
         Sink::operator=( buffer );
-        init( buffer.sink.get(), buffer.bufferSize);
+        init( buffer.sink.get(), buffer.bufferSize, buffer.chunkSize);
         
+        this->peak         = buffer.peak;
+        this->misalignment = buffer.misalignment;
         memcpy( this->buffer, buffer.buffer, this->bufferSize);
     }
 
@@ -155,6 +165,8 @@ BufferedSink :: operator= (     const BufferedSink &  buffer )
  *  All data is consumed. The return value is less then bufferSize only
  *  if the BufferedSink's internal buffer is smaller than bufferSize,
  *  thus can't hold that much
+ *  The data to be stored is treated as parts with chunkSize size
+ *  Only full chunkSize sized parts are stored
  *----------------------------------------------------------------------------*/
 unsigned int
 BufferedSink :: store (     const void    * buffer,
@@ -176,47 +188,69 @@ BufferedSink :: store (     const void    * buffer,
     oldInp = inp;
     buf    = (const unsigned char *) buffer;
     
-    /* cut the front of the supplied buffer if it wouldn't fit */
+    // adjust so it is a multiple of chunkSize
+    bufferSize -= bufferSize % chunkSize;
+
+    // cut the front of the supplied buffer if it wouldn't fit
     if ( bufferSize > this->bufferSize ) {
-        size = this->bufferSize - 1;
-        buf += bufferSize - size;
+        size  = this->bufferSize - 1;
+        size -= size % chunkSize;       // keep it a multiple of chunkSize
+        buf  += bufferSize - size;
     } else {
         size = bufferSize;
     }
 
-    /* copy the data into the buffer */
+    // copy the data into the buffer
     i = bufferEnd - inp;
+    if ( (i % chunkSize) != 0 ) {
+        throw Exception( __FILE__, __LINE__, "copy quantity not aligned", i);
+    }
+
     if ( size <= i ) {
-        /* the place between inp and bufferEnd is
-         * big enough to hold the data */
+        // the place between inp and bufferEnd is
+        // big enough to hold the data
         
         memcpy( inp, buf, size);
         inp = slidePointer( inp, size);
 
-        /* adjust outp, lose the data that was overwritten, if any */
+        // adjust outp, lose the data that was overwritten, if any
         if ( outp > oldInp && outp <= inp ) {
-            outp = slidePointer( inp, 1);
+            outp = slidePointer( inp, chunkSize);
         }
 
     } else {
-        /* the place between inp and bufferEnd is not
-         * big enough to hold the data
-         * writing will take place in two turns, once from
-         * inp -> bufferEnd, then from buffer -> */
+        // the place between inp and bufferEnd is not
+        // big enough to hold the data
+        // writing will take place in two turns, once from
+        // inp -> bufferEnd, then from buffer ->
 
         memcpy( inp, buf, i);
         i = size - i;
+        if ( (i % chunkSize) != 0 ) {
+            throw Exception(__FILE__, __LINE__, "copy quantity not aligned", i);
+        }
         memcpy( this->buffer, buf, i);
         inp = slidePointer( this->buffer, i);
         
-        /* adjust outp, lose the data that was overwritten, if any */
+        // adjust outp, lose the data that was overwritten, if any
         if ( outp <= oldInp ) {
             if ( outp < inp ) {
-                outp = slidePointer( inp, 1);
+                outp = slidePointer( inp, chunkSize);
             }
         } else {
-            outp = slidePointer( inp, 1);
+            outp = slidePointer( inp, chunkSize);
         }
+    }
+
+    updatePeak();
+
+    if ( ((inp - this->buffer) % chunkSize) != 0 ) {
+        throw Exception( __FILE__, __LINE__,
+                         "inp not aligned", inp - this->buffer);
+    }
+    if ( ((outp - this->buffer) % chunkSize) != 0 ) {
+        throw Exception( __FILE__, __LINE__,
+                         "outp not aligned", outp - this->buffer);
     }
 
     return size;
@@ -232,7 +266,9 @@ BufferedSink :: write (    const void    * buf,
                            unsigned int    len )       throw ( Exception )
 {
     unsigned int    length;
-    
+    unsigned int    soFar;
+    unsigned char * b = (unsigned char *) buf;
+
     if ( !buf ) {
         throw Exception( __FILE__, __LINE__, "buf is null");
     }
@@ -241,43 +277,84 @@ BufferedSink :: write (    const void    * buf,
         return 0;
     }
 
-    /* try to write data from the buffer first, if any */
+    if ( !align() ) {
+        return 0;
+    }
+
+    // make it a multiple of chunkSize
+    len -= len % chunkSize;
+
+    // try to write data from the buffer first, if any
     if ( inp != outp ) {
-        unsigned int    size;
+        unsigned int    size  = 0;
+        unsigned int    total = 0;
 
         if ( outp > inp ) {
-            /* valuable data is between outp -> bufferEnd and buffer -> inp
-             * try to write the outp -> bufferEnd
-             * the rest will be written in the next if */
+            // valuable data is between outp -> bufferEnd and buffer -> inp
+            // try to write the outp -> bufferEnd
+            // the rest will be written in the next if
 
-            size    = bufferEnd - outp;
-            length  = sink->write( outp, size);
-            outp    = slidePointer( outp, length);
+            size    = bufferEnd - outp - 1;
+            size   -= size % chunkSize;
+            soFar   = 0;
+
+            while ( outp > inp && soFar < size && sink->canWrite( 0, 0) ) {
+                length  = sink->write( outp + soFar, size - soFar);
+                outp    = slidePointer( outp, length);
+                soFar  += length;
+            }
+
+            total += soFar;
         }
 
         if ( outp < inp ) {
-            /* valuable data is between outp and inp
-             * if the previous if wrote all data from the end
-             * this part will write the rest */
-            
+            // valuable data is between outp and inp
+            // if the previous if wrote all data from the end
+            // this part will write the rest
+
             size    = inp - outp;
-            length  = sink->write( outp, size);
-            outp    = slidePointer( outp, length);
+            soFar   = 0;
+
+            while ( soFar < size && sink->canWrite( 0, 0) ) {
+                length  = sink->write( outp + soFar, size - soFar);
+                outp    = slidePointer( outp, length);
+                soFar  += length;
+            }
+
+            total += soFar;
         }
+
+        while ( (outp - buffer) % chunkSize ) {
+            slidePointer( outp, 1);
+        }
+
+        // calulate the misalignment to chunkSize boundaries
+        misalignment = (chunkSize - (total % chunkSize)) % chunkSize;
     }
 
-    /* the internal buffer is empty, try to write the fresh data */
-    length = inp == outp ? sink->write( buf, len) : 0;
+    if ( !align() ) {
+        return 0;
+    }
+
+    // the internal buffer is empty, try to write the fresh data
+    soFar = 0;
+    if ( inp != outp ) {
+        while ( soFar < len && sink->canWrite( 0, 0) ) {
+            soFar += sink->write( b + soFar, len - soFar);
+        }
+    }
+    length = soFar;
+
+    // calulate the misalignment to chunkSize boundaries
+    misalignment = (chunkSize - (length % chunkSize)) % chunkSize;
 
     if ( length < len ) {
-        /* if not all fresh could be written, store the remains */
-
-        unsigned char     * b = (unsigned char *) buf;
+        // if not all fresh could be written, store the remains
 
         store( b + length, len - length);
     }
 
-    /* tell them we ate everything */
+    // tell them we ate everything up to chunkSize alignment
     return len;
 }
 
@@ -303,6 +380,9 @@ BufferedSink :: close ( void )                      throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/10 20:16:21  darkeye
+  first real tests with multiple streaming
+
   Revision 1.2  2000/11/05 14:08:27  darkeye
   changed builting to an automake / autoconf environment
 
