@@ -105,10 +105,10 @@ Connector :: operator= (    const Connector &   connector ) throw ( Exception )
     if ( this != &connector ) {
         unsigned int    u;
 
-        /* first free everything */
+        // first free everything
         strip();
 
-        /* then fill in */
+        // then fill in
         init( connector.source.get() );
 
         for ( u = 0; u < connector.numSinks; ++u ) {
@@ -232,7 +232,7 @@ Connector :: open ( void )                          throw ( Exception )
         }
     }
 
-    /* if not all could be opened, close those that were */
+    // if not all could be opened, close those that were
     if ( u < numSinks ) {
         unsigned int        v;
 
@@ -280,7 +280,7 @@ Connector :: transfer ( unsigned long       bytes,
         if ( source->canRead( sec, usec) ) {
             d = source->read( buf, bufSize);
 
-            /* check for EOF */
+            // check for EOF
             if ( d == 0 ) {
                 reportEvent( 3, "Connector :: transfer, EOF");
                 break;
@@ -290,7 +290,7 @@ Connector :: transfer ( unsigned long       bytes,
 
                 if ( sinks[u]->canWrite( sec, usec) ) {
                     try {
-                        /* we expect the sink to accept all data written */
+                        // we expect the sink to accept all data written
                         e = sinks[u]->write( buf, d);
                     } catch ( Exception     & e ) {
                         sinks[u]->close();
@@ -306,8 +306,8 @@ Connector :: transfer ( unsigned long       bytes,
                             delete[] buf;
                             return b;
                         }
-                        /* with the call to detach, numSinks gets 1 lower,
-                         * and the next sink comes to sinks[u] */
+                        // with the call to detach, numSinks gets 1 lower,
+                        // and the next sink comes to sinks[u]
                         --u;
                     }
                 }
@@ -346,6 +346,9 @@ Connector :: close ( void )                         throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.11  2002/10/20 20:42:56  darkeye
+  cosmetic changes
+
   Revision 1.10  2002/10/19 12:24:55  darkeye
   anged internals so that now each encoding/server connection is
   a separate thread
