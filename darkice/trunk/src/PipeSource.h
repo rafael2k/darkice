@@ -11,7 +11,6 @@
    
    Abstract : 
 
-     FIFO pipe data input
 
    Copyright notice:
 
@@ -52,9 +51,12 @@
 
 /* =============================================================== data types */
 
-/*------------------------------------------------------------------------------
- *  
- *----------------------------------------------------------------------------*/
+/**
+ *  FIFO pipe data input
+ *
+ *  @author  $Author$
+ *  @version $Revision$
+ */
 class PipeSource : public FileSource
 {
     private:
@@ -62,6 +64,11 @@ class PipeSource : public FileSource
 
     protected:
 
+        /**
+         *  Default constructor. Always throws an Exception.
+         *  
+         *  @exception Exception
+         */
         inline
         PipeSource ( void )                             throw ( Exception )
         {
@@ -71,37 +78,63 @@ class PipeSource : public FileSource
 
     public:
 
+        /**
+         *  Constructor by a file name.
+         *
+         *  @param name name of the file to be represented by the object.
+         *  @exception Exception
+         */
         inline
         PipeSource (  const char        * name )        throw ( Exception )
             : FileSource( name )
         {
         }
 
-
+        /**
+         *  Copy constructor.
+         *
+         *  @param ps the PipeSource to copy.
+         *  @exception Exception
+         */
         inline
         PipeSource (  const PipeSource &    ps )        throw ( Exception )
             : FileSource( ps )
         {
         }
 
-
+        /**
+         *  Assignment operator.
+         *
+         *  @param ps the PipeSource to assign to this object.
+         *  @return a reference to this object.
+         *  @exception Exception
+         */
         inline virtual PipeSource &
-        operator= ( const PipeSource &    fs )          throw ( Exception )
+        operator= ( const PipeSource &    ps )          throw ( Exception )
         {
-            if ( this != &fs ) {
-                FileSource::operator=( fs );
+            if ( this != &ps ) {
+                FileSource::operator=( ps );
             }
 
             return *this;
         }
 
-
+        /**
+         *  Destructor.
+         *
+         *  @exception Exception
+         */
         virtual inline
         ~PipeSource( void )                             throw ( Exception )
         {
         }
 
-
+        /**
+         *  Create the pipe.
+         *
+         *  @return true if creation was successful, false otherwise.
+         *  @exception Exception
+         */
         virtual bool
         create ( void )                                 throw ( Exception );
 };
@@ -122,6 +155,9 @@ class PipeSource : public FileSource
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/12 13:31:40  darkeye
+  added kdoc-style documentation comments
+
   Revision 1.2  2000/11/05 17:37:24  darkeye
   removed clone() functions
 

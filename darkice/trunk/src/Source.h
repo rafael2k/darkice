@@ -9,26 +9,21 @@
    Author   : $Author$
    Location : $Source$
    
-   Abstract : 
-
-     A general data source
-
    Copyright notice:
 
-     This program is free software; you can redistribute it and/or
-     modify it under the terms of the GNU General Public License  
-     as published by the Free Software Foundation; either version 2
-     of the License, or (at your option) any later version.
-    
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of 
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-     GNU General Public License for more details.
-    
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307,
-     USA.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License  
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+   
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of 
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+    GNU General Public License for more details.
+   
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ------------------------------------------------------------------------------*/
 #ifndef SOURCE_H
@@ -53,27 +48,46 @@
 
 /* =============================================================== data types */
 
-/*------------------------------------------------------------------------------
- *  
- *----------------------------------------------------------------------------*/
+/**
+ *  A general data source
+ *
+ *  @author  $Author$
+ *  @version $Revision$
+ */
 class Source : public virtual Referable
 {
     private:
 
     protected:
 
+        /**
+         *  Default Constructor.
+         *
+         *  @exception Exception
+         */
         inline
         Source ( void )                             throw ( Exception )
         {
         }
 
-
+        /**
+         *  Copy Constructor.
+         *
+         *  @param source the object to copy.
+         *  @exception Exception
+         */
         inline
         Source (    const Source &  source )        throw ( Exception )
         {
         }
 
-
+        /**
+         *  Assignment operator.
+         *
+         *  @param source the object to assign to this one.
+         *  @return a reference to this object.
+         *  @exception Exception
+         */
         inline virtual Source &
         operator= ( const Source &  source )        throw ( Exception )
         {
@@ -83,30 +97,64 @@ class Source : public virtual Referable
 
     public:
 
+        /**
+         *  Destructor.
+         *
+         *  @exception Exception
+         */
         inline virtual
         ~Source ( void )                            throw ( Exception )
         {
         }
 
-
+        /**
+         *  Open the Source.
+         *
+         *  @return true if opening was successful, false otherwise
+         *  @exception Exception
+         */
         virtual bool
         open ( void )                           throw ( Exception )     = 0;
 
-
+        /**
+         *  Check if the Source is open.
+         *
+         *  @return true if the Source is open, false otherwise.
+         */
         virtual bool
         isOpen ( void ) const                   throw ()                = 0;
 
-
+        /**
+         *  Check if the Source can be read from.
+         *  Blocks until the specified time for data to be available.
+         *
+         *  @param sec the maximum seconds to block.
+         *  @param usec micro seconds to block after the full seconds.
+         *  @return true if the Source is ready to be read from,
+         *          false otherwise.
+         *  @exception Exception
+         */
         virtual bool
         canRead (  unsigned int    sec,
                    unsigned int    usec )       throw ( Exception )     = 0;
 
-
+        /**
+         *  Read from the Source.
+         *
+         *  @param buf the buffer to read into.
+         *  @param len the number of bytes to read into buf
+         *  @return the number of bytes read (may be less than len).
+         *  @exception Exception
+         */
         virtual unsigned int
         read (     void          * buf,
                    unsigned int    len )        throw ( Exception )     = 0;
 
-
+        /**
+         *  Close the Source.
+         *
+         *  @exception Exception
+         */
         virtual void
         close ( void )                          throw ( Exception )     = 0;
 };
@@ -127,8 +175,11 @@ class Source : public virtual Referable
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:54  darkeye
-  Initial revision
+  Revision 1.2  2000/11/12 13:31:40  darkeye
+  added kdoc-style documentation comments
+
+  Revision 1.1.1.1  2000/11/05 10:05:54  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/
