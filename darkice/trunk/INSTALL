@@ -24,7 +24,7 @@ for this command I get the response:
 compat-egcs-6.2-1.1.2.14
 
 Grab the latest lame source tarball from
-ftp://ftp.sourceforge.net/projects/lame
+ftp://lame.sourceforge.net/pub/lame/
 
 I took lame lame3.89beta.tar.gz. Go to the directory where you saved it,
 and issue the following commands:
