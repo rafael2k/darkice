@@ -9,7 +9,7 @@ AC_PROG_INSTALL
 
 dnl AC_STDC_HEADERS
 AC_HAVE_HEADERS(errno.h fcntl.h stdio.h stdlib.h string.h unistd.h limits.h)
-AC_HAVE_HEADERS(signal.h time.h sys/time.h sys/types.h sys/wait.h)
+AC_HAVE_HEADERS(signal.h time.h sys/time.h sys/types.h sys/wait.h math.h)
 AC_HAVE_HEADERS(netdb.h netinet/in.h sys/ioctl.h sys/socket.h sys/stat.h)
 AC_HAVE_HEADERS(sched.h)
 AC_HAVE_HEADERS(sys/soundcard.h sys/audio.h)
@@ -95,6 +95,23 @@ else
     AC_MSG_RESULT( [building without Ogg Vorbis] )
 fi
 
+
+dnl-----------------------------------------------------------------------------
+dnl  find out which vorbis libs to use: rc2 or rc3
+dnl-----------------------------------------------------------------------------
+AC_ARG_WITH( vorbis-lib,
+[  --with-vorbis-lib=VERSION   use vorbis lib version rc2 or rc3 [rc3] ],
+    USE_VORBIS_LIB=${withval}, USE_VORBIS_LIB="rc3" )
+
+if test "x${USE_VORBIS_LIB}" != "xrc2" -a "x${USE_VORBIS_LIB}" != "xrc3" ; then
+    AC_MSG_ERROR( [bad vorbis lib version specified: ${USE_VORBIS_LIB}])
+fi
+if test "x${USE_VORBIS_LIB}" = "xrc2" ; then
+    AC_DEFINE( VORBIS_LIB_RC2, 1, [use vorbis library verison rc2])
+fi
+if test "x${USE_VORBIS_LIB}" = "xrc3" ; then
+    AC_DEFINE( VORBIS_LIB_RC3, 1, [use vorbis library version rc3])
+fi
 
 dnl make sure at least one of lame and vorbis present
 if test "x${LAME_INCFLAGS}" = "x" -a "x${VORBIS_INCFLAGS}" = "x" ; then
