@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/DarkIce.cpp)
-AM_INIT_AUTOMAKE(darkice, 0.13)
+AM_INIT_AUTOMAKE(darkice, 0.13.1beta)
 
 AM_CONFIG_HEADER(config.h)
 
@@ -18,10 +18,18 @@ AC_HEADER_SYS_WAIT()
 AC_TYPE_PID_T()
 AC_TYPE_SIZE_T()
 
+
 AC_CHECK_LIB( socket, socket)
 AC_CHECK_LIB( nsl, gethostbyname)
 AC_CHECK_LIB( rt, sched_getscheduler)
-AC_CHECK_LIB( pthread, pthread_create)
+
+dnl-----------------------------------------------------------------------------
+dnl funky posix threads checking, thanks to
+dnl Steven G. Johnson <stevenj@alum.mit.edu>
+dnl and Alejandro Forero Cuervo <bachue@bachue.com>
+dnl see http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html
+dnl-----------------------------------------------------------------------------
+ACX_PTHREAD(, AC_MSG_ERROR( [pthread library not found] ))
 
 SYSTEM_INCLUDE=/usr/include
 

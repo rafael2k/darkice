@@ -1,7 +1,7 @@
 bin_PROGRAMS = darkice
-CXXFLAGS = -O2 -pedantic -Wall
+CXXFLAGS = -O2 -pedantic -Wall @PTHREAD_CFLAGS@
 INCLUDES = @LAME_INCFLAGS@ @VORBIS_INCFLAGS@
-LDADD = @LAME_LDFLAGS@ @VORBIS_LDFLAGS@
+LDADD = @PTHREAD_LIBS@ @LAME_LDFLAGS@ @VORBIS_LDFLAGS@
 
 darkice_SOURCES =   AudioEncoder.h\
                     AudioSource.h\
