@@ -15,19 +15,92 @@ AC_HAVE_HEADERS(sched.h)
 AC_HAVE_HEADERS(sys/soundcard.h sys/audio.h)
 AC_HEADER_SYS_WAIT()
 
-AC_CHECK_HEADERS(lame/lame.h)
-AC_CHECK_HEADERS(vorbis/vorbisenc.h)
-
 AC_TYPE_PID_T()
 AC_TYPE_SIZE_T()
 
 AC_CHECK_LIB( socket, socket)
 AC_CHECK_LIB( nsl, gethostbyname)
 AC_CHECK_LIB( rt, sched_getscheduler)
-AC_CHECK_LIB( ogg, ogg_stream_init)
-AC_CHECK_LIB( vorbis, vorbis_info_init)
-AC_CHECK_LIB( vorbisenc, vorbis_encode_init)
-AC_CHECK_LIB( mp3lame, lame_init)
+
+
+dnl-----------------------------------------------------------------------------
+dnl link the lame library if requested
+dnl-----------------------------------------------------------------------------
+AC_SUBST( LAME_INCFLAGS)
+AC_SUBST( LAME_LDFLAGS)
+
+AC_ARG_WITH( lame,
+[  --with-lame             use lame for encoding mp3 streams [yes] ],
+    USE_LAME=${withval}, USE_LAME="yes" )
+AC_ARG_WITH( lame-prefix,
+[  --with-lame-prefix=DIR  alternate location for lame [/usr]
+                              look for libraries in LAME-PREFIX/lib,
+                              for headers in LAME-PREFIX/include],
+    CONFIG_LAME_PREFIX="${withval}", CONFIG_LAME_PREFIX="/usr")
+
+if test "x${USE_LAME}" = "xyes" ; then
+    AC_MSG_CHECKING( [for lame library at ${CONFIG_LAME_PREFIX}] )
+    LA_SEARCH_LIB( LAME_LIB_LOC, LAME_INC_LOC, libmp3lame.a, lame/lame.h,
+                   ${CONFIG_LAME_PREFIX})
+    if test "x${LAME_LIB_LOC}" != "x" ; then
+        AC_DEFINE( HAVE_LAME_LIB, 1, [build with lame library] )
+        LAME_INCFLAGS="-I${LAME_INC_LOC}"
+        LAME_LDFLAGS="-L${LAME_LIB_LOC} -lmp3lame"
+        AC_MSG_RESULT( [found at ${CONFIG_LAME_PREFIX}] )
+    else
+        AC_MSG_WARN( [not found, building without lame])
+    fi
+else
+    AC_MSG_RESULT( [building without lame] )
+fi
+
+
+dnl-----------------------------------------------------------------------------
+dnl link the ogg vorbis libraries if requested
+dnl-----------------------------------------------------------------------------
+AC_SUBST( VORBIS_INCFLAGS)
+AC_SUBST( VORBIS_LDFLAGS)
+
+AC_ARG_WITH( vorbis,
+[  --with-vorbis           use Ogg Vorbis for encoding vorbis streams [yes] ],
+    USE_VORBIS=${withval}, USE_VORBIS="yes" )
+AC_ARG_WITH( vorbis-prefix,
+[  --with-vorbis-prefix=DIR    alternate location for vorbis [/usr]
+                              look for libraries in VORBIS-PREFIX/lib,
+                              for headers in VORBIS-PREFIX/include],
+    CONFIG_VORBIS_PREFIX="${withval}", CONFIG_VORBIS_PREFIX="/usr")
+
+if test "x${USE_VORBIS}" = "xyes" ; then
+    AC_MSG_CHECKING( [for vorbis libraries at ${CONFIG_VORBIS_PREFIX}] )
+    LA_SEARCH_LIB( OGG_LIB_LOC, OGG_INC_LOC, libogg.a, ogg/ogg.h,
+                   ${CONFIG_VORBIS_PREFIX})
+    LA_SEARCH_LIB( VORBIS_LIB_LOC, VORBIS_INC_LOC, libvorbis.a, vorbis/codec.h,
+                   ${CONFIG_VORBIS_PREFIX})
+    LA_SEARCH_LIB( VORBISENC_LIB_LOC, VORBISENC_INC_LOC,
+                   libvorbisenc.a, vorbis/vorbisenc.h,
+                   ${CONFIG_VORBIS_PREFIX})
+
+    if test "x${OGG_LIB_LOC}" != "x" -a \
+            "x${VORBIS_LIB_LOC}" != "x" -a \
+            "x${VORBISENC_LIB_LOC}" != "x" ; then
+
+        AC_DEFINE( HAVE_VORBIS_LIB, 1, [build with Ogg Vorbis library] )
+        VORBIS_INCFLAGS="-I${OGG_INC_LOC}"
+        VORBIS_LDFLAGS="-L${OGG_LIB_LOC} -logg -lvorbis -lvorbisenc"
+        AC_MSG_RESULT( [found at ${CONFIG_VORBIS_PREFIX}] )
+    else
+        AC_MSG_WARN( [not found, building without Ogg Vorbis])
+    fi
+else
+    AC_MSG_RESULT( [building without Ogg Vorbis] )
+fi
+
+
+dnl make sure at least one of lame and vorbis present
+if test "x${LAME_INCFLAGS}" = "x" -a "x${VORBIS_INCFLAGS}" = "x" ; then
+    AC_MSG_ERROR( [neither lame nor Ogg Vorbis configured])
+fi
+
 
 AC_OUTPUT(Makefile src/Makefile man/Makefile)
 

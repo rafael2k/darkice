@@ -40,10 +40,10 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_VORBIS_VORBISENC_H
+#ifdef HAVE_VORBIS_LIB
 #include <vorbis/vorbisenc.h>
 #else
-#error need vorbis/vorbisenc.h
+#error configure for Ogg Vorbis
 #endif
 
 
@@ -442,6 +442,9 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.3  2001/10/19 12:39:42  darkeye
+  created configure options to compile with or without lame / Ogg Vorbis
+
   Revision 1.2  2001/09/15 11:36:22  darkeye
   added function vorbisBlocksOut(), finalized vorbis support
 

@@ -33,6 +33,9 @@
 #include "config.h"
 #endif
 
+// compile the whole file only if lame support configured in
+#ifdef HAVE_LAME_LIB
+
 
 #include "Exception.h"
 #include "Util.h"
@@ -408,12 +411,17 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
 }
 
 
+#endif // HAVE_LAME_LIB
+
 
 /*------------------------------------------------------------------------------
  
   $Source$
 
   $Log$
+  Revision 1.8  2001/10/19 12:39:42  darkeye
+  created configure options to compile with or without lame / Ogg Vorbis
+
   Revision 1.7  2001/09/18 14:57:19  darkeye
   finalized Solaris port
 

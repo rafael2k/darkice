@@ -1,9 +1,12 @@
 DarkIce installation notes
 ==========================
 
-DarkIce requires the following libraries (and associated header files):
+DarkIce uses the following libraries (and associated header files):
 
+for capability to stream mp3 to IceCast 1.x and Shoutcast:
 - libmp3lame
+
+for capability to stream Ogg Vorbis to IceCast 2:
 - libogg
 - libvoribs
 - libvorbisenc

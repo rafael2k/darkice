@@ -71,13 +71,20 @@
 #endif
 
 
+
 #include "Util.h"
 #include "IceCast.h"
 #include "IceCast2.h"
 #include "ShoutCast.h"
-#include "LameLibEncoder.h"
-#include "VorbisLibEncoder.h"
 #include "DarkIce.h"
+
+#ifdef HAVE_LAME_LIB
+#include "LameLibEncoder.h"
+#endif
+
+#ifdef HAVE_VORBIS_LIB
+#include "VorbisLibEncoder.h"
+#endif
 
 
 /* ===================================================  local data structures */
@@ -174,7 +181,6 @@ DarkIce :: configIceCast (  const Config      & config,
 
     for ( u = 0; u < maxOutput; ++u ) {
         const ConfigSection    * cs;
-        const char             * str;
 
         // ugly hack to change the section name to "stream0", "stream1", etc.
         stream[streamLen-1] = '0' + u;
@@ -182,6 +188,15 @@ DarkIce :: configIceCast (  const Config      & config,
         if ( !(cs = config.get( stream)) ) {
             break;
         }
+
+#ifndef HAVE_LAME_LIB
+        throw Exception( __FILE__, __LINE__,
+                         "DarkIce not compiled with lame support, "
+                         "thus can't connect to IceCast 1.x, stream: ",
+                         stream);
+#else
+
+        const char    * str;
 
         unsigned int    sampleRate      = 0;
         unsigned int    bitrate         = 0;
@@ -252,6 +267,7 @@ DarkIce :: configIceCast (  const Config      & config,
                                                    highpass );
 
         encConnector->attach( audioOuts[u].encoder.get());
+#endif // HAVE_LAME_LIB
     }
 
     noAudioOuts += u;
@@ -274,7 +290,6 @@ DarkIce :: configIceCast2 (  const Config      & config,
 
     for ( u = 0; u < maxOutput; ++u ) {
         const ConfigSection    * cs;
-        const char             * str;
 
         // ugly hack to change the section name to "stream0", "stream1", etc.
         stream[streamLen-1] = '0' + u;
@@ -282,6 +297,15 @@ DarkIce :: configIceCast2 (  const Config      & config,
         if ( !(cs = config.get( stream)) ) {
             break;
         }
+
+#ifndef HAVE_VORBIS_LIB
+        throw Exception( __FILE__, __LINE__,
+                         "DarkIce not compiled with Ogg Vorbis support, "
+                         "thus can't connect to IceCast 2, stream: ",
+                         stream);
+#else
+
+        const char    * str;
 
         unsigned int    bitrate         = 0;
         const char    * server          = 0;
@@ -338,6 +362,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                                      dsp->getChannel() );
 
         encConnector->attach( audioOuts[u].encoder.get());
+#endif // HAVE_VORBIS_LIB
     }
 
     noAudioOuts += u;
@@ -360,7 +385,6 @@ DarkIce :: configShoutCast (    const Config      & config,
 
     for ( u = 0; u < maxOutput; ++u ) {
         const ConfigSection    * cs;
-        const char             * str;
 
         // ugly hack to change the section name to "stream0", "stream1", etc.
         stream[streamLen-1] = '0' + u;
@@ -368,6 +392,15 @@ DarkIce :: configShoutCast (    const Config      & config,
         if ( !(cs = config.get( stream)) ) {
             break;
         }
+
+#ifndef HAVE_LAME_LIB
+        throw Exception( __FILE__, __LINE__,
+                         "DarkIce not compiled with lame support, "
+                         "thus can't connect to ShoutCast, stream: ",
+                         stream);
+#else
+
+        const char    * str;
 
         unsigned int    sampleRate      = 0;
         unsigned int    bitrate         = 0;
@@ -436,6 +469,7 @@ DarkIce :: configShoutCast (    const Config      & config,
                                                    highpass );
 
         encConnector->attach( audioOuts[u].encoder.get());
+#endif // HAVE_LAME_LIB
     }
 
     noAudioOuts += u;
@@ -574,6 +608,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.21  2001/10/19 12:39:42  darkeye
+  created configure options to compile with or without lame / Ogg Vorbis
+
   Revision 1.20  2001/10/19 09:03:39  darkeye
   added support for resampling mp3 streams
 

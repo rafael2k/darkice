@@ -33,6 +33,9 @@
 #include "config.h"
 #endif
 
+// compile only if configured for Ogg Vorbis
+#ifdef HAVE_VORBIS_LIB
+
 
 #include "Exception.h"
 #include "Util.h"
@@ -348,12 +351,17 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
 }
 
 
+#endif // HAVE_VORBIS_LIB
+
 
 /*------------------------------------------------------------------------------
  
   $Source$
 
   $Log$
+  Revision 1.4  2001/10/19 12:39:42  darkeye
+  created configure options to compile with or without lame / Ogg Vorbis
+
   Revision 1.3  2001/09/18 14:57:19  darkeye
   finalized Solaris port
 

@@ -40,10 +40,10 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_LAME_LAME_H
+#ifdef HAVE_LAME_LIB
 #include <lame/lame.h>
 #else
-#error need lame/lame.h
+#error configure with lame
 #endif
 
 
@@ -448,7 +448,6 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
 /* ====================================================== function prototypes */
 
 
-
 #endif  /* LAME_LIB_ENCODER_H */
 
 
@@ -457,6 +456,9 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.9  2001/10/19 12:39:42  darkeye
+  created configure options to compile with or without lame / Ogg Vorbis
+
   Revision 1.8  2001/10/19 09:03:39  darkeye
   added support for resampling mp3 streams
 
