@@ -36,7 +36,7 @@ Summary : DarkIce live IceCast / ShoutCast streamer
 Name: darkice
 Vendor: Tyrell Hungary
 Packager: Akos Maroy <darkeye@tyrell.hu>
-Version: 0.5
+Version: 0.6
 Release: 1
 Copyright: GPL
 Group: Applications/Multimedia
@@ -47,9 +47,11 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-root
 Prefix: /usr
 
 %description
-DarkIce is an IceCast / ShoutCast live audio streamer. It takes audio input
-from a sound card, encodes it into  mp3, and sends the stream to one or more
-IceCast and/or ShoutCast servers.
+DarkIce is an IceCast, IceCast2 and ShoutCast live audio streamer. It
+takes audio input from a sound card, encodes it into mp3 and/or Ogg Vorbis,
+and sends the mp3 stream to one or more IceCast and/or ShoutCast servers,
+the Ogg Vorbis stream to one or more IceCast2 servers.
+
 
 
 # =========================================================== static sub-package
@@ -58,9 +60,10 @@ Summary: %{summary} static version
 Group: Applications/Multimedia
 
 %description static
-DarkIce is an IceCast / ShoutCast live audio streamer. It takes audio input
-from a sound card, encodes it into  mp3, and sends the stream to one or more
-IceCast and/or ShoutCast servers.
+DarkIce is an IceCast, IceCast2 and ShoutCast live audio streamer. It
+takes audio input from a sound card, encodes it into mp3 and/or Ogg Vorbis,
+and sends the mp3 stream to one or more IceCast and/or ShoutCast servers,
+the Ogg Vorbis stream to one or more IceCast2 servers.
 
 This is the statically linked version.
 
@@ -132,6 +135,9 @@ make clean
 # =================================================================== change log
 #
 #   $Log$
+#   Revision 1.6  2001/09/18 17:35:15  darkeye
+#   for version 0.6
+#
 #   Revision 1.5  2001/09/13 05:06:41  darkeye
 #   removed references to SourceForget FTP sites, as they are phased out
 #

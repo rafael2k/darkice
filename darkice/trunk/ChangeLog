@@ -1,3 +1,8 @@
+18-09-2001: DarkIce 0.6 released
+
+    o added support for IceCast2 server with Ogg Vorbis streaming
+    o added support for SUN Solaris
+
 09-09-2001: DarkIce 0.5 released
 
     o added support for ShoutCast servers

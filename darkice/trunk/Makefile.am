@@ -4,7 +4,7 @@ SUBDIRS = src man
 
 sysconf_DATA = darkice.cfg
 
-EXTRA_DIST = $(KDOC_DIR) darkice.cfg
+EXTRA_DIST = $(KDOC_DIR) darkice.cfg INSTALL.lame INSTALL.vorbis
 
 $(KDOC_DIR): kdocs
 
