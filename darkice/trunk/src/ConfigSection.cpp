@@ -108,6 +108,26 @@ ConfigSection :: get (  const char    * key ) const         throw ( Exception )
 
 
 /*------------------------------------------------------------------------------
+ *  Get a value for a key, in the key does not exist, throw an exception
+ *----------------------------------------------------------------------------*/
+const char *
+ConfigSection :: getForSure (   const char    * key,
+                                const char    * message1 = 0,
+                                const char    * message2 = 0,
+                                int             code     = 0 ) const
+                                                        throw ( Exception )
+{
+    const char      * value;
+    
+    if ( !(value = get( key)) ) {
+        throw Exception( __FILE__, __LINE__, key, message1, message2, code);
+    }
+
+    return value;
+}
+
+
+/*------------------------------------------------------------------------------
  *  Add a configuration line
  *----------------------------------------------------------------------------*/
 bool
@@ -160,6 +180,9 @@ ConfigSection :: addLine (  const char    * line )          throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.2  2000/11/09 22:08:17  darkeye
+  added function getForSure
+
   Revision 1.1  2000/11/08 17:29:50  darkeye
   added configuration file reader
 

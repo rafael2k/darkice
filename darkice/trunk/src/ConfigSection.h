@@ -117,6 +117,14 @@ class ConfigSection : public virtual Referable
         get (   const char    * key ) const             throw ( Exception );
 
 
+        virtual const char *
+        getForSure (    const char    * key,
+                        const char    * message1 = 0,
+                        const char    * message2 = 0,
+                        int             code     = 0 ) const
+                                                        throw ( Exception );
+
+
         virtual bool
         addLine (   const char    * line )              throw ( Exception );
 };
@@ -137,6 +145,9 @@ class ConfigSection : public virtual Referable
   $Source$
 
   $Log$
+  Revision 1.2  2000/11/09 22:08:17  darkeye
+  added function getForSure
+
   Revision 1.1  2000/11/08 17:29:50  darkeye
   added configuration file reader
 
