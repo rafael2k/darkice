@@ -18,6 +18,9 @@
 /* Define if you have the <fcntl.h> header file.  */
 #undef HAVE_FCNTL_H
 
+/* Define if you have the <limits.h> header file.  */
+#undef HAVE_LIMITS_H
+
 /* Define if you have the <netdb.h> header file.  */
 #undef HAVE_NETDB_H
 
@@ -56,9 +59,6 @@
 
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
-
-/* Define if you have the <limits.h> header file.  */
-#undef HAVE_LIMITS_H
 
 /* Name of package */
 #undef PACKAGE
