@@ -140,42 +140,6 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
         {
         }
 
-        /**
-         *  Convert a char buffer holding 8 bit PCM values to a short buffer
-         *
-         *  @param pcmBuffer buffer holding 8 bit PCM audio values,
-         *                   channels are interleaved
-         *  @param lenPcmBuffer length of pcmBuffer
-         *  @param leftBuffer put the left channel here (must be big enough)
-         *  @param rightBuffer put the right channel here (if mono, not
-         *                     touched, must be big enough)
-         *  @param channels number of channels (1 = mono, 2 = stereo)
-         */
-        void
-        conv8 (     unsigned char     * pcmBuffer,
-                    unsigned int        lenPcmBuffer,
-                    short int         * leftBuffer,
-                    short int         * rightBuffer,
-                    unsigned int        channels );
-
-        /**
-         *  Convert a char buffer holding 16 bit PCM values to a short buffer
-         *
-         *  @param pcmBuffer buffer holding 16 bit PCM audio values,
-         *                   channels are interleaved
-         *  @param lenPcmBuffer length of pcmBuffer
-         *  @param leftBuffer put the left channel here (must be big enough)
-         *  @param rightBuffer put the right channel here (if mono, not
-         *                     touched, must be big enough)
-         *  @param channels number of channels (1 = mono, 2 = stereo)
-         */
-        void
-        conv16 (    unsigned char     * pcmBuffer,
-                    unsigned int        lenPcmBuffer,
-                    short int         * leftBuffer,
-                    short int         * rightBuffer,
-                    unsigned int        channels );
-
 
     protected:
 
@@ -456,6 +420,9 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.11  2002/03/28 16:38:37  darkeye
+  moved functions conv8() and conv16() to class Util
+
   Revision 1.10  2001/10/20 10:56:45  darkeye
   added possibility to disable highpass and lowpass filters for lame
 

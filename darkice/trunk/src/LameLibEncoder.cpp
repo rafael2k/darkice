@@ -191,111 +191,6 @@ LameLibEncoder :: open ( void )
     return true;
 }
 
-/*------------------------------------------------------------------------------
- *  Convert an unsigned char buffer holding 8 bit PCM values with channels
- *  interleaved to two short int buffers (one for each channel)
- *----------------------------------------------------------------------------*/
-void
-LameLibEncoder :: conv8 (   unsigned char     * pcmBuffer,
-                            unsigned int        lenPcmBuffer,
-                            short int         * leftBuffer,
-                            short int         * rightBuffer,
-                            unsigned int        channels )
-{
-    if ( channels == 1 ) {
-        unsigned int    i, j;
-
-        for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-            unsigned short int  value;
-
-            value         = pcmBuffer[i++];
-            leftBuffer[j] = (short int) value;
-            ++j;
-        }
-    } else {
-        unsigned int    i, j;
-
-        for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-            unsigned short int  value;
-
-            value          = pcmBuffer[i++];
-            leftBuffer[j]  = (short int) value;
-            value          = pcmBuffer[i++];
-            rightBuffer[j] = (short int) value;
-            ++j;
-        }
-    }
-}
-
-
-/*------------------------------------------------------------------------------
- *  Convert an unsigned char buffer holding 16 bit PCM values with channels
- *  interleaved to two short int buffers (one for each channel)
- *----------------------------------------------------------------------------*/
-void
-LameLibEncoder :: conv16 (  unsigned char     * pcmBuffer,
-                            unsigned int        lenPcmBuffer,
-                            short int         * leftBuffer,
-                            short int         * rightBuffer,
-                            unsigned int        channels )
-{
-    if ( isInBigEndian() ) {
-        if ( channels == 1 ) {
-            unsigned int    i, j;
-
-            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-                unsigned short int   value;
-
-                value           = pcmBuffer[i++] << 8;
-                value          |= pcmBuffer[i++];
-                leftBuffer[j]  = (short int) value;
-                ++j;
-            }
-        } else {
-            unsigned int    i, j;
-
-            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-                unsigned short int   value;
-
-                value           = pcmBuffer[i++] << 8;
-                value          |= pcmBuffer[i++];
-                leftBuffer[j]   = (short int) value;
-                value           = pcmBuffer[i++] << 8;
-                value          |= pcmBuffer[i++];
-                rightBuffer[j]  = (short int) value;
-                ++j;
-            }
-        }
-    } else {
-        if ( channels == 1 ) {
-            unsigned int    i, j;
-
-            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-                unsigned short int   value;
-
-                value          = pcmBuffer[i++];
-                value         |= pcmBuffer[i++] << 8;
-                leftBuffer[j]  = (short int) value;
-                ++j;
-            }
-        } else {
-            unsigned int    i, j;
-
-            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-                unsigned short int   value;
-
-                value           = pcmBuffer[i++];
-                value          |= pcmBuffer[i++] << 8;
-                leftBuffer[j]   = (short int) value;
-                value           = pcmBuffer[i++];
-                value          |= pcmBuffer[i++] << 8;
-                rightBuffer[j]  = (short int) value;
-                ++j;
-            }
-        }
-    }
-}
-
 
 /*------------------------------------------------------------------------------
  *  Write data to the encoder
@@ -325,9 +220,14 @@ LameLibEncoder :: write (   const void    * buf,
     short int       rightBuffer[nSamples];
 
     if ( bitsPerSample == 8 ) {
-        conv8( b, processed, leftBuffer, rightBuffer, channels);
+        Util::conv8( b, processed, leftBuffer, rightBuffer, channels);
     } else if ( bitsPerSample == 16 ) {
-        conv16( b, processed, leftBuffer, rightBuffer, channels);
+        Util::conv16( b,
+                      processed,
+                      leftBuffer,
+                      rightBuffer,
+                      channels,
+                      isInBigEndian());
     } else {
         throw Exception( __FILE__, __LINE__,
                         "unsupported number of bits per sample for the encoder",
@@ -415,6 +315,9 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.10  2002/03/28 16:38:37  darkeye
+  moved functions conv8() and conv16() to class Util
+
   Revision 1.9  2001/10/20 10:56:45  darkeye
   added possibility to disable highpass and lowpass filters for lame
 
