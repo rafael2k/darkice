@@ -104,7 +104,7 @@ class Reporter
         /**
          *  Print a prefix to each report.
          */
-        void
+        static void
         printPrefix( void )                         throw ()
         {
             if ( verbosity > prefixVerbosity ) {
@@ -140,7 +140,7 @@ class Reporter
          *
          *  @param verbosity the new verbosity level.
          */
-        inline void
+        static inline void
         setReportVerbosity ( unsigned int     verbosity )   throw ()
         {
             Reporter::verbosity = verbosity;
@@ -151,7 +151,7 @@ class Reporter
          *
          *  @return the current verbosity level.
          */
-        inline unsigned int
+        static inline unsigned int
         getReportVerbosity ( void )                         throw ()
         {
             return Reporter::verbosity;
@@ -163,7 +163,7 @@ class Reporter
          *
          *  @param os the output stream
          */
-        inline void
+        static inline void
         setReportOutputStream ( std::ostream  & os )        throw ()
         {
             Reporter::os = &os;
@@ -174,7 +174,7 @@ class Reporter
          *
          *  @return the output stream
          */
-        inline std::ostream &
+        static inline std::ostream &
         getReportOutputStream ( void )                      throw ()
         {
             return *(Reporter::os);
@@ -190,7 +190,7 @@ class Reporter
          *           operator overload.
          */
         template<class T>
-        inline void
+        static inline void
         reportEvent ( unsigned int  verbosity,
                       const T       t )                     throw ()
         {
@@ -214,7 +214,7 @@ class Reporter
          */
         template<class T, class U>
         inline void
-        reportEvent ( unsigned int  verbosity,
+        static reportEvent ( unsigned int  verbosity,
                       const T       t,
                       const U       u )                     throw ()
         {
@@ -241,7 +241,7 @@ class Reporter
          *           operator overload.
          */
         template<class T, class U, class V>
-        inline void
+        static inline void
         reportEvent ( unsigned int  verbosity,
                       const T       t,
                       const U       u,
@@ -274,7 +274,7 @@ class Reporter
          *           operator overload.
          */
         template<class T, class U, class V, class W>
-        inline void
+        static inline void
         reportEvent ( unsigned int  verbosity,
                       const T       t,
                       const U       u,
@@ -309,6 +309,9 @@ class Reporter
   $Source$
 
   $Log$
+  Revision 1.7  2004/02/15 12:06:30  darkeye
+  added ALSA support, thanks to Christian Forster
+
   Revision 1.6  2002/05/28 12:35:41  darkeye
   code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
 

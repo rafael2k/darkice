@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/DarkIce.cpp)
-AM_INIT_AUTOMAKE(darkice, 0.13.2)
+AM_INIT_AUTOMAKE(darkice, 0.14beta)
 
 AM_CONFIG_HEADER(config.h)
 
@@ -116,6 +116,42 @@ dnl make sure at least one of lame and vorbis present
 dnl-----------------------------------------------------------------------------
 if test "x${LAME_LDFLAGS}" = "x" -a "x${VORBIS_LDFLAGS}" = "x" ; then
     AC_MSG_ERROR( [neither lame nor Ogg Vorbis configured])
+fi
+
+
+dnl-----------------------------------------------------------------------------
+dnl link ALSA sound system if requested 
+dnl-----------------------------------------------------------------------------
+AC_SUBST( ALSA_INCFLAGS)
+AC_SUBST( ALSA_LDFLAGS)
+
+AC_ARG_WITH( alsa,
+[  --with-alsa             use ALSA sound system [yes] ],
+    USE_ALSA=${withval}, USE_ALSA="yes" )
+AC_ARG_WITH( alsa-prefix,
+[  --with-alsa-prefix=DIR      alternate location for ALSA [/usr]
+                              look for libraries in ALSA-PREFIX/lib,
+                              for headers in ALSA-PREFIX/include],
+    CONFIG_ALSA_PREFIX="${withval}", CONFIG_ALSA_PREFIX="/usr")
+
+if test "x${USE_ALSA}" = "xyes" ; then
+    AC_MSG_CHECKING( [for alsa libraries at ${CONFIG_ALSA_PREFIX}] )
+    LA_SEARCH_LIB( ALSA_LIB_LOC, ALSA_INC_LOC, libasound.so, alsa/asoundlib.h,
+                   ${CONFIG_ALSA_PREFIX})
+
+    if test "x${ALSA_LIB_LOC}" != "x" ; then
+
+        AC_DEFINE( HAVE_ALSA_LIB, 1, [build with ALSA sound system] )
+        if test "x${ALSA_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
+            ALSA_INCFLAGS="-I${ALSA_INC_LOC}"
+        fi
+        ALSA_LDFLAGS="-L${ALSA_LIB_LOC} -lasound"
+        AC_MSG_RESULT( [found at ${CONFIG_ALSA_PREFIX}] )
+    else
+        AC_MSG_WARN( [not found, building without ALSA support])
+    fi
+else
+    AC_MSG_RESULT( [building without ALSA support] )
 fi
 
 

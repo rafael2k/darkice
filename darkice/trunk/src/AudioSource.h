@@ -37,12 +37,38 @@
 /* ============================================================ include files */
 
 #include "Source.h"
+#include "Reporter.h"
 
 
 /* ================================================================ constants */
 
 
 /* =================================================================== macros */
+
+/*------------------------------------------------------------------------------
+ *  Determine the kind of audio device based on the system
+ *----------------------------------------------------------------------------*/
+#if defined( HAVE_ALSA_LIB )
+// we have an ALSA sound system available
+#define SUPPORT_ALSA_DSP
+#endif
+
+#if defined( HAVE_SYS_SOUNDCARD_H )
+// we have an OSS DSP sound source device available
+#define SUPPORT_OSS_DSP
+#endif
+
+#if defined( HAVE_SYS_AUDIO_H )
+// we have a Solaris DSP sound device available
+#define SUPPORT_SOLARIS_DSP
+#endif
+
+#if !defined( SUPPORT_ALSA_DSP ) \
+    && !defined( SUPPORT_OSS_DSP ) \
+    && !defined( SUPPORT_SOLARIS_DSP )
+// there was no DSP audio system found
+#error No DSP audio input device found on system
+#endif
 
 
 /* =============================================================== data types */
@@ -53,7 +79,7 @@
  *  @author  $Author$
  *  @version $Revision$
  */
-class AudioSource : public Source
+class AudioSource : public Source, public virtual Reporter
 {
     private:
 
@@ -210,6 +236,25 @@ class AudioSource : public Source
         {
             return bitsPerSample;
         }
+
+        /**
+         *  Factory method for creating an AudioSource object of the
+         *  appropriate type, based on the compiled DSP support and
+         *  the supplied DSP name parameter.
+         *
+         *  @param name the audio device (/dev/dspX, hwplug:0,0, etc)
+         *  @param sampleRate samples per second (e.g. 44100 for 44.1kHz).
+         *  @param bitsPerSample bits per sample (e.g. 16 bits).
+         *  @param channel number of channels of the audio source
+         *                 (e.g. 1 for mono, 2 for stereo, etc.).
+         *  @exception Exception
+         */
+        static AudioSource *
+        createDspSource( const char    * deviceName,
+                         int             sampleRate    = 44100,
+                         int             bitsPerSample = 16,
+                         int             channel       = 2) throw ( Exception );
+
 };
 
 
@@ -218,25 +263,16 @@ class AudioSource : public Source
 /*------------------------------------------------------------------------------
  *  Determine the kind of audio device based on the system
  *----------------------------------------------------------------------------*/
-#if defined( HAVE_SYS_SOUNDCARD_H )
+#if defined( SUPPORT_ALSA_DSP )
+#include "AlsaDspSource.h"
+#endif
 
-// we have an OSS DSP sound source device available
-#define SUPPORT_OSS_DSP
+#if defined( SUPPORT_OSS_DSP )
 #include "OssDspSource.h"
-typedef class OssDspSource          DspSource;
+#endif
 
-#elif defined( HAVE_SYS_AUDIO_H )
-
-// we have a Solaris DSP sound device available
-#define SUPPORT_SOLARIS_DSP
+#if defined( SUPPORT_SOLARIS_DSP )
 #include "SolarisDspSource.h"
-typedef class SolarisDspSource       DspSource;
-
-#else
-
-// there was no DSP audio system found
-#error No DSP audio input device found on system
-
 #endif
 
 
@@ -252,6 +288,9 @@ typedef class SolarisDspSource       DspSource;
   $Source$
 
   $Log$
+  Revision 1.6  2004/02/15 12:06:29  darkeye
+  added ALSA support, thanks to Christian Forster
+
   Revision 1.5  2001/09/18 14:57:19  darkeye
   finalized Solaris port
 

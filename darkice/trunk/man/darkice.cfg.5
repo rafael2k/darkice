@@ -1,4 +1,4 @@
-.TH darkice.cfg 5 "February 9, 2003" "DarkIce" "DarkIce live audio streamer"
+.TH darkice.cfg 5 "February 15, 2004" "DarkIce" "DarkIce live audio streamer"
 .SH NAME
 darkice.cfg \- configuration file for darkice
 .SH DESCRIPTION
@@ -60,7 +60,8 @@ Required values:
 
 .TP
 .I device
-OSS DSP audio device to record from (e.g. /dev/dsp)
+OSS DSP audio device to record from (e.g. /dev/dsp) or ALSA DSP device name
+(e.g. hwplug:0,0)
 .TP
 .I sampleRate
 The sample rate to record with, samples per second

@@ -1,3 +1,8 @@
+DarkIce next release
+
+    o added ALSA support, thanks to Christian Forster
+      <forster@like.e-technik.uni-erlangen.de>
+
 07-01-2004: DarkIce 0.13.2 released
 
     o bug fix: two bugs fixed that caused core dump when encoding into

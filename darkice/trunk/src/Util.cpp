@@ -212,13 +212,14 @@ Util :: base64Encode( const char  * str )               throw ( Exception )
  *----------------------------------------------------------------------------*/
 bool
 Util :: strEq( const char    * str1,
-               const char    * str2 )                   throw ( Exception )
+               const char    * str2,
+               unsigned int    len )                    throw ( Exception )
 {
     if ( !str1 || !str2 ) {
         throw Exception( __FILE__, __LINE__, "no str1 or no str2");
     }
 
-    return !strcmp( str1, str2);
+    return len == 0 ? !strcmp( str1, str2) : !strncmp( str1, str2, len);
 }
 
 
@@ -493,6 +494,9 @@ Util :: conv16 (    unsigned char     * pcmBuffer,
   $Source$
 
   $Log$
+  Revision 1.13  2004/02/15 12:06:30  darkeye
+  added ALSA support, thanks to Christian Forster
+
   Revision 1.12  2003/02/09 12:57:36  darkeye
   cosmetic changes to the fileAddDate option
 

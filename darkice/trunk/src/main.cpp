@@ -87,7 +87,7 @@ main (
     std::cout << "DarkIce " << VERSION
          << " live audio streamer, http://darkice.sourceforge.net"
          << std::endl
-         << "Copyright (c) 2000-2003, Tyrell Hungary, http://tyrell.hu"
+         << "Copyright (c) 2000-2004, Tyrell Hungary, http://tyrell.hu"
          << std::endl << std::endl;
 
     try {
@@ -166,6 +166,9 @@ showUsage (     std::ostream      & os )
   $Source$
 
   $Log$
+  Revision 1.13  2004/02/15 12:06:30  darkeye
+  added ALSA support, thanks to Christian Forster
+
   Revision 1.12  2003/02/09 15:09:41  darkeye
   for version 0.13
 

@@ -154,10 +154,10 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
     channel = Util::strToL( str);
     device = cs->getForSure( "device", " missing in section [input]");
 
-    dsp             = new DspSource( device,
-                                     sampleRate,
-                                     bitsPerSample,
-                                     channel );
+    dsp             = AudioSource::createDspSource( device,
+                                                    sampleRate,
+                                                    bitsPerSample,
+                                                    channel );
     encConnector    = new MultiThreadedConnector( dsp.get());
 
     noAudioOuts = 0;
@@ -996,6 +996,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.36  2004/02/15 12:06:30  darkeye
+  added ALSA support, thanks to Christian Forster
+
   Revision 1.35  2003/02/09 13:15:57  darkeye
   added feature for setting the TITLE comment field for vorbis streams
 

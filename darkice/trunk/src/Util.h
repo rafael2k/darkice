@@ -173,12 +173,15 @@ class Util
          *
          *  @param str1 one of the strings.
          *  @param str2 the other string.
+         *  @param len check the first most len characters. if 0, check
+         *             the whole string
          *  @return true if the two strings are equal, false othersize.
          *  @exception Exception
          */
         static bool
         strEq ( const char    * str1,
-                const char    * str2 )               throw ( Exception );
+                const char    * str2,
+                unsigned int    len = 0 )           throw ( Exception );
 
         /**
          *  Convert a string to long.
@@ -319,6 +322,9 @@ class Util
   $Source$
 
   $Log$
+  Revision 1.10  2004/02/15 12:06:30  darkeye
+  added ALSA support, thanks to Christian Forster
+
   Revision 1.9  2003/02/09 12:57:36  darkeye
   cosmetic changes to the fileAddDate option
 
