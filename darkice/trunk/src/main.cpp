@@ -122,6 +122,7 @@ main (
         }
 
         if ( !configFileName ) {
+            showUsage( cout);
             throw Exception( __FILE__, __LINE__,
                              "no configuration file specified");
         }
@@ -171,6 +172,9 @@ showUsage (     ostream   & os )
   $Source$
 
   $Log$
+  Revision 1.8  2001/09/02 12:24:29  darkeye
+  now displays usage info when no command line parameters given
+
   Revision 1.7  2001/08/30 17:25:56  darkeye
   renamed configure.h to config.h
 
