@@ -263,7 +263,7 @@ unsigned int
 LameLibEncoder :: write (   const void    * buf,
                             unsigned int    len )           throw ( Exception )
 {
-    if ( !isOpen() ) {
+    if ( !isOpen() || len == 0 ) {
         return 0;
     }
 
@@ -384,6 +384,9 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.17  2002/10/19 12:22:10  darkeye
+  return 0 immediately for write() if supplied length is 0
+
   Revision 1.16  2002/08/04 10:26:06  darkeye
   added additional error checking to make sure that outChannel < inChannel
 

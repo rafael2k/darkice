@@ -232,7 +232,7 @@ unsigned int
 VorbisLibEncoder :: write ( const void    * buf,
                             unsigned int    len )           throw ( Exception )
 {
-    if ( !isOpen() ) {
+    if ( !isOpen() || len == 0 ) {
         return 0;
     }
 
@@ -368,6 +368,9 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.15  2002/10/19 12:22:10  darkeye
+  return 0 immediately for write() if supplied length is 0
+
   Revision 1.14  2002/08/22 21:52:08  darkeye
   bug fix: maximum bitrate setting fixed for Ogg Vorbis streams
 
