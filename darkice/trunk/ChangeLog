@@ -1,4 +1,4 @@
-09-04-2001: DarkIce 0.9.1 released
+09-04-2002: DarkIce 0.9.1 released
 
     o bugfix: a memory leak was introduced in 0.9, which is fixed thanks to
       Kristjan G. Bjarnason <kgb@gangverk.is> and Nicu Pavel <npavel@ituner.com>
