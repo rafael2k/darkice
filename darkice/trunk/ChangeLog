@@ -1,5 +1,6 @@
 DarkIce next version
 
+    o added mp3 streaming for icecast2
     o added possibility to stream in mono even when recording in stereo,
       thus enabling mono and stereo streams with the same darkice instance.
       only for mp3 streams at the moment

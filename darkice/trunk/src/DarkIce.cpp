@@ -379,10 +379,6 @@ DarkIce :: configIceCast2 (  const Config      & config,
             format = IceCast2::oggVorbis;
         } else if ( Util::strEq( str, "mp3") ) {
             format = IceCast2::mp3;
-            // TODO: enable this format in the future, when icecast2
-            //       supports it as well
-            throw Exception( __FILE__, __LINE__,
-                             "unsupported stream format: ", str);
         } else {
             throw Exception( __FILE__, __LINE__,
                              "unsupported stream format: ", str);
@@ -964,6 +960,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.30  2002/08/20 18:37:49  darkeye
+  added mp3 streaming possibility for icecast2
+
   Revision 1.29  2002/08/03 12:41:18  darkeye
   added possibility to stream in mono when recording in stereo
 

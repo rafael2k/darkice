@@ -6,3 +6,6 @@ o libtoolize ?
 o revisit real-time scheduling and one-thread-per-connection
 o look into performance
 o create proper error-reporting module
+o add HTTP Basic authentication for icecast2 logins
+o set comment fields for Ogg Vorbis streams as in
+  http://www.xiph.org/ogg/vorbis/doc/v-comment.html
