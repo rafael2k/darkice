@@ -143,6 +143,9 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
         inline void
         strip ( void )                                  throw ( Exception )
         {
+            if ( converter ) {
+                delete converter;
+            }
         }
 
         /**
@@ -441,6 +444,9 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.8  2002/08/20 20:07:36  darkeye
+  minor fixes
+
   Revision 1.7  2002/08/20 19:35:37  darkeye
   added possibility to specify maximum bitrate for Ogg Vorbis streams
 

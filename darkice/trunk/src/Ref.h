@@ -147,7 +147,7 @@ class Ref
          *  @return the pointer to the object referenced.
          */
         inline T*
-        operator->() const                      throw ()
+        operator->() const                      throw ( Exception )
         {
             if ( !object ) {
                 throw Exception( __FILE__, __LINE__,
@@ -300,6 +300,9 @@ class Ref
   $Source$
 
   $Log$
+  Revision 1.5  2002/08/20 20:07:36  darkeye
+  minor fixes
+
   Revision 1.4  2002/02/20 11:51:27  darkeye
   added equality operators to compare with pointers
 
