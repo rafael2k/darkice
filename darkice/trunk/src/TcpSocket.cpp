@@ -134,7 +134,7 @@ TcpSocket :: strip ( void)                           throw ( Exception )
  *  Copy Constructor
  *----------------------------------------------------------------------------*/
 TcpSocket :: TcpSocket (  const TcpSocket &    ss )    throw ( Exception )
-                : Sink( ss ), Source( ss )
+                : Source( ss), Sink( ss )
 {
     int     fd;
     
@@ -348,6 +348,9 @@ TcpSocket :: close ( void )                          throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.4  2000/11/17 15:50:48  darkeye
+  added -Wall flag to compiler and eleminated new warnings
+
   Revision 1.3  2000/11/12 14:54:50  darkeye
   added kdoc-style documentation comments
 

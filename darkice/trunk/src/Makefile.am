@@ -1,6 +1,6 @@
 bin_PROGRAMS = darkice
 INCLUDES = -I../stl
-CXXFLAGS = -g
+CXXFLAGS = -g -Wall
 
 darkice_SOURCES =   AudioEncoder.h\
                     AudioSource.h\

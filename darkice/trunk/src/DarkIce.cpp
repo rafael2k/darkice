@@ -108,7 +108,7 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
     unsigned int             bitsPerSample;
     unsigned int             channel;
     const char             * device;
-    int                      i;
+    unsigned int             u;
 
     // the [general] section
     if ( !(cs = config.get( "general")) ) {
@@ -148,9 +148,9 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
     char  * pipeInExt       = ".in";
     size_t  pipeInExtLen    = Util::strLen( pipeInExt);
 
-    for ( i = 0; i < maxOutput; ++i ) {
+    for ( u = 0; u < maxOutput; ++u ) {
         // ugly hack to change the section name to "lame0", "lame1", etc.
-        lame[lameLen-1] = '0' + i;
+        lame[lameLen-1] = '0' + u;
 
         if ( !(cs = config.get( lame)) ) {
             break;
@@ -202,22 +202,22 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
 
         // go on and create the things
 
-        outputs[i].pid = 0;
+        outputs[u].pid = 0;
 
         // the pipes
-        outputs[i].encOutPipe      = new PipeSource( pipeOutName);
-        outputs[i].encInPipe       = new PipeSink( pipeInName);
+        outputs[u].encOutPipe      = new PipeSource( pipeOutName);
+        outputs[u].encInPipe       = new PipeSink( pipeInName);
         
-        if ( !outputs[i].encOutPipe->exists() ) {
-            if ( !outputs[i].encOutPipe->create() ) {
+        if ( !outputs[u].encOutPipe->exists() ) {
+            if ( !outputs[u].encOutPipe->create() ) {
                 throw Exception( __FILE__, __LINE__,
                                  "can't create out pipe ",
                                  pipeOutName );
             }
         }
 
-        if ( !outputs[i].encInPipe->exists() ) {
-            if ( !outputs[i].encInPipe->create() ) {
+        if ( !outputs[u].encInPipe->exists() ) {
+            if ( !outputs[u].encInPipe->create() ) {
                 throw Exception( __FILE__, __LINE__,
                                  "can't create in pipe",
                                  pipeInName );
@@ -227,16 +227,16 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
         // encoder related stuff
         unsigned int bs = bufferSecs *
                           (bitsPerSample / 8) * channel * sampleRate;
-        outputs[i].encIn    = new BufferedSink( outputs[i].encInPipe.get(),
+        outputs[u].encIn    = new BufferedSink( outputs[u].encInPipe.get(),
                                                 bs,
                                                 (bitsPerSample / 8) * channel );
         reportEvent( 6, "using buffer size", bs);
 
-        encConnector->attach( outputs[i].encIn.get());
-        outputs[i].encoder     = new LameEncoder( encoder,
-                                        outputs[i].encInPipe->getFileName(),
+        encConnector->attach( outputs[u].encIn.get());
+        outputs[u].encoder     = new LameEncoder( encoder,
+                                        outputs[u].encInPipe->getFileName(),
                                         dsp.get(),
-                                        outputs[i].encOutPipe->getFileName(),
+                                        outputs[u].encOutPipe->getFileName(),
                                         bitrate,
                                         sampleRate,
                                         channel,
@@ -245,8 +245,8 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
 
 
         // streaming related stuff
-        outputs[i].socket          = new TcpSocket( server, port);
-        outputs[i].ice             = new IceCast( outputs[i].socket.get(),
+        outputs[u].socket          = new TcpSocket( server, port);
+        outputs[u].ice             = new IceCast( outputs[u].socket.get(),
                                                   password,
                                                   mountPoint,
                                                   remoteDumpFile,
@@ -256,11 +256,11 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
                                                   genre,
                                                   bitrate,
                                                   isPublic );
-        outputs[i].shoutConnector  = new Connector( outputs[i].encOutPipe.get(),
-                                                    outputs[i].ice.get());
+        outputs[u].shoutConnector  = new Connector( outputs[u].encOutPipe.get(),
+                                                    outputs[u].ice.get());
     }
 
-    noOutputs = i;
+    noOutputs = u;
 }
 
 
@@ -271,11 +271,11 @@ bool
 DarkIce :: encode ( void )                          throw ( Exception )
 {
     unsigned int       len;
-    int                i;
+    unsigned int       u;
     unsigned long      bytes;
 
-    for ( i = 0; i < noOutputs; ++i ) {
-        outputs[i].encoder->start();
+    for ( u = 0; u < noOutputs; ++u ) {
+        outputs[u].encoder->start();
     }
 
     sleep( 1 );
@@ -298,8 +298,8 @@ DarkIce :: encode ( void )                          throw ( Exception )
 
     encConnector->close();
 
-    for ( i = 0; i < noOutputs; ++i ) {
-        outputs[i].encoder->stop();
+    for ( u = 0; u < noOutputs; ++u ) {
+        outputs[u].encoder->stop();
     }
 
     return true;
@@ -340,22 +340,22 @@ DarkIce :: shout ( unsigned int     ix )                throw ( Exception )
 int
 DarkIce :: run ( void )                             throw ( Exception )
 {
-    int     i;
+    unsigned int    u;
     
-    for ( i = 0; i < noOutputs; ++i ) {
-        outputs[i].pid = fork();
+    for ( u = 0; u < noOutputs; ++u ) {
+        outputs[u].pid = fork();
 
-        if ( outputs[i].pid == -1 ) {
+        if ( outputs[u].pid == -1 ) {
             throw Exception( __FILE__, __LINE__, "fork error", errno);
             
-        } else if ( outputs[i].pid == 0 ) {
+        } else if ( outputs[u].pid == 0 ) {
             // this is the child
 
             sleep ( 1 );
 
-            cout << "shouting " << i << endl << flush;
-            shout( i);
-            cout << "shouting ends " << i << endl << flush;
+            cout << "shouting " << u << endl << flush;
+            shout( u);
+            cout << "shouting ends " << u << endl << flush;
 
             exit(0);
         }
@@ -367,10 +367,10 @@ DarkIce :: run ( void )                             throw ( Exception )
     encode();
     cout << "encoding ends" << endl << flush;
 
-    for ( i = 0; i < noOutputs; ++i ) {
+    for ( u = 0; u < noOutputs; ++u ) {
         int     status;
 
-        waitpid( outputs[i].pid, &status, 0);
+        waitpid( outputs[u].pid, &status, 0);
 
         if ( !WIFEXITED(status) ) {
             throw Exception( __FILE__, __LINE__,
@@ -387,6 +387,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.10  2000/11/17 15:50:48  darkeye
+  added -Wall flag to compiler and eleminated new warnings
+
   Revision 1.9  2000/11/15 18:37:37  darkeye
   changed the transferable number of bytes to unsigned long
 

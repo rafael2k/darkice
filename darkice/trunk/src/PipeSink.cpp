@@ -89,7 +89,7 @@ PipeSink :: create ( void )                     throw ( Exception )
     }
 
     if ( mkfifo( getFileName(), S_IRUSR | S_IWUSR) == -1 ) {
-        if ( errno = EEXIST ) {
+        if ( errno == EEXIST ) {
             return true;
         }
         throw Exception( __FILE__, __LINE__, "mkfifo error", errno);
@@ -124,6 +124,9 @@ PipeSink :: open ( void )                       throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.5  2000/11/17 15:50:48  darkeye
+  added -Wall flag to compiler and eleminated new warnings
+
   Revision 1.4  2000/11/11 12:33:13  darkeye
   added kdoc-style documentation
 

@@ -129,8 +129,9 @@ OssDspSource :: strip ( void )                      throw ( Exception )
 bool
 OssDspSource :: open ( void )                       throw ( Exception )
 {
-    int     format;
-    int     i;
+    int             format;
+    int             i;
+    unsigned int    u;
 
     if ( isOpen() ) {
         return false;
@@ -162,17 +163,17 @@ OssDspSource :: open ( void )                       throw ( Exception )
         throw Exception( __FILE__, __LINE__, "can't set format", i);
     }
 
-    i = getChannel();
-    if ( ioctl( fileDescriptor, SNDCTL_DSP_CHANNELS, &i) == -1 ||
-         i != getChannel() ) {
+    u = getChannel();
+    if ( ioctl( fileDescriptor, SNDCTL_DSP_CHANNELS, &u) == -1 ||
+         u != getChannel() ) {
         
         close();
         throw Exception( __FILE__, __LINE__, "can't set channels", i);
     }
 
-    i = getSampleRate();
-    if ( ioctl( fileDescriptor, SNDCTL_DSP_SPEED, &i) == -1 ||
-         i != getSampleRate() ) {
+    u = getSampleRate();
+    if ( ioctl( fileDescriptor, SNDCTL_DSP_SPEED, &u) == -1 ||
+         u != getSampleRate() ) {
 
         close();
         throw Exception( __FILE__, __LINE__, "can't set speed", i);
@@ -264,6 +265,9 @@ OssDspSource :: close ( void )                  throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.5  2000/11/17 15:50:48  darkeye
+  added -Wall flag to compiler and eleminated new warnings
+
   Revision 1.4  2000/11/13 20:05:07  darkeye
   changed to workaround to start recording so that it reads one sample
   per channel, as opposed to only one sample (which misalignes the channels)
