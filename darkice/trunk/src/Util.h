@@ -203,6 +203,18 @@ class Util
         strToD ( const char    * str )              throw ( Exception );
 
         /**
+         *  Add a date to a string
+         *
+         *  @param str the string to convert (file name).
+         *  @return the new string with the date appended before 
+	 *  extension of the file name
+         *  @exception Exception
+         */
+	
+	static char *
+	fileAddDate ( const char * str)		    throw ( Exception );
+
+        /**
          *  Convert a string into base64 encoding.
          *  base64 is described in RFC 2045, section 6.8
          *  The returned string must be freed with delete[].
@@ -307,6 +319,9 @@ class Util
   $Source$
 
   $Log$
+  Revision 1.8  2002/11/20 16:52:08  wandereq
+  added fileAddDate function
+
   Revision 1.7  2002/08/20 18:39:14  darkeye
   added HTTP Basic authentication for icecast2 logins
 

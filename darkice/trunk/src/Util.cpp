@@ -260,6 +260,44 @@ Util :: strToD( const char    * str )                   throw ( Exception )
     return val;
 }
 
+/*------------------------------------------------------------------------------
+ *  insert date between 2 string pointers
+ *----------------------------------------------------------------------------*/
+
+char * 
+Util :: fileAddDate ( const char * str ) throw ( Exception )
+{
+    unsigned int 	size;
+    char		* s;
+    char		* strdate;
+    char 		* last;
+    time_t		now;
+    
+    if ( !str ) {
+        throw Exception( __FILE__, __LINE__, "no str");
+    }
+    
+    
+    strdate = new char[128];
+    now = time(NULL);    
+    strftime(strdate,128,"[%m-%d-%Y-%H-%M-%S]",localtime (&now));
+    
+    last = strrchr (str,'.');
+    if (last == NULL) 
+	last = (char *) str + strlen (str);
+	
+    size = strlen (str) + strlen (strdate) + 1;
+    
+    s = new char [size];
+    
+    memcpy (s, str, strlen (str)-strlen(last));
+    memcpy (s + strlen(str) -  strlen(last), strdate, strlen (strdate));
+    memcpy (s + strlen(str) -  strlen(last) + strlen(strdate), last,strlen(last));
+    s[size-1]='\0';
+    
+    delete strdate;   
+    return s;
+}
 
 /*------------------------------------------------------------------------------
  *  Convert an unsigned char buffer holding 8 or 16 bit PCM values with
@@ -449,6 +487,9 @@ Util :: conv16 (    unsigned char     * pcmBuffer,
   $Source$
 
   $Log$
+  Revision 1.10  2002/11/20 16:52:07  wandereq
+  added fileAddDate function
+
   Revision 1.9  2002/08/20 18:39:14  darkeye
   added HTTP Basic authentication for icecast2 logins
 

@@ -156,6 +156,11 @@ Dump the same mp3 data sent to the
 .B IceCast
 server to this local file.
 .TP
+.I fileAddDate
+"yes" or "no" if you want to automaticaly insert a date string in 
+the file name before his extension or at the end of file name if file name
+doens't have an extension.
+.TP
 .I lowpass
 Lowpass filter setting for the lame encoder. If not set or set to 0,
 the encoder's default behaviour is used. If set to -1, the filter is
@@ -256,7 +261,11 @@ Genre of the stream
 Dump the same Ogg Vorbis data sent to the
 .B IceCast2
 server to this local file.
-
+.TP
+.I fileAddDate
+"yes" or "no" if you want to automaticaly insert a date string in 
+the file name before his extension or at the end of file name if file name
+doens't have an extension.
 .PP
 .B [shoutcast-x]
 
@@ -347,7 +356,11 @@ disabled.
 Dump the same mp3 data sent to the
 .B ShoutCast
 server to this local file.
-
+.TP
+.I fileAddDate
+"yes" or "no" if you want to automaticaly insert a date string in 
+the file name before his extension or at the end of file name if file name
+doens't have an extension.
 .PP
 .B [file-x]
 
@@ -450,6 +463,7 @@ genre           = live
 public          = no
 remoteDumpFile  = /tmp/server-dump.mp3
 localDumpFile   = /tmp/encoder-dump.mp3
+fileAddDate	= no
 .fi
 
 
