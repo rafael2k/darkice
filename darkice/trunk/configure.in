@@ -99,7 +99,7 @@ if test "x${USE_VORBIS}" = "xyes" ; then
 
         AC_DEFINE( HAVE_VORBIS_LIB, 1, [build with Ogg Vorbis library] )
         if test "x${OGG_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
-            LAME_INCFLAGS="-I${OGG_INC_LOC}"
+            VORBIS_INCFLAGS="-I${OGG_INC_LOC}"
         fi
         VORBIS_LDFLAGS="-L${OGG_LIB_LOC} -logg -lvorbis -lvorbisenc"
         AC_MSG_RESULT( [found at ${CONFIG_VORBIS_PREFIX}] )
@@ -134,6 +134,22 @@ AC_TRY_COMPILE([#include <sys/socket.h>], [
     AC_MSG_RESULT(no)
 ])
 
+
+dnl-----------------------------------------------------------------------------
+dnl enable compilation with debug flags
+dnl-----------------------------------------------------------------------------
+AC_SUBST( DEBUG_CXXFLAGS)
+
+AC_ARG_WITH( debug,
+[  --with-debug            enable debug mode [no] ],
+    USE_DEBUG=${withval}, USE_DEBUG="no" )
+    
+if test "x${USE_DEBUG}" == "xyes" ; then
+    DEBUG_CXXFLAGS="-g"
+    AC_MSG_RESULT([compiling in debug mode])
+else
+    AC_MSG_RESULT([not compiling in debug mode])
+fi
 
 
 AC_OUTPUT(Makefile src/Makefile man/Makefile)
