@@ -225,9 +225,13 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
         }
 
         // encoder related stuff
+        unsigned int bs = bufferSecs *
+                          (bitsPerSample / 8) * channel * sampleRate;
         outputs[i].encIn    = new BufferedSink( outputs[i].encInPipe.get(),
-                        bufferSecs * (bitsPerSample / 8) * channel * sampleRate,
+                                                bs,
                                                 (bitsPerSample / 8) * channel );
+        reportEvent( 6, "using buffer size", bs);
+
         encConnector->attach( outputs[i].encIn.get());
         outputs[i].encoder     = new LameEncoder( encoder,
                                         outputs[i].encInPipe->getFileName(),
@@ -268,6 +272,7 @@ DarkIce :: encode ( void )                          throw ( Exception )
 {
     unsigned int       len;
     int                i;
+    unsigned int       bytes;
 
     for ( i = 0; i < noOutputs; ++i ) {
         outputs[i].encoder->start();
@@ -279,10 +284,12 @@ DarkIce :: encode ( void )                          throw ( Exception )
         throw Exception( __FILE__, __LINE__, "can't open connector");
     }
     
-    len = encConnector->transfer( dsp->getSampleRate() *
-                                    (dsp->getBitsPerSample() / 8) *
-                                    dsp->getChannel() *
-                                    duration,
+    bytes = dsp->getSampleRate() *
+            (dsp->getBitsPerSample() / 8) *
+            dsp->getChannel() *
+            duration;
+                                                
+    len = encConnector->transfer( bytes,
                                   4096,
                                   1,
                                   0 );
@@ -306,6 +313,7 @@ bool
 DarkIce :: shout ( unsigned int     ix )                throw ( Exception )
 {
     unsigned int       len;
+    unsigned int       bytes;
 
     if ( ix >= noOutputs ) {
         return false;
@@ -315,13 +323,8 @@ DarkIce :: shout ( unsigned int     ix )                throw ( Exception )
         throw Exception( __FILE__, __LINE__, "can't open connector");
     }
     
-    len = outputs[ix].shoutConnector->transfer (
-                                            outputs[ix].encoder->getOutBitrate()
-                                                * (1024 / 8)
-                                                * duration,
-                                               4096,
-                                               10,
-                                               0 );
+    bytes = outputs[ix].encoder->getOutBitrate() * (1024 / 8) * duration;
+    len = outputs[ix].shoutConnector->transfer ( bytes, 4096, 10, 0 );
 
     cout << len << " bytes transfered" << endl;
 
@@ -384,6 +387,10 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.8  2000/11/15 18:08:43  darkeye
+  added multiple verbosity-level event reporting and verbosity command
+  line option
+
   Revision 1.7  2000/11/13 19:38:55  darkeye
   moved command line parameter parsing from DarkIce.cpp to main.cpp
 

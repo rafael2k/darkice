@@ -265,6 +265,8 @@ Connector :: transfer ( unsigned int        bytes,
         return 0;
     }
 
+    reportEvent( 6, "Connector :: tranfer, bytes", bytes);
+    
     for ( b = 0; b < bytes; ) {
         unsigned int    d = 0;
         unsigned int    e = 0;
@@ -274,7 +276,7 @@ Connector :: transfer ( unsigned int        bytes,
 
             /* check for EOF */
             if ( d == 0 ) {
-cout << "Connector :: transfer, EOF" << endl;
+                reportEvent( 3, "Connector :: transfer, EOF");
                 break;
             }
 
@@ -289,8 +291,11 @@ cout << "Connector :: transfer, EOF" << endl;
                      * and the next sink comes to sinks[u] */
                     --u;
 
+                    reportEvent( 5,
+                         "Connector :: transfer, sink removed, remaining", u);
+
                     if ( numSinks == 0 ) {
-cout << "Connector :: transfer, no more sinks" << endl;
+                        reportEvent( 4, "Connector :: transfer, no more sinks");
                         break;
                     }
                 }
@@ -298,7 +303,7 @@ cout << "Connector :: transfer, no more sinks" << endl;
             
             b += d;
         } else {
-cout << "Connector :: transfer, can't read" << endl;
+            reportEvent( 3, "Connector :: transfer, can't read");
             break;
         }
     }
@@ -328,6 +333,10 @@ Connector :: close ( void )                         throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/15 18:08:43  darkeye
+  added multiple verbosity-level event reporting and verbosity command
+  line option
+
   Revision 1.2  2000/11/13 18:46:50  darkeye
   added kdoc-style documentation comments
 

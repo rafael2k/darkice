@@ -49,6 +49,7 @@
 #include <iostream.h>
 
 #include "Referable.h"
+#include "Reporter.h"
 #include "Exception.h"
 #include "Ref.h"
 #include "OssDspSource.h"
@@ -76,7 +77,7 @@
  *  @author  $Author$
  *  @version $Revision$
  */
-class DarkIce : public virtual Referable
+class DarkIce : public virtual Referable, public virtual Reporter
 {
     private:
 
@@ -235,6 +236,10 @@ class DarkIce : public virtual Referable
   $Source$
 
   $Log$
+  Revision 1.6  2000/11/15 18:08:43  darkeye
+  added multiple verbosity-level event reporting and verbosity command
+  line option
+
   Revision 1.5  2000/11/13 19:38:55  darkeye
   moved command line parameter parsing from DarkIce.cpp to main.cpp
 

@@ -42,5 +42,7 @@ darkice_SOURCES =   AudioEncoder.h\
                     ConfigSection.cpp\
                     Config.h\
                     Config.cpp\
+                    Reporter.h\
+                    Reporter.cpp\
                     main.cpp
 

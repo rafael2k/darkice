@@ -48,6 +48,7 @@
 
 #include "Ref.h"
 #include "Exception.h"
+#include "Util.h"
 #include "DarkIce.h"
 
 
@@ -90,18 +91,25 @@ main (
 
     try {
         const char    * configFileName = 0;
+        unsigned int    verbosity      = 1;
         int             i;
+        const char      opts[] = "hc:v:";
         static struct option long_options[] = {
             { "config", 1, 0, 'c'},
             { "help", 0, 0, 'h'},
+            { "verbosity", 1, 0, 'v'},
             { 0, 0, 0, 0}
         };
             
 
-        while ( (i = getopt_long( argc, argv, "hc:", long_options, 0)) != -1 ) {
+        while ( (i = getopt_long( argc, argv, opts, long_options, 0)) != -1 ) {
             switch ( i ) {
                 case 'c':
                     configFileName = optarg;
+                    break;
+
+                case 'v':
+                    verbosity = Util::strToL( optarg);
                     break;
 
                 default:
@@ -120,9 +128,11 @@ main (
 
         cout << "Using config file: " << configFileName << endl;
 
-        ifstream    configFile( configFileName);
-        Config      config( configFile);
+        ifstream            configFile( configFileName);
+        Config              config( configFile);
         Ref<DarkIce>        di = new DarkIce( config);
+        di->setReportVerbosity( verbosity );
+        di->setReportOutputStream( cout );
 
         res = di->run();
 
@@ -148,6 +158,8 @@ showUsage (     ostream   & os )
     << endl
     << "   -c, --config=config.file    use configuration file config.file"
     << endl
+    << "   -v, --verbosity=number      verbosity level (0 = silent, 10 = loud)"
+    << endl
     << "   -h, --help                  print this message and exit"
     << endl
     << endl;
@@ -159,6 +171,10 @@ showUsage (     ostream   & os )
   $Source$
 
   $Log$
+  Revision 1.5  2000/11/15 18:08:43  darkeye
+  added multiple verbosity-level event reporting and verbosity command
+  line option
+
   Revision 1.4  2000/11/13 20:21:29  darkeye
   added program version display on startup
 

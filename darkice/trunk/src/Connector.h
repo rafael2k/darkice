@@ -38,6 +38,7 @@
 
 #include "Referable.h"
 #include "Ref.h"
+#include "Reporter.h"
 #include "Source.h"
 #include "Sink.h"
 
@@ -56,7 +57,7 @@
  *  @author  $Author$
  *  @version $Revision$
  */
-class Connector : public virtual Referable
+class Connector : public virtual Referable, public virtual Reporter
 {
     private:
 
@@ -257,6 +258,10 @@ class Connector : public virtual Referable
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/15 18:08:43  darkeye
+  added multiple verbosity-level event reporting and verbosity command
+  line option
+
   Revision 1.2  2000/11/13 18:46:50  darkeye
   added kdoc-style documentation comments
 

@@ -37,6 +37,7 @@
 /* ============================================================ include files */
 
 #include "Ref.h"
+#include "Reporter.h"
 #include "Sink.h"
 
 
@@ -57,7 +58,7 @@
  *  @author  $Author$
  *  @version $Revision$
  */
-class BufferedSink : public Sink
+class BufferedSink : public Sink, public virtual Reporter
 {
     private:
 
@@ -163,6 +164,8 @@ class BufferedSink : public Sink
 
             u = outp <= inp ? inp - outp : (bufferEnd - outp) + (inp - buffer);
             if ( peak < u ) {
+                reportEvent( 4, "BufferedSink, new peak:", peak);
+                reportEvent( 4, "BufferedSink, remaining:", bufferSize - peak);
                 peak = u;
             }
         }
@@ -388,6 +391,10 @@ class BufferedSink : public Sink
   $Source$
 
   $Log$
+  Revision 1.5  2000/11/15 18:08:42  darkeye
+  added multiple verbosity-level event reporting and verbosity command
+  line option
+
   Revision 1.4  2000/11/11 12:33:13  darkeye
   added kdoc-style documentation
 
