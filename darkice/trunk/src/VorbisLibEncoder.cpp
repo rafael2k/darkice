@@ -75,9 +75,9 @@ VorbisLibEncoder :: open ( void )
     if ( (ret = vorbis_encode_init( &vorbisInfo,
                                     getInChannel(),
                                     getInSampleRate(),
-                                    getOutBitrate(),
-                                    getOutBitrate(),
-                                    getOutBitrate() )) ) {
+                                    -1,
+                                    getOutBitrate() * 1000,
+                                    -1 )) ) {
         throw Exception( __FILE__, __LINE__, "vorbis encode init error", ret);
     }
 
@@ -359,6 +359,9 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.5  2001/10/21 13:08:18  darkeye
+  fixed incorrect vorbis bitrate setting
+
   Revision 1.4  2001/10/19 12:39:42  darkeye
   created configure options to compile with or without lame / Ogg Vorbis
 
