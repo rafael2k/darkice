@@ -37,6 +37,7 @@
 /* ============================================================ include files */
 
 #include "Ref.h"
+#include "Reporter.h"
 #include "Sink.h"
 #include "TcpSocket.h"
 #include "BufferedSink.h"
@@ -58,7 +59,7 @@
  *  @author  $Author$
  *  @version $Revision$
  */
-class CastSink : public Sink
+class CastSink : public Sink, public virtual Reporter
 {
     private:
 
@@ -71,6 +72,11 @@ class CastSink : public Sink
          *  The BufferedSink encapsulating the socket connection to the server.
          */
         Ref<BufferedSink>   bufferedSink;
+
+        /**
+         *  An optional Sink to enable stream dumps.
+         */
+        Ref<Sink>           streamDump;
 
         /**
          *  Duration of the BufferedSink buffer in seconds.
@@ -123,6 +129,7 @@ class CastSink : public Sink
          */
         void
         init (  TcpSocket             * socket,
+                Sink                  * streamDump,
                 const char            * password,
                 unsigned int            bitRate,
                 const char            * name,
@@ -198,6 +205,7 @@ class CastSink : public Sink
          *  @param genre genre of the stream.
          *  @param bitRate bitrate of the stream (e.g. mp3 bitrate).
          *  @param isPublic is the stream public?
+         *  @param streamDump a Sink to dump the streamed binary data to
          *  @param bufferDuration duration of the BufferedSink buffer
          *                        in seconds.
          *  @exception Exception
@@ -210,10 +218,12 @@ class CastSink : public Sink
                     const char        * url            = 0,
                     const char        * genre          = 0,
                     bool                isPublic       = false,
+                    Sink              * streamDump     = 0,
                     unsigned int        bufferDuration = 10 )
                                                         throw ( Exception )
         {
             init( socket,
+                  streamDump,
                   password,
                   bitRate,
                   name,
@@ -233,6 +243,7 @@ class CastSink : public Sink
                 : Sink( cs )
         {
             init( cs.socket.get(),
+                  cs.streamDump.get(),
                   cs.password,
                   cs.bitRate,
                   cs.name,
@@ -267,6 +278,7 @@ class CastSink : public Sink
                 strip();
                 Sink::operator=( cs );
                 init( cs.socket.get(),
+                      cs.streamDump.get(),
                       cs.password,
                       cs.bitRate,
                       cs.name,
@@ -328,6 +340,10 @@ class CastSink : public Sink
         write (        const void    * buf,
                        unsigned int    len )        throw ( Exception )
         {
+            if ( streamDump != 0 ) {
+                streamDump->write( buf, len);
+            }
+
             return getSink()->write( buf, len);
         }
 
@@ -339,6 +355,10 @@ class CastSink : public Sink
         inline virtual void
         flush ( void )                              throw ( Exception )
         {
+            if ( streamDump != 0 ) {
+                streamDump->flush();
+            }
+
             return getSink()->flush();
         }
 
@@ -350,6 +370,10 @@ class CastSink : public Sink
         inline virtual void
         close ( void )                              throw ( Exception )
         {
+            if ( streamDump != 0 ) {
+                streamDump->close();
+            }
+
             return getSink()->close();
         }
 
@@ -447,6 +471,9 @@ class CastSink : public Sink
   $Source$
 
   $Log$
+  Revision 1.7  2002/02/20 11:54:11  darkeye
+  added local dump file possibility
+
   Revision 1.6  2001/09/09 11:27:31  darkeye
   added support for ShoutCast servers
 

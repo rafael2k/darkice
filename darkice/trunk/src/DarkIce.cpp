@@ -76,6 +76,7 @@
 #include "IceCast.h"
 #include "IceCast2.h"
 #include "ShoutCast.h"
+#include "FileSink.h"
 #include "DarkIce.h"
 
 #ifdef HAVE_LAME_LIB
@@ -212,6 +213,8 @@ DarkIce :: configIceCast (  const Config      & config,
         bool            isPublic        = false;
         int             lowpass         = 0;
         int             highpass        = 0;
+        const char    * localDumpName   = 0;
+        FileSink      * localDumpFile   = 0;
 
         str         = cs->get( "sampleRate");
         sampleRate  = str ? Util::strToL( str) : dsp->getSampleRate();
@@ -235,8 +238,21 @@ DarkIce :: configIceCast (  const Config      & config,
         lowpass     = str ? Util::strToL( str) : 0;
         str         = cs->get( "highpass");
         highpass    = str ? Util::strToL( str) : 0;
+        localDumpName = cs->get( "localDumpFile");
 
         // go on and create the things
+
+        // check for and create the local dump file if needed
+        if ( localDumpName != 0 ) {
+            localDumpFile = new FileSink( localDumpName);
+            if ( !localDumpFile->exists() ) {
+                if ( !localDumpFile->create() ) {
+                    reportEvent( 1, "can't create local dump file",
+                                    localDumpName);
+                    localDumpFile = 0;
+                }
+            }
+        }
 
         // encoder related stuff
         unsigned int bs = bufferSecs *
@@ -256,7 +272,8 @@ DarkIce :: configIceCast (  const Config      & config,
                                            url,
                                            genre,
                                            isPublic,
-                                           remoteDumpFile );
+                                           remoteDumpFile,
+                                           localDumpFile );
 
         audioOuts[u].encoder = new LameLibEncoder( audioOuts[u].server.get(),
                                                    dsp.get(),
@@ -311,6 +328,8 @@ DarkIce :: configIceCast2 (  const Config      & config,
         const char            * url             = 0;
         const char            * genre           = 0;
         bool                    isPublic        = false;
+        const char            * localDumpName   = 0;
+        FileSink              * localDumpFile   = 0;
 
         str         = cs->getForSure( "format", " missing in section ", stream);
         if ( Util::strEq( str, "vorbis") ) {
@@ -341,8 +360,21 @@ DarkIce :: configIceCast2 (  const Config      & config,
         genre       = cs->get( "genre");
         str         = cs->get( "public");
         isPublic    = str ? (Util::strEq( str, "yes") ? true : false) : false;
+        localDumpName = cs->get( "localDumpFile");
 
         // go on and create the things
+
+        // check for and create the local dump file if needed
+        if ( localDumpName != 0 ) {
+            localDumpFile = new FileSink( localDumpName);
+            if ( !localDumpFile->exists() ) {
+                if ( !localDumpFile->create() ) {
+                    reportEvent( 1, "can't create local dump file",
+                                    localDumpName);
+                    localDumpFile = 0;
+                }
+            }
+        }
 
         // encoder related stuff
         unsigned int bs = bufferSecs *
@@ -362,7 +394,8 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                             description,
                                             url,
                                             genre,
-                                            isPublic );
+                                            isPublic,
+                                            localDumpFile );
 
         switch ( format ) {
             case IceCast2::mp3:
@@ -456,6 +489,8 @@ DarkIce :: configShoutCast (    const Config      & config,
         const char    * irc             = 0;
         const char    * aim             = 0;
         const char    * icq             = 0;
+        const char    * localDumpName   = 0;
+        FileSink      * localDumpFile   = 0;
 
         str         = cs->get( "sampleRate");
         sampleRate  = str ? Util::strToL( str) : dsp->getSampleRate();
@@ -477,8 +512,21 @@ DarkIce :: configShoutCast (    const Config      & config,
         irc         = cs->get( "irc");
         aim         = cs->get( "aim");
         icq         = cs->get( "icq");
+        localDumpName = cs->get( "localDumpFile");
 
         // go on and create the things
+
+        // check for and create the local dump file if needed
+        if ( localDumpName != 0 ) {
+            localDumpFile = new FileSink( localDumpName);
+            if ( !localDumpFile->exists() ) {
+                if ( !localDumpFile->create() ) {
+                    reportEvent( 1, "can't create local dump file",
+                                    localDumpName);
+                    localDumpFile = 0;
+                }
+            }
+        }
 
         // encoder related stuff
         unsigned int bs = bufferSecs *
@@ -498,7 +546,8 @@ DarkIce :: configShoutCast (    const Config      & config,
                                              isPublic,
                                              irc,
                                              aim,
-                                             icq );
+                                             icq,
+                                             localDumpFile );
 
         audioOuts[u].encoder = new LameLibEncoder( audioOuts[u].server.get(),
                                                    dsp.get(),
@@ -648,6 +697,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.24  2002/02/20 11:54:11  darkeye
+  added local dump file possibility
+
   Revision 1.23  2002/02/20 10:35:35  darkeye
   updated to work with Ogg Vorbis libs rc3 and current IceCast2 cvs
 

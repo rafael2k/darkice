@@ -1,5 +1,5 @@
 bin_PROGRAMS = darkice
-CXXFLAGS = -O2 -Wall
+CXXFLAGS = -g -O2 -Wall
 INCLUDES = @LAME_INCFLAGS@ @VORBIS_INCFLAGS@
 LDADD = @LAME_LDFLAGS@ @VORBIS_LDFLAGS@
 
@@ -9,6 +9,8 @@ darkice_SOURCES =   AudioEncoder.h\
                     BufferedSink.h\
                     CastSink.cpp\
                     CastSink.h\
+                    FileSink.h\
+                    FileSink.cpp\
                     Connector.cpp\
                     Connector.h\
                     DarkIce.cpp\

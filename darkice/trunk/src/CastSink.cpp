@@ -55,6 +55,7 @@ static const char fileid[] = "$Id$";
  *----------------------------------------------------------------------------*/
 void
 CastSink :: init (  TcpSocket             * socket,
+                    Sink                  * streamDump,
                     const char            * password,
                     unsigned int            bitRate,
                     const char            * name,
@@ -65,6 +66,7 @@ CastSink :: init (  TcpSocket             * socket,
                                                         throw ( Exception )
 {
     this->socket         = socket;
+    this->streamDump     = streamDump;
     this->password       = Util::strDup( password);
     this->bitRate        = bitRate;
     this->name           = name           ? Util::strDup( name) : 0;
@@ -121,6 +123,14 @@ CastSink :: open ( void )                       throw ( Exception )
         return false;
     }
 
+    if ( streamDump != 0 ) {
+        if ( !streamDump->isOpen() ) {
+            if ( !streamDump->open() ) {
+                reportEvent( 2, "can't open stream dump");
+            }
+        }
+    }
+    
     return true;
 }
 
@@ -131,6 +141,9 @@ CastSink :: open ( void )                       throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.6  2002/02/20 11:54:11  darkeye
+  added local dump file possibility
+
   Revision 1.5  2001/09/09 11:27:31  darkeye
   added support for ShoutCast servers
 

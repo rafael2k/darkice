@@ -1,4 +1,4 @@
-.TH darkice.cfg 5 "October 19, 2001" "DarkIce" "DarkIce live audio streamer"
+.TH darkice.cfg 5 "February 20, 2002" "DarkIce" "DarkIce live audio streamer"
 .SH NAME
 darkice.cfg \- configuration file for darkice
 .SH DESCRIPTION
@@ -134,6 +134,11 @@ The file the
 server should dump the contents of
 this stream on its side.
 .TP
+.I localDumpFile
+Dump the same mp3 data sent to the
+.B IceCast
+server to this local file.
+.TP
 .I lowpass
 Lowpass filter setting for the lame encoder. If not set or set to 0,
 the encoder's default behaviour is used. If set to -1, the filter is
@@ -201,6 +206,11 @@ Genre of the stream
 .TP
 .I public
 "yes" or "no", wether the stream is public
+.TP
+.I localDumpFile
+Dump the same Ogg Vorbis data sent to the
+.B IceCast2
+server to this local file.
 
 .PP
 .B [shoutcast-x]
@@ -271,6 +281,11 @@ disabled.
 Highpass filter setting for the lame encoder. If not set or set to 0,
 the encoder's default behaviour is used. If set to -1, the filter is
 disabled.
+.TP
+.I localDumpFile
+Dump the same mp3 data sent to the
+.B ShoutCast
+server to this local file.
 
 .PP
 A sample configuration file follows. This file makes
@@ -287,8 +302,12 @@ to mp3 players.
 The encoding session will be stored by
 .B IceCast
 in the file
-.I /tmp/live96.mp3
-on the server side.
+.I /tmp/server-dump.mp3
+on the server side, and also by
+.B DarkIce
+in the file
+.I /tmp/encoder-dump.mp3
+on the encoder side.
 
 .nf
 [general]
@@ -312,7 +331,8 @@ description     = This is only a trial
 url             = http://www.yourserver.com
 genre           = live
 public          = no
-remoteDumpFile  = /tmp/live96.mp3
+remoteDumpFile  = /tmp/server-dump.mp3
+localDumpFile   = /tmp/encoder-dump.mp3
 .fi
 
 

@@ -158,6 +158,7 @@ class IceCast2 : public CastSink
                     const char        * url            = 0,
                     const char        * genre          = 0,
                     bool                isPublic       = false,
+                    Sink              * streamDump     = 0,
                     unsigned int        bufferDuration = 10 )
                                                         throw ( Exception )
               : CastSink( socket,
@@ -167,6 +168,7 @@ class IceCast2 : public CastSink
                           url,
                           genre,
                           isPublic,
+                          streamDump,
                           bufferDuration )
         {
             init( format, mountPoint, description);
@@ -268,6 +270,9 @@ class IceCast2 : public CastSink
   $Source$
 
   $Log$
+  Revision 1.3  2002/02/20 11:54:11  darkeye
+  added local dump file possibility
+
   Revision 1.2  2002/02/20 10:35:35  darkeye
   updated to work with Ogg Vorbis libs rc3 and current IceCast2 cvs
 

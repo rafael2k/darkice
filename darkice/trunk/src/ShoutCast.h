@@ -151,6 +151,7 @@ class ShoutCast : public CastSink
                     const char        * irc            = 0,
                     const char        * aim            = 0,
                     const char        * icq            = 0,
+                    Sink              * streamDump     = 0,
                     unsigned int        bufferDuration = 10 )
                                                         throw ( Exception )
               : CastSink( socket,
@@ -160,6 +161,7 @@ class ShoutCast : public CastSink
                           url,
                           genre,
                           isPublic,
+                          streamDump,
                           bufferDuration )
         {
             init( irc, aim, icq);
@@ -257,6 +259,9 @@ class ShoutCast : public CastSink
   $Source$
 
   $Log$
+  Revision 1.2  2002/02/20 11:54:11  darkeye
+  added local dump file possibility
+
   Revision 1.1  2001/09/09 11:27:31  darkeye
   added support for ShoutCast servers
 

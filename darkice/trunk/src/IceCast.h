@@ -151,6 +151,7 @@ class IceCast : public CastSink
                     const char        * genre          = 0,
                     bool                isPublic       = false,
                     const char        * remoteDumpFile = 0,
+                    Sink              * streamDump     = 0,
                     unsigned int        bufferDuration = 10 )
                                                         throw ( Exception )
               : CastSink( socket,
@@ -160,6 +161,7 @@ class IceCast : public CastSink
                           url,
                           genre,
                           isPublic,
+                          streamDump,
                           bufferDuration )
         {
             init( mountPoint, description, remoteDumpFile);
@@ -261,6 +263,9 @@ class IceCast : public CastSink
   $Source$
 
   $Log$
+  Revision 1.7  2002/02/20 11:54:11  darkeye
+  added local dump file possibility
+
   Revision 1.6  2001/09/09 11:27:31  darkeye
   added support for ShoutCast servers
 
