@@ -133,9 +133,9 @@ VorbisLibEncoder :: open ( void )
                 if ( (ret = vorbis_encode_init( &vorbisInfo,
                                                 getInChannel(),
                                                 getOutSampleRate(),
-                                                -1,
+                                                maxBitrate,
                                                 getOutBitrate() * 1000,
-                                                maxBitrate)) ) {
+                                                -1)) ) {
                     throw Exception( __FILE__, __LINE__,
                                      "vorbis encode init error", ret);
                 }
@@ -368,6 +368,9 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.14  2002/08/22 21:52:08  darkeye
+  bug fix: maximum bitrate setting fixed for Ogg Vorbis streams
+
   Revision 1.13  2002/08/20 19:35:37  darkeye
   added possibility to specify maximum bitrate for Ogg Vorbis streams
 
