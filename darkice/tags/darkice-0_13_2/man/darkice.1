@@ -1,0 +1,107 @@
+.TH darkice 1 "January 7, 2004" "DarkIce" "DarkIce live audio streamer"
+.SH NAME
+darkice \- an icecast / shoutcast live audio streamer
+.SH SYNOPSIS
+.B darkice
+[options] -c config.file
+.SH DESCRIPTION
+.PP
+.B DarkIce
+is an
+.B IceCast
+,
+.B IceCast2
+and
+.B ShoutCast
+live audio streamer. It takes audio input from a
+sound card, encodes it into mp3 and/or Ogg Vorbis,
+and sends the streams to one or more
+.B IceCast
+,
+.B ShoutCast
+and/or
+.B IceCast2
+servers.
+
+.B DarkIce
+uses
+.SM POSIX
+real-time scheduling to keep up with sound card input.
+.SM POSIX
+real-time scheduling is only available if the program is run as root.
+Therefore it is recommended that
+.B DarkIce
+is run as root.
+
+.B DarkIce
+uses the
+.B Lame
+mp3 encoder as a library to encode audio intput to mp3, and uses the
+.B Ogg Vorbis
+library to encode into Ogg Vorbis.
+
+.SH OPTIONS
+.TP
+.BI "\-c " config.file
+Specifies what configuration file to use.
+
+.TP
+.BI "\-v " n
+Sets the verbosity level, between 0 and 10. 0 is silent, 10 is loud.
+Defaults to 1.
+
+.TP
+.BI "\-h "
+Prints the help page and exits.
+
+
+.SH BUGS
+.PP
+Lots of bugs.
+
+
+.SH "SEE ALSO"
+darkice.cfg(5)
+
+
+.SH AUTHOR
+Akos Maroy
+.I <darkeye@users.sourceforge.net>
+
+
+.SH ACKNOWLEDGEMENTS
+Developed with contributions by
+
+    Jim Crilly, <JCrilly@MSA.com>
+    aNa|0Gue, <analogue@glop.org>
+    Robin P. Blanchard, <Robin_Blanchard@gactr.uga.edu>
+    Tom Gray, <tomg@future-i.com>
+    Michael Smith, <msmith@labyrinth.net.au>
+    Julius O. Smith, <jos@ccrma.stanford.edu>
+    the OSALP team, http://osalp.sourceforge.net
+    Kristjan G. Bjarnason <kgb@gangverk.is>
+    Nicu Pavel <npavel@ituner.com>
+    Kai Krakow <kai@kaishome.de>
+    Atsuhiko Yamanaka <ymnk@jcraft.com>
+    Ricardo Galli <gallir@uib.es>
+    John Hay <jhay@icomtek.csir.co.za>
+
+.SH LINKS
+Project homepage:
+.I http://darkice.sourceforge.net/
+
+.B IceCast
+homepage:
+.I http://www.icecast.org/
+
+.B ShoutCast
+homepage:
+.I http://www.shoutcast.com/
+
+.B Lame
+homepage:
+.I http://www.mp3dev.org/mp3/
+
+.B Ogg Vorbis
+homepage:
+.I http://www.xiph.org/ogg/vorbis/
