@@ -199,9 +199,9 @@ OssDspSource :: canRead ( unsigned int    sec,
 
     if ( !running ) {
         /* ugly workaround to get the dsp into recording state */
-        unsigned char   b[getBitsPerSample()/8];
+        unsigned char   b[getChannel()*getBitsPerSample()/8];
 
-        read( b, getBitsPerSample()/8);
+        read( b, getChannel()*getBitsPerSample()/8);
     }
     
     FD_ZERO( &fdset);
@@ -264,6 +264,10 @@ OssDspSource :: close ( void )                  throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.4  2000/11/13 20:05:07  darkeye
+  changed to workaround to start recording so that it reads one sample
+  per channel, as opposed to only one sample (which misalignes the channels)
+
   Revision 1.3  2000/11/12 13:31:40  darkeye
   added kdoc-style documentation comments
 
