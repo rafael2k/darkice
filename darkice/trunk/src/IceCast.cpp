@@ -120,25 +120,33 @@ IceCast :: sendLogin ( void )                           throw ( Exception )
     }
 
     /* send the x-audiocast headers */
-    str = "x-audiocast-name: ";
-    sink->write( str, strlen( str));
-    str = getName();
-    sink->write( str, strlen( str));
+    if ( getName() ) {
+        str = "x-audiocast-name: ";
+        sink->write( str, strlen( str));
+        str = getName();
+        sink->write( str, strlen( str));
+    }
 
-    str = "\nx-audiocast-description: ";
-    sink->write( str, strlen( str));
-    str = getDescription();
-    sink->write( str, strlen( str));
+    if ( getDescription() ) {
+        str = "\nx-audiocast-description: ";
+        sink->write( str, strlen( str));
+        str = getDescription();
+        sink->write( str, strlen( str));
+    }
 
-    str = "\nx-audiocast-url: ";
-    sink->write( str, strlen( str));
-    str = getUrl();
-    sink->write( str, strlen( str));
+    if ( getUrl() ) {
+        str = "\nx-audiocast-url: ";
+        sink->write( str, strlen( str));
+        str = getUrl();
+        sink->write( str, strlen( str));
+    }
 
-    str = "\nx-audiocast-genre: ";
-    sink->write( str, strlen( str));
-    str = getGenre();
-    sink->write( str, strlen( str));
+    if ( getGenre() ) {
+        str = "\nx-audiocast-genre: ";
+        sink->write( str, strlen( str));
+        str = getGenre();
+        sink->write( str, strlen( str));
+    }
 
     str = "\nx-audiocast-bitrate: ";
     sink->write( str, strlen( str));
@@ -186,6 +194,9 @@ IceCast :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.5  2001/08/29 21:08:30  darkeye
+  made some description options in the darkice config file optional
+
   Revision 1.4  2000/11/12 14:54:50  darkeye
   added kdoc-style documentation comments
 

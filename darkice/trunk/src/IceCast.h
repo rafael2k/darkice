@@ -107,25 +107,25 @@ class IceCast : public CastSink
         IceCast (   TcpSocket         * socket,
                     const char        * password,
                     const char        * mountPoint,
-                    const char        * remoteDumpFile,
-                    const char        * name,
-                    const char        * description,
-                    const char        * url,
-                    const char        * genre,
                     unsigned int        bitRate,
-                    bool                isPublic,
+                    const char        * name           = 0,
+                    const char        * description    = 0,
+                    const char        * url            = 0,
+                    const char        * genre          = 0,
+                    bool                isPublic       = false,
+                    const char        * remoteDumpFile = 0,
                     unsigned int        bufferDuration = 10 )
                                                         throw ( Exception )
               : CastSink( socket,
                           password,
                           mountPoint,
-                          remoteDumpFile,
+                          bitRate,
                           name,
                           description,
                           url,
                           genre,
-                          bitRate,
                           isPublic,
+                          remoteDumpFile,
                           bufferDuration )
         {
         }
@@ -184,6 +184,9 @@ class IceCast : public CastSink
   $Source$
 
   $Log$
+  Revision 1.5  2001/08/29 21:08:30  darkeye
+  made some description options in the darkice config file optional
+
   Revision 1.4  2000/11/12 14:54:50  darkeye
   added kdoc-style documentation comments
 

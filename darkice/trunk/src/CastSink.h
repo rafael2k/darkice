@@ -143,13 +143,13 @@ class CastSink : public Sink
         init (  TcpSocket             * socket,
                 const char            * password,
                 const char            * mountPoint,
-                const char            * remoteDumpFile,
+                unsigned int            bitRate,
                 const char            * name,
                 const char            * description,
                 const char            * url,
                 const char            * genre,
-                unsigned int            bitRate,
                 bool                    isPublic,
+                const char            * remoteDumpFile,
                 unsigned int            bufferDuration )
                                                     throw ( Exception );
 
@@ -230,26 +230,26 @@ class CastSink : public Sink
         CastSink (  TcpSocket         * socket,
                     const char        * password,
                     const char        * mountPoint,
-                    const char        * remoteDumpFile,
-                    const char        * name,
-                    const char        * description,
-                    const char        * url,
-                    const char        * genre,
                     unsigned int        bitRate,
-                    bool                isPublic,
+                    const char        * name           = 0,
+                    const char        * description    = 0,
+                    const char        * url            = 0,
+                    const char        * genre          = 0,
+                    bool                isPublic       = false,
+                    const char        * remoteDumpFile = 0,
                     unsigned int        bufferDuration = 10 )
                                                         throw ( Exception )
         {
             init( socket,
                   password,
                   mountPoint,
-                  remoteDumpFile,
+                  bitRate,
                   name,
                   description,
                   url,
                   genre,
-                  bitRate,
                   isPublic,
+                  remoteDumpFile,
                   bufferDuration );
         }
 
@@ -265,13 +265,13 @@ class CastSink : public Sink
             init( cs.socket.get(),
                   cs.password,
                   cs.mountPoint,
-                  cs.remoteDumpFile,
+                  cs.bitRate,
                   cs.name,
                   cs.description,
                   cs.url,
                   cs.genre,
-                  cs.bitRate,
                   cs.isPublic,
+                  cs.remoteDumpFile,
                   cs.bufferDuration );
         }
 
@@ -302,13 +302,13 @@ class CastSink : public Sink
                 init( cs.socket.get(),
                       cs.password,
                       cs.mountPoint,
-                      cs.remoteDumpFile,
+                      cs.bitRate,
                       cs.name,
                       cs.description,
                       cs.url,
                       cs.genre,
-                      cs.bitRate,
                       cs.isPublic,
+                      cs.remoteDumpFile,
                       cs.bufferDuration );
             }
             return *this;
@@ -516,6 +516,9 @@ class CastSink : public Sink
   $Source$
 
   $Log$
+  Revision 1.5  2001/08/29 21:08:30  darkeye
+  made some description options in the darkice config file optional
+
   Revision 1.4  2000/11/12 14:54:50  darkeye
   added kdoc-style documentation comments
 

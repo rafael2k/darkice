@@ -200,12 +200,12 @@ DarkIce :: configLameLib (  const Config      & config,
         password    = cs->getForSure( "password", " missing in section ", lame);
         mountPoint  = cs->getForSure( "mountPoint"," missing in section ",lame);
         remoteDumpFile = cs->get( "remoteDumpFile");
-        name        = cs->getForSure( "name", " missing in section ", lame);
-        description = cs->getForSure("description"," missing in section ",lame);
-        url         = cs->getForSure( "url", " missing in section ", lame);
-        genre       = cs->getForSure( "genre", " missing in section ", lame);
-        str         = cs->getForSure( "public", " missing in section ", lame);
-        isPublic    = Util::strEq( str, "yes") ? true : false;
+        name        = cs->get( "name");
+        description = cs->get("description");
+        url         = cs->get( "url");
+        genre       = cs->get( "genre");
+        str         = cs->get( "public");
+        isPublic    = str ? (Util::strEq( str, "yes") ? true : false) : false;
         str         = cs->get( "lowpass");
         lowpass     = str ? Util::strToL( str) : 0;
         str         = cs->get( "highpass");
@@ -225,13 +225,13 @@ DarkIce :: configLameLib (  const Config      & config,
         lameLibOuts[u].ice        = new IceCast( lameLibOuts[u].socket.get(),
                                                  password,
                                                  mountPoint,
-                                                 remoteDumpFile,
+                                                 bitrate,
                                                  name,
                                                  description,
                                                  url,
                                                  genre,
-                                                 bitrate,
-                                                 isPublic );
+                                                 isPublic,
+                                                 remoteDumpFile );
 
         lameLibOuts[u].encoder = new LameLibEncoder( lameLibOuts[u].ice.get(),
                                                      dsp.get(),
@@ -380,6 +380,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.14  2001/08/29 21:08:30  darkeye
+  made some description options in the darkice config file optional
+
   Revision 1.13  2001/08/26 20:44:30  darkeye
   removed external command-line encoder support
   replaced it with a shared-object support for lame with the possibility
