@@ -1,3 +1,9 @@
+DarkIce 0.10
+
+    o added possibility to select constant, average and variable bit rate
+      encoding modes with specifying encoding quality as well.
+      thanks to Nicu Pavel <npavel@ituner.com>
+
 09-04-2002: DarkIce 0.9.1 released
 
     o bugfix: a memory leak was introduced in 0.9, which is fixed thanks to

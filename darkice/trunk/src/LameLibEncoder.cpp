@@ -37,6 +37,7 @@
 #ifdef HAVE_LAME_LIB
 
 
+
 #include "Exception.h"
 #include "Util.h"
 #include "LameLibEncoder.h"
@@ -117,14 +118,82 @@ LameLibEncoder :: open ( void )
                  "set lame out sample rate",
                  lame_get_out_samplerate( lameGlobalFlags));
     
-    if ( 0 > lame_set_brate( lameGlobalFlags, getOutBitrate()) ) {
-        throw Exception( __FILE__, __LINE__,
-                         "lame lib setting output bit rate error",
-                         getOutBitrate() );
+    switch ( getOutBitrateMode() ) {
+        
+        case cbr: {
+
+            if ( 0 > lame_set_brate( lameGlobalFlags, getOutBitrate()) ) {
+                throw Exception( __FILE__, __LINE__,
+                                "lame lib setting output bit rate error",
+                                getOutBitrate() );
+            }
+            
+            reportEvent( 5,
+                         "set lame bit rate",
+                         lame_get_brate( lameGlobalFlags));
+            
+            double  d = (1.0 - getOutQuality()) * 10.0;
+            int     q = int (d + 0.499999);
+
+            if ( 0 > lame_set_quality( lameGlobalFlags, q) ) {
+                throw Exception( __FILE__, __LINE__,
+                                "lame lib setting quality error", q);
+            }
+            
+            reportEvent( 5,
+                         "set lame quality",
+                         lame_get_quality( lameGlobalFlags));
+            } break;
+
+        case abr:
+
+            if ( 0 > lame_set_VBR( lameGlobalFlags,vbr_abr)) {
+                throw Exception( __FILE__, __LINE__,
+                                 "lame lib setting abr error", vbr_abr);
+            }
+            
+            reportEvent( 5,
+                         "set lame abr bitrate",
+                         lame_get_VBR( lameGlobalFlags));
+            
+            if ( 0 > lame_set_VBR_mean_bitrate_kbps( lameGlobalFlags,
+                                                     getOutBitrate())) {
+                throw Exception( __FILE__, __LINE__,
+                                 "lame lib setting abr mean bitrate error",
+                                 getOutBitrate());
+            }
+            
+            reportEvent( 5,
+                         "set lame abr mean bitrate", 
+                         lame_get_VBR_mean_bitrate_kbps( lameGlobalFlags));
+            break;
+
+        case vbr: {
+        
+            if ( 0 > lame_set_VBR( lameGlobalFlags, vbr_mtrh)) {
+                throw Exception( __FILE__, __LINE__,
+                                 "lame lib setting vbr error", vbr_mtrh );
+            }
+        
+            reportEvent( 5,
+                         "set lame vbr bitrate",
+                         lame_get_VBR( lameGlobalFlags));
+
+            double  d = (1.0 - getOutQuality()) * 10.0;
+            int     q = int (d + 0.499999);
+
+            if ( 0 > lame_set_VBR_q( lameGlobalFlags, q) ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "lame lib setting vbr quality error", q);
+            }
+        
+            reportEvent( 5,
+                         "set lame vbr quality",
+                         lame_get_VBR_q( lameGlobalFlags));
+            } break;
     }
 
-    reportEvent( 5, "set lame bit rate", lame_get_brate( lameGlobalFlags));
-    
+
     if ( 0 > lame_set_lowpassfreq( lameGlobalFlags, lowpass) ) {
         throw Exception( __FILE__, __LINE__,
                          "lame lib setting lowpass frequency error",
@@ -145,15 +214,10 @@ LameLibEncoder :: open ( void )
                  "set lame highpass frequency",
                  lame_get_highpassfreq( lameGlobalFlags));
 
+
+    
+    
     // not configurable lame settings
-
-    if ( 0 > lame_set_quality( lameGlobalFlags, 2) ) {
-        throw Exception( __FILE__, __LINE__,
-                         "lame lib setting quality error",
-                         2 );
-    }
-
-    reportEvent( 5, "set lame quality", lame_get_quality( lameGlobalFlags));
     
     if ( 0 > lame_set_exp_nspsytune( lameGlobalFlags, 1) ) {
         throw Exception( __FILE__, __LINE__,
@@ -315,6 +379,9 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.11  2002/04/13 11:26:00  darkeye
+  added cbr, abr and vbr setting feature with encoding quality
+
   Revision 1.10  2002/03/28 16:38:37  darkeye
   moved functions conv8() and conv16() to class Util
 

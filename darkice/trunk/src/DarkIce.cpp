@@ -198,29 +198,68 @@ DarkIce :: configIceCast (  const Config      & config,
                          stream);
 #else
 
-        const char    * str;
+        const char                * str;
 
-        unsigned int    sampleRate      = 0;
-        unsigned int    bitrate         = 0;
-        const char    * server          = 0;
-        unsigned int    port            = 0;
-        const char    * password        = 0;
-        const char    * mountPoint      = 0;
-        const char    * remoteDumpFile  = 0;
-        const char    * name            = 0;
-        const char    * description     = 0;
-        const char    * url             = 0;
-        const char    * genre           = 0;
-        bool            isPublic        = false;
-        int             lowpass         = 0;
-        int             highpass        = 0;
-        const char    * localDumpName   = 0;
-        FileSink      * localDumpFile   = 0;
+        unsigned int                sampleRate      = 0;
+        AudioEncoder::BitrateMode   bitrateMode;
+        unsigned int                bitrate         = 0;
+        double                      quality         = 0.0;
+        const char                * server          = 0;
+        unsigned int                port            = 0;
+        const char                * password        = 0;
+        const char                * mountPoint      = 0;
+        const char                * remoteDumpFile  = 0;
+        const char                * name            = 0;
+        const char                * description     = 0;
+        const char                * url             = 0;
+        const char                * genre           = 0;
+        bool                        isPublic        = false;
+        int                         lowpass         = 0;
+        int                         highpass        = 0;
+        const char                * localDumpName   = 0;
+        FileSink                  * localDumpFile   = 0;
 
         str         = cs->get( "sampleRate");
         sampleRate  = str ? Util::strToL( str) : dsp->getSampleRate();
-        str         = cs->getForSure("bitrate", " missing in section ", stream);
-        bitrate     = Util::strToL( str);
+
+        str         = cs->get( "bitrate");
+        bitrate     = str ? Util::strToL( str) : 0;
+        str         = cs->get( "quality");
+        quality     = str ? Util::strToD( str) : 0.0;
+        
+        str         = cs->getForSure( "bitrateMode",
+                                      " not specified in section ",
+                                      stream);
+        if ( Util::strEq( str, "cbr") ) {
+            bitrateMode = AudioEncoder::cbr;
+            
+            if ( bitrate == 0 ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "bitrate not specified for CBR encoding");
+            }
+            if ( quality == 0 ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "quality not specified for CBR encoding");
+            }
+        } else if ( Util::strEq( str, "abr") ) {
+            bitrateMode = AudioEncoder::abr;
+
+            if ( bitrate == 0 ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "bitrate not specified for ABR encoding");
+            }
+        } else if ( Util::strEq( str, "vbr") ) {
+            bitrateMode = AudioEncoder::vbr;
+
+            if ( quality == 0 ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "quality not specified for VBR encoding");
+            }
+        } else {
+            throw Exception( __FILE__, __LINE__,
+                             "invalid bitrate mode: ", str);
+        }
+
         server      = cs->getForSure( "server", " missing in section ", stream);
         str         = cs->getForSure( "port", " missing in section ", stream);
         port        = Util::strToL( str);
@@ -239,6 +278,7 @@ DarkIce :: configIceCast (  const Config      & config,
         lowpass     = str ? Util::strToL( str) : 0;
         str         = cs->get( "highpass");
         highpass    = str ? Util::strToL( str) : 0;
+
         localDumpName = cs->get( "localDumpFile");
 
         // go on and create the things
@@ -278,7 +318,9 @@ DarkIce :: configIceCast (  const Config      & config,
 
         audioOuts[u].encoder = new LameLibEncoder( audioOuts[u].server.get(),
                                                    dsp.get(),
+                                                   bitrateMode,
                                                    bitrate,
+                                                   quality,
                                                    sampleRate,
                                                    dsp->getChannel(),
                                                    lowpass,
@@ -316,23 +358,24 @@ DarkIce :: configIceCast2 (  const Config      & config,
             break;
         }
 
-        const char    * str;
+        const char                * str;
 
-        IceCast2::StreamFormat  format;
-        unsigned int            sampleRate      = 0;
-        unsigned int            bitrate         = 0;
-        double                  quality         = 0.0;
-        const char            * server          = 0;
-        unsigned int            port            = 0;
-        const char            * password        = 0;
-        const char            * mountPoint      = 0;
-        const char            * name            = 0;
-        const char            * description     = 0;
-        const char            * url             = 0;
-        const char            * genre           = 0;
-        bool                    isPublic        = false;
-        const char            * localDumpName   = 0;
-        FileSink              * localDumpFile   = 0;
+        IceCast2::StreamFormat      format;
+        unsigned int                sampleRate      = 0;
+        AudioEncoder::BitrateMode   bitrateMode;
+        unsigned int                bitrate         = 0;
+        double                      quality         = 0.0;
+        const char                * server          = 0;
+        unsigned int                port            = 0;
+        const char                * password        = 0;
+        const char                * mountPoint      = 0;
+        const char                * name            = 0;
+        const char                * description     = 0;
+        const char                * url             = 0;
+        const char                * genre           = 0;
+        bool                        isPublic        = false;
+        const char                * localDumpName   = 0;
+        FileSink                  * localDumpFile   = 0;
 
         str         = cs->getForSure( "format", " missing in section ", stream);
         if ( Util::strEq( str, "vorbis") ) {
@@ -356,18 +399,40 @@ DarkIce :: configIceCast2 (  const Config      & config,
         bitrate     = str ? Util::strToL( str) : 0;
         str         = cs->get( "quality");
         quality     = str ? Util::strToD( str) : 0.0;
-
-        if ( bitrate == 0 && quality == 0.0 ) {
-            throw Exception( __FILE__, __LINE__,
-                         "neither fixed bitrate nor VBR quality specified in ",
-                             stream);
-        }
-        if ( bitrate != 0 && quality != 0.0 ) {
-            throw Exception( __FILE__, __LINE__,
-                             "both fixed bitrate and VBR quality specified in ",
-                             stream);
-        }
         
+        str         = cs->getForSure( "bitrateMode",
+                                      " not specified in section ",
+                                      stream);
+        if ( Util::strEq( str, "cbr") ) {
+            bitrateMode = AudioEncoder::cbr;
+            
+            if ( bitrate == 0 ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "bitrate not specified for CBR encoding");
+            }
+            if ( quality == 0 ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "quality not specified for CBR encoding");
+            }
+        } else if ( Util::strEq( str, "abr") ) {
+            bitrateMode = AudioEncoder::abr;
+
+            if ( bitrate == 0 ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "bitrate not specified for ABR encoding");
+            }
+        } else if ( Util::strEq( str, "vbr") ) {
+            bitrateMode = AudioEncoder::vbr;
+
+            if ( quality == 0 ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "quality not specified for VBR encoding");
+            }
+        } else {
+            throw Exception( __FILE__, __LINE__,
+                             "invalid bitrate mode: ", str);
+        }
+
         server      = cs->getForSure( "server", " missing in section ", stream);
         str         = cs->getForSure( "port", " missing in section ", stream);
         port        = Util::strToL( str);
@@ -429,7 +494,9 @@ DarkIce :: configIceCast2 (  const Config      & config,
                 audioOuts[u].encoder = new LameLibEncoder(
                                                     audioOuts[u].server.get(),
                                                     dsp.get(),
+                                                    bitrateMode,
                                                     bitrate,
+                                                    quality,
                                                     sampleRate,
                                                     dsp->getChannel() );
 #endif // HAVE_LAME_LIB
@@ -442,21 +509,14 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                 "thus can't Ogg Vorbis stream: ",
                                 stream);
 #else
-                if ( bitrate != 0 ) {
-                    audioOuts[u].encoder = new VorbisLibEncoder(
-                                                    audioOuts[u].server.get(),
-                                                    dsp.get(),
-                                                    bitrate,
-                                                    sampleRate,
-                                                    dsp->getChannel() );
-                } else {
-                    audioOuts[u].encoder = new VorbisLibEncoder(
-                                                    audioOuts[u].server.get(),
-                                                    dsp.get(),
-                                                    quality,
-                                                    sampleRate,
-                                                    dsp->getChannel() );
-                }
+                audioOuts[u].encoder = new VorbisLibEncoder(
+                                                audioOuts[u].server.get(),
+                                                dsp.get(),
+                                                bitrateMode,
+                                                bitrate,
+                                                quality,
+                                                sampleRate,
+                                                dsp->getChannel() );
 #endif // HAVE_VORBIS_LIB
                 break;
 
@@ -480,7 +540,7 @@ DarkIce :: configShoutCast (    const Config      & config,
                                 unsigned int        bufferSecs  )
                                                         throw ( Exception )
 {
-    // look for IceCast encoder output streams,
+    // look for Shoutcast encoder output streams,
     // sections [shoutcast-0], [shoutcast-1], ...
     char            stream[]        = "shoutcast- ";
     size_t          streamLen       = Util::strLen( stream);
@@ -503,29 +563,68 @@ DarkIce :: configShoutCast (    const Config      & config,
                          stream);
 #else
 
-        const char    * str;
+        const char                * str;
 
-        unsigned int    sampleRate      = 0;
-        unsigned int    bitrate         = 0;
-        const char    * server          = 0;
-        unsigned int    port            = 0;
-        const char    * password        = 0;
-        const char    * name            = 0;
-        const char    * url             = 0;
-        const char    * genre           = 0;
-        bool            isPublic        = false;
-        int             lowpass         = 0;
-        int             highpass        = 0;
-        const char    * irc             = 0;
-        const char    * aim             = 0;
-        const char    * icq             = 0;
-        const char    * localDumpName   = 0;
-        FileSink      * localDumpFile   = 0;
+        unsigned int                sampleRate      = 0;
+        AudioEncoder::BitrateMode   bitrateMode;
+        unsigned int                bitrate         = 0;
+        double                      quality         = 0.0;
+        const char                * server          = 0;
+        unsigned int                port            = 0;
+        const char                * password        = 0;
+        const char                * name            = 0;
+        const char                * url             = 0;
+        const char                * genre           = 0;
+        bool                        isPublic        = false;
+        int                         lowpass         = 0;
+        int                         highpass        = 0;
+        const char                * irc             = 0;
+        const char                * aim             = 0;
+        const char                * icq             = 0;
+        const char                * localDumpName   = 0;
+        FileSink                  * localDumpFile   = 0;
 
         str         = cs->get( "sampleRate");
         sampleRate  = str ? Util::strToL( str) : dsp->getSampleRate();
-        str         = cs->getForSure("bitrate", " missing in section ", stream);
-        bitrate     = Util::strToL( str);
+
+        str         = cs->get( "bitrate");
+        bitrate     = str ? Util::strToL( str) : 0;
+        str         = cs->get( "quality");
+        quality     = str ? Util::strToD( str) : 0.0;
+        
+        str         = cs->getForSure( "bitrateMode",
+                                      " not specified in section ",
+                                      stream);
+        if ( Util::strEq( str, "cbr") ) {
+            bitrateMode = AudioEncoder::cbr;
+            
+            if ( bitrate == 0 ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "bitrate not specified for CBR encoding");
+            }
+            if ( quality == 0 ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "quality not specified for CBR encoding");
+            }
+        } else if ( Util::strEq( str, "abr") ) {
+            bitrateMode = AudioEncoder::abr;
+
+            if ( bitrate == 0 ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "bitrate not specified for ABR encoding");
+            }
+        } else if ( Util::strEq( str, "vbr") ) {
+            bitrateMode = AudioEncoder::vbr;
+
+            if ( quality == 0 ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "quality not specified for VBR encoding");
+            }
+        } else {
+            throw Exception( __FILE__, __LINE__,
+                             "invalid bitrate mode: ", str);
+        }
+
         server      = cs->getForSure( "server", " missing in section ", stream);
         str         = cs->getForSure( "port", " missing in section ", stream);
         port        = Util::strToL( str);
@@ -581,7 +680,9 @@ DarkIce :: configShoutCast (    const Config      & config,
 
         audioOuts[u].encoder = new LameLibEncoder( audioOuts[u].server.get(),
                                                    dsp.get(),
+                                                   bitrateMode,
                                                    bitrate,
+                                                   quality,
                                                    sampleRate,
                                                    dsp->getChannel(),
                                                    lowpass,
@@ -618,14 +719,16 @@ DarkIce :: configFileCast (  const Config      & config )
             break;
         }
 
-        const char        * str;
+        const char                * str;
 
-        const char        * format          = 0;
-        unsigned int        bitrate         = 0;
-        const char        * targetFileName  = 0;
-        unsigned int        sampleRate      = 0;
-        int                 lowpass         = 0;
-        int                 highpass        = 0;
+        const char                * format          = 0;
+        AudioEncoder::BitrateMode   bitrateMode;
+        unsigned int                bitrate         = 0;
+        double                      quality         = 0.0;
+        const char                * targetFileName  = 0;
+        unsigned int                sampleRate      = 0;
+        int                         lowpass         = 0;
+        int                         highpass        = 0;
 
         format      = cs->getForSure( "format", " missing in section ", stream);
         if ( !Util::strEq( format, "vorbis") && !Util::strEq( format, "mp3") ) {
@@ -640,6 +743,45 @@ DarkIce :: configFileCast (  const Config      & config )
                                             stream);
         str         = cs->get( "sampleRate");
         sampleRate  = str ? Util::strToL( str) : dsp->getSampleRate();
+
+        str         = cs->get( "bitrate");
+        bitrate     = str ? Util::strToL( str) : 0;
+        str         = cs->get( "quality");
+        quality     = str ? Util::strToD( str) : 0.0;
+        
+        str         = cs->getForSure( "bitrateMode",
+                                      " not specified in section ",
+                                      stream);
+        if ( Util::strEq( str, "cbr") ) {
+            bitrateMode = AudioEncoder::cbr;
+            
+            if ( bitrate == 0 ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "bitrate not specified for CBR encoding");
+            }
+            if ( quality == 0 ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "quality not specified for CBR encoding");
+            }
+        } else if ( Util::strEq( str, "abr") ) {
+            bitrateMode = AudioEncoder::abr;
+
+            if ( bitrate == 0 ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "bitrate not specified for ABR encoding");
+            }
+        } else if ( Util::strEq( str, "vbr") ) {
+            bitrateMode = AudioEncoder::vbr;
+
+            if ( quality == 0 ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "quality not specified for VBR encoding");
+            }
+        } else {
+            throw Exception( __FILE__, __LINE__,
+                             "invalid bitrate mode: ", str);
+        }
+
         str         = cs->get( "lowpass");
         lowpass     = str ? Util::strToL( str) : 0;
         str         = cs->get( "highpass");
@@ -670,7 +812,9 @@ DarkIce :: configFileCast (  const Config      & config )
                 audioOuts[u].encoder = new LameLibEncoder(
                                                     audioOuts[u].server.get(),
                                                     dsp.get(),
+                                                    bitrateMode,
                                                     bitrate,
+                                                    quality,
                                                     sampleRate,
                                                     dsp->getChannel(),
                                                     lowpass,
@@ -686,7 +830,9 @@ DarkIce :: configFileCast (  const Config      & config )
                 audioOuts[u].encoder = new VorbisLibEncoder(
                                                     audioOuts[u].server.get(),
                                                     dsp.get(),
+                                                    bitrateMode,
                                                     bitrate,
+                                                    quality,
                                                     dsp->getSampleRate(),
                                                     dsp->getChannel() );
 #endif // HAVE_VORBIS_LIB
@@ -834,6 +980,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.27  2002/04/13 11:26:00  darkeye
+  added cbr, abr and vbr setting feature with encoding quality
+
   Revision 1.26  2002/03/28 16:43:11  darkeye
   enabled resampling and variable bitrates for vorbis (icecast2) streams
 

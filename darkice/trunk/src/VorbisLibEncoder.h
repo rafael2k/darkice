@@ -191,13 +191,16 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
     public:
 
         /**
-         *  Constructor for fixed bitrate encoding.
+         *  Constructor.
          *
          *  @param sink the sink to send mp3 output to
          *  @param inSampleRate sample rate of the input.
          *  @param inBitsPerSample number of bits per sample of the input.
          *  @param inChannel number of channels  of the input.
+         *  @param inBigEndian shows if the input is big or little endian
+         *  @param outBitrateMode the bit rate mode of the output.
          *  @param outBitrate bit rate of the output (kbits/sec).
+         *  @param outQuality the quality of the stream.
          *  @param outSampleRate sample rate of the output.
          *                       If 0, inSampleRate is used.
          *  @param outChannel number of channels of the output.
@@ -209,40 +212,9 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int    inSampleRate,
                             unsigned int    inBitsPerSample,
                             unsigned int    inChannel,
+                            bool            inBigEndian,
+                            BitrateMode     outBitrateMode,
                             unsigned int    outBitrate,
-                            unsigned int    outSampleRate = 0,
-                            unsigned int    outChannel    = 0 )
-                                                        throw ( Exception )
-            
-                    : AudioEncoder ( inSampleRate,
-                                     inBitsPerSample,
-                                     inChannel, 
-                                     outBitrate,
-                                     outSampleRate,
-                                     outChannel )
-        {
-            init( sink);
-        }
-
-        /**
-         *  Constructor for variable bitrate encoding.
-         *
-         *  @param sink the sink to send mp3 output to
-         *  @param inSampleRate sample rate of the input.
-         *  @param inBitsPerSample number of bits per sample of the input.
-         *  @param inChannel number of channels  of the input.
-         *  @param outQuality the quality of the stream (0.0 .. 1.0).
-         *  @param outSampleRate sample rate of the output.
-         *                       If 0, inSampleRate is used.
-         *  @param outChannel number of channels of the output.
-         *                    If 0, inChannel is used.
-         *  @exception Exception
-         */
-        inline
-        VorbisLibEncoder (  Sink          * sink,
-                            unsigned int    inSampleRate,
-                            unsigned int    inBitsPerSample,
-                            unsigned int    inChannel,
                             double          outQuality,
                             unsigned int    outSampleRate = 0,
                             unsigned int    outChannel    = 0 )
@@ -251,6 +223,9 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
                     : AudioEncoder ( inSampleRate,
                                      inBitsPerSample,
                                      inChannel, 
+                                     inBigEndian,
+                                     outBitrateMode,
+                                     outBitrate,
                                      outQuality,
                                      outSampleRate,
                                      outChannel )
@@ -259,12 +234,14 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
         }
 
         /**
-         *  Constructor for fixed bitrate encoding.
+         *  Constructor.
          *
          *  @param sink the sink to send mp3 output to
          *  @param as get input sample rate, bits per sample and channels
          *            from this AudioSource.
+         *  @param outBitrateMode the bit rate mode of the output.
          *  @param outBitrate bit rate of the output (kbits/sec).
+         *  @param outQuality the quality of the stream.
          *  @param outSampleRate sample rate of the output.
          *                       If 0, input sample rate is used.
          *  @param outChannel number of channels of the output.
@@ -274,41 +251,16 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
         inline
         VorbisLibEncoder (  Sink                  * sink,
                             const AudioSource     * as,
+                            BitrateMode             outBitrateMode,
                             unsigned int            outBitrate,
-                            unsigned int            outSampleRate = 0,
-                            unsigned int            outChannel    = 0 )
-                                                            throw ( Exception )
-            
-                    : AudioEncoder ( as,
-                                     outBitrate,
-                                     outSampleRate,
-                                     outChannel )
-        {
-            init( sink);
-        }
-
-        /**
-         *  Constructor for variable bitrate encoding.
-         *
-         *  @param sink the sink to send mp3 output to
-         *  @param as get input sample rate, bits per sample and channels
-         *            from this AudioSource.
-         *  @param outQuality the quality of the stream (0.0 .. 1.0).
-         *  @param outSampleRate sample rate of the output.
-         *                       If 0, input sample rate is used.
-         *  @param outChannel number of channels of the output.
-         *                    If 0, input channel is used.
-         *  @exception Exception
-         */
-        inline
-        VorbisLibEncoder (  Sink                  * sink,
-                            const AudioSource     * as,
                             double                  outQuality,
                             unsigned int            outSampleRate = 0,
                             unsigned int            outChannel    = 0 )
                                                             throw ( Exception )
             
                     : AudioEncoder ( as,
+                                     outBitrateMode,
+                                     outBitrate,
                                      outQuality,
                                      outSampleRate,
                                      outChannel )
@@ -493,6 +445,9 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.5  2002/04/13 11:26:00  darkeye
+  added cbr, abr and vbr setting feature with encoding quality
+
   Revision 1.4  2002/03/28 16:47:38  darkeye
   moved functions conv8() and conv16() to class Util (as conv())
   added resampling functionality

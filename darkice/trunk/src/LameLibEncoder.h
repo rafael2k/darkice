@@ -112,11 +112,11 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
         inline void
         init ( Sink           * sink,
                int              lowpass,
-               int              highpass )                  throw ( Exception )
+               int              highpass )              throw ( Exception )
         {
-            this->sink     = sink;
-            this->lowpass  = lowpass;
-            this->highpass = highpass;
+            this->sink        = sink;
+            this->lowpass     = lowpass;
+            this->highpass    = highpass;
 
             if ( getInBitsPerSample() != 16 && getInBitsPerSample() != 8 ) {
                 throw Exception( __FILE__, __LINE__,
@@ -164,11 +164,14 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @param inSampleRate sample rate of the input.
          *  @param inBitsPerSample number of bits per sample of the input.
          *  @param inChannel number of channels  of the input.
-         *  @param outBitrate bit rate of the output (bits/sec).
+         *  @param outBitrateMode the bit rate mode of the output.
+         *  @param outBitrate bit rate of the output (kbits/sec).
+         *  @param outQuality the quality of the stream.
          *  @param outSampleRate sample rate of the output.
          *                       If 0, inSampleRate is used.
          *  @param outChannel number of channels of the output.
          *                    If 0, inChannel is used.
+         *  @param inBigEndian shows if the input is big or little endian
          *  @param lowpass frequency threshold for the lowpass filter.
          *                 Input above this frequency is cut.
          *                 If 0, lame's default values are used,
@@ -184,7 +187,10 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int    inSampleRate,
                             unsigned int    inBitsPerSample,
                             unsigned int    inChannel,
+                            bool            inBigEndian,
+                            BitrateMode     outBitrateMode,
                             unsigned int    outBitrate,
+                            double          outQuality,
                             unsigned int    outSampleRate = 0,
                             unsigned int    outChannel    = 0,
                             int             lowpass       = 0,
@@ -193,12 +199,15 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
             
                     : AudioEncoder ( inSampleRate,
                                      inBitsPerSample,
-                                     inChannel, 
+                                     inChannel,
+                                     inBigEndian,
+                                     outBitrateMode,
                                      outBitrate,
+                                     outQuality,
                                      outSampleRate,
                                      outChannel )
         {
-            init( sink, lowpass, highpass );
+            init( sink, lowpass, highpass);
         }
 
         /**
@@ -207,7 +216,9 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @param sink the sink to send mp3 output to
          *  @param as get input sample rate, bits per sample and channels
          *            from this AudioSource.
-         *  @param outBitrate bit rate of the output (bits/sec).
+         *  @param outBitrateMode the bit rate mode of the output.
+         *  @param outBitrate bit rate of the output (kbits/sec).
+         *  @param outQuality the quality of the stream.
          *  @param outSampleRate sample rate of the output.
          *                       If 0, input sample rate is used.
          *  @param outChannel number of channels of the output.
@@ -225,7 +236,9 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
         inline
         LameLibEncoder (    Sink                  * sink,
                             const AudioSource     * as,
+                            BitrateMode             outBitrateMode,
                             unsigned int            outBitrate,
+                            double                  outQuality,
                             unsigned int            outSampleRate = 0,
                             unsigned int            outChannel    = 0,
                             int                     lowpass       = 0,
@@ -233,11 +246,13 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                                                             throw ( Exception )
             
                     : AudioEncoder ( as,
+                                     outBitrateMode,
                                      outBitrate,
+                                     outQuality,
                                      outSampleRate,
                                      outChannel )
         {
-            init( sink, lowpass, highpass );
+            init( sink, lowpass, highpass);
         }
 
         /**
@@ -252,6 +267,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
         {
             init( encoder.sink.get(), encoder.lowpass, encoder.highpass );
         }
+         
 
         /**
          *  Destructor.
@@ -420,6 +436,9 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.12  2002/04/13 11:26:00  darkeye
+  added cbr, abr and vbr setting feature with encoding quality
+
   Revision 1.11  2002/03/28 16:38:37  darkeye
   moved functions conv8() and conv16() to class Util
 

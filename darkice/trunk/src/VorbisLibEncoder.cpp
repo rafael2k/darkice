@@ -73,37 +73,43 @@ VorbisLibEncoder :: open ( void )
 
     vorbis_info_init( &vorbisInfo);
 
-    if ( isVBR() ) {
+    switch ( getOutBitrateMode() ) {
 
-        if ( (ret = vorbis_encode_init_vbr( &vorbisInfo,
+        case cbr:
+        case abr:
+#ifdef VORBIS_LIB_RC3
+            if ( (ret = vorbis_encode_init( &vorbisInfo,
                                             getInChannel(),
                                             getOutSampleRate(),
-                                            getOutQuality() )) ) {
-            throw Exception( __FILE__, __LINE__,
-                             "vorbis encode init error", ret);
-        }
-    } else {
-#ifdef VORBIS_LIB_RC3
-        if ( (ret = vorbis_encode_init( &vorbisInfo,
-                                        getInChannel(),
-                                        getOutSampleRate(),
-                                        getOutBitrate() * 1024,
-                                        getOutBitrate() * 1024,
-                                        -1 )) ) {
-            throw Exception( __FILE__, __LINE__,
-                             "vorbis encode init error", ret);
-        }
+                                            getOutBitrate() * 1000,
+                                            getOutBitrate() * 1000,
+                                            -1 )) ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "vorbis encode init error", ret);
+            }
 #else
-        if ( (ret = vorbis_encode_init( &vorbisInfo,
-                                        getInChannel(),
-                                        getOutSampleRate(),
-                                        -1,
-                                        getOutBitrate() * 1024,
-                                        -1 )) ) {
-            throw Exception( __FILE__, __LINE__,
-                             "vorbis encode init error", ret);
-        }
+            if ( (ret = vorbis_encode_init( &vorbisInfo,
+                                            getInChannel(),
+                                            getOutSampleRate(),
+                                            -1,
+                                            getOutBitrate() * 1000,
+                                            -1 )) ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "vorbis encode init error", ret);
+            }
 #endif
+            break;
+
+        case vbr:
+
+            if ( (ret = vorbis_encode_init_vbr( &vorbisInfo,
+                                                getInChannel(),
+                                                getOutSampleRate(),
+                                                getOutQuality() )) ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "vorbis encode init error", ret);
+            }
+            break;
     }
 
     if ( (ret = vorbis_analysis_init( &vorbisDspState, &vorbisInfo)) ) {
@@ -310,6 +316,9 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.8  2002/04/13 11:26:00  darkeye
+  added cbr, abr and vbr setting feature with encoding quality
+
   Revision 1.7  2002/03/28 16:47:38  darkeye
   moved functions conv8() and conv16() to class Util (as conv())
   added resampling functionality

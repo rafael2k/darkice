@@ -57,6 +57,18 @@
  */
 class AudioEncoder : public Sink, public virtual Referable
 {
+    public:
+        /**
+         *  Type to specify bitrate mode. Possible values:
+         *  - cbr - constant bitrate mode
+         *          described by bitrate
+         *  - abr - average bitrate mode
+         *          described by an average bitrate and quality
+         *  - vbr - variable bitrate mode
+         *          described by quality
+         */
+        enum BitrateMode { cbr, abr, vbr };
+
     private:
 
         /**
@@ -78,6 +90,11 @@ class AudioEncoder : public Sink, public virtual Referable
          *  Is the input big endian or little endian?
          */
         bool                inBigEndian;
+
+        /**
+         *  The bitrate mode of the encoder
+         */
+        BitrateMode         outBitrateMode;
 
         /**
          *  Bit rate of the output in kbits/sec, for fixed bitrate encodings.
@@ -105,7 +122,8 @@ class AudioEncoder : public Sink, public virtual Referable
          *  @param inSampleRate sample rate of the input.
          *  @param inBitsPerSample number of bits per sample of the input.
          *  @param inChannel number of channels  of the input.
-         *  @param inBigEndian shows if the input is big or little endian
+         *  @param inBigEndian shows if the input is big or little endian.
+         *  @param outBitrateMode the bit rate mode of the output.
          *  @param outBitrate bit rate of the output.
          *  @param outSampleRate sample rate of the output.
          *  @param outChannel number of channels of the output.
@@ -116,8 +134,9 @@ class AudioEncoder : public Sink, public virtual Referable
                     unsigned int    inBitsPerSample,
                     unsigned int    inChannel,
                     bool            inBigEndian,
+                    BitrateMode     outBitrateMode,
                     unsigned int    outBitrate,
-                    float           outQuality,
+                    double          outQuality,
                     unsigned int    outSampleRate,
                     unsigned int    outChannel )        throw ( Exception )
         {
@@ -125,10 +144,15 @@ class AudioEncoder : public Sink, public virtual Referable
             this->inBitsPerSample  = inBitsPerSample;
             this->inChannel        = inChannel;
             this->inBigEndian      = inBigEndian;
+            this->outBitrateMode   = outBitrateMode;
             this->outBitrate       = outBitrate;
             this->outQuality       = outQuality;
             this->outSampleRate    = outSampleRate;
             this->outChannel       = outChannel;
+
+            if ( outQuality < 0 || 1.0 < outQuality ) {
+                throw Exception( __FILE__, __LINE__, "invalid encoder quality");
+            }
         }
 
         /**
@@ -156,46 +180,14 @@ class AudioEncoder : public Sink, public virtual Referable
         }
 
         /**
-         *  Constructor for fixed bitrate encoding.
+         *  Constructor.
          *
          *  @param inSampleRate sample rate of the input.
          *  @param inBitsPerSample number of bits per sample of the input.
          *  @param inChannel number of channels  of the input.
          *  @param inBigEndian shows if the input is big or little endian
+         *  @param outBitrateMode the bit rate mode of the output.
          *  @param outBitrate bit rate of the output (kbits/sec).
-         *  @param outSampleRate sample rate of the output.
-         *                       If 0, inSampleRate is used.
-         *  @param outChannel number of channels of the output.
-         *                    If 0, inChannel is used.
-         *  @exception Exception
-         */
-        inline
-        AudioEncoder (  unsigned int    inSampleRate,
-                        unsigned int    inBitsPerSample,
-                        unsigned int    inChannel, 
-                        bool            inBigEndian,
-                        unsigned int    outBitrate,
-                        unsigned int    outSampleRate = 0,
-                        unsigned int    outChannel    = 0 )
-                                                        throw ( Exception )
-        {
-            init ( inSampleRate,
-                   inBitsPerSample,
-                   inChannel,
-                   inBigEndian,
-                   outBitrate,
-                   0.0,
-                   outSampleRate ? outSampleRate : inSampleRate,
-                   outChannel    ? outChannel    : inChannel );
-        }
-
-        /**
-         *  Constructor for variable bitrate encoding.
-         *
-         *  @param inSampleRate sample rate of the input.
-         *  @param inBitsPerSample number of bits per sample of the input.
-         *  @param inChannel number of channels  of the input.
-         *  @param inBigEndian shows if the input is big or little endian
          *  @param outQuality the quality of the stream.
          *  @param outSampleRate sample rate of the output.
          *                       If 0, inSampleRate is used.
@@ -208,6 +200,8 @@ class AudioEncoder : public Sink, public virtual Referable
                         unsigned int    inBitsPerSample,
                         unsigned int    inChannel, 
                         bool            inBigEndian,
+                        BitrateMode     outBitrateMode,
+                        unsigned int    outBitrate,
                         double          outQuality,
                         unsigned int    outSampleRate = 0,
                         unsigned int    outChannel    = 0 )
@@ -217,46 +211,20 @@ class AudioEncoder : public Sink, public virtual Referable
                    inBitsPerSample,
                    inChannel,
                    inBigEndian,
-                   0,
+                   outBitrateMode,
+                   outBitrate,
                    outQuality,
                    outSampleRate ? outSampleRate : inSampleRate,
                    outChannel    ? outChannel    : inChannel );
         }
 
         /**
-         *  Constructor for fixed bitrate encoding.
+         *  Constructor.
          *
          *  @param as get input sample rate, bits per sample and channels
          *            from this AudioSource.
+         *  @param outBitrateMode the bit rate mode of the output.
          *  @param outBitrate bit rate of the output (kbits/sec).
-         *  @param outSampleRate sample rate of the output.
-         *                       If 0, input sample rate is used.
-         *  @param outChannel number of channels of the output.
-         *                    If 0, input channel is used.
-         *  @exception Exception
-         */
-        inline
-        AudioEncoder (  const AudioSource     * as,
-                        unsigned int            outBitrate,
-                        unsigned int            outSampleRate = 0,
-                        unsigned int            outChannel    = 0 )
-                                                        throw ( Exception)
-        {
-            init( as->getSampleRate(),
-                  as->getBitsPerSample(),
-                  as->getChannel(),
-                  as->isBigEndian(), 
-                  outBitrate,
-                  0.0,
-                  outSampleRate ? outSampleRate : as->getSampleRate(),
-                  outChannel    ? outChannel    : as->getChannel() );
-        }
-
-        /**
-         *  Constructor for variable bitrate encoding.
-         *
-         *  @param as get input sample rate, bits per sample and channels
-         *            from this AudioSource.
          *  @param outQuality the quality of the stream.
          *  @param outSampleRate sample rate of the output.
          *                       If 0, input sample rate is used.
@@ -266,6 +234,8 @@ class AudioEncoder : public Sink, public virtual Referable
          */
         inline
         AudioEncoder (  const AudioSource     * as,
+                        BitrateMode             outBitrateMode,
+                        unsigned int            outBitrate,
                         double                  outQuality,
                         unsigned int            outSampleRate = 0,
                         unsigned int            outChannel    = 0 )
@@ -274,8 +244,9 @@ class AudioEncoder : public Sink, public virtual Referable
             init( as->getSampleRate(),
                   as->getBitsPerSample(),
                   as->getChannel(),
-                  as->isBigEndian(), 
-                  0,
+                  as->isBigEndian(),
+                  outBitrateMode,
+                  outBitrate,
                   outQuality,
                   outSampleRate ? outSampleRate : as->getSampleRate(),
                   outChannel    ? outChannel    : as->getChannel() );
@@ -293,6 +264,7 @@ class AudioEncoder : public Sink, public virtual Referable
                    encoder.inBitsPerSample,
                    encoder.inChannel,
                    encoder.inBigEndian,
+                   encoder.outBitrateMode,
                    encoder.outBitrate,
                    encoder.outQuality,
                    encoder.outSampleRate,
@@ -316,6 +288,7 @@ class AudioEncoder : public Sink, public virtual Referable
                        encoder.inBitsPerSample,
                        encoder.inChannel,
                        encoder.inBigEndian,
+                       encoder.outBitrateMode,
                        encoder.outBitrate,
                        encoder.outQuality,
                        encoder.outSampleRate,
@@ -406,6 +379,17 @@ class AudioEncoder : public Sink, public virtual Referable
         }
 
         /**
+         *  Get the bit rate mode of the output.
+         *
+         *  @return the bit rate mode of the output.
+         */
+        inline BitrateMode
+        getOutBitrateMode ( void ) const        throw ()
+        {
+            return outBitrateMode;
+        }
+
+        /**
          *  Get the bit rate of the output in kbits/sec, for fixed bitrate
          *  encodings.
          *
@@ -427,18 +411,6 @@ class AudioEncoder : public Sink, public virtual Referable
         getOutQuality ( void ) const        throw ()
         {
             return outQuality;
-        }
-
-        /**
-         *  Tell if this encoding is fixed bitrate or variable bitrate.
-         *
-         *  @return <code>true</code> if this encoding is variable bitrate,
-         *          <code>false</code> if fixed bitrate.
-         */
-        inline bool
-        isVBR ( void ) const                throw ()
-        {
-            return outBitrate == 0;
         }
 
         /**
@@ -484,6 +456,9 @@ class AudioEncoder : public Sink, public virtual Referable
   $Source$
 
   $Log$
+  Revision 1.7  2002/04/13 11:26:00  darkeye
+  added cbr, abr and vbr setting feature with encoding quality
+
   Revision 1.6  2002/03/28 16:39:32  darkeye
   added interface for variable bitrate encoding
 

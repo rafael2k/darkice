@@ -1,4 +1,4 @@
-.TH darkice.cfg 5 "March 28, 2002" "DarkIce" "DarkIce live audio streamer"
+.TH darkice.cfg 5 "April 13, 2002" "DarkIce" "DarkIce live audio streamer"
 .SH NAME
 darkice.cfg \- configuration file for darkice
 .SH DESCRIPTION
@@ -87,8 +87,20 @@ The stream will be reachable at
 Required values:
 
 .TP
+.I bitrateMode
+The bit rate mode of the encoding, either "cbr", "abr" or "vbr",
+standing for constant bit rate, average bit rate and variable bit
+respectively. Use the bitrate and/or quality values to specify details
+of the appropriate bit rate mode.
+.TP
 .I bitrate
-Bit rate to encode to in kBits / sec (e.g. 96)
+Bit rate to encode to in kBits / sec (e.g. 96). Only used when cbr or
+abr bit rate modes are specified.
+.TP
+.I quality
+The quality of encoding a value between 0.0 .. 1.0 (e.g. 0.8), with 1.0 being
+the highest quality. Use a value greater than 0.0. Only used when cbr or vbr
+bit rate modes are specified.
 .TP
 .I server
 The
@@ -177,14 +189,20 @@ Format of the stream sent to the
 .B IceCast2
 server. Currently the only supported value here is 'vorbis'.
 .TP
+.I bitrateMode
+The bit rate mode of the encoding, either "cbr", "abr" or "vbr",
+standing for constant bit rate, average bit rate and variable bit
+respectively. Use the bitrate and/or quality values to specify details
+of the appropriate bit rate mode.
+.TP
 .I bitrate
-Bit rate to encode to in kBits / sec (e.g. 96)
-If specified, the quality field may not be specified.
+Bit rate to encode to in kBits / sec (e.g. 96). Only used when cbr or
+abr bit rate modes are specified.
 .TP
 .I quality
-Quality of a variable bitrate stream, a number between 0.0 ... 1.0
-(e.g. 0.8).
-If specified, the bitrate field may not be specified.
+The quality of encoding a value between 0.0 .. 1.0 (e.g. 0.8), with 1.0 being
+the highest quality. Use a value greater than 0.0. Only used when cbr or vbr
+bit rate modes are specified.
 .TP
 .I server
 The
@@ -245,8 +263,20 @@ The stream will be reachable at
 Required values:
 
 .TP
+.I bitrateMode
+The bit rate mode of the encoding, either "cbr", "abr" or "vbr",
+standing for constant bit rate, average bit rate and variable bit
+respectively. Use the bitrate and/or quality values to specify details
+of the appropriate bit rate mode.
+.TP
 .I bitrate
-Bit rate to encode to in kBits / sec (e.g. 96)
+Bit rate to encode to in kBits / sec (e.g. 96). Only used when cbr or
+abr bit rate modes are specified.
+.TP
+.I quality
+The quality of encoding a value between 0.0 .. 1.0 (e.g. 0.8), with 1.0 being
+the highest quality. Use a value greater than 0.0. Only used when cbr or vbr
+bit rate modes are specified.
 .TP
 .I server
 The
@@ -319,8 +349,20 @@ Required values:
 .I format
 Format to encode in. Must be either 'mp3' or 'vorbis'.
 .TP
+.I bitrateMode
+The bit rate mode of the encoding, either "cbr", "abr" or "vbr",
+standing for constant bit rate, average bit rate and variable bit
+respectively. Use the bitrate and/or quality values to specify details
+of the appropriate bit rate mode.
+.TP
 .I bitrate
-Bit rate to encode to in kBits / sec (e.g. 96)
+Bit rate to encode to in kBits / sec (e.g. 96). Only used when cbr or
+abr bit rate modes are specified.
+.TP
+.I quality
+The quality of encoding a value between 0.0 .. 1.0 (e.g. 0.8), with 1.0 being
+the highest quality. Use a value greater than 0.0. Only used when cbr or vbr
+bit rate modes are specified.
 .TP
 .I fileName
 The name of the local file to save the encoded data into.
@@ -355,7 +397,8 @@ at 22.05kHz, 16 bit stereo.
 It will build up a connection to the
 .B IceCast
 server yp.yourserver.com on port 8000 with the password "hackme".
-The stream will be encoded to 96 kb/s mp3, and will be reachable at
+The stream will be encoded to 96 kb/s mp3 with quality 0.8, and will be
+reachable at
 .I http://yp.yourserver.com:8000/live96
 to mp3 players.
 The encoding session will be stored by
@@ -380,7 +423,9 @@ bitsPerSample   = 16
 channel         = 2
 
 [icecast-0]
+bitrateMode     = cbr
 bitrate         = 96
+quality         = 0.8
 server          = yp.yourserver.com
 port            = 8000
 password        = hackme
@@ -397,8 +442,8 @@ localDumpFile   = /tmp/encoder-dump.mp3
 
 .PP
 The following sample configuration file simply encodes the 16 bit stereo
-44.1 kHz sound card input into Ogg Vorbis at 96 kb/s for 60 seconds, and saves
-it in the local file at /tmp/save.ogg.
+44.1 kHz sound card input into Ogg Vorbis at average bit rate 96 kb/s for 60
+seconds, and saves it in the local file at /tmp/save.ogg.
 
 .nf
 [general]
@@ -413,6 +458,7 @@ channel         = 2
 
 [file-0]
 format          = vorbis
+bitrateMode     = abr
 bitrate         = 96
 fileName        = /tmp/save.ogg
 .fi
@@ -429,7 +475,8 @@ It will build up a connection to an
 .B IceCast
 server yp.your-ice-server.com on port 8000 with the password "ice-hackme".
 The sound for this stream will be cut at 10500 Hz from above.
-The stream will be encoded to 96 kb/s mp3 and resampled to 22.05kHz.
+The stream will be encoded to average bit rate 96 kb/s mp3 and resampled to
+22.05kHz.
 The stream will be reachable at
 .I http://yp.your-ice-server.com:8000/live96
 to mp3 players.
@@ -442,7 +489,8 @@ on the server side.
 It will also connect to a
 .I ShoutCast
 server at yp.your-shout-server.com on port 8001 with the password "shout-hackme"
-This stream will be encoded to 128 kb/s mp3, and will be reachable at
+This stream will be encoded to constant bit rate 128 kb/s mp3 with quality
+0.8, and will be reachable at
 .I http://yp.your-shout-server.com:8000
 to mp3 players.
 
@@ -459,6 +507,7 @@ channel         = 2
 
 [icecast-0]
 sampleRate      = 22050
+bitrateMode     = abr
 bitrate         = 96
 lowpass         = 10500
 server          = yp.your-ice-server.com
@@ -473,7 +522,9 @@ public          = yes
 remoteDumpFile  = /tmp/live96.mp3
 
 [shoutcast-0]
+bitrateMode     = cbr
 bitrate         = 128
+quality         = 0.8
 server          = yp.your-shout-server.com
 port            = 8001
 password        = shout-hackme
