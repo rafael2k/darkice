@@ -1,10 +1,8 @@
 o change Ref to follow inheritance
 o make a master config file, and a small one ?
-o add support for VBR encoding
 o reconnect to server if connection is dropped
 o add support for multiple servers for one stream ?
 o libtoolize ?
 o revisit real-time scheduling and one-thread-per-connection
 o look into performance
 o create proper error-reporting module
-o add Ogg Vorbis resampling
