@@ -87,11 +87,32 @@ VorbisLibEncoder :: init ( CastSink       * sink,
     } else {
         resampleRatio = ( (double) getOutSampleRate() /
                           (double) getInSampleRate() );
+
+        // Determine if we can use linear interpolation.
+        // The inverse of the ratio must be a power of two for linear mode to
+        // be of sufficient quality.
+        
+        bool useLinear = true;
+        double inverse = 1 / resampleRatio;
+        int integer = inverse;
+
+        if( integer == inverse ) { // Check that the inverse of the ratio is an integer
+           while( useLinear && integer ) { // Loop through the bits
+              if( integer & 1 && integer != 1 ) // If the lowest order bit is not the only one set
+                 useLinear = false; // Not a power of two; cannot use linear
+              else
+                 integer >>= 1; // Shift all the bits over and try again
+           }
+        } else
+           useLinear = false;
+
+        // If we get here and useLinear is still true, then we have a power of two.
+           
         // open the aflibConverter in
         // - high quality
-        // - not linear (quadratic) interpolation
+        // - linear or quadratic (non-linear) based on algorithm
         // - not filter interpolation
-        converter = new aflibConverter( true, true, false);
+        converter = new aflibConverter( true, useLinear, false);
     }
 
     encoderOpen = false;
@@ -387,6 +408,12 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.20  2005/04/03 05:18:24  jbebel
+  Add test to determine if the sample rate conversion ratio is a power of 2.
+  If so, use linear interpolation.  Otherwise use more complicated quadratic
+  interpolation which tends to sound terrible, but is better than trying to
+  use linear for a non-standard conversion.
+
   Revision 1.19  2004/03/13 10:41:39  darkeye
   added possibility to downsample from stereo to mono when encoding
   to Ogg Vorbis
