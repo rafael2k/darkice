@@ -179,30 +179,59 @@ VorbisLibEncoder :: conv16 (    unsigned char     * pcmBuffer,
                                 float             * rightBuffer,
                                 unsigned int        channels )
 {
-    if ( channels == 1 ) {
-        unsigned int    i, j;
+    if ( isInBigEndian() ) {
+        if ( channels == 1 ) {
+            unsigned int    i, j;
 
-        for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-            short int   value;
+            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
+                short int   value;
 
-            value           = pcmBuffer[i++];
-            value          |= pcmBuffer[i++] << 8;
-            leftBuffer[j]   = ((float) value) / 32768.f;
-            ++j;
+                value           = pcmBuffer[i++] << 8;
+                value          |= pcmBuffer[i++];
+                leftBuffer[j]   = ((float) value) / 32768.f;
+                ++j;
+            }
+        } else {
+            unsigned int    i, j;
+
+            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
+                short int   value;
+
+                value           = pcmBuffer[i++] << 8;
+                value          |= pcmBuffer[i++];
+                leftBuffer[j]   = ((float) value) / 32768.f;
+                value           = pcmBuffer[i++] << 8;
+                value          |= pcmBuffer[i++];
+                rightBuffer[j]  = ((float) value) / 32768.f;
+                ++j;
+            }
         }
     } else {
-        unsigned int    i, j;
+        if ( channels == 1 ) {
+            unsigned int    i, j;
 
-        for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-            short int   value;
+            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
+                short int   value;
 
-            value           = pcmBuffer[i++];
-            value          |= pcmBuffer[i++] << 8;
-            leftBuffer[j]   = ((float) value) / 32768.f;
-            value           = pcmBuffer[i++];
-            value          |= pcmBuffer[i++] << 8;
-            rightBuffer[j]  = ((float) value) / 32768.f;
-            ++j;
+                value           = pcmBuffer[i++];
+                value          |= pcmBuffer[i++] << 8;
+                leftBuffer[j]   = ((float) value) / 32768.f;
+                ++j;
+            }
+        } else {
+            unsigned int    i, j;
+
+            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
+                short int   value;
+
+                value           = pcmBuffer[i++];
+                value          |= pcmBuffer[i++] << 8;
+                leftBuffer[j]   = ((float) value) / 32768.f;
+                value           = pcmBuffer[i++];
+                value          |= pcmBuffer[i++] << 8;
+                rightBuffer[j]  = ((float) value) / 32768.f;
+                ++j;
+            }
         }
     }
 }
@@ -325,6 +354,9 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.3  2001/09/18 14:57:19  darkeye
+  finalized Solaris port
+
   Revision 1.2  2001/09/15 11:36:22  darkeye
   added function vorbisBlocksOut(), finalized vorbis support
 

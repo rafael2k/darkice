@@ -240,30 +240,59 @@ LameLibEncoder :: conv16 (  unsigned char     * pcmBuffer,
                             short int         * rightBuffer,
                             unsigned int        channels )
 {
-    if ( channels == 1 ) {
-        unsigned int    i, j;
+    if ( isInBigEndian() ) {
+        if ( channels == 1 ) {
+            unsigned int    i, j;
 
-        for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-            unsigned short int   value;
+            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
+                unsigned short int   value;
 
-            value          = pcmBuffer[i++];
-            value         |= pcmBuffer[i++] << 8;
-            leftBuffer[j]  = (short int) value;
-            ++j;
+                value           = pcmBuffer[i++] << 8;
+                value          |= pcmBuffer[i++];
+                leftBuffer[j]  = (short int) value;
+                ++j;
+            }
+        } else {
+            unsigned int    i, j;
+
+            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
+                unsigned short int   value;
+
+                value           = pcmBuffer[i++] << 8;
+                value          |= pcmBuffer[i++];
+                leftBuffer[j]   = (short int) value;
+                value           = pcmBuffer[i++] << 8;
+                value          |= pcmBuffer[i++];
+                rightBuffer[j]  = (short int) value;
+                ++j;
+            }
         }
     } else {
-        unsigned int    i, j;
+        if ( channels == 1 ) {
+            unsigned int    i, j;
 
-        for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-            unsigned short int   value;
+            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
+                unsigned short int   value;
 
-            value           = pcmBuffer[i++];
-            value          |= pcmBuffer[i++] << 8;
-            leftBuffer[j]   = (short int) value;
-            value           = pcmBuffer[i++];
-            value          |= pcmBuffer[i++] << 8;
-            rightBuffer[j]  = (short int) value;
-            ++j;
+                value          = pcmBuffer[i++];
+                value         |= pcmBuffer[i++] << 8;
+                leftBuffer[j]  = (short int) value;
+                ++j;
+            }
+        } else {
+            unsigned int    i, j;
+
+            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
+                unsigned short int   value;
+
+                value           = pcmBuffer[i++];
+                value          |= pcmBuffer[i++] << 8;
+                leftBuffer[j]   = (short int) value;
+                value           = pcmBuffer[i++];
+                value          |= pcmBuffer[i++] << 8;
+                rightBuffer[j]  = (short int) value;
+                ++j;
+            }
         }
     }
 }
@@ -385,6 +414,9 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.7  2001/09/18 14:57:19  darkeye
+  finalized Solaris port
+
   Revision 1.6  2001/09/15 11:35:08  darkeye
   minor fixes
 

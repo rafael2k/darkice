@@ -181,6 +181,14 @@ class AudioSource : public Source
         }
 
         /**
+         *  Tell if the data from this source comes in big or little endian.
+         *
+         *  @return true if the data is big endian, false if little endian
+         */
+        virtual bool
+        isBigEndian ( void ) const           throw ()    = 0;
+
+        /**
          *  Get the sample rate per seconds for this AudioSource.
          *
          *  @return the sample rate per seconds.
@@ -244,6 +252,9 @@ typedef class SolarisDspSource       DspSource;
   $Source$
 
   $Log$
+  Revision 1.5  2001/09/18 14:57:19  darkeye
+  finalized Solaris port
+
   Revision 1.4  2001/09/11 15:05:21  darkeye
   added Solaris support
 

@@ -174,6 +174,17 @@ class OssDspSource : public AudioSource, public virtual Reporter
         }
 
         /**
+         *  Tell if the data from this source comes in big or little endian.
+         *
+         *  @return false
+         */
+        virtual inline bool
+        isBigEndian ( void ) const           throw ()
+        {
+            return false;
+        }
+
+        /**
          *  Open the OssDspSource.
          *  This does not put the OSS DSP device into recording mode.
          *  To start getting samples, call either canRead() or read().
@@ -251,6 +262,9 @@ class OssDspSource : public AudioSource, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.5  2001/09/18 14:57:19  darkeye
+  finalized Solaris port
+
   Revision 1.4  2001/09/02 14:08:40  darkeye
   setting the sound card recording sample rate is now more relaxed
   there is no error reported if the sample rate is not exactly the same

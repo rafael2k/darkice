@@ -75,6 +75,11 @@ class AudioEncoder : public Sink, public virtual Referable
         unsigned int        inChannel;
 
         /**
+         *  Is the input big endian or little endian?
+         */
+        bool                inBigEndian;
+
+        /**
          *  Bit rate of the output. (bits/sec)
          */
         unsigned int        outBitrate;
@@ -95,6 +100,7 @@ class AudioEncoder : public Sink, public virtual Referable
          *  @param inSampleRate sample rate of the input.
          *  @param inBitsPerSample number of bits per sample of the input.
          *  @param inChannel number of channels  of the input.
+         *  @param inBigEndian shows if the input is big or little endian
          *  @param outBitrate bit rate of the output.
          *  @param outSampleRate sample rate of the output.
          *  @param outChannel number of channels of the output.
@@ -104,6 +110,7 @@ class AudioEncoder : public Sink, public virtual Referable
         init (      unsigned int    inSampleRate,
                     unsigned int    inBitsPerSample,
                     unsigned int    inChannel,
+                    bool            inBigEndian,
                     unsigned int    outBitrate,
                     unsigned int    outSampleRate,
                     unsigned int    outChannel )        throw ( Exception )
@@ -111,6 +118,7 @@ class AudioEncoder : public Sink, public virtual Referable
             this->inSampleRate     = inSampleRate;
             this->inBitsPerSample  = inBitsPerSample;
             this->inChannel        = inChannel;
+            this->inBigEndian      = inBigEndian;
             this->outBitrate       = outBitrate;
             this->outSampleRate    = outSampleRate;
             this->outChannel       = outChannel;
@@ -146,6 +154,7 @@ class AudioEncoder : public Sink, public virtual Referable
          *  @param inSampleRate sample rate of the input.
          *  @param inBitsPerSample number of bits per sample of the input.
          *  @param inChannel number of channels  of the input.
+         *  @param inBigEndian shows if the input is big or little endian
          *  @param outBitrate bit rate of the output (bits/sec).
          *  @param outSampleRate sample rate of the output.
          *                       If 0, inSampleRate is used.
@@ -157,6 +166,7 @@ class AudioEncoder : public Sink, public virtual Referable
         AudioEncoder (  unsigned int    inSampleRate,
                         unsigned int    inBitsPerSample,
                         unsigned int    inChannel, 
+		        bool            inBigEndian,
                         unsigned int    outBitrate,
                         unsigned int    outSampleRate = 0,
                         unsigned int    outChannel    = 0 )
@@ -164,7 +174,8 @@ class AudioEncoder : public Sink, public virtual Referable
         {
             init ( inSampleRate,
                    inBitsPerSample,
-                   inChannel, 
+                   inChannel,
+                   inBigEndian,
                    outBitrate,
                    outSampleRate ? outSampleRate : inSampleRate,
                    outChannel    ? outChannel    : inChannel );
@@ -191,7 +202,8 @@ class AudioEncoder : public Sink, public virtual Referable
         {
             init( as->getSampleRate(),
                   as->getBitsPerSample(),
-                  as->getChannel(), 
+                  as->getChannel(),
+                  as->isBigEndian(), 
                   outBitrate,
                   outSampleRate ? outSampleRate : as->getSampleRate(),
                   outChannel    ? outChannel    : as->getChannel() );
@@ -208,6 +220,7 @@ class AudioEncoder : public Sink, public virtual Referable
             init ( encoder.inSampleRate,
                    encoder.inBitsPerSample,
                    encoder.inChannel,
+                   encoder.inBigEndian,
                    encoder.outBitrate,
                    encoder.outSampleRate,
                    encoder.outChannel );
@@ -229,6 +242,7 @@ class AudioEncoder : public Sink, public virtual Referable
                 init ( encoder.inSampleRate,
                        encoder.inBitsPerSample,
                        encoder.inChannel,
+                       encoder.inBigEndian,
                        encoder.outBitrate,
                        encoder.outSampleRate,
                        encoder.outChannel );
@@ -260,6 +274,17 @@ class AudioEncoder : public Sink, public virtual Referable
         getInChannel ( void ) const         throw ()
         {
             return inChannel;
+        }
+
+        /**
+         *  Tell if the input is big or little endian.
+         *
+         *  @return true if the input is big endian, false if little endian.
+         */
+        inline bool
+        isInBigEndian ( void ) const         throw ()
+        {
+            return inBigEndian;
         }
 
         /**
@@ -360,6 +385,9 @@ class AudioEncoder : public Sink, public virtual Referable
   $Source$
 
   $Log$
+  Revision 1.4  2001/09/18 14:57:19  darkeye
+  finalized Solaris port
+
   Revision 1.3  2001/09/14 19:31:06  darkeye
   added IceCast2 / vorbis support
 

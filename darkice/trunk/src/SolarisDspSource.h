@@ -175,6 +175,17 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
         }
 
         /**
+         *  Tell if the data from this source comes in big or little endian.
+         *
+         *  @return true
+         */
+        virtual inline bool
+        isBigEndian ( void ) const           throw ()
+        {
+            return true;
+        }
+
+        /**
          *  Open the SolarisDspSource.
          *  This does not put the Solaris DSP device into recording mode.
          *  To start getting samples, call either canRead() or read().
@@ -252,6 +263,9 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.2  2001/09/18 14:57:19  darkeye
+  finalized Solaris port
+
   Revision 1.1  2001/09/11 15:05:21  darkeye
   added Solaris support
 
