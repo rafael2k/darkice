@@ -1,3 +1,14 @@
+20-08-2002: DarkIce 0.11 released
+
+    o added possibility to specify maximum bitrate for Ogg Vorbis streams
+    o added HTTP Basic authentication for icecast2 logins
+    o added mp3 streaming for icecast2
+    o added possibility to stream in mono even when recording in stereo,
+      thus enabling mono and stereo streams with the same darkice instance.
+      only for mp3 streams at the moment
+      thanks to Kai Krakow <kai@kaishome.de>
+    o bug fix: resampling audio for vorbis streams bugs fixed
+
 02-08-2002: DarkIce 0.10.1 released
 
     o bug fix: when the last server dropped connection, darkice crashed
