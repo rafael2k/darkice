@@ -251,7 +251,7 @@ AlsaDspSource :: read (    void          * buf,
     do {
         ret = snd_pcm_readi(captureHandle, buf, len/bytesPerFrame);
 
-        // Check for buffer underrun
+        // Check for buffer overrun
         if (ret == -EPIPE) {
             reportEvent(1, "Buffer overrun!");
             snd_pcm_prepare(captureHandle);
@@ -292,6 +292,9 @@ AlsaDspSource :: close ( void )                  throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.3  2005/04/03 05:00:14  jbebel
+  Fixing code documentation of buffer overruns
+
   Revision 1.2  2004/02/15 22:36:57  darkeye
   proper checking to see if ALSA support is present / needed
 
