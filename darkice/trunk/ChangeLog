@@ -1,3 +1,9 @@
+07-01-2004: DarkIce 0.13.2 released
+
+    o bug fix: two bugs fixed that caused core dump when encoding into
+      mp3 of FreeBSD. thanks to John Hay <jhay@icomtek.csir.co.za>
+    o added configure option --with-debug to enable compilation for debug mode
+
 12-02-2003: Darkice 0.13.1 released
 
     o added cross-platform pthread detection, thanks to
