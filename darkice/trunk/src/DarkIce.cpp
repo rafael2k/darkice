@@ -444,12 +444,12 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                       " missing in section ",
                                       stream);
         name        = cs->get( "name");
-        description = cs->get("description");
+        description = cs->get( "description");
         url         = cs->get( "url");
         genre       = cs->get( "genre");
         str         = cs->get( "public");
         isPublic    = str ? (Util::strEq( str, "yes") ? true : false) : false;
-        str         = cs->get("fileAddDate");
+        str         = cs->get( "fileAddDate");
         fileAddDate = str ? (Util::strEq( str, "yes") ? true : false) : false;
         
         localDumpName = cs->get( "localDumpFile");
@@ -996,6 +996,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.35  2003/02/09 13:15:57  darkeye
+  added feature for setting the TITLE comment field for vorbis streams
+
   Revision 1.34  2003/02/09 12:57:36  darkeye
   cosmetic changes to the fileAddDate option
 

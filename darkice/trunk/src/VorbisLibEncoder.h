@@ -51,7 +51,7 @@
 #include "Exception.h"
 #include "Reporter.h"
 #include "AudioEncoder.h"
-#include "Sink.h"
+#include "CastSink.h"
 #include "aflibConverter.h"
 
 
@@ -107,7 +107,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
         /**
          *  The Sink to dump encoded data to
          */
-        Ref<Sink>                       sink;
+        Ref<CastSink>                   sink;
 
         /**
          *  Maximum bitrate of the output in kbits/sec. If 0, don't care.
@@ -132,7 +132,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         void
-        init ( Sink           * sink,
+        init ( CastSink       * sink,
                unsigned int     outMaxBitrate )         throw ( Exception );
 
         /**
@@ -191,7 +191,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline
-        VorbisLibEncoder (  Sink          * sink,
+        VorbisLibEncoder (  CastSink      * sink,
                             unsigned int    inSampleRate,
                             unsigned int    inBitsPerSample,
                             unsigned int    inChannel,
@@ -235,7 +235,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline
-        VorbisLibEncoder (  Sink                  * sink,
+        VorbisLibEncoder (  CastSink              * sink,
                             const AudioSource     * as,
                             BitrateMode             outBitrateMode,
                             unsigned int            outBitrate,
@@ -444,6 +444,9 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.9  2003/02/09 13:15:57  darkeye
+  added feature for setting the TITLE comment field for vorbis streams
+
   Revision 1.8  2002/08/20 20:07:36  darkeye
   minor fixes
 

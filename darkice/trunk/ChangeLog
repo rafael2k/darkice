@@ -1,5 +1,7 @@
 DarkIce next version:
 
+    o added feature for setting the TITLE comment field for vorbis
+      streams. thanks to Ricardo Galli <gallir@uib.es>
     o bugfix: fixed minor bug in IcecCast2.cpp, which could have lead to
       a buffer overflow. thanks to Atsuhiko Yamanaka <ymnk@jcraft.com>
     o bugfix: MultiThreadedConnector::sinkThread() was private, now public

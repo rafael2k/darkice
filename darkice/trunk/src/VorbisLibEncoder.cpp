@@ -62,7 +62,7 @@ static const char fileid[] = "$Id$";
  *  Initialize the encoder
  *----------------------------------------------------------------------------*/
 void
-VorbisLibEncoder :: init ( Sink           * sink,
+VorbisLibEncoder :: init ( CastSink       * sink,
                            unsigned int     outMaxBitrate )
                                                             throw ( Exception )
 {
@@ -188,6 +188,9 @@ VorbisLibEncoder :: open ( void )
 
     // create an empty vorbis_comment structure
     vorbis_comment_init( &vorbisComment);
+    // Add comment to vorbis headers to show title in players
+    // stupid cast to (char*) because of stupid vorbis API
+    vorbis_comment_add_tag( &vorbisComment, "TITLE", (char*) sink->getName());
 
     // create the vorbis stream headers and send them to the underlying sink
     ogg_packet      header;
@@ -370,6 +373,9 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.17  2003/02/09 13:15:57  darkeye
+  added feature for setting the TITLE comment field for vorbis streams
+
   Revision 1.16  2002/10/19 13:31:46  darkeye
   some cleanup with the open() / close() functions
 
