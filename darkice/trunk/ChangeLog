@@ -1,7 +1,9 @@
 18-09-2001: DarkIce 0.6 released
 
     o added support for IceCast2 server with Ogg Vorbis streaming
+      Ogg Vorbis support thanks to aNa|0Gue <analogue@glop.org>
     o added support for SUN Solaris
+    o removed long command line options (as these are extensions to UNIX)
 
 09-09-2001: DarkIce 0.5 released
 
