@@ -57,6 +57,12 @@
 #error need math.h
 #endif
 
+#ifdef HAVE_TIME_H
+#include <time.h>
+#else
+#error need time.h
+#endif
+
 
 #include "Util.h"
 
@@ -487,6 +493,9 @@ Util :: conv16 (    unsigned char     * pcmBuffer,
   $Source$
 
   $Log$
+  Revision 1.11  2002/12/22 01:20:32  darkeye
+  time.h include file was missing
+
   Revision 1.10  2002/11/20 16:52:07  wandereq
   added fileAddDate function
 
