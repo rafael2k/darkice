@@ -84,9 +84,10 @@ class Sink : public virtual Referable
          *
          *  @param sink the Sink to assign this to.
          *  @return a reference to this Sink.
+         *  @exception Exception
          */
         inline virtual Sink &
-        operator= ( const Sink &    sink )              throw ()
+        operator= ( const Sink &    sink )              throw ( Exception )
         {
             return *this;
         }
@@ -96,9 +97,11 @@ class Sink : public virtual Referable
 
         /**
          *  Destructor.
+         *
+         *  @exception Exception
          */
         inline virtual
-        ~Sink ( void )                                  throw ()
+        ~Sink ( void )                                  throw ( Exception )
         {
         }
 
@@ -178,6 +181,9 @@ class Sink : public virtual Referable
   $Source$
 
   $Log$
+  Revision 1.4  2000/11/12 14:54:25  darkeye
+  added Exception to throws clause for the destructor and assignment operator
+
   Revision 1.3  2000/11/12 13:31:16  darkeye
   minor change in documentation
 
