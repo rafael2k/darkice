@@ -1,3 +1,7 @@
+DarkIce next version
+
+    o bug fix: resampling audio for vorbis streams bugs fixed
+
 02-08-2002: DarkIce 0.10.1 released
 
     o bug fix: when the last server dropped connection, darkice crashed

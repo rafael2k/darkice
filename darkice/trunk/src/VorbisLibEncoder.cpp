@@ -205,7 +205,7 @@ VorbisLibEncoder :: write ( const void    * buf,
     
     if ( converter ) {
         // resample if needed
-        int         inCount  = totalSamples;
+        int         inCount  = nSamples;
         int         outCount = (int) (inCount * resampleRatio);
         short int * resampledBuffer = new short int[outCount * channels];
         int         converted;
@@ -216,11 +216,14 @@ VorbisLibEncoder :: write ( const void    * buf,
                                          resampledBuffer );
 
         vorbisBuffer = vorbis_analysis_buffer( &vorbisDspState,
-                                               converted / channels);
-        Util::conv( resampledBuffer, converted, vorbisBuffer, channels);
+                                               converted);
+        Util::conv( resampledBuffer,
+                    converted * channels,
+                    vorbisBuffer,
+                    channels);
         delete[] resampledBuffer;
 
-        vorbis_analysis_wrote( &vorbisDspState, converted / channels);
+        vorbis_analysis_wrote( &vorbisDspState, converted);
 
     } else {
 
@@ -316,6 +319,9 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.12  2002/08/03 10:30:46  darkeye
+  resampling bugs fixed for vorbis streams
+
   Revision 1.11  2002/07/20 16:37:06  darkeye
   added fault tolerance in case a server connection is dropped
 
