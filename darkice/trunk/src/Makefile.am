@@ -23,6 +23,8 @@ darkice_SOURCES =   AudioEncoder.h\
                     IceCast2.h\
                     ShoutCast.cpp\
                     ShoutCast.h\
+                    FileCast.h\
+                    FileCast.cpp\
                     LameLibEncoder.cpp\
                     LameLibEncoder.h\
                     VorbisLibEncoder.cpp\

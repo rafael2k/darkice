@@ -80,9 +80,10 @@ class DarkIce : public virtual Referable, public virtual Reporter
     private:
 
         /**
-         *  The maximum number of supported outputs.
+         *  The maximum number of supported outputs. This should be
+         *  <supported output types> * <outputs per type>
          */
-        static const unsigned int       maxOutput = 24;
+        static const unsigned int       maxOutput = 4 * 7;
         
         /**
          *  Type describing each lame library output.
@@ -144,6 +145,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
          *
          *  @param config the config Object to read initialization
          *                information from.
+         *  @param bufferSecs number of seconds to buffer audio for
          *  @exception Exception
          */
         void
@@ -156,6 +158,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
          *
          *  @param config the config Object to read initialization
          *                information from.
+         *  @param bufferSecs number of seconds to buffer audio for
          *  @exception Exception
          */
         void
@@ -168,11 +171,24 @@ class DarkIce : public virtual Referable, public virtual Reporter
          *
          *  @param config the config Object to read initialization
          *                information from.
+         *  @param bufferSecs number of seconds to buffer audio for
          *  @exception Exception
          */
         void
         configShoutCast (   const Config   & config,
                             unsigned int     bufferSecs )   throw ( Exception );
+
+        /**
+         *  Look for file outputs from the config file.
+         *  Called from init()
+         *
+         *  @param config the config Object to read initialization
+         *                information from.
+         *  @exception Exception
+         */
+        void
+        configFileCast  (   const Config   & config )
+                                                            throw ( Exception );
 
         /**
          *  Set POSIX real-time scheduling for the encoding process,
@@ -293,6 +309,10 @@ class DarkIce : public virtual Referable, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.13  2002/02/28 09:49:25  darkeye
+  added possibility to save the encoded stream to a local file only
+  (no streaming server needed)
+
   Revision 1.12  2001/09/14 19:31:06  darkeye
   added IceCast2 / vorbis support
 

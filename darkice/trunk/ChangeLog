@@ -1,3 +1,8 @@
+DarkIce 0.9
+
+    o added possibility to simply read from the soundcard, encode, and
+      save the encoded data into a local file (no streaming server needed)
+
 20-02-2002: DarkIce 0.8 released
 
     o added possibility to disable lowpass and highpass filtering for lame

@@ -1,4 +1,4 @@
-.TH darkice.cfg 5 "February 20, 2002" "DarkIce" "DarkIce live audio streamer"
+.TH darkice.cfg 5 "February 28, 2002" "DarkIce" "DarkIce live audio streamer"
 .SH NAME
 darkice.cfg \- configuration file for darkice
 .SH DESCRIPTION
@@ -27,11 +27,12 @@ configuration file contains the following sections:
 [icecast-0] ... [icecast-7]
 [icecast2-0] ... [icecast2-7]
 [shoutcast-0] ... [shoutcast-7]
+[file-0] ... [file-7]
 .fi
 
 The order of the sections is not important. Sections [general] and [input]
-are required, and at least one of [icecast-x], [icecast2-x]
-or [shoutcast-x] is needed.
+are required, and at least one of [icecast-x], [icecast2-x], [shoutcast-x] 
+or [file-x] is needed.
 
 In particular, the following sections and values are recognized:
 .PP
@@ -154,8 +155,7 @@ disabled.
 
 This section describes an output to an
 .B IceCast2
-server, while encoding
-with the ogg vobis encoder.
+server, while encoding with the ogg vobis encoder.
 There may be at most 8 outputs, numbered from 0 ... 7.
 The number is included in the section name (e.g. [icecast2-0] ... [icecast2-7]).
 The stream will be reachable at
@@ -288,6 +288,47 @@ Dump the same mp3 data sent to the
 server to this local file.
 
 .PP
+.B [file-x]
+
+This section describes an output to a local file in either Ogg Vorbis or
+mp3 format.
+There may be at most 8 outputs, numbered from 0 ... 7.
+The number is included in the section name (e.g. [file-0] ... [file-7]).
+
+Required values:
+
+.TP
+.I format
+Format to encode in. Must be either 'mp3' or 'vorbis'.
+.TP
+.I bitrate
+Bit rate to encode to in kBits / sec (e.g. 96)
+.TP
+.I fileName
+The name of the local file to save the encoded data into.
+
+.PP
+Optional values:
+
+.TP
+.I sampleRate
+The sample rate of the encoded mp3 output. If not specified, defaults
+to the value of the input sample rate.
+Only used if the output format is mp3.
+.TP
+.I lowpass
+Lowpass filter setting for the lame encoder. If not set or set to 0,
+the encoder's default behaviour is used. If set to -1, the filter is
+disabled.
+Only used if the output format is mp3.
+.TP
+.I highpass
+Highpass filter setting for the lame encoder. If not set or set to 0,
+the encoder's default behaviour is used. If set to -1, the filter is
+disabled.
+Only used if the output format is mp3.
+
+.PP
 A sample configuration file follows. This file makes
 .B DarkIce
 stream for 1 minute (60 seconds) from the audio device
@@ -333,6 +374,29 @@ genre           = live
 public          = no
 remoteDumpFile  = /tmp/server-dump.mp3
 localDumpFile   = /tmp/encoder-dump.mp3
+.fi
+
+
+.PP
+The following sample configuration file simply encodes the 16 bit stereo
+44.1 kHz sound card input into Ogg Vorbis at 96 kb/s for 60 seconds, and saves
+it in the local file at /tmp/save.ogg.
+
+.nf
+[general]
+duration        = 60
+bufferSecs      = 5
+
+[input]
+device          = /dev/dsp
+sampleRate      = 44100
+bitsPerSample   = 16
+channel         = 2
+
+[file-0]
+format          = vorbis
+bitrate         = 96
+fileName        = /tmp/save.ogg
 .fi
 
 

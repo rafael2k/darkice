@@ -67,16 +67,17 @@ CastSink :: init (  TcpSocket             * socket,
 {
     this->socket         = socket;
     this->streamDump     = streamDump;
-    this->password       = Util::strDup( password);
+    this->password       = password       ? Util::strDup( password) : 0;
     this->bitRate        = bitRate;
-    this->name           = name           ? Util::strDup( name) : 0;
-    this->url            = url            ? Util::strDup( url) : 0;
-    this->genre          = genre          ? Util::strDup( genre) : 0;
+    this->name           = name           ? Util::strDup( name)     : 0;
+    this->url            = url            ? Util::strDup( url)      : 0;
+    this->genre          = genre          ? Util::strDup( genre)    : 0;
     this->isPublic       = isPublic;
     this->bufferDuration = bufferDuration;
 
-    bufferedSink = new BufferedSink( socket,
-                                     (bitRate * 1024 / 8) * bufferDuration);
+    bufferedSink = socket ? new BufferedSink( socket,
+                                     (bitRate * 1024 / 8) * bufferDuration)
+                          : 0;
 
 }
 
@@ -91,7 +92,9 @@ CastSink :: strip ( void )                          throw ( Exception )
         close();
     }
 
-    delete[] password;
+    if ( password ) {
+        delete[] password;
+    }
     if ( name ) {
         delete[] name;
     }
@@ -141,6 +144,10 @@ CastSink :: open ( void )                       throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.7  2002/02/28 09:49:25  darkeye
+  added possibility to save the encoded stream to a local file only
+  (no streaming server needed)
+
   Revision 1.6  2002/02/20 11:54:11  darkeye
   added local dump file possibility
 

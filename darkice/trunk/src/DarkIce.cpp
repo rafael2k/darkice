@@ -76,7 +76,7 @@
 #include "IceCast.h"
 #include "IceCast2.h"
 #include "ShoutCast.h"
-#include "FileSink.h"
+#include "FileCast.h"
 #include "DarkIce.h"
 
 #ifdef HAVE_LAME_LIB
@@ -163,6 +163,7 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
     configIceCast( config, bufferSecs);
     configIceCast2( config, bufferSecs);
     configShoutCast( config, bufferSecs);
+    configFileCast( config);
 }
 
 
@@ -180,11 +181,11 @@ DarkIce :: configIceCast (  const Config      & config,
     size_t          streamLen       = Util::strLen( stream);
     unsigned int    u;
 
-    for ( u = 0; u < maxOutput; ++u ) {
+    for ( u = noAudioOuts; u < maxOutput; ++u ) {
         const ConfigSection    * cs;
 
         // ugly hack to change the section name to "stream0", "stream1", etc.
-        stream[streamLen-1] = '0' + u;
+        stream[streamLen-1] = '0' + (u - noAudioOuts);
 
         if ( !(cs = config.get( stream)) ) {
             break;
@@ -305,11 +306,11 @@ DarkIce :: configIceCast2 (  const Config      & config,
     size_t          streamLen       = Util::strLen( stream);
     unsigned int    u;
 
-    for ( u = 0; u < maxOutput; ++u ) {
+    for ( u = noAudioOuts; u < maxOutput; ++u ) {
         const ConfigSection    * cs;
 
         // ugly hack to change the section name to "stream0", "stream1", etc.
-        stream[streamLen-1] = '0' + u;
+        stream[streamLen-1] = '0' + (u - noAudioOuts);
 
         if ( !(cs = config.get( stream)) ) {
             break;
@@ -456,11 +457,11 @@ DarkIce :: configShoutCast (    const Config      & config,
     size_t          streamLen       = Util::strLen( stream);
     unsigned int    u;
 
-    for ( u = 0; u < maxOutput; ++u ) {
+    for ( u = noAudioOuts; u < maxOutput; ++u ) {
         const ConfigSection    * cs;
 
         // ugly hack to change the section name to "stream0", "stream1", etc.
-        stream[streamLen-1] = '0' + u;
+        stream[streamLen-1] = '0' + (u - noAudioOuts);
 
         if ( !(cs = config.get( stream)) ) {
             break;
@@ -559,6 +560,113 @@ DarkIce :: configShoutCast (    const Config      & config,
 
         encConnector->attach( audioOuts[u].encoder.get());
 #endif // HAVE_LAME_LIB
+    }
+
+    noAudioOuts += u;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Look for the FileCast stream outputs in the config file
+ *----------------------------------------------------------------------------*/
+void
+DarkIce :: configFileCast (  const Config      & config )
+                                                        throw ( Exception )
+{
+    // look for FileCast encoder output streams,
+    // sections [file-0], [file-1], ...
+    char            stream[]        = "file- ";
+    size_t          streamLen       = Util::strLen( stream);
+    unsigned int    u;
+
+    for ( u = noAudioOuts; u < maxOutput; ++u ) {
+        const ConfigSection    * cs;
+
+        // ugly hack to change the section name to "stream0", "stream1", etc.
+        stream[streamLen-1] = '0' + (u - noAudioOuts);
+
+        if ( !(cs = config.get( stream)) ) {
+            break;
+        }
+
+        const char        * str;
+
+        const char        * format          = 0;
+        unsigned int        bitrate         = 0;
+        const char        * targetFileName  = 0;
+        unsigned int        sampleRate      = 0;
+        int                 lowpass         = 0;
+        int                 highpass        = 0;
+
+        format      = cs->getForSure( "format", " missing in section ", stream);
+        if ( !Util::strEq( format, "vorbis") && !Util::strEq( format, "mp3") ) {
+            throw Exception( __FILE__, __LINE__,
+                             "unsupported stream format: ", format);
+        }
+
+        str         = cs->getForSure("bitrate", " missing in section ", stream);
+        bitrate     = Util::strToL( str);
+        targetFileName    = cs->getForSure( "fileName",
+                                            " missing in section ",
+                                            stream);
+        str         = cs->get( "sampleRate");
+        sampleRate  = str ? Util::strToL( str) : dsp->getSampleRate();
+        str         = cs->get( "lowpass");
+        lowpass     = str ? Util::strToL( str) : 0;
+        str         = cs->get( "highpass");
+        highpass    = str ? Util::strToL( str) : 0;
+
+        // go on and create the things
+
+        // the underlying file
+        FileSink  * targetFile = new FileSink( targetFileName);
+        if ( !targetFile->exists() ) {
+            if ( !targetFile->create() ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "can't create output file", targetFileName);
+            }
+        }
+
+        // streaming related stuff
+        audioOuts[u].socket = 0;
+        audioOuts[u].server = new FileCast( targetFile );
+
+        if ( Util::strEq( format, "mp3") ) {
+#ifndef HAVE_LAME_LIB
+                throw Exception( __FILE__, __LINE__,
+                                 "DarkIce not compiled with lame support, "
+                                 "thus can't create mp3 stream: ",
+                                 stream);
+#else
+                audioOuts[u].encoder = new LameLibEncoder(
+                                                    audioOuts[u].server.get(),
+                                                    dsp.get(),
+                                                    bitrate,
+                                                    sampleRate,
+                                                    dsp->getChannel(),
+                                                    lowpass,
+                                                    highpass );
+#endif // HAVE_LAME_LIB
+        } else if ( Util::strEq( format, "vorbis") ) {
+#ifndef HAVE_VORBIS_LIB
+                throw Exception( __FILE__, __LINE__,
+                                "DarkIce not compiled with Ogg Vorbis support, "
+                                "thus can't Ogg Vorbis stream: ",
+                                stream);
+#else
+                audioOuts[u].encoder = new VorbisLibEncoder(
+                                                    audioOuts[u].server.get(),
+                                                    dsp.get(),
+                                                    bitrate,
+                                                    dsp->getSampleRate(),
+                                                    dsp->getChannel() );
+#endif // HAVE_VORBIS_LIB
+        } else {
+                throw Exception( __FILE__, __LINE__,
+                                "Illegal stream format: ", format);
+        }
+
+        encConnector->attach( audioOuts[u].encoder.get());
     }
 
     noAudioOuts += u;
@@ -697,6 +805,10 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.25  2002/02/28 09:49:25  darkeye
+  added possibility to save the encoded stream to a local file only
+  (no streaming server needed)
+
   Revision 1.24  2002/02/20 11:54:11  darkeye
   added local dump file possibility
 
