@@ -75,10 +75,12 @@ CastSink :: init (  TcpSocket             * socket,
     this->isPublic       = isPublic;
     this->bufferDuration = bufferDuration;
 
-    bufferedSink = socket ? new BufferedSink( socket,
-                                     (bitRate * 1024 / 8) * bufferDuration)
-                          : 0;
+    int       bufferSize = bitRate ? (bitRate * 1024 / 8) * bufferDuration
+                                   : (128 * 1024 / 8) * bufferDuration;
 
+    bufferedSink = socket ?  new BufferedSink( socket,
+                                     (bufferSize * 1024 / 8) * bufferDuration)
+                          : 0;
 }
 
 
@@ -144,6 +146,10 @@ CastSink :: open ( void )                       throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.8  2002/03/28 16:40:55  darkeye
+  slight changes to allow for variable bitrate streams
+  (where the value of bitrate is 0)
+
   Revision 1.7  2002/02/28 09:49:25  darkeye
   added possibility to save the encoded stream to a local file only
   (no streaming server needed)
