@@ -1,0 +1,102 @@
+02-08-2002: DarkIce 0.10.1 released
+
+    o bug fix: when the last server dropped connection, darkice crashed
+      thanks to Nicu Pavel <npavel@ituner.com>
+    o bug fix for LameLibEncoder: the mp3 encoding buffer was deleted too
+      early, resulting in mp3 data corruption.
+      thanks to Nicu Pavel <npavel@ituner.com>
+
+20-07-2002: DarkIce 0.10 released
+
+    o added possibility to select constant, average and variable bit rate
+      encoding modes with specifying encoding quality as well.
+      thanks to Nicu Pavel <npavel@ituner.com>
+    o added support for Ogg Vorbis 1.0 final, removed support for rc2
+    o added fault tolerance: if one of several server connection drops,
+      DarkIce carries on with the rest of the servers still connected
+
+09-04-2002: DarkIce 0.9.1 released
+
+    o bugfix: a memory leak was introduced in 0.9, which is fixed thanks to
+      Kristjan G. Bjarnason <kgb@gangverk.is> and Nicu Pavel <npavel@ituner.com>
+    o minor documentation fix
+
+28-03-2002: DarkIce 0.9 released
+
+    o added possibility to simply read from the soundcard, encode, and
+      save the encoded data into a local file (no streaming server needed)
+    o added variable bitrate support for vorbis streams
+    o support for both rc2 and rc3 versions of vorbis libraries
+    o added support for resampling when encoding to vorbis
+      thanks to the OSALP project for the resampling class,
+      http://osalp.sourceforge.net/ and
+      Julius O. Smith, <jos@ccrma.stanford.edu> for the original code
+
+20-02-2002: DarkIce 0.8 released
+
+    o added possibility to disable lowpass and highpass filtering for lame
+    o fixed incorrect vorbis bitrate setting
+    o fix: DarkIce now reports public streams correctly
+      thanks to Tom Gray, <tomg@future-i.com>
+    o made up-to-date with Ogg Vorbis rc3 libs
+      thanks to Michael Smith, <msmith@labyrinth.net.au>
+    o made up-to-date with current IceCast2 cvs version
+    o added local stream dump possibility
+
+19-10-2001: DarkIce 0.7 released
+
+    o added support for FreeBSD
+      thanks to Robin P. Blanchard, <Robin_Blanchard@gactr.uga.edu>
+    o added support for resampling mp3 streams
+    o DarkIce config file now may contain spaces and tabs as white space
+    o configure script enables build with or without lame / Ogg Vorbis
+      also possibility to specify alternate locations for these
+
+18-09-2001: DarkIce 0.6 released
+
+    o added support for IceCast2 server with Ogg Vorbis streaming
+      Ogg Vorbis support thanks to aNa|0Gue <analogue@glop.org>
+    o added support for SUN Solaris
+    o removed long command line options (as these are extensions to UNIX)
+    o removed configure option to specify location of lame library
+    o removed configure option to compile static executable
+
+09-09-2001: DarkIce 0.5 released
+
+    o added support for ShoutCast servers
+    o removed local copy of SGI STL, uses STL of the C++ compiler
+    o compiles with gcc3-c++
+    o added man page darkice.cfg.5
+    o bugfix: config files can have comments before the first section
+
+02-09-2001: DarkIce 0.4 released
+
+    o support for external command line encoder removed, replaced
+      with using lame as a shared object or statically linked library
+    o added darkice man page
+    o created RPM packages
+    o DarkIce no longer reports an error if the sound card recording
+      sample rate could not be set to the exact specified amount
+      (e.g. the sound card reports 44101 Hz instead of 44100 Hz)
+
+
+26-08-2001: DarkIce 0.3.1 released
+
+    o support for unlimited time encoding
+      thanks to Jim Crilly, <JCrilly@MSA.com>
+
+
+20-12-2000: DarkIce 0.3 released
+
+    o added POSIX real-time scheduling
+
+
+18-11-2000: DarkIce 0.2 released
+
+    o code cleanup
+    o first real tests made
+    o added verbosity command line option
+
+
+13-11-2000: DarkIce 0.1 released
+
