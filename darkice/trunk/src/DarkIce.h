@@ -52,7 +52,7 @@
 #include "Reporter.h"
 #include "Exception.h"
 #include "Ref.h"
-#include "OssDspSource.h"
+#include "AudioSource.h"
 #include "BufferedSink.h"
 #include "Connector.h"
 #include "LameLibEncoder.h"
@@ -111,7 +111,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
         /**
          *  The dsp to record from.
          */
-        Ref<OssDspSource>       dsp;
+        Ref<AudioSource>        dsp;
 
         /**
          *  The encoding Connector, connecting the dsp to the encoders.
@@ -281,6 +281,9 @@ class DarkIce : public virtual Referable, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.11  2001/09/11 15:05:21  darkeye
+  added Solaris support
+
   Revision 1.10  2001/09/09 11:27:31  darkeye
   added support for ShoutCast servers
 

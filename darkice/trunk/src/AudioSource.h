@@ -138,16 +138,6 @@ class AudioSource : public Source
         }
 
         /**
-         *  Destructor.
-         *
-         *  @exception Exception
-         */
-        virtual inline
-        ~AudioSource ( void )                           throw ( Exception )
-        {
-        }
-
-        /**
          *  Assignment operator.
          *
          *  @param as the object to assign to this one.
@@ -168,6 +158,16 @@ class AudioSource : public Source
 
 
     public:
+
+        /**
+         *  Destructor.
+         *
+         *  @exception Exception
+         */
+        virtual inline
+        ~AudioSource ( void )                           throw ( Exception )
+        {
+        }
 
         /**
          *  Get the number of channels for this AudioSource.
@@ -207,6 +207,30 @@ class AudioSource : public Source
 
 /* ================================================= external data structures */
 
+/*------------------------------------------------------------------------------
+ *  Determine the kind of audio device based on the system
+ *----------------------------------------------------------------------------*/
+#if defined( HAVE_SYS_SOUNDCARD_H )
+
+// we have an OSS DSP sound source device available
+#define SUPPORT_OSS_DSP
+#include "OssDspSource.h"
+typedef class OssDspSource          DspSource;
+
+#elif defined( HAVE_SYS_AUDIO_H )
+
+// we have a Solaris DSP sound device available
+#define SUPPORT_SOLARIS_DSP
+#include "SolarisDspSource.h"
+typedef class SolarisDspSource       DspSource;
+
+#else
+
+// there was no DSP audio system found
+#error No DSP audio input device found on system
+
+#endif
+
 
 /* ====================================================== function prototypes */
 
@@ -220,6 +244,9 @@ class AudioSource : public Source
   $Source$
 
   $Log$
+  Revision 1.4  2001/09/11 15:05:21  darkeye
+  added Solaris support
+
   Revision 1.3  2000/11/12 13:31:40  darkeye
   added kdoc-style documentation comments
 

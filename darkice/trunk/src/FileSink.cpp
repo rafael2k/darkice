@@ -4,7 +4,7 @@
 
    Tyrell DarkIce
 
-   File     : OssDspSource.cpp
+   File     : FileSink.cpp
    Version  : $Revision$
    Author   : $Author$
    Location : $Source$
@@ -29,13 +29,8 @@
 
 /* ============================================================ include files */
 
-#include "OssDspSource.h"
-
-#ifdef SUPPORT_OSS_DSP
-// only compile this code if there is support for it
-
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include "configure.h"
 #endif
 
 #ifdef HAVE_UNISTD_H
@@ -44,10 +39,22 @@
 #error need unistd.h
 #endif
 
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#else
+#error need stdlib.h
+#endif
+
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #else
 #error need sys/types.h
+#endif
+
+#ifdef HAVE_ERRNO_H
+#include <errno.h>
+#else
+#error need errno.h
 #endif
 
 #ifdef HAVE_SYS_STAT_H
@@ -68,22 +75,16 @@
 #error need sys/time.h
 #endif
 
-#ifdef HAVE_SYS_IOCTL_H
-#include <sys/ioctl.h>
+#ifdef HAVE_STRING_H
+#include <string.h>
 #else
-#error need sys/ioctl.h
-#endif
-
-#ifdef HAVE_SYS_SOUNDCARD_H
-#include <sys/soundcard.h>
-#else
-#error need sys/soundcard.h
+#error need string.h
 #endif
 
 
 #include "Util.h"
 #include "Exception.h"
-#include "OssDspSource.h"
+#include "FileSink.h"
 
 
 /* ===================================================  local data structures */
@@ -106,11 +107,10 @@ static const char fileid[] = "$Id$";
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-OssDspSource :: init (  const char      * name )    throw ( Exception )
+FileSink :: init (  const char    * name )          throw ( Exception )
 {
-    fileName       = Util::strDup( name);
+    fileName = Util::strDup( name);
     fileDescriptor = 0;
-    running        = false;
 }
 
 
@@ -118,76 +118,115 @@ OssDspSource :: init (  const char      * name )    throw ( Exception )
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-OssDspSource :: strip ( void )                      throw ( Exception )
+FileSink :: strip ( void)                           throw ( Exception )
 {
     if ( isOpen() ) {
         close();
     }
-    
+
     delete[] fileName;
 }
 
 
 /*------------------------------------------------------------------------------
- *  Open the audio source
+ *  Copy Constructor
+ *----------------------------------------------------------------------------*/
+FileSink :: FileSink (  const FileSink &    fs )    throw ( Exception )
+                : Sink( fs )
+{
+    int     fd;
+    
+    init( fs.fileName);
+    
+    if ( (fd = fs.fileDescriptor ? dup( fs.fileDescriptor) : 0) == -1 ) {
+        strip();
+        throw Exception( __FILE__, __LINE__, "dup failure");
+    }
+
+    fileDescriptor = fd;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Assignment operator
+ *----------------------------------------------------------------------------*/
+FileSink &
+FileSink :: operator= (  const FileSink &    fs )   throw ( Exception )
+{
+    if ( this != &fs ) {
+        int     fd;
+
+        /* first strip */
+        strip();
+
+
+        /* then build up */
+        Sink::operator=( fs );
+        
+        init( fs.fileName);
+        
+        if ( (fd = fs.fileDescriptor ? dup( fs.fileDescriptor) : 0) == -1 ) {
+            strip();
+            throw Exception( __FILE__, __LINE__, "dup failure");
+        }
+
+        fileDescriptor = fd;
+    }
+
+    return *this;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Check wether a file exists
  *----------------------------------------------------------------------------*/
 bool
-OssDspSource :: open ( void )                       throw ( Exception )
+FileSink :: exists ( void ) const               throw ()
 {
-    int             format;
-    int             i;
-    unsigned int    u;
+    struct stat     st;
 
+    if ( stat( (const char*)fileName, &st) == -1 ) {
+        return false;
+    }
+
+    return true;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Create a file, truncate if already exists
+ *----------------------------------------------------------------------------*/
+bool
+FileSink :: create ( void )                     throw ( Exception )
+{
+    int     fd;
+    
     if ( isOpen() ) {
         return false;
     }
 
-    switch ( getBitsPerSample() ) {
-        case 8:
-            format = AFMT_U8;
-            break;
-
-        case 16:
-            format = AFMT_S16_LE;
-            break;
-            
-        default:
-            return false;
+    if ( (fd = ::creat( fileName, S_IRUSR | S_IWUSR)) == -1 ) {
+        throw Exception( __FILE__, __LINE__, "creat error", errno);
     }
 
-    if ( (fileDescriptor = ::open( fileName, O_RDONLY)) == -1 ) {
-        fileDescriptor = 0;
+    ::close( fd);
+    return true;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Open the file
+ *----------------------------------------------------------------------------*/
+bool
+FileSink :: open ( void )                       throw ( Exception )
+{
+    if ( isOpen() ) {
         return false;
     }
 
-    i = format;
-    if ( ioctl( fileDescriptor, SNDCTL_DSP_SETFMT, &i) == -1 ||
-         i != format ) {
-        
-        close();
-        throw Exception( __FILE__, __LINE__, "can't set format", i);
-    }
-
-    u = getChannel();
-    if ( ioctl( fileDescriptor, SNDCTL_DSP_CHANNELS, &u) == -1 ||
-         u != getChannel() ) {
-        
-        close();
-        throw Exception( __FILE__, __LINE__, "can't set channels", u);
-    }
-
-    u = getSampleRate();
-    if ( ioctl( fileDescriptor, SNDCTL_DSP_SPEED, &u) == -1 ) {
-
-        close();
-        throw Exception( __FILE__, __LINE__,
-                         "can't set soundcard recording sample rate", u);
-    }
-    if ( u != getSampleRate() ) {
-        reportEvent( 2, "sound card recording sample rate set to ", u,
-                        " while trying to set it to ", getSampleRate());
-        reportEvent( 2, "this is probably not a problem, but a slight "
-                        "drift in the sound card driver");
+    if ( (fileDescriptor = ::open( fileName, O_WRONLY | O_TRUNC, 0)) == -1 ) {
+        fileDescriptor = 0;
+        return false;
     }
 
     return true;
@@ -198,8 +237,8 @@ OssDspSource :: open ( void )                       throw ( Exception )
  *  Check wether read() would return anything
  *----------------------------------------------------------------------------*/
 bool
-OssDspSource :: canRead ( unsigned int    sec,
-                          unsigned int    usec )    throw ( Exception )
+FileSink :: canWrite (     unsigned int    sec,
+                           unsigned int    usec )   throw ( Exception )
 {
     fd_set              fdset;
     struct timeval      tv;
@@ -209,19 +248,12 @@ OssDspSource :: canRead ( unsigned int    sec,
         return false;
     }
 
-    if ( !running ) {
-        /* ugly workaround to get the dsp into recording state */
-        unsigned char   b[getChannel()*getBitsPerSample()/8];
-
-        read( b, getChannel()*getBitsPerSample()/8);
-    }
-    
     FD_ZERO( &fdset);
     FD_SET( fileDescriptor, &fdset);
     tv.tv_sec  = sec;
     tv.tv_usec = usec;
 
-    ret = select( fileDescriptor + 1, &fdset, NULL, NULL, &tv);
+    ret = select( fileDescriptor + 1, NULL, &fdset, NULL, &tv);
     
     if ( ret == -1 ) {
         throw Exception( __FILE__, __LINE__, "select error");
@@ -235,8 +267,8 @@ OssDspSource :: canRead ( unsigned int    sec,
  *  Read from the audio source
  *----------------------------------------------------------------------------*/
 unsigned int
-OssDspSource :: read (    void          * buf,
-                          unsigned int    len )     throw ( Exception )
+FileSink :: write (    const void    * buf,
+                       unsigned int    len )        throw ( Exception )
 {
     ssize_t     ret;
 
@@ -244,13 +276,16 @@ OssDspSource :: read (    void          * buf,
         return 0;
     }
 
-    ret = ::read( fileDescriptor, buf, len);
+    ret = ::write( fileDescriptor, buf, len);
 
     if ( ret == -1 ) {
-        throw Exception( __FILE__, __LINE__, "read error");
+        if ( errno == EAGAIN ) {
+            ret = 0;
+        } else {
+            throw Exception( __FILE__, __LINE__, "write error", errno);
+        }
     }
 
-    running = true;
     return ret;
 }
 
@@ -259,18 +294,17 @@ OssDspSource :: read (    void          * buf,
  *  Close the audio source
  *----------------------------------------------------------------------------*/
 void
-OssDspSource :: close ( void )                  throw ( Exception )
+FileSink :: close ( void )                          throw ( Exception )
 {
     if ( !isOpen() ) {
         return;
     }
 
+    flush();
     ::close( fileDescriptor);
     fileDescriptor = 0;
-    running        = false;
 }
 
-#endif // SUPPORT_OSS_DSP
 
 
 /*------------------------------------------------------------------------------
@@ -278,33 +312,21 @@ OssDspSource :: close ( void )                  throw ( Exception )
   $Source$
 
   $Log$
-  Revision 1.9  2001/09/11 15:05:21  darkeye
+  Revision 1.5  2001/09/11 15:05:21  darkeye
   added Solaris support
 
-  Revision 1.8  2001/09/02 14:08:40  darkeye
-  setting the sound card recording sample rate is now more relaxed
-  there is no error reported if the sample rate is not exactly the same
+  Revision 1.4  2001/08/26 20:44:30  darkeye
+  removed external command-line encoder support
+  replaced it with a shared-object support for lame with the possibility
+  of static linkage
 
-  Revision 1.7  2001/08/30 17:25:56  darkeye
-  renamed configure.h to config.h
+  Revision 1.3  2000/11/11 12:33:13  darkeye
+  added kdoc-style documentation
 
-  Revision 1.6  2000/12/01 15:03:28  darkeye
-  bug fix in error reporting
-
-  Revision 1.5  2000/11/17 15:50:48  darkeye
-  added -Wall flag to compiler and eleminated new warnings
-
-  Revision 1.4  2000/11/13 20:05:07  darkeye
-  changed to workaround to start recording so that it reads one sample
-  per channel, as opposed to only one sample (which misalignes the channels)
-
-  Revision 1.3  2000/11/12 13:31:40  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.2  2000/11/05 14:08:28  darkeye
+  Revision 1.2  2000/11/05 14:08:27  darkeye
   changed builting to an automake / autoconf environment
 
-  Revision 1.1.1.1  2000/11/05 10:05:53  darkeye
+  Revision 1.1.1.1  2000/11/05 10:05:51  darkeye
   initial version
 
   

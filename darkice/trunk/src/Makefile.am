@@ -1,7 +1,7 @@
 bin_PROGRAMS = darkice
 INCLUDES = @LAME_INCFLAGS@
 CXXFLAGS = -O2 -Wall -DVERSION="@VERSION@"
-LDADD = @LAME_LDFLAGS@ @LINK_STATIC@
+LDADD = -lrt -lsocket -lnsl @LAME_LDFLAGS@ @LINK_STATIC@
 
 darkice_SOURCES =   AudioEncoder.h\
                     AudioSource.h\
@@ -23,6 +23,8 @@ darkice_SOURCES =   AudioEncoder.h\
                     LameLibEncoder.h\
                     OssDspSource.cpp\
                     OssDspSource.h\
+                    SolarisDspSource.cpp\
+                    SolarisDspSource.h\
                     Ref.h\
                     Referable.h\
                     Sink.h\

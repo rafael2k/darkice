@@ -4,7 +4,7 @@
 
    Tyrell DarkIce
 
-   File     : OssDspSource.cpp
+   File     : SolarisDspSource.cpp
    Version  : $Revision$
    Author   : $Author$
    Location : $Source$
@@ -29,9 +29,9 @@
 
 /* ============================================================ include files */
 
-#include "OssDspSource.h"
+#include "SolarisDspSource.h"
 
-#ifdef SUPPORT_OSS_DSP
+#ifdef SUPPORT_SOLARIS_DSP
 // only compile this code if there is support for it
 
 #ifdef HAVE_CONFIG_H
@@ -42,6 +42,12 @@
 #include <unistd.h>
 #else
 #error need unistd.h
+#endif
+
+#ifdef HAVE_STRING_H
+#include <string.h>
+#else
+#error need string.h
 #endif
 
 #ifdef HAVE_SYS_TYPES_H
@@ -74,16 +80,16 @@
 #error need sys/ioctl.h
 #endif
 
-#ifdef HAVE_SYS_SOUNDCARD_H
-#include <sys/soundcard.h>
+#ifdef HAVE_SYS_AUDIO_H
+#include <sys/audio.h>
 #else
-#error need sys/soundcard.h
+#error need sys/audio.h
 #endif
 
 
 #include "Util.h"
 #include "Exception.h"
-#include "OssDspSource.h"
+#include "SolarisDspSource.h"
 
 
 /* ===================================================  local data structures */
@@ -106,7 +112,7 @@ static const char fileid[] = "$Id$";
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-OssDspSource :: init (  const char      * name )    throw ( Exception )
+SolarisDspSource :: init (  const char      * name )    throw ( Exception )
 {
     fileName       = Util::strDup( name);
     fileDescriptor = 0;
@@ -118,7 +124,7 @@ OssDspSource :: init (  const char      * name )    throw ( Exception )
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-OssDspSource :: strip ( void )                      throw ( Exception )
+SolarisDspSource :: strip ( void )                      throw ( Exception )
 {
     if ( isOpen() ) {
         close();
@@ -127,32 +133,18 @@ OssDspSource :: strip ( void )                      throw ( Exception )
     delete[] fileName;
 }
 
+#include <errno.h>
 
 /*------------------------------------------------------------------------------
  *  Open the audio source
  *----------------------------------------------------------------------------*/
 bool
-OssDspSource :: open ( void )                       throw ( Exception )
+SolarisDspSource :: open ( void )                       throw ( Exception )
 {
-    int             format;
-    int             i;
-    unsigned int    u;
+    audio_info_t    audioInfo;
 
     if ( isOpen() ) {
         return false;
-    }
-
-    switch ( getBitsPerSample() ) {
-        case 8:
-            format = AFMT_U8;
-            break;
-
-        case 16:
-            format = AFMT_S16_LE;
-            break;
-            
-        default:
-            return false;
     }
 
     if ( (fileDescriptor = ::open( fileName, O_RDONLY)) == -1 ) {
@@ -160,31 +152,34 @@ OssDspSource :: open ( void )                       throw ( Exception )
         return false;
     }
 
-    i = format;
-    if ( ioctl( fileDescriptor, SNDCTL_DSP_SETFMT, &i) == -1 ||
-         i != format ) {
-        
+    AUDIO_INITINFO( &audioInfo);
+    audioInfo.record.sample_rate = getSampleRate();
+    audioInfo.record.channels    = getChannel();
+    audioInfo.record.precision   = getBitsPerSample();
+    audioInfo.record.encoding    = AUDIO_ENCODING_LINEAR;
+
+    if ( ioctl( fileDescriptor, AUDIO_SETINFO, &audioInfo) == -1 ) {
+
         close();
-        throw Exception( __FILE__, __LINE__, "can't set format", i);
+        throw Exception( __FILE__, __LINE__, "ioctl error");
     }
 
-    u = getChannel();
-    if ( ioctl( fileDescriptor, SNDCTL_DSP_CHANNELS, &u) == -1 ||
-         u != getChannel() ) {
-        
-        close();
-        throw Exception( __FILE__, __LINE__, "can't set channels", u);
-    }
-
-    u = getSampleRate();
-    if ( ioctl( fileDescriptor, SNDCTL_DSP_SPEED, &u) == -1 ) {
-
+    if ( audioInfo.record.channels != getChannel() ) {
         close();
         throw Exception( __FILE__, __LINE__,
-                         "can't set soundcard recording sample rate", u);
+                         "can't set channels", audioInfo.record.channels);
     }
-    if ( u != getSampleRate() ) {
-        reportEvent( 2, "sound card recording sample rate set to ", u,
+
+    if ( audioInfo.record.precision != getBitsPerSample() ) {
+        close();
+        throw Exception( __FILE__, __LINE__,
+                         "can't set bits per sample",
+                         audioInfo.record.precision);
+    }
+
+    if ( audioInfo.record.sample_rate != getSampleRate() ) {
+        reportEvent( 2, "sound card recording sample rate set to ",
+                        audioInfo.record.sample_rate,
                         " while trying to set it to ", getSampleRate());
         reportEvent( 2, "this is probably not a problem, but a slight "
                         "drift in the sound card driver");
@@ -198,7 +193,7 @@ OssDspSource :: open ( void )                       throw ( Exception )
  *  Check wether read() would return anything
  *----------------------------------------------------------------------------*/
 bool
-OssDspSource :: canRead ( unsigned int    sec,
+SolarisDspSource :: canRead ( unsigned int    sec,
                           unsigned int    usec )    throw ( Exception )
 {
     fd_set              fdset;
@@ -235,7 +230,7 @@ OssDspSource :: canRead ( unsigned int    sec,
  *  Read from the audio source
  *----------------------------------------------------------------------------*/
 unsigned int
-OssDspSource :: read (    void          * buf,
+SolarisDspSource :: read (    void          * buf,
                           unsigned int    len )     throw ( Exception )
 {
     ssize_t     ret;
@@ -259,7 +254,7 @@ OssDspSource :: read (    void          * buf,
  *  Close the audio source
  *----------------------------------------------------------------------------*/
 void
-OssDspSource :: close ( void )                  throw ( Exception )
+SolarisDspSource :: close ( void )                  throw ( Exception )
 {
     if ( !isOpen() ) {
         return;
@@ -270,7 +265,7 @@ OssDspSource :: close ( void )                  throw ( Exception )
     running        = false;
 }
 
-#endif // SUPPORT_OSS_DSP
+#endif // SUPPORT_SOLARIS_DSP
 
 
 /*------------------------------------------------------------------------------
@@ -278,34 +273,9 @@ OssDspSource :: close ( void )                  throw ( Exception )
   $Source$
 
   $Log$
-  Revision 1.9  2001/09/11 15:05:21  darkeye
+  Revision 1.1  2001/09/11 15:05:21  darkeye
   added Solaris support
 
-  Revision 1.8  2001/09/02 14:08:40  darkeye
-  setting the sound card recording sample rate is now more relaxed
-  there is no error reported if the sample rate is not exactly the same
-
-  Revision 1.7  2001/08/30 17:25:56  darkeye
-  renamed configure.h to config.h
-
-  Revision 1.6  2000/12/01 15:03:28  darkeye
-  bug fix in error reporting
-
-  Revision 1.5  2000/11/17 15:50:48  darkeye
-  added -Wall flag to compiler and eleminated new warnings
-
-  Revision 1.4  2000/11/13 20:05:07  darkeye
-  changed to workaround to start recording so that it reads one sample
-  per channel, as opposed to only one sample (which misalignes the channels)
-
-  Revision 1.3  2000/11/12 13:31:40  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.2  2000/11/05 14:08:28  darkeye
-  changed builting to an automake / autoconf environment
-
-  Revision 1.1.1.1  2000/11/05 10:05:53  darkeye
-  initial version
 
   
 ------------------------------------------------------------------------------*/

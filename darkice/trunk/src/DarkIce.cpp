@@ -142,10 +142,10 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
     channel = Util::strToL( str);
     device = cs->getForSure( "device", " missing in section [input]");
 
-    dsp             = new OssDspSource( device,
-                                        sampleRate,
-                                        bitsPerSample,
-                                        channel );
+    dsp             = new DspSource( device,
+                                     sampleRate,
+                                     bitsPerSample,
+                                     channel );
     encConnector    = new Connector( dsp.get());
 
     configIceCast( config, bufferSecs);
@@ -477,6 +477,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.18  2001/09/11 15:05:21  darkeye
+  added Solaris support
+
   Revision 1.17  2001/09/09 11:27:31  darkeye
   added support for ShoutCast servers
 

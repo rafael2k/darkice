@@ -37,10 +37,10 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_GETOPT_H
-#include <getopt.h>
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
 #else
-#error need getopt.h
+#error needs stdlib.h
 #endif
 
 #include <iostream.h>
@@ -94,15 +94,8 @@ main (
         unsigned int    verbosity      = 1;
         int             i;
         const char      opts[] = "hc:v:";
-        static struct option long_options[] = {
-            { "config", 1, 0, 'c'},
-            { "help", 0, 0, 'h'},
-            { "verbosity", 1, 0, 'v'},
-            { 0, 0, 0, 0}
-        };
-            
 
-        while ( (i = getopt_long( argc, argv, opts, long_options, 0)) != -1 ) {
+        while ( (i = getopt( argc, argv, opts)) != -1 ) {
             switch ( i ) {
                 case 'c':
                     configFileName = optarg;
@@ -157,11 +150,11 @@ showUsage (     ostream   & os )
     << endl
     << "options:"
     << endl
-    << "   -c, --config=config.file    use configuration file config.file"
+    << "   -c config.file     use configuration file config.file"
     << endl
-    << "   -v, --verbosity=number      verbosity level (0 = silent, 10 = loud)"
+    << "   -v n               verbosity level (0 = silent, 10 = loud)"
     << endl
-    << "   -h, --help                  print this message and exit"
+    << "   -h                 print this message and exit"
     << endl
     << endl;
 }
@@ -172,6 +165,9 @@ showUsage (     ostream   & os )
   $Source$
 
   $Log$
+  Revision 1.9  2001/09/11 15:05:21  darkeye
+  added Solaris support
+
   Revision 1.8  2001/09/02 12:24:29  darkeye
   now displays usage info when no command line parameters given
 
