@@ -8,6 +8,8 @@ DarkIce next release
     o removed _X and _Y symbols from aflibConverter files, which caused
       a naming collision on Solaris. thanks to Robert Lunnon,
       <bobl@optushome.com.au>
+    o bug fix: ogg vorbis recording to only a file caused a segfault.
+      now fixed, thanks to Enrico Ardizzoni <craken@users.sourceforge.net>
 
 07-01-2004: DarkIce 0.13.2 released
 

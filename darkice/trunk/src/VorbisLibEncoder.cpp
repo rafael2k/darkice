@@ -190,7 +190,9 @@ VorbisLibEncoder :: open ( void )
     vorbis_comment_init( &vorbisComment);
     // Add comment to vorbis headers to show title in players
     // stupid cast to (char*) because of stupid vorbis API
-    vorbis_comment_add_tag( &vorbisComment, "TITLE", (char*) sink->getName());
+    if ( sink->getName() ) {
+        vorbis_comment_add_tag(&vorbisComment, "TITLE", (char*)sink->getName());
+    }
 
     // create the vorbis stream headers and send them to the underlying sink
     ogg_packet      header;
@@ -373,6 +375,9 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.18  2004/02/15 13:07:42  darkeye
+  ogg vorbis recording to only a file caused a segfault. now fixed
+
   Revision 1.17  2003/02/09 13:15:57  darkeye
   added feature for setting the TITLE comment field for vorbis streams
 
