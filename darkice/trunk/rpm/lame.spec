@@ -36,23 +36,22 @@
 
 # ================================================================= local macros
 %define name lame
-%define ver 3.89
-%define quality beta
-%define rel 2
+%define ver 3.91
+%define rel 1
 %define prefix /usr
 
 
 # ===================================================================== preamble
 Summary : LAME Ain't an MP3 Encoder
 Name: %{name}
-Version: %{ver}%{quality}
+Version: %{ver}
 Release: %{rel}
 Copyright: LGPL
 Vendor: The LAME Project
 Packager: Akos Maroy <darkeye@tyrell.hu>
 URL: http://www.mp3dev.org/mp3/
 Group: Applications/Multimedia
-Source: http://prdownloads.sourceforge.net/darkice/%{name}%{ver}%{quality}.tar.gz
+Source: http://prdownloads.sourceforge.net/darkice/%{name}-%{ver}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{ver}-root
 Prefix: %{prefix}
 Provides: lame
@@ -133,6 +132,9 @@ make clean
 # =================================================================== change log
 #
 #   $Log$
+#   Revision 1.4  2002/02/19 14:52:41  darkeye
+#   updated for lame 3.91
+#
 #   Revision 1.3  2001/09/13 05:06:41  darkeye
 #   removed references to SourceForget FTP sites, as they are phased out
 #
