@@ -102,6 +102,8 @@ public          "yes" or "no", wether the stream is public
 
 Optional values:
 
+remoteDumpFile  The file the IceCast server should dump the contents of
+                this stream on its side.
 lowpass         Lowpass filter setting for the lame encoder. If not set,
                 the encoder's default behaviour is used
 highpass        Highpass filter setting for the lame encoder. If not set,
