@@ -35,7 +35,7 @@ DIE=0
     DIE=1
 }
 
-(libtool --version) < /dev/null > /dev/null 2>&1 || {
+(libtool --help) < /dev/null > /dev/null 2>&1 || {
     echo
     echo "You must have libtool installed to compile $package."
     echo "Download the appropriate package for your system,"

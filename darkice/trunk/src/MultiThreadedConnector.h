@@ -40,7 +40,9 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_PTHREAD_H
+// check for __NetBSD__ because it won't be found by AC_CHECK_HEADER on NetBSD
+// as pthread.h is in /usr/pkg/include, not /usr/include
+#if defined( HAVE_PTHREAD_H ) || defined( __NetBSD__ )
 #include <pthread.h>
 #else
 #error need pthread.h
@@ -328,6 +330,9 @@ class MultiThreadedConnector : public virtual Connector
   $Source$
 
   $Log$
+  Revision 1.4  2004/02/23 19:12:52  darkeye
+  ported to NetBSD
+
   Revision 1.3  2002/11/26 21:41:20  darkeye
   bugfix: MultiThreadedConnector::sinkThread() was private, now public
 

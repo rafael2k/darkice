@@ -873,9 +873,9 @@ DarkIce :: configFileCast (  const Config      & config )
 void
 DarkIce :: setRealTimeScheduling ( void )               throw ( Exception )
 {
-// don't include the following on OpenBSD, as the scheduling functions are
-// not implemented.
-#if !defined( __OpenBSD__ )
+// don't include the following on OpenBSD / NetBSD, as the scheduling
+// functions are not implemented.
+#if !defined( __OpenBSD__ ) && !defined( __NetBSD__ )
     uid_t   euid;
 
     euid = geteuid();
@@ -921,9 +921,9 @@ DarkIce :: setRealTimeScheduling ( void )               throw ( Exception )
         "It is recommended that you run this program as super-user");
     }
 #else
-    reportEvent( 1, "POSIX scheduling not supported on OpenBSD, "
+    reportEvent( 1, "POSIX scheduling not supported on OpenBSD / NetBSD, "
                     "this may cause recording skips");
-#endif // __OpenBSD__
+#endif // !__OpenBSD__ && !__NetBSD__
 }
 
 
@@ -935,9 +935,9 @@ DarkIce :: setRealTimeScheduling ( void )               throw ( Exception )
 void
 DarkIce :: setOriginalScheduling ( void )               throw ( Exception )
 {
-// don't include the following on OpenBSD, as the scheduling functions are
-// not implemented.
-#if !defined( __OpenBSD__ )
+// don't include the following on OpenBSD / NetBSD, as the scheduling
+// functions are not implemented.
+#if !defined( __OpenBSD__ ) && !defined( __NetBSD__ )
     uid_t   euid;
 
     euid = geteuid();
@@ -957,7 +957,7 @@ DarkIce :: setOriginalScheduling ( void )               throw ( Exception )
 
         reportEvent( 5, "reverted to original scheduling");
     }
-#endif // __OpenBSD__
+#endif // !__OpenBSD__ && !__NetBSD__
 }
 
 
@@ -1010,6 +1010,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.40  2004/02/23 19:12:51  darkeye
+  ported to NetBSD
+
   Revision 1.39  2004/02/19 06:47:06  darkeye
   finalized OpenBSD port
 

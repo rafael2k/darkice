@@ -130,6 +130,15 @@ case "${host_cpu}-${host_os}" in
 
         acx_pthread_flags="-pthread -pthreads pthread -mt $acx_pthread_flags"
         ;;
+
+        *netbsd*)
+ 
+        # On NetBSD, use the pthread-config utility to generate proper
+        # flags
+        PTHREAD_CFLAGS="`pthread-config --cflags`"
+        PTHREAD_LIBS="`pthread-config --ldflags` `pthread-config --libs`"
+        acx_pthread_ok=yes
+        ;;
 esac
 
 if test x"$acx_pthread_ok" = xno; then
