@@ -40,7 +40,7 @@ Version: 0.5
 Release: 1
 Copyright: GPL
 Group: Applications/Multimedia
-Source: ftp://darkice.sourceforge.net/pub/darkice/%{version}/darkice-%{version}.tar.gz
+Source: http://prdownloads.sourceforge.net/darkice/darkice-%{version}.tar.gz
 URL: http://darkice.sourceforge.net/
 Provides: darkice
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
@@ -132,6 +132,9 @@ make clean
 # =================================================================== change log
 #
 #   $Log$
+#   Revision 1.5  2001/09/13 05:06:41  darkeye
+#   removed references to SourceForget FTP sites, as they are phased out
+#
 #   Revision 1.4  2001/09/09 12:26:33  darkeye
 #   updated to reflect that DarkIce is now both an IceCast and ShoutCast streamer
 #

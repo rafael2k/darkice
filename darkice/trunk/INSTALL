@@ -12,27 +12,21 @@ Compiling Lame is a tricky issue. Please refer to Lame online resources
 for details. Here are steps I took to compile lame 3.89 on my RedHat 7.1
 system.
 
-First make sure you have the compatibility compiler packages installed
-on your system, compat-egcs in particular. This provides an older, not
-so much tweaked version of gcc/egcs that is able to compile Lame properly.
-To check this condition easily, try:
+It is recommended that you compile lame with GCC 3. For maximum performance,
+use the nasm assembler to compile assembly optimizations into lame.
 
-rpm -q compat-egcs
-
-for this command I get the response:
-
-compat-egcs-6.2-1.1.2.14
-
-Grab the latest lame source tarball from
-ftp://lame.sourceforge.net/pub/lame/
+Grab the latest lame source tarball from a download site found at
+http://www.mp3dev.org/mp3/download/download.html
+or from the DarkIce SourceForge project download area
+http://sourceforge.net/project/showfiles.php?group_id=14111
 
 I took lame lame3.89beta.tar.gz. Go to the directory where you saved it,
 and issue the following commands:
 
 tar xfz lame3.89beta.tar.gz
 cd lame-3.89
-export CC=kgcc
-./configure
+export CC=gcc3
+./configure --with-fileio=lame --without-vorbis --disable-gtktest --enable-nasm --enable-expopt=full
 make
 make install
 

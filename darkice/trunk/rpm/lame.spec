@@ -52,7 +52,7 @@ Vendor: The LAME Project
 Packager: Akos Maroy <darkeye@tyrell.hu>
 URL: http://www.mp3dev.org/mp3/
 Group: Applications/Multimedia
-Source: ftp://lame.sourceforge.net/pub/lame/src/%{name}%{ver}%{quality}.tar.gz
+Source: http://prdownloads.sourceforge.net/darkice/%{name}%{ver}%{quality}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{ver}-root
 Prefix: %{prefix}
 Provides: lame
@@ -133,6 +133,9 @@ make clean
 # =================================================================== change log
 #
 #   $Log$
+#   Revision 1.3  2001/09/13 05:06:41  darkeye
+#   removed references to SourceForget FTP sites, as they are phased out
+#
 #   Revision 1.2  2001/09/09 09:06:26  darkeye
 #   lame RPM is now created with gcc3 and full optimizations
 #
