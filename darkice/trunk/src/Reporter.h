@@ -112,7 +112,7 @@ class Reporter
                 time_t  now;
 
                 now = time(NULL);
-                strftime( str, 32, "%H:%M:%S: ", localtime(&now) );
+                strftime( str, 32, "%d-%b-%Y %H:%M:%S ", localtime(&now) );
                 (*(Reporter::os)) << str;
             }
         }
@@ -309,6 +309,9 @@ class Reporter
   $Source$
 
   $Log$
+  Revision 1.8  2005/04/03 05:14:07  jbebel
+  Changed timestamp on reported events to include date in addition to time.
+
   Revision 1.7  2004/02/15 12:06:30  darkeye
   added ALSA support, thanks to Christian Forster
 
