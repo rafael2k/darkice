@@ -146,7 +146,7 @@ IceCast :: sendLogin ( void )                           throw ( Exception )
 
     str = "\nx-audiocast-public: ";
     sink->write( str, strlen( str));
-    str = getIsPublic() ? "yes" : "no";
+    str = getIsPublic() ? "1" : "0";
     sink->write( str, strlen( str));
 
     if ( getName() ) {
@@ -211,6 +211,9 @@ IceCast :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.9  2001/11/20 09:06:18  darkeye
+  fixed public stream reporting
+
   Revision 1.8  2001/09/14 19:31:06  darkeye
   added IceCast2 / vorbis support
 

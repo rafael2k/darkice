@@ -2,6 +2,8 @@ DarkIce 0.8
 
     o added possibility to disable lowpass and highpass filtering for lame
     o fixed incorrect vorbis bitrate setting
+    o fix: DarkIce now reports public streams correctly
+      thanks to Tom Gray, <tomg@future-i.com>
 
 19-10-2001: DarkIce 0.7 released
 

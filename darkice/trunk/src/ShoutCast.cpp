@@ -186,7 +186,7 @@ ShoutCast :: sendLogin ( void )                           throw ( Exception )
 
     str = "\nicy-pub:";
     sink->write( str, strlen( str));
-    str = getIsPublic() ? "yes" : "no";
+    str = getIsPublic() ? "1" : "0";
     sink->write( str, strlen( str));
 
     str = "\n\n";
@@ -215,6 +215,9 @@ ShoutCast :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.2  2001/11/20 09:06:18  darkeye
+  fixed public stream reporting
+
   Revision 1.1  2001/09/09 11:27:31  darkeye
   added support for ShoutCast servers
 
