@@ -317,6 +317,7 @@ LameLibEncoder :: write (   const void    * buf,
 
     if ( ret < 0 ) {
         reportEvent( 3, "lame encoding error", ret);
+        delete[] mp3Buf;
         return 0;
     }
 
@@ -387,6 +388,9 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.14  2002/07/28 00:11:58  darkeye
+  bugfix for the previous fix :)
+
   Revision 1.13  2002/07/28 00:08:37  darkeye
   bugfix: mp3Buf was deleted too early
 
