@@ -87,7 +87,7 @@ make clean
 # =========================================================== main package files
 %files
 %defattr (-, root, root)
-%doc COPYING ChangeLog README TODO
+%doc COPYING ChangeLog README TODO AUTHORS
 %config %{_sysconfdir}/darkice.cfg
 %{_bindir}/darkice
 %{_mandir}/man1/darkice.1*
@@ -97,6 +97,9 @@ make clean
 # =================================================================== change log
 #
 #   $Log$
+#   Revision 1.12  2002/03/28 17:11:18  darkeye
+#   added file AUTHORS to set of distributed files
+#
 #   Revision 1.11  2002/03/28 16:56:14  darkeye
 #   for version 0.9
 #
