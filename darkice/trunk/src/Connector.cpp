@@ -267,7 +267,7 @@ Connector :: transfer ( unsigned long       bytes,
 
     reportEvent( 6, "Connector :: tranfer, bytes", bytes);
     
-    for ( b = 0; b < bytes; ) {
+    for ( b = 0; !bytes || b < bytes; ) {
         unsigned int    d = 0;
         unsigned int    e = 0;
 
@@ -333,6 +333,9 @@ Connector :: close ( void )                         throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.5  2001/08/26 08:43:13  darkeye
+  added support for unlimited time encoding
+
   Revision 1.4  2000/11/15 18:37:37  darkeye
   changed the transferable number of bytes to unsigned long
 

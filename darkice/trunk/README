@@ -62,7 +62,7 @@ This section describes general operational parameters.
 
 Required values:
 
-duration        Time for DarkIce to run, in seconds.
+duration        Time for DarkIce to run, in seconds.  If 0, run forever.
 bufferSecs      Data read from the sound card is buffered before sent to
                 the mp3 encoder. Each buffer will be able to hold this
                 many seconds of samples.

@@ -86,7 +86,7 @@ main (
 
     cout << "DarkIce " << VERSION
          << " live audio streamer, http://darkice.sourceforge.net" << endl;
-    cout << "Copyright (C) 2000, Tyrell Hungary, http://tyrell.hu" << endl;
+    cout << "Copyright (c) 2000-2001, Tyrell Hungary, http://tyrell.hu" << endl;
     cout << endl;
 
     try {
@@ -171,6 +171,9 @@ showUsage (     ostream   & os )
   $Source$
 
   $Log$
+  Revision 1.6  2001/08/26 08:43:13  darkeye
+  added support for unlimited time encoding
+
   Revision 1.5  2000/11/15 18:08:43  darkeye
   added multiple verbosity-level event reporting and verbosity command
   line option

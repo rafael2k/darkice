@@ -1,3 +1,8 @@
+26-08-2001: DarkIce 0.3.1 released
+
+    o support for unlimited time encoding
+      thanks to Jim Crilly, <JCrilly@MSA.com>
+
 20-12-2000: DarkIce 0.3 released
 
     o added POSIX real-time scheduling
