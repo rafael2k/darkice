@@ -1,0 +1,31 @@
+DarkIce 0.4 live audio streamer, http://darkice.sourceforge.net
+Copyright (c) 2000-2001, Tyrell Hungary, http://tyrell.hu
+
+
+Contents
+--------
+
+1. Compiling and installing
+
+
+
+1. Compiling and installing
+---------------------------
+
+On how to compile and install, please read the file INSTALL. If you're
+impatient, try:
+
+./configure
+make
+
+The executable built is src/darkice.
+To install, try as root:
+
+make install
+
+
+For documentation, try:
+
+man darkice
+
+

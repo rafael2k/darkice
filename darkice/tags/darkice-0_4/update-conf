@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+#   Update the automake / autoconf configuration
+#
+
+rm -f config.cache config.log config.status
+rm -f configure config.h aclocal.m4
+rm -f Makefile Makefile.in */Makefile */Makefile.in
+autoheader && automake && aclocal && autoconf && ./configure
+
