@@ -201,6 +201,7 @@ DarkIce :: configIceCast (  const Config      & config,
         const char                * str;
 
         unsigned int                sampleRate      = 0;
+        unsigned int                channel         = 0;
         AudioEncoder::BitrateMode   bitrateMode;
         unsigned int                bitrate         = 0;
         double                      quality         = 0.0;
@@ -221,6 +222,8 @@ DarkIce :: configIceCast (  const Config      & config,
 
         str         = cs->get( "sampleRate");
         sampleRate  = str ? Util::strToL( str) : dsp->getSampleRate();
+        str         = cs->get( "channel");
+        channel     = str ? Util::strToL( str) : dsp->getChannel();
 
         str         = cs->get( "bitrate");
         bitrate     = str ? Util::strToL( str) : 0;
@@ -295,13 +298,6 @@ DarkIce :: configIceCast (  const Config      & config,
             }
         }
 
-        // encoder related stuff
-        unsigned int bs = bufferSecs *
-                          (dsp->getBitsPerSample() / 8) *
-                          dsp->getChannel() *
-                          dsp->getSampleRate();
-        reportEvent( 6, "using buffer size", bs);
-
         // streaming related stuff
         audioOuts[u].socket = new TcpSocket( server, port);
         audioOuts[u].server = new IceCast( audioOuts[u].socket.get(),
@@ -314,7 +310,8 @@ DarkIce :: configIceCast (  const Config      & config,
                                            genre,
                                            isPublic,
                                            remoteDumpFile,
-                                           localDumpFile );
+                                           localDumpFile,
+                                           bufferSecs );
 
         audioOuts[u].encoder = new LameLibEncoder( audioOuts[u].server.get(),
                                                    dsp.get(),
@@ -322,7 +319,7 @@ DarkIce :: configIceCast (  const Config      & config,
                                                    bitrate,
                                                    quality,
                                                    sampleRate,
-                                                   dsp->getChannel(),
+                                                   channel,
                                                    lowpass,
                                                    highpass );
 
@@ -458,13 +455,6 @@ DarkIce :: configIceCast2 (  const Config      & config,
             }
         }
 
-        // encoder related stuff
-        unsigned int bs = bufferSecs *
-                          (dsp->getBitsPerSample() / 8) *
-                          dsp->getChannel() *
-                          dsp->getSampleRate();
-        reportEvent( 6, "using buffer size", bs);
-
         // streaming related stuff
         audioOuts[u].socket = new TcpSocket( server, port);
         audioOuts[u].server = new IceCast2( audioOuts[u].socket.get(),
@@ -477,7 +467,8 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                             url,
                                             genre,
                                             isPublic,
-                                            localDumpFile );
+                                            localDumpFile,
+                                            bufferSecs );
 
         switch ( format ) {
             case IceCast2::mp3:
@@ -562,6 +553,7 @@ DarkIce :: configShoutCast (    const Config      & config,
         const char                * str;
 
         unsigned int                sampleRate      = 0;
+        unsigned int                channel         = 0;
         AudioEncoder::BitrateMode   bitrateMode;
         unsigned int                bitrate         = 0;
         double                      quality         = 0.0;
@@ -582,6 +574,8 @@ DarkIce :: configShoutCast (    const Config      & config,
 
         str         = cs->get( "sampleRate");
         sampleRate  = str ? Util::strToL( str) : dsp->getSampleRate();
+        str         = cs->get( "channel");
+        channel     = str ? Util::strToL( str) : dsp->getChannel();
 
         str         = cs->get( "bitrate");
         bitrate     = str ? Util::strToL( str) : 0;
@@ -653,13 +647,6 @@ DarkIce :: configShoutCast (    const Config      & config,
             }
         }
 
-        // encoder related stuff
-        unsigned int bs = bufferSecs *
-                          (dsp->getBitsPerSample() / 8) *
-                          dsp->getChannel() *
-                          dsp->getSampleRate();
-        reportEvent( 6, "using buffer size", bs);
-
         // streaming related stuff
         audioOuts[u].socket = new TcpSocket( server, port);
         audioOuts[u].server = new ShoutCast( audioOuts[u].socket.get(),
@@ -672,7 +659,8 @@ DarkIce :: configShoutCast (    const Config      & config,
                                              irc,
                                              aim,
                                              icq,
-                                             localDumpFile );
+                                             localDumpFile,
+                                             bufferSecs );
 
         audioOuts[u].encoder = new LameLibEncoder( audioOuts[u].server.get(),
                                                    dsp.get(),
@@ -680,7 +668,7 @@ DarkIce :: configShoutCast (    const Config      & config,
                                                    bitrate,
                                                    quality,
                                                    sampleRate,
-                                                   dsp->getChannel(),
+                                                   channel,
                                                    lowpass,
                                                    highpass );
 
@@ -976,6 +964,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.29  2002/08/03 12:41:18  darkeye
+  added possibility to stream in mono when recording in stereo
+
   Revision 1.28  2002/07/20 10:59:00  darkeye
   added support for Ogg Vorbis 1.0, removed support for rc2
 

@@ -1,4 +1,4 @@
-.TH darkice.cfg 5 "April 13, 2002" "DarkIce" "DarkIce live audio streamer"
+.TH darkice.cfg 5 "August 3, 2002" "DarkIce" "DarkIce live audio streamer"
 .SH NAME
 darkice.cfg \- configuration file for darkice
 .SH DESCRIPTION
@@ -125,6 +125,10 @@ Optional values:
 .I sampleRate
 The sample rate of the encoded mp3 output. If not specified, defaults
 to the value of the input sample rate.
+.TP
+.I channel
+Number of channels for the mp3 output (e.g. 1 for mono, 2 for stereo).
+If not specified, defaults to the value of the input sample rate.
 .TP
 .I name
 Name of the stream
@@ -298,6 +302,10 @@ Optional values:
 .I sampleRate
 The sample rate of the encoded mp3 output. If not specified, defaults
 to the value of the input sample rate.
+.TP
+.I channel
+Number of channels for the mp3 output (e.g. 1 for mono, 2 for stereo).
+If not specified, defaults to the value of the input sample rate.
 .TP
 .I name
 Name of the stream
@@ -476,7 +484,7 @@ It will build up a connection to an
 server yp.your-ice-server.com on port 8000 with the password "ice-hackme".
 The sound for this stream will be cut at 10500 Hz from above.
 The stream will be encoded to average bit rate 96 kb/s mp3 and resampled to
-22.05kHz.
+22.05kHz and 1 channel (mono).
 The stream will be reachable at
 .I http://yp.your-ice-server.com:8000/live96
 to mp3 players.
@@ -507,6 +515,7 @@ channel         = 2
 
 [icecast-0]
 sampleRate      = 22050
+channel         = 1
 bitrateMode     = abr
 bitrate         = 96
 lowpass         = 10500

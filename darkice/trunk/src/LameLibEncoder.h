@@ -123,11 +123,6 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                                  "specified bits per sample not supported",
                                  getInBitsPerSample() );
             }
-
-            if ( getInChannel() != getOutChannel() ) {
-                throw Exception( __FILE__, __LINE__,
-                                 "different in and out channels not supported");
-            }
         }
 
         /**
@@ -436,6 +431,9 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.13  2002/08/03 12:41:18  darkeye
+  added possibility to stream in mono when recording in stereo
+
   Revision 1.12  2002/04/13 11:26:00  darkeye
   added cbr, abr and vbr setting feature with encoding quality
 

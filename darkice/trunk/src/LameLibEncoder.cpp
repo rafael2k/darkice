@@ -86,7 +86,7 @@ LameLibEncoder :: open ( void )
     }
 
     if ( 0 > lame_set_mode( lameGlobalFlags,
-                            getInChannel() == 1 ? MONO : JOINT_STEREO) ) {
+                            getOutChannel() == 1 ? MONO : JOINT_STEREO) ) {
         throw Exception( __FILE__, __LINE__,
                          "lame lib setting mode error",
                          JOINT_STEREO );
@@ -268,15 +268,21 @@ LameLibEncoder :: write (   const void    * buf,
     }
 
     unsigned int    bitsPerSample = getInBitsPerSample();
-    unsigned int    channels      = getInChannel();
+    unsigned int    inChannels    = getInChannel();
+    unsigned int    outChannels   = getOutChannel();
 
-    if ( channels != 1 && channels != 2 ) {
+    if ( inChannels != 1 && inChannels != 2 ) {
         throw Exception( __FILE__, __LINE__,
-                         "unsupported number of channels for the encoder",
-                         channels );
+                         "unsupported number of input channels for the encoder",
+                         inChannels );
+    }
+    if ( outChannels != 1 && outChannels != 2 ) {
+        throw Exception( __FILE__, __LINE__,
+                        "unsupported number of output channels for the encoder",
+                         outChannels );
     }
  
-    unsigned int    sampleSize = (bitsPerSample / 8) * channels;
+    unsigned int    sampleSize = (bitsPerSample / 8) * inChannels;
     unsigned char * b = (unsigned char*) buf;
     unsigned int    processed = len - (len % sampleSize);
     unsigned int    nSamples = processed / sampleSize;
@@ -284,13 +290,13 @@ LameLibEncoder :: write (   const void    * buf,
     short int     * rightBuffer = new short int[nSamples];
 
     if ( bitsPerSample == 8 ) {
-        Util::conv8( b, processed, leftBuffer, rightBuffer, channels);
+        Util::conv8( b, processed, leftBuffer, rightBuffer, inChannels);
     } else if ( bitsPerSample == 16 ) {
         Util::conv16( b,
                       processed,
                       leftBuffer,
                       rightBuffer,
-                      channels,
+                      inChannels,
                       isInBigEndian());
     } else {
         delete[] leftBuffer;
@@ -307,7 +313,7 @@ LameLibEncoder :: write (   const void    * buf,
 
     ret = lame_encode_buffer( lameGlobalFlags,
                               leftBuffer,
-                              channels == 2 ? rightBuffer : leftBuffer,
+                              inChannels == 2 ? rightBuffer : leftBuffer,
                               nSamples,
                               mp3Buf,
                               mp3Size );
@@ -388,6 +394,9 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.15  2002/08/03 12:41:18  darkeye
+  added possibility to stream in mono when recording in stereo
+
   Revision 1.14  2002/07/28 00:11:58  darkeye
   bugfix for the previous fix :)
 
