@@ -119,11 +119,12 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter,
             this->lowpass  = lowpass;
             this->highpass = highpass;
 
-            if ( getInBitsPerSample() != 16 ) {
+            if ( getInBitsPerSample() != 16 && getInBitsPerSample() != 8 ) {
                 throw Exception( __FILE__, __LINE__,
-                                 "only 16 bits per sample supported");
+                                 "specified bits per sample not supported",
+                                 getInBitsPerSample() );
             }
-            
+
             if ( getOutSampleRate() != getInSampleRate() ) {
                 throw Exception( __FILE__, __LINE__,
                               "different in and out sample rate not supported");
@@ -426,6 +427,10 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter,
   $Sourc$
 
   $Log$
+  Revision 1.2  2001/08/29 21:06:16  darkeye
+  added real support for 8 / 16 bit mono / stereo input
+  (8 bit input still has to be spread on 16 bit words)
+
   Revision 1.1  2001/08/26 20:44:30  darkeye
   removed external command-line encoder support
   replaced it with a shared-object support for lame with the possibility

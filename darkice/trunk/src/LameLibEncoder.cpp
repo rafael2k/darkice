@@ -39,12 +39,6 @@
 #error need string.h
 #endif
 
-#ifdef HAVE_LAME_LIB
-#include <lame/lame.h>
-#else
-#error need lame/lame.h
-#endif
-
 
 #include "Exception.h"
 #include "Util.h"
@@ -93,6 +87,15 @@ LameLibEncoder :: open ( void )
                          getInChannel() );
     }
 
+    if ( 0 > lame_set_mode( lameGlobalFlags,
+                            getInChannel() == 1 ? MONO : JOINT_STEREO) ) {
+        throw Exception( __FILE__, __LINE__,
+                         "lame lib setting mode error",
+                         JOINT_STEREO );
+    }
+
+    reportEvent( 5, "set lame mode", lame_get_mode( lameGlobalFlags));
+    
     reportEvent( 5,
                  "set lame channels",
                  lame_get_num_channels( lameGlobalFlags));
@@ -159,14 +162,6 @@ LameLibEncoder :: open ( void )
 
     reportEvent( 5, "set lame quality", lame_get_quality( lameGlobalFlags));
     
-    if ( 0 > lame_set_mode( lameGlobalFlags, JOINT_STEREO) ) {
-        throw Exception( __FILE__, __LINE__,
-                         "lame lib setting mode error",
-                         JOINT_STEREO );
-    }
-
-    reportEvent( 5, "set lame mode", lame_get_mode( lameGlobalFlags));
-    
     if ( 0 > lame_set_exp_nspsytune( lameGlobalFlags, 1) ) {
         throw Exception( __FILE__, __LINE__,
                          "lame lib setting  psycho acoustic model error");
@@ -215,25 +210,73 @@ LameLibEncoder :: write (   const void    * buf,
         return 0;
     }
 
+    unsigned int    bitsPerSample = getInBitsPerSample();
+    unsigned int    channels      = getInChannel();
+
+    if ( bitsPerSample != 8 && bitsPerSample != 16 ) {
+        throw Exception( __FILE__, __LINE__,
+                        "unsupported number of bits per sample for the encoder",
+                         bitsPerSample );
+    }
+    if ( channels != 1 && channels != 2 ) {
+        throw Exception( __FILE__, __LINE__,
+                         "unsupport number of channels for the encoder",
+                         channels );
+    }
+ 
+    unsigned int    sampleSize = (bitsPerSample / 8) * channels;
     unsigned char * b = (unsigned char*) buf;
-    unsigned int    processed = len - (len % 4);
-    unsigned int    nSamples = processed / 4;
+    unsigned int    processed = len - (len % sampleSize);
+    unsigned int    nSamples = processed / sampleSize;
     short int       leftBuffer[nSamples];
     short int       rightBuffer[nSamples];
+
     unsigned int    i, j;
 
-    for ( i = 0, j = 0; i < processed; ) {
-        unsigned short int   value;
+    if ( bitsPerSample == 8 ) {
+        // TODO: spread the 8 bits on the whole 16 bit input values
+        if ( channels == 1 ) {
+            for ( i = 0, j = 0; i < processed; ) {
+                unsigned short int   value;
 
-        value  = b[i++];
-        value += b[i++] << 8;
-        leftBuffer[j] = (short int) value;
+                value  = b[i++];
+                leftBuffer[j] = (short int) value;
+                ++j;
+            }
+        } else {
+            for ( i = 0, j = 0; i < processed; ) {
+                unsigned short int   value;
 
-        value  = b[i++];
-        value += b[i++] << 8;
-        rightBuffer[j] = (short int) value;
+                value  = b[i++];
+                leftBuffer[j] = (short int) value;
+                value  = b[i++];
+                rightBuffer[j] = (short int) value;
+                ++j;
+            }
+        }
+    } else if ( bitsPerSample == 16 ) {
+        if ( channels == 1 ) {
+            for ( i = 0, j = 0; i < processed; ) {
+                unsigned short int   value;
 
-        ++j;
+                value  = b[i++];
+                value += b[i++] << 8;
+                leftBuffer[j] = (short int) value;
+                ++j;
+            }
+        } else {
+            for ( i = 0, j = 0; i < processed; ) {
+                unsigned short int   value;
+
+                value  = b[i++];
+                value += b[i++] << 8;
+                leftBuffer[j] = (short int) value;
+                value  = b[i++];
+                value += b[i++] << 8;
+                rightBuffer[j] = (short int) value;
+                ++j;
+            }
+        }
     }
 
     // data chunk size estimate according to lame documentation
@@ -243,7 +286,7 @@ LameLibEncoder :: write (   const void    * buf,
 
     ret = lame_encode_buffer( lameGlobalFlags,
                               leftBuffer,
-                              rightBuffer,
+                              channels == 2 ? rightBuffer : leftBuffer,
                               nSamples,
                               mp3Buf,
                               mp3Size );
@@ -253,7 +296,13 @@ LameLibEncoder :: write (   const void    * buf,
         return 0;
     }
 
-    sink->write( mp3Buf, ret);
+    unsigned int    written = sink->write( mp3Buf, ret);
+    // just let go data that could not be written
+    if ( written < (unsigned int) ret ) {
+        reportEvent( 2,
+                     "couldn't write all from encoder to underlying sink",
+                     ret - written);
+    }
 
     return processed;
 }
@@ -277,7 +326,13 @@ LameLibEncoder :: flush ( void )
 
     ret = lame_encode_flush( lameGlobalFlags, mp3Buf, mp3Size );
 
-    sink->write( mp3Buf, ret);
+    unsigned int    written = sink->write( mp3Buf, ret);
+    // just let go data that could not be written
+    if ( written < (unsigned int) ret ) {
+        reportEvent( 2,
+                     "couldn't write all from encoder to underlying sink",
+                     ret - written);
+    }
 }
 
 
@@ -301,6 +356,10 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.2  2001/08/29 21:06:16  darkeye
+  added real support for 8 / 16 bit mono / stereo input
+  (8 bit input still has to be spread on 16 bit words)
+
   Revision 1.1  2001/08/26 20:44:30  darkeye
   removed external command-line encoder support
   replaced it with a shared-object support for lame with the possibility
