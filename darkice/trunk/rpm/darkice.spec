@@ -111,6 +111,7 @@ make clean
 %files
 %defattr (-, root, root)
 %doc COPYING ChangeLog README TODO
+%config %{_sysconfdir}/darkice.cfg
 %{_bindir}/darkice
 %{_mandir}/man1/darkice.1*
 
@@ -119,6 +120,7 @@ make clean
 %files static
 %defattr (-, root, root)
 %doc COPYING ChangeLog README TODO
+%config %{_sysconfdir}/darkice.cfg
 %{_bindir}/darkice.static
 %{_mandir}/man1/darkice.1*
 
@@ -126,6 +128,9 @@ make clean
 # =================================================================== change log
 #
 #   $Log$
+#   Revision 1.2  2001/09/02 14:44:14  darkeye
+#   added system level configuration file
+#
 #   Revision 1.1  2001/09/02 12:46:05  darkeye
 #   added RPM package creation scripts
 #

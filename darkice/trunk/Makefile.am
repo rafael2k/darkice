@@ -2,6 +2,8 @@ KDOC_DIR=kdoc
 
 SUBDIRS = src man
 
+sysconf_DATA = darkice.cfg
+
 EXTRA_DIST = stl $(KDOC_DIR) darkice.cfg
 
 $(KDOC_DIR): kdocs
