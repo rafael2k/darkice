@@ -3,5 +3,5 @@
 #  Use this script to update the DarkIce web site
 #
 
-scp -r htdocs darkeye@darkice.sourceforge.net:/home/groups/d/da/darkice
+rsync -ave ssh htdocs darkeye@darkice.sourceforge.net:/home/groups/d/da/darkice
 
