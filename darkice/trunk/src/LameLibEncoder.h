@@ -146,6 +146,42 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter,
         {
         }
 
+        /**
+         *  Convert a char buffer holding 8 bit PCM values to a short buffer
+         *
+         *  @param pcmBuffer buffer holding 8 bit PCM audio values,
+         *                   channels are interleaved
+         *  @param lenPcmBuffer length of pcmBuffer
+         *  @param leftBuffer put the left channel here (must be big enough)
+         *  @param rightBuffer put the right channel here (if mono, not
+         *                     touched, must be big enough)
+         *  @param channels number of channels (1 = mono, 2 = stereo)
+         */
+        void
+        conv8 (     unsigned char     * pcmBuffer,
+                    unsigned int        lenPcmBuffer,
+                    short int         * leftBuffer,
+                    short int         * rightBuffer,
+                    unsigned int        channels );
+
+        /**
+         *  Convert a char buffer holding 16 bit PCM values to a short buffer
+         *
+         *  @param pcmBuffer buffer holding 16 bit PCM audio values,
+         *                   channels are interleaved
+         *  @param lenPcmBuffer length of pcmBuffer
+         *  @param leftBuffer put the left channel here (must be big enough)
+         *  @param rightBuffer put the right channel here (if mono, not
+         *                     touched, must be big enough)
+         *  @param channels number of channels (1 = mono, 2 = stereo)
+         */
+        void
+        conv16 (    unsigned char     * pcmBuffer,
+                    unsigned int        lenPcmBuffer,
+                    short int         * leftBuffer,
+                    short int         * rightBuffer,
+                    unsigned int        channels );
+
 
     protected:
 
@@ -427,6 +463,9 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter,
   $Sourc$
 
   $Log$
+  Revision 1.4  2001/08/31 20:09:05  darkeye
+  added funcitons conv8() and conv16()
+
   Revision 1.3  2001/08/30 17:25:56  darkeye
   renamed configure.h to config.h
 
