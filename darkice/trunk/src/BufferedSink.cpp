@@ -301,7 +301,7 @@ BufferedSink :: write (    const void    * buf,
 
         if ( outp < inp ) {
             // valuable data is between outp and inp
-            // if the previous if wrote all data from the end
+            // in the previous if wrote all data from the end
             // this part will write the rest
 
             size    = inp - outp;
@@ -372,6 +372,9 @@ BufferedSink :: close ( void )                      throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.6  2002/10/19 12:21:28  darkeye
+  fixed comment typo
+
   Revision 1.5  2001/08/30 17:25:56  darkeye
   renamed configure.h to config.h
 
