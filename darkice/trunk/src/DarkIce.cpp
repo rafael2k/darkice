@@ -71,10 +71,6 @@
 #endif
 
 
-#include <hash_map>
-#include <string>
-
-
 #include "Util.h"
 #include "DarkIce.h"
 
@@ -380,6 +376,13 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.16  2001/09/05 20:11:15  darkeye
+  removed dependency on locally stored SGI STL header files
+  now compiler-supplied C++ library STL header files are used
+  compiles under GNU C++ 3
+  hash_map (an SGI extension to STL) replaced with map
+  std:: namespace prefix added to all STL class references
+
   Revision 1.15  2001/08/30 17:25:56  darkeye
   renamed configure.h to config.h
 

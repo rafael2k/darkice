@@ -68,8 +68,8 @@ ConfigSection :: add (   const char    * key,
         throw Exception( __FILE__, __LINE__, "no key or value");
     }
 
-    pair<const string, string>          element( key, value);
-    pair<TableType::iterator, bool>     res;
+    std::pair<const std::string, std::string>   element( key, value);
+    std::pair<TableType::iterator, bool>        res;
 
     res = table.insert( element);
 
@@ -125,8 +125,8 @@ ConfigSection :: addLine (  const char    * line )          throw ( Exception )
         throw Exception( __FILE__, __LINE__, "no line");
     }
 
-    string::size_type   ix;
-    string              str( line);
+    std::string::size_type  ix;
+    std::string             str( line);
 
     /* delete everything after the first # */
     if ( (ix = str.find( '#')) != str.npos ) {
@@ -146,8 +146,8 @@ ConfigSection :: addLine (  const char    * line )          throw ( Exception )
         return false;
     }
 
-    string      key( str, 0, ix);
-    string      value( str, ix + 1);
+    std::string     key( str, 0, ix);
+    std::string     value( str, ix + 1);
 
     /* eat up all white space from the front of value */
     if ( (ix = value.find_first_not_of( ' ')) != value.npos ) {
@@ -168,6 +168,13 @@ ConfigSection :: addLine (  const char    * line )          throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.5  2001/09/05 20:11:15  darkeye
+  removed dependency on locally stored SGI STL header files
+  now compiler-supplied C++ library STL header files are used
+  compiles under GNU C++ 3
+  hash_map (an SGI extension to STL) replaced with map
+  std:: namespace prefix added to all STL class references
+
   Revision 1.4  2001/08/30 17:25:56  darkeye
   renamed configure.h to config.h
 

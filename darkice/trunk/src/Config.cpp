@@ -91,8 +91,8 @@ Config :: addLine (  const char    * line )          throw ( Exception )
         throw Exception( __FILE__, __LINE__, "no line");
     }
 
-    string::size_type   ix;
-    string              str( line);
+    std::string::size_type  ix;
+    std::string             str( line);
 
     /* delete everything after the first # */
     if ( (ix = str.find( '#')) != str.npos ) {
@@ -110,10 +110,11 @@ Config :: addLine (  const char    * line )          throw ( Exception )
     if ( str[0] == '[' && str[str.size()-1] == ']' ) {
         // a new section starts
 
-        string                              section( str, 1, str.size()-2);
-        ConfigSection                       cSection;
-        pair<const string, ConfigSection>   element( section, cSection);
-        pair<TableType::iterator, bool>     res;
+        std::string                             section( str, 1, str.size()-2);
+        ConfigSection                           cSection;
+        std::pair<const std::string, ConfigSection>
+                                                element( section, cSection);
+        std::pair<TableType::iterator, bool>    res;
 
         res = table.insert( element);
 
@@ -160,6 +161,13 @@ Config :: read (    istream &     is  )                 throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.4  2001/09/05 20:11:15  darkeye
+  removed dependency on locally stored SGI STL header files
+  now compiler-supplied C++ library STL header files are used
+  compiles under GNU C++ 3
+  hash_map (an SGI extension to STL) replaced with map
+  std:: namespace prefix added to all STL class references
+
   Revision 1.3  2001/08/30 17:25:56  darkeye
   renamed configure.h to config.h
 

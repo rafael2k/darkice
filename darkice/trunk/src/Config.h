@@ -36,7 +36,7 @@
 
 /* ============================================================ include files */
 
-#include <hash_map>
+#include <map>
 #include <string>
 
 #include <iostream.h>
@@ -83,7 +83,7 @@ class Config : public virtual Referable
         /**
          *  Type declaration of the hash table type.
          */
-        typedef hash_map<string, ConfigSection>     TableType;
+        typedef std::map<std::string, ConfigSection>    TableType;
 
         /**
          *  Hash table holding the configuration sections.
@@ -97,7 +97,7 @@ class Config : public virtual Referable
          *
          *  @see ConfigSection
          */
-        string                                      currentSection;
+        std::string                                 currentSection;
 
 
     protected:
@@ -213,6 +213,13 @@ class Config : public virtual Referable
   $Source$
 
   $Log$
+  Revision 1.4  2001/09/05 20:11:15  darkeye
+  removed dependency on locally stored SGI STL header files
+  now compiler-supplied C++ library STL header files are used
+  compiles under GNU C++ 3
+  hash_map (an SGI extension to STL) replaced with map
+  std:: namespace prefix added to all STL class references
+
   Revision 1.3  2000/11/13 18:46:50  darkeye
   added kdoc-style documentation comments
 
