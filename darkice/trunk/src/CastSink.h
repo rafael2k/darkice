@@ -308,7 +308,7 @@ class CastSink : public Sink, public virtual Reporter
         inline virtual bool
         isOpen ( void ) const                       throw ()
         {
-            return bufferedSink->isOpen();
+            return bufferedSink != NULL ? bufferedSink->isOpen() : false;
         }
 
         /**
@@ -471,6 +471,9 @@ class CastSink : public Sink, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.8  2004/01/05 12:00:00  darkeye
+  fixed possible null pointer problem when destroying the object
+
   Revision 1.7  2002/02/20 11:54:11  darkeye
   added local dump file possibility
 
