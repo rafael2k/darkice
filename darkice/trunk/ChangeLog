@@ -1,5 +1,7 @@
 DarkIce next version:
 
+    o bugfix: fixed minor bug in IcecCast2.cpp, which could have lead to
+      a buffer overflow. thanks to Atsuhiko Yamanaka <ymnk@jcraft.com>
     o bugfix: MultiThreadedConnector::sinkThread() was private, now public
     o added fileAddDate configuration option
       thanks to Nicu Pavel <npavel@ituner.com>

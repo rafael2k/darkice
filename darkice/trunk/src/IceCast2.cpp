@@ -171,7 +171,7 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
         char        * source = "source:";
         const char  * pwd    = getPassword();
         char        * tmp    = new char[Util::strLen(source) +
-                                        Util::strLen(str) + 1];
+                                        Util::strLen(pwd) + 1];
         Util::strCpy( tmp, source);
         Util::strCat( tmp, pwd);
         char  * base64 = Util::base64Encode( tmp);
@@ -255,6 +255,10 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.10  2002/11/29 08:14:47  darkeye
+  fixed minor bug in IcecCast2.cpp, which could have lead to a buffer
+  overflow
+
   Revision 1.9  2002/10/20 21:09:35  darkeye
   added processing of server response
 
