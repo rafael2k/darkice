@@ -51,6 +51,12 @@
 #error need limits.h
 #endif
 
+#ifdef HAVE_MATH_H
+#include <math.h>
+#else
+#error need math.h
+#endif
+
 
 #include "Util.h"
 
@@ -180,12 +186,216 @@ Util :: strToL( const char    * str,
 }
 
 
+/*------------------------------------------------------------------------------
+ *  Convert a string to a double
+ *----------------------------------------------------------------------------*/
+double
+Util :: strToD( const char    * str )                   throw ( Exception )
+{
+    double      val;
+    char      * s;
+
+    if ( !str ) {
+        throw Exception( __FILE__, __LINE__, "no str");
+    }
+
+    val = strtod( str, &s);
+    if ( s == str || val == HUGE_VAL ) {
+        throw Exception( __FILE__, __LINE__, "number conversion error");
+    }
+
+    return val;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Convert an unsigned char buffer holding 8 or 16 bit PCM values with
+ *  channels interleaved to a short int buffer, still with channels interleaved
+ *----------------------------------------------------------------------------*/
+void
+Util :: conv (  unsigned int        bitsPerSample,
+                unsigned char     * pcmBuffer,
+                unsigned int        lenPcmBuffer,
+                short int         * outBuffer,
+                bool                isBigEndian )           throw ( Exception )
+{
+    if ( bitsPerSample == 8 ) {
+        unsigned int    i, j;
+
+        for ( i = 0, j = 0; i < lenPcmBuffer; ) {
+            outBuffer[j] = pcmBuffer[i++];
+            ++j;
+        }
+    } else if ( bitsPerSample == 16 ) {
+
+        if ( isBigEndian ) {
+            unsigned int    i, j;
+
+            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
+                short int       value;
+
+                value         = pcmBuffer[i++] << 8;
+                value        |= pcmBuffer[i++];
+                outBuffer[j]  = value;
+                ++j;
+            }
+        } else {
+            unsigned int    i, j;
+
+            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
+                short int       value;
+
+                value         = pcmBuffer[i++];
+                value        |= pcmBuffer[i++] << 8;
+                outBuffer[j]  = value;
+                ++j;
+            }
+        }
+    } else {
+        throw Exception( __FILE__, __LINE__,
+                         "this number of bits per sample not supported",
+                         bitsPerSample);
+    }
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Convert a short buffer holding PCM values with channels interleaved
+ *  to one or more float buffers, one for each channel
+ *----------------------------------------------------------------------------*/
+void
+Util :: conv (  short int         * shortBuffer,
+                unsigned int        lenShortBuffer,
+                float            ** floatBuffers,
+                unsigned int        channels )              throw ( Exception )
+{
+    unsigned int    i, j;
+
+    for ( i = 0, j = 0; i < lenShortBuffer; ) {
+        for ( unsigned int c = 0; c < channels; ++c ) {
+            floatBuffers[c][j] = ((float) shortBuffer[i++]) / 32768.f;
+        }
+        ++j;
+    }
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Convert an unsigned char buffer holding 8 bit PCM values with channels
+ *  interleaved to two short int buffers (one for each channel)
+ *----------------------------------------------------------------------------*/
+void
+Util :: conv8 (     unsigned char     * pcmBuffer,
+                    unsigned int        lenPcmBuffer,
+                    short int         * leftBuffer,
+                    short int         * rightBuffer,
+                    unsigned int        channels )
+{
+    if ( channels == 1 ) {
+        unsigned int    i, j;
+
+        for ( i = 0, j = 0; i < lenPcmBuffer; ) {
+            unsigned short int  value;
+
+            value         = pcmBuffer[i++];
+            leftBuffer[j] = (short int) value;
+            ++j;
+        }
+    } else {
+        unsigned int    i, j;
+
+        for ( i = 0, j = 0; i < lenPcmBuffer; ) {
+            unsigned short int  value;
+
+            value          = pcmBuffer[i++];
+            leftBuffer[j]  = (short int) value;
+            value          = pcmBuffer[i++];
+            rightBuffer[j] = (short int) value;
+            ++j;
+        }
+    }
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Convert an unsigned char buffer holding 16 bit PCM values with channels
+ *  interleaved to two short int buffers (one for each channel)
+ *----------------------------------------------------------------------------*/
+void
+Util :: conv16 (    unsigned char     * pcmBuffer,
+                    unsigned int        lenPcmBuffer,
+                    short int         * leftBuffer,
+                    short int         * rightBuffer,
+                    unsigned int        channels,
+                    bool                isBigEndian )
+{
+    if ( isBigEndian ) {
+        if ( channels == 1 ) {
+            unsigned int    i, j;
+
+            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
+                unsigned short int   value;
+
+                value           = pcmBuffer[i++] << 8;
+                value          |= pcmBuffer[i++];
+                leftBuffer[j]  = (short int) value;
+                ++j;
+            }
+        } else {
+            unsigned int    i, j;
+
+            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
+                unsigned short int   value;
+
+                value           = pcmBuffer[i++] << 8;
+                value          |= pcmBuffer[i++];
+                leftBuffer[j]   = (short int) value;
+                value           = pcmBuffer[i++] << 8;
+                value          |= pcmBuffer[i++];
+                rightBuffer[j]  = (short int) value;
+                ++j;
+            }
+        }
+    } else {
+        if ( channels == 1 ) {
+            unsigned int    i, j;
+
+            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
+                unsigned short int   value;
+
+                value          = pcmBuffer[i++];
+                value         |= pcmBuffer[i++] << 8;
+                leftBuffer[j]  = (short int) value;
+                ++j;
+            }
+        } else {
+            unsigned int    i, j;
+
+            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
+                unsigned short int   value;
+
+                value           = pcmBuffer[i++];
+                value          |= pcmBuffer[i++] << 8;
+                leftBuffer[j]   = (short int) value;
+                value           = pcmBuffer[i++];
+                value          |= pcmBuffer[i++] << 8;
+                rightBuffer[j]  = (short int) value;
+                ++j;
+            }
+        }
+    }
+}
+
+
 
 /*------------------------------------------------------------------------------
  
   $Source$
 
   $Log$
+  Revision 1.7  2002/03/28 16:45:46  darkeye
+  added functions strToD(), conv8(), conv16() and conv()
+
   Revision 1.6  2001/08/30 17:25:56  darkeye
   renamed configure.h to config.h
 

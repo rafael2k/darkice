@@ -187,6 +187,92 @@ class Util
         static long int
         strToL ( const char    * str,
                  int             base = 10 )         throw ( Exception );
+
+        /**
+         *  Convert a string to double.
+         *
+         *  @param str the string to convert.
+         *  @return the value of str as a double
+         *  @exception Exception
+         */
+        static double
+        strToD ( const char    * str )              throw ( Exception );
+
+        /**
+         *  Convert an unsigned char buffer holding 8 or 16 bit PCM values
+         *  with channels interleaved to a short int buffer, still
+         *  with channels interleaved.
+         *
+         *  @param bitsPerSample the number of bits per sample in the input
+         *  @param pcmBuffer the input buffer
+         *  @param lenPcmBuffer the number of samples total in pcmBuffer
+         *                      (e.g. if 2 channel input, this is twice the
+         *                       number of sound samples)
+         *  @param outBuffer the output buffer, must be big enough
+         *  @param isBigEndian true if the input is big endian, false otherwise
+         */
+        static void
+        conv (  unsigned int        bitsPerSample,
+                unsigned char     * pcmBuffer,
+                unsigned int        lenPcmBuffer,
+                short int         * outBuffer,
+                bool                isBigEndian = true )    throw ( Exception );
+
+
+        /**
+         *  Convert a short buffer holding PCM values with channels interleaved
+         *  to one or more float buffers, one for each channel
+         *
+         *  @param shortBuffer the input buffer
+         *  @param lenShortBuffer total length of the input buffer
+         *  @param floatBuffers an array of float buffers, each
+         *                      (lenShortBuffer / channels) long
+         *  @param channels number of channels to separate the input to
+         */
+        static void
+        conv (  short int         * shortBuffer,
+                unsigned int        lenShortBuffer,
+                float            ** floatBuffers,
+                unsigned int        channels )              throw ( Exception );
+
+        /**
+         *  Convert a char buffer holding 8 bit PCM values to a short buffer
+         *
+         *  @param pcmBuffer buffer holding 8 bit PCM audio values,
+         *                   channels are interleaved
+         *  @param lenPcmBuffer length of pcmBuffer
+         *  @param leftBuffer put the left channel here (must be big enough)
+         *  @param rightBuffer put the right channel here (not touched if mono,
+         *                     must be big enough)
+         *  @param channels number of channels (1 = mono, 2 = stereo)
+         */
+        static void
+        conv8 (     unsigned char     * pcmBuffer,
+                    unsigned int        lenPcmBuffer,
+                    short int         * leftBuffer,
+                    short int         * rightBuffer,
+                    unsigned int        channels );
+
+        /**
+         *  Convert a char buffer holding 16 bit PCM values to a short buffer
+         *
+         *  @param pcmBuffer buffer holding 16 bit PCM audio values,
+         *                   channels are interleaved
+         *  @param lenPcmBuffer length of pcmBuffer
+         *  @param leftBuffer put the left channel here (must be big enough)
+         *  @param rightBuffer put the right channel here (not touched if mono,
+         *                     must be big enough)
+         *  @param channels number of channels (1 = mono, 2 = stereo)
+         *  @param isBigEndian true if input is big endian, false otherwise
+         */
+        static void
+        conv16 (    unsigned char     * pcmBuffer,
+                    unsigned int        lenPcmBuffer,
+                    short int         * leftBuffer,
+                    short int         * rightBuffer,
+                    unsigned int        channels,
+                    bool                isBigEndian );
+
 };
 
 
@@ -205,6 +291,9 @@ class Util
   $Source$
 
   $Log$
+  Revision 1.5  2002/03/28 16:45:46  darkeye
+  added functions strToD(), conv8(), conv16() and conv()
+
   Revision 1.4  2000/11/12 13:31:40  darkeye
   added kdoc-style documentation comments
 
