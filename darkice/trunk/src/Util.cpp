@@ -44,6 +44,18 @@
 #error need string.h
 #endif
 
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#else
+#error need stdlib.h
+#endif
+
+#ifdef HAVE_LIMITS_H
+#include <limits.h>
+#else
+#error need limits.h
+#endif
+
 
 #include "Util.h"
 
@@ -86,12 +98,53 @@ Util :: strDup( const char    * str ) throw ( Exception )
 }
 
 
+/*------------------------------------------------------------------------------
+ *  Check wether two strings are equal
+ *----------------------------------------------------------------------------*/
+bool
+Util :: strEq( const char    * str1,
+               const char    * str2 )           throw ( Exception )
+{
+    if ( !str1 || !str2 ) {
+        throw Exception( __FILE__, __LINE__, "no str1 or no str2");
+    }
+
+    return !strcmp( str1, str2);
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Convert a string to a long integer
+ *----------------------------------------------------------------------------*/
+long int
+Util :: strToL( const char    * str,
+                int             base )                  throw ( Exception )
+{
+    long int    val;
+    char      * s;
+
+    if ( !str ) {
+        throw Exception( __FILE__, __LINE__, "no str");
+    }
+
+    val = strtol( str, &s, base);
+    if ( s == str || val == LONG_MIN || val == LONG_MAX ) {
+        throw Exception( __FILE__, __LINE__, "number conversion error");
+    }
+
+    return val;
+}
+
+
 
 /*------------------------------------------------------------------------------
  
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/09 06:44:21  darkeye
+  added strEq and strToL functions
+
   Revision 1.2  2000/11/05 14:08:28  darkeye
   changed builting to an automake / autoconf environment
 

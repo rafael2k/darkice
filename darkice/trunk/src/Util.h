@@ -95,6 +95,16 @@ class Util
 
         static char *
         strDup(         const char    * str )       throw ( Exception );
+
+
+        static bool
+        strEq(  const char    * str1,
+                const char    * str2 )               throw ( Exception );
+
+
+        static long int
+        strToL(  const char    * str,
+                 int             base = 10 )         throw ( Exception );
 };
 
 
@@ -113,8 +123,11 @@ class Util
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:55  darkeye
-  Initial revision
+  Revision 1.2  2000/11/09 06:44:21  darkeye
+  added strEq and strToL functions
+
+  Revision 1.1.1.1  2000/11/05 10:05:55  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/
