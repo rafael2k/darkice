@@ -46,6 +46,12 @@
 #error need unistdt.h
 #endif
 
+#ifdef HAVE_TIME_H
+#include <time.h>
+#else
+#error need time.h
+#endif
+
 
 #include <iostream.h>
 
@@ -87,7 +93,21 @@ class Reporter
          */
         static ostream        * os;
 
-        
+        /**
+         *  Print a prefix to each report.
+         */
+        void
+        printPrefix( void )                         throw ()
+        {
+            char    str[32];
+            time_t  now;
+
+            now = time(NULL);
+            strftime( str, 32, "%H:%M:%S: ", localtime(&now) );
+            (*(Reporter::os)) << str;
+        }
+
+
     protected:
 
 
@@ -155,15 +175,18 @@ class Reporter
          *
          *  @param verbosity the importance of the event, with 0 being
          *                   the most important.
-         *  @param message the message to report.
+         *  @param t the object to report. Must have an
+         *           <code>ostream & operator<<( ostream&, const T)</code>
+         *           operator overload.
          */
+        template<class T>
         inline void
         reportEvent ( unsigned int  verbosity,
-                      const char  * message )               throw ()
+                      const T       t )                     throw ()
         {
             if ( Reporter::verbosity >= verbosity ) {
-                (*(Reporter::os)) << getpid() << ": "
-                                  << message <<  endl;
+                printPrefix();
+                (*(Reporter::os)) << t <<  endl;
             }
         }
 
@@ -172,21 +195,90 @@ class Reporter
          *
          *  @param verbosity the importance of the event, with 0 being
          *                   the most important.
-         *  @param message1 the message to report part 1.
-         *  @param message2 the message to report part 2.
+         *  @param t the object 1 to report. Must have an
+         *           <code>ostream & operator<<( ostream&, const T)</code>
+         *           operator overload.
+         *  @param u the object 2 to report. Must have an
+         *           <code>ostream & operator<<( ostream&, const U)</code>
+         *           operator overload.
          */
-        template<class T>
+        template<class T, class U>
         inline void
         reportEvent ( unsigned int  verbosity,
-                      const char  * message1,
-                      const T       t )                     throw ()
+                      const T       t,
+                      const U       u )                     throw ()
         {
             if ( Reporter::verbosity >= verbosity ) {
-                (*(Reporter::os)) << getpid() << ": "
-                                  << message1 << " " << t <<  endl;
+                printPrefix();
+                (*(Reporter::os)) << t << " "
+                                  << u <<  endl;
             }
         }
 
+        /**
+         *  Report an event with a given verbosity.
+         *
+         *  @param verbosity the importance of the event, with 0 being
+         *                   the most important.
+         *  @param t the object 1 to report. Must have an
+         *           <code>ostream & operator<<( ostream&, const T)</code>
+         *           operator overload.
+         *  @param u the object 2 to report. Must have an
+         *           <code>ostream & operator<<( ostream&, const U)</code>
+         *           operator overload.
+         *  @param v the object 3 to report. Must have an
+         *           <code>ostream & operator<<( ostream&, const V)</code>
+         *           operator overload.
+         */
+        template<class T, class U, class V>
+        inline void
+        reportEvent ( unsigned int  verbosity,
+                      const T       t,
+                      const U       u,
+                      const V       v )                     throw ()
+        {
+            if ( Reporter::verbosity >= verbosity ) {
+                printPrefix();
+                (*(Reporter::os)) << t << " "
+                                  << u << " "
+                                  << v <<  endl;
+            }
+        }
+
+        /**
+         *  Report an event with a given verbosity.
+         *
+         *  @param verbosity the importance of the event, with 0 being
+         *                   the most important.
+         *  @param t the object 1 to report. Must have an
+         *           <code>ostream & operator<<( ostream&, const T)</code>
+         *           operator overload.
+         *  @param u the object 2 to report. Must have an
+         *           <code>ostream & operator<<( ostream&, const U)</code>
+         *           operator overload.
+         *  @param v the object 3 to report. Must have an
+         *           <code>ostream & operator<<( ostream&, const V)</code>
+         *           operator overload.
+         *  @param w the object 4 to report. Must have an
+         *           <code>ostream & operator<<( ostream&, const W)</code>
+         *           operator overload.
+         */
+        template<class T, class U, class V, class W>
+        inline void
+        reportEvent ( unsigned int  verbosity,
+                      const T       t,
+                      const U       u,
+                      const V       v,
+                      const W       w )                     throw ()
+        {
+            if ( Reporter::verbosity >= verbosity ) {
+                printPrefix();
+                (*(Reporter::os)) << t << " "
+                                  << u << " "
+                                  << v << " "
+                                  << w <<  endl;
+            }
+        }
 };
 
 
@@ -207,6 +299,10 @@ class Reporter
   $Source$
 
   $Log$
+  Revision 1.2  2000/11/18 11:12:01  darkeye
+  added timestamp display, removed process id display in reports
+  changed reportEvent functions to template functions
+
   Revision 1.1  2000/11/16 08:48:43  darkeye
   added multiple verbosity-level event reporting and verbosity command
   line option
