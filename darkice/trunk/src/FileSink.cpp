@@ -235,7 +235,7 @@ FileSink :: open ( void )                       throw ( Exception )
 
 
 /*------------------------------------------------------------------------------
- *  Check wether read() would return anything
+ *  Check wether the file can be written to
  *----------------------------------------------------------------------------*/
 bool
 FileSink :: canWrite (     unsigned int    sec,
@@ -265,7 +265,7 @@ FileSink :: canWrite (     unsigned int    sec,
 
 
 /*------------------------------------------------------------------------------
- *  Read from the audio source
+ *  Write to the FileSink
  *----------------------------------------------------------------------------*/
 unsigned int
 FileSink :: write (    const void    * buf,
@@ -292,7 +292,7 @@ FileSink :: write (    const void    * buf,
 
 
 /*------------------------------------------------------------------------------
- *  Close the audio source
+ *  Close the FileSink
  *----------------------------------------------------------------------------*/
 void
 FileSink :: close ( void )                          throw ( Exception )
@@ -313,6 +313,9 @@ FileSink :: close ( void )                          throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.8  2002/03/28 16:41:49  darkeye
+  some fixes to typos in comments
+
   Revision 1.7  2002/02/20 11:54:11  darkeye
   added local dump file possibility
 
