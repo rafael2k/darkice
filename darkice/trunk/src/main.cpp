@@ -124,10 +124,10 @@ main (
         std::cout << "Using config file: " << configFileName << std::endl;
 
         std::ifstream       configFile( configFileName);
+        Reporter::setReportVerbosity( verbosity );
+        Reporter::setReportOutputStream( std::cout );
         Config              config( configFile);
         Ref<DarkIce>        di = new DarkIce( config);
-        di->setReportVerbosity( verbosity );
-        di->setReportOutputStream( std::cout );
 
         res = di->run();
 
@@ -166,6 +166,16 @@ showUsage (     std::ostream      & os )
   $Source$
 
   $Log$
+  Revision 1.14  2005/04/03 05:10:07  jbebel
+  Moved initialization of Reporter class so it would happen before
+  instantiation of Darkice class.  Any logging that might be reported
+  during the construction of the Darkice class could not function.
+  Originally the Reporter initialization was done through the instance
+  of Darkice (which inherits Reporter), but that obviously isn't possible
+  before Darkice is instantiated.  Since Reporter is largely a static class,
+  it is reasonable to call it via the scope resolution operator rather
+  than via an instance of the class, so that's what I did.
+
   Revision 1.13  2004/02/15 12:06:30  darkeye
   added ALSA support, thanks to Christian Forster
 
