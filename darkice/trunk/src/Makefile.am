@@ -29,6 +29,10 @@ darkice_SOURCES =   AudioEncoder.h\
                     LameLibEncoder.h\
                     VorbisLibEncoder.cpp\
                     VorbisLibEncoder.h\
+                    aflibConverter.h\
+                    aflibConverter.cc\
+                    aflibConverterLargeFilter.h\
+                    aflibConverterSmallFilter.h\
                     OssDspSource.cpp\
                     OssDspSource.h\
                     SolarisDspSource.cpp\
