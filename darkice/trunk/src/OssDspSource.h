@@ -176,13 +176,10 @@ class OssDspSource : public AudioSource, public virtual Reporter
         /**
          *  Tell if the data from this source comes in big or little endian.
          *
-         *  @return false
+         *  @return true if the source is big endian, false otherwise
          */
-        virtual inline bool
-        isBigEndian ( void ) const           throw ()
-        {
-            return false;
-        }
+        virtual bool
+        isBigEndian ( void ) const           throw ();
 
         /**
          *  Open the OssDspSource.
@@ -262,6 +259,9 @@ class OssDspSource : public AudioSource, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.6  2002/12/20 10:40:40  darkeye
+  added support for big endian OSS devices (like Linux PowerPC)
+
   Revision 1.5  2001/09/18 14:57:19  darkeye
   finalized Solaris port
 

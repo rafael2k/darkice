@@ -109,6 +109,16 @@ static const char fileid[] = "$Id$";
 /* =============================================================  module code */
 
 /*------------------------------------------------------------------------------
+ *  Tell if source id big endian
+ *----------------------------------------------------------------------------*/
+bool
+OssDspSource :: isBigEndian ( void ) const                  throw ()
+{
+    return AFMT_S16_NE == AFMT_S16_BE;
+}
+
+
+/*------------------------------------------------------------------------------
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
@@ -154,7 +164,7 @@ OssDspSource :: open ( void )                       throw ( Exception )
             break;
 
         case 16:
-            format = AFMT_S16_LE;
+            format = AFMT_S16_NE;
             break;
             
         default:
@@ -285,6 +295,9 @@ OssDspSource :: close ( void )                  throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.12  2002/12/20 10:40:40  darkeye
+  added support for big endian OSS devices (like Linux PowerPC)
+
   Revision 1.11  2002/05/28 12:35:41  darkeye
   code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
 

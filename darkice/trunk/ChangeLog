@@ -5,6 +5,7 @@ DarkIce next version:
     o bugfix: MultiThreadedConnector::sinkThread() was private, now public
     o added fileAddDate configuration option
       thanks to Nicu Pavel <npavel@ituner.com>
+    o added support for big endian OSS devices (like Linux PowerPC)
 
 20-10-2002: DarkIce 0.12 released
 
