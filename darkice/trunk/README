@@ -31,9 +31,7 @@ For command line syntax, try:
 
 darkice --help
 
-It is recommended to run DarkIce as root, with a nice level of -10, like:
-
-nice --10 darkice [options]
+It is recommended to run DarkIce as root.
 
 
 2. Configuration file format

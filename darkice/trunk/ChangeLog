@@ -1,10 +1,14 @@
+20-12-2000: DarkIce 0.3 released
 
-18-11-2000, Akos Maroy, darkeye@users.sourceforge.net
-
-    Released version 0.2. See NEWS file for changes.
+    o added POSIX real-time scheduling
 
 
-13-11-2000, Akos Maroy, darkeye@users.sourceforge.net
+18-11-2000: DarkIce 0.2 released
 
-    Initial release. Supports the lame encoder.
+    o code cleanup
+    o first real tests made
+    o added verbosity command line option
+
+
+13-11-2000: DarkIce 0.1 released
 

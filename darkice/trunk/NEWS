@@ -1,10 +1,16 @@
 
-18-11-2000: DarkIce 0.2 released
+20-12-2000, Akos Maroy, darkeye@users.sourceforge.net
 
-    o code cleanup
-    o first real tests made
-    o added verbosity command line option
+    Released version 0.3. See ChangeLog for changes.
 
 
-13-11-2000: DarkIce 0.1 released
+18-11-2000, Akos Maroy, darkeye@users.sourceforge.net
+
+    Released version 0.2. See ChangeLog for changes.
+
+
+13-11-2000, Akos Maroy, darkeye@users.sourceforge.net
+
+    Initial release. Supports the lame encoder.
+
 
