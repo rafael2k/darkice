@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+#   Update the automake / autoconf configuration
+#
+
+automake && aclocal && autoconf && ./configure
+

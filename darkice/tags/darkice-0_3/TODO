@@ -1,0 +1,3 @@
+o make FIFO pipes in /tmp with valid temp filenames
+o change Ref to follow inheritance
+o add support for shared object lame
