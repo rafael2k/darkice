@@ -114,8 +114,7 @@ PipeSink :: open ( void )                       throw ( Exception )
         return false;
     }
 
-    if ( (fileDescriptor = ::open( getFileName(),
-                                   O_WRONLY | O_NONBLOCK)) == -1 ) {
+    if ( (fileDescriptor = ::open( getFileName(), O_WRONLY, 0)) == -1 ) {
         fileDescriptor = 0;
         return false;
     }
@@ -130,6 +129,9 @@ PipeSink :: open ( void )                       throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/10 20:10:46  darkeye
+  changed from non-blocking to blocking
+
   Revision 1.2  2000/11/05 14:08:28  darkeye
   changed builting to an automake / autoconf environment
 
