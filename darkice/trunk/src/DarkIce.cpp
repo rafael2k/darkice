@@ -298,26 +298,34 @@ DarkIce :: configIceCast2 (  const Config      & config,
             break;
         }
 
-#ifndef HAVE_VORBIS_LIB
-        throw Exception( __FILE__, __LINE__,
-                         "DarkIce not compiled with Ogg Vorbis support, "
-                         "thus can't connect to IceCast 2, stream: ",
-                         stream);
-#else
-
         const char    * str;
 
-        unsigned int    bitrate         = 0;
-        const char    * server          = 0;
-        unsigned int    port            = 0;
-        const char    * password        = 0;
-        const char    * mountPoint      = 0;
-        const char    * name            = 0;
-        const char    * description     = 0;
-        const char    * url             = 0;
-        const char    * genre           = 0;
-        bool            isPublic        = false;
+        IceCast2::StreamFormat  format;
+        unsigned int            bitrate         = 0;
+        const char            * server          = 0;
+        unsigned int            port            = 0;
+        const char            * password        = 0;
+        const char            * mountPoint      = 0;
+        const char            * name            = 0;
+        const char            * description     = 0;
+        const char            * url             = 0;
+        const char            * genre           = 0;
+        bool                    isPublic        = false;
 
+        str         = cs->getForSure( "format", " missing in section ", stream);
+        if ( Util::strEq( str, "vorbis") ) {
+            format = IceCast2::oggVorbis;
+        } else if ( Util::strEq( str, "mp3") ) {
+            format = IceCast2::mp3;
+            // TODO: enable this format in the future, when icecast2
+            //       supports it as well
+            throw Exception( __FILE__, __LINE__,
+                             "unsupported stream format: ", str);
+        } else {
+            throw Exception( __FILE__, __LINE__,
+                             "unsupported stream format: ", str);
+        }
+                
         str         = cs->getForSure("bitrate", " missing in section ", stream);
         bitrate     = Util::strToL( str);
         server      = cs->getForSure( "server", " missing in section ", stream);
@@ -348,6 +356,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
         audioOuts[u].server = new IceCast2( audioOuts[u].socket.get(),
                                             password,
                                             mountPoint,
+                                            format,
                                             bitrate,
                                             name,
                                             description,
@@ -355,14 +364,45 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                             genre,
                                             isPublic );
 
-        audioOuts[u].encoder = new VorbisLibEncoder( audioOuts[u].server.get(),
-                                                     dsp.get(),
-                                                     bitrate,
-                                                     dsp->getSampleRate(),
-                                                     dsp->getChannel() );
+        switch ( format ) {
+            case IceCast2::mp3:
+#ifndef HAVE_LAME_LIB
+                throw Exception( __FILE__, __LINE__,
+                                 "DarkIce not compiled with lame support, "
+                                 "thus can't create mp3 stream: ",
+                                 stream);
+#else
+                audioOuts[u].encoder = new LameLibEncoder(
+                                                    audioOuts[u].server.get(),
+                                                    dsp.get(),
+                                                    bitrate,
+                                                    dsp->getSampleRate(),
+                                                    dsp->getChannel() );
+#endif // HAVE_LAME_LIB
+                break;
+
+            case IceCast2::oggVorbis:
+#ifndef HAVE_VORBIS_LIB
+                throw Exception( __FILE__, __LINE__,
+                                "DarkIce not compiled with Ogg Vorbis support, "
+                                "thus can't Ogg Vorbis stream: ",
+                                stream);
+#else
+                audioOuts[u].encoder = new VorbisLibEncoder(
+                                                    audioOuts[u].server.get(),
+                                                    dsp.get(),
+                                                    bitrate,
+                                                    dsp->getSampleRate(),
+                                                    dsp->getChannel() );
+#endif // HAVE_VORBIS_LIB
+                break;
+
+            default:
+                throw Exception( __FILE__, __LINE__,
+                                "Illegal stream format: ", format);
+        }
 
         encConnector->attach( audioOuts[u].encoder.get());
-#endif // HAVE_VORBIS_LIB
     }
 
     noAudioOuts += u;
@@ -608,6 +648,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.23  2002/02/20 10:35:35  darkeye
+  updated to work with Ogg Vorbis libs rc3 and current IceCast2 cvs
+
   Revision 1.22  2001/10/20 10:56:45  darkeye
   added possibility to disable highpass and lowpass filters for lame
 

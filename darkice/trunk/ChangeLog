@@ -4,6 +4,8 @@ DarkIce 0.8
     o fixed incorrect vorbis bitrate setting
     o fix: DarkIce now reports public streams correctly
       thanks to Tom Gray, <tomg@future-i.com>
+    o made up-to-date with Ogg Vorbis rc3 libs
+    o made up-to-date with current IceCast2 cvs version
 
 19-10-2001: DarkIce 0.7 released
 

@@ -79,10 +79,12 @@ static const char fileid[] = "$Id$";
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-IceCast2 :: init (  const char            * mountPoint,
+IceCast2 :: init (  StreamFormat            format,
+                    const char            * mountPoint,
                     const char            * description )
                                                         throw ( Exception )
 {
+    this->format         = format;
     this->mountPoint     = Util::strDup( mountPoint);
     this->description    = description    ? Util::strDup( description) : 0;
 }
@@ -129,7 +131,22 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     sink->write( str, strlen( str));
 
     /* send the content type, Ogg Vorbis */
-    str = "\nContent-type: application/x-ogg";
+    str = "\nContent-type: ";
+    sink->write( str, strlen( str));
+    switch ( format ) {
+        case mp3:
+            str = "audio/mpeg";
+            break;
+
+        case oggVorbis:
+            str = "application/x-ogg";
+            break;
+
+        default:
+            throw Exception( __FILE__, __LINE__,
+                             "unsupported stream format", format);
+            break;
+    }
     sink->write( str, strlen( str));
 
     /* send the ice- headers */
@@ -192,6 +209,9 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.4  2002/02/20 10:35:35  darkeye
+  updated to work with Ogg Vorbis libs rc3 and current IceCast2 cvs
+
   Revision 1.3  2002/02/19 15:24:26  darkeye
   send Content-type header when logging in to icecast2 servers
 

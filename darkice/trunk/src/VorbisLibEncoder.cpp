@@ -75,7 +75,7 @@ VorbisLibEncoder :: open ( void )
     if ( (ret = vorbis_encode_init( &vorbisInfo,
                                     getInChannel(),
                                     getInSampleRate(),
-                                    -1,
+                                    getOutBitrate() * 1000,
                                     getOutBitrate() * 1000,
                                     -1 )) ) {
         throw Exception( __FILE__, __LINE__, "vorbis encode init error", ret);
@@ -117,7 +117,7 @@ VorbisLibEncoder :: open ( void )
         throw Exception( __FILE__, __LINE__, "vorbis header init error", ret);
     }
 
-    vorbis_comment_clear( &vorbisComment );
+    vorbis_comment_init( &vorbisComment);
 
     ogg_stream_packetin( &oggStreamState, &header);
     ogg_stream_packetin( &oggStreamState, &commentHeader);
@@ -128,6 +128,8 @@ VorbisLibEncoder :: open ( void )
         sink->write( oggPage.header, oggPage.header_len);
         sink->write( oggPage.body, oggPage.body_len);
     }
+
+    vorbis_comment_clear( &vorbisComment );
 
     encoderOpen = true;
 
@@ -313,19 +315,24 @@ VorbisLibEncoder :: vorbisBlocksOut ( void )                throw ()
         ogg_page        oggPage;
 
         vorbis_analysis( &vorbisBlock, &oggPacket);
-        ogg_stream_packetin( &oggStreamState, &oggPacket);
+        vorbis_bitrate_addblock( &vorbisBlock);
 
-        while ( ogg_stream_pageout( &oggStreamState, &oggPage) ) {
-            int    written;
-            
-            written  = sink->write( oggPage.header, oggPage.header_len);
-            written += sink->write( oggPage.body, oggPage.body_len);
+        while ( vorbis_bitrate_flushpacket( &vorbisDspState, &oggPacket) ) {
 
-            if ( written < oggPage.header_len + oggPage.body_len ) {
-                // just let go data that could not be written
-                reportEvent( 2,
+            ogg_stream_packetin( &oggStreamState, &oggPacket);
+
+            while ( ogg_stream_pageout( &oggStreamState, &oggPage) ) {
+                int    written;
+                
+                written  = sink->write( oggPage.header, oggPage.header_len);
+                written += sink->write( oggPage.body, oggPage.body_len);
+
+                if ( written < oggPage.header_len + oggPage.body_len ) {
+                    // just let go data that could not be written
+                    reportEvent( 2,
                            "couldn't write full vorbis data to underlying sink",
-                             oggPage.header_len + oggPage.body_len - written);
+                           oggPage.header_len + oggPage.body_len - written);
+                }
             }
         }
     }
@@ -359,6 +366,9 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.6  2002/02/20 10:35:35  darkeye
+  updated to work with Ogg Vorbis libs rc3 and current IceCast2 cvs
+
   Revision 1.5  2001/10/21 13:08:18  darkeye
   fixed incorrect vorbis bitrate setting
 

@@ -58,7 +58,20 @@
  */
 class IceCast2 : public CastSink
 {
+    public:
+
+        /**
+         *  Type for specifying the format of the stream.
+         */
+       enum StreamFormat { mp3, oggVorbis };
+
+
     private:
+
+        /**
+         *  The format of the stream.
+         */
+        StreamFormat        format;
 
         /**
          *  Mount point of the stream on the server.
@@ -79,7 +92,8 @@ class IceCast2 : public CastSink
          *  @exception Exception
          */
         void
-        init (  const char            * mountPoint,
+        init (  StreamFormat            format,
+                const char            * mountPoint,
                 const char            * description )
                                                     throw ( Exception );
 
@@ -137,6 +151,7 @@ class IceCast2 : public CastSink
         IceCast2 (  TcpSocket         * socket,
                     const char        * password,
                     const char        * mountPoint,
+                    StreamFormat        format,
                     unsigned int        bitRate,
                     const char        * name           = 0,
                     const char        * description    = 0,
@@ -154,7 +169,7 @@ class IceCast2 : public CastSink
                           isPublic,
                           bufferDuration )
         {
-            init( mountPoint, description);
+            init( format, mountPoint, description);
         }
 
         /**
@@ -166,7 +181,8 @@ class IceCast2 : public CastSink
         IceCast2(   const IceCast2 &    cs )        throw ( Exception )
                 : CastSink( cs )
         {
-            init( cs.getMountPoint(),
+            init( cs.getFormat(),
+                  cs.getMountPoint(),
                   cs.getDescription() );
         }
 
@@ -194,10 +210,22 @@ class IceCast2 : public CastSink
             if ( this != &cs ) {
                 strip();
                 CastSink::operator=( cs );
-                init( cs.getMountPoint(),
+                init( cs.getFormat(),
+                      cs.getMountPoint(),
                       cs.getDescription() );
             }
             return *this;
+        }
+
+        /**
+         *  Get the format of the stream.
+         *
+         *  @return the format of the stream.
+         */
+        inline StreamFormat
+        getFormat ( void ) const                    throw ()
+        {
+            return format;
         }
 
         /**
@@ -240,6 +268,9 @@ class IceCast2 : public CastSink
   $Source$
 
   $Log$
+  Revision 1.2  2002/02/20 10:35:35  darkeye
+  updated to work with Ogg Vorbis libs rc3 and current IceCast2 cvs
+
   Revision 1.1  2001/09/14 19:31:06  darkeye
   added IceCast2 / vorbis support
 
