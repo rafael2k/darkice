@@ -1,3 +1,11 @@
+09-09-2001: DarkIce 0.5 released
+
+    o added support for ShoutCast servers
+    o removed local copy of SGI STL, uses STL of the C++ compiler
+    o compiles with gcc3-c++
+    o added man page darkice.cfg.5
+    o bugfix: config files can have comments before the first section
+
 02-09-2001: DarkIce 0.4 released
 
     o support for external command line encoder removed, replaced
