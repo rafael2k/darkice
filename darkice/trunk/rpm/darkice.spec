@@ -123,11 +123,15 @@ make clean
 %config %{_sysconfdir}/darkice.cfg
 %{_bindir}/darkice.static
 %{_mandir}/man1/darkice.1*
+%{_mandir}/man5/darkice.cfg.5*
 
 
 # =================================================================== change log
 #
 #   $Log$
+#   Revision 1.3  2001/09/09 11:48:09  darkeye
+#   added man page darkice.cfg.5
+#
 #   Revision 1.2  2001/09/02 14:44:14  darkeye
 #   added system level configuration file
 #
