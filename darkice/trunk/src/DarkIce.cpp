@@ -220,7 +220,7 @@ DarkIce :: configIceCast (  const Config      & config,
         int                         highpass        = 0;
         const char                * localDumpName   = 0;
         FileSink                  * localDumpFile   = 0;
-	bool			    fileAddDate     = false;
+        bool                        fileAddDate     = false;
 
         str         = cs->get( "sampleRate");
         sampleRate  = str ? Util::strToL( str) : dsp->getSampleRate();
@@ -283,8 +283,8 @@ DarkIce :: configIceCast (  const Config      & config,
         lowpass     = str ? Util::strToL( str) : 0;
         str         = cs->get( "highpass");
         highpass    = str ? Util::strToL( str) : 0;
-	str	    = cs->get("fileAddDate");
-	fileAddDate = str ? (Util::strEq( str, "yes") ? true : false) : false;
+        str         = cs->get("fileAddDate");
+        fileAddDate = str ? (Util::strEq( str, "yes") ? true : false) : false;
 
         localDumpName = cs->get( "localDumpFile");
 
@@ -292,10 +292,10 @@ DarkIce :: configIceCast (  const Config      & config,
 
         // check for and create the local dump file if needed
         if ( localDumpName != 0 ) {
-	
-	    if (fileAddDate)
-		localDumpName = Util::fileAddDate(localDumpName);
-		
+            if ( fileAddDate ) {
+                localDumpName = Util::fileAddDate(localDumpName);
+            }
+
             localDumpFile = new FileSink( localDumpName);
             if ( !localDumpFile->exists() ) {
                 if ( !localDumpFile->create() ) {
@@ -303,6 +303,9 @@ DarkIce :: configIceCast (  const Config      & config,
                                     localDumpName);
                     localDumpFile = 0;
                 }
+            }
+            if ( fileAddDate ) {
+                delete[] localDumpFile;
             }
         }
         // streaming related stuff
@@ -381,7 +384,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
         bool                        isPublic        = false;
         const char                * localDumpName   = 0;
         FileSink                  * localDumpFile   = 0;
-	bool                        fileAddDate     = false;
+        bool                        fileAddDate     = false;
 
         str         = cs->getForSure( "format", " missing in section ", stream);
         if ( Util::strEq( str, "vorbis") ) {
@@ -446,8 +449,8 @@ DarkIce :: configIceCast2 (  const Config      & config,
         genre       = cs->get( "genre");
         str         = cs->get( "public");
         isPublic    = str ? (Util::strEq( str, "yes") ? true : false) : false;
-	str	    = cs->get("fileAddDate");
-	fileAddDate = str ? (Util::strEq( str, "yes") ? true : false) : false;
+        str         = cs->get("fileAddDate");
+        fileAddDate = str ? (Util::strEq( str, "yes") ? true : false) : false;
         
         localDumpName = cs->get( "localDumpFile");
 
@@ -455,10 +458,10 @@ DarkIce :: configIceCast2 (  const Config      & config,
 
         // check for and create the local dump file if needed
         if ( localDumpName != 0 ) {
-	
-	    if (fileAddDate)
-		localDumpName = Util::fileAddDate(localDumpName);
-		
+            if ( fileAddDate ) {
+                localDumpName = Util::fileAddDate(localDumpName);
+            }
+
             localDumpFile = new FileSink( localDumpName);
             if ( !localDumpFile->exists() ) {
                 if ( !localDumpFile->create() ) {
@@ -467,7 +470,11 @@ DarkIce :: configIceCast2 (  const Config      & config,
                     localDumpFile = 0;
                 }
             }
+            if ( fileAddDate ) {
+                delete[] localDumpName;
+            }
         }
+
         // streaming related stuff
         audioOuts[u].socket = new TcpSocket( server, port);
         audioOuts[u].server = new IceCast2( audioOuts[u].socket.get(),
@@ -585,7 +592,7 @@ DarkIce :: configShoutCast (    const Config      & config,
         const char                * icq             = 0;
         const char                * localDumpName   = 0;
         FileSink                  * localDumpFile   = 0;
-	bool                        fileAddDate     = false;
+        bool                        fileAddDate     = false;
 
         str         = cs->get( "sampleRate");
         sampleRate  = str ? Util::strToL( str) : dsp->getSampleRate();
@@ -646,20 +653,19 @@ DarkIce :: configShoutCast (    const Config      & config,
         irc         = cs->get( "irc");
         aim         = cs->get( "aim");
         icq         = cs->get( "icq");
-	str	    = cs->get("fileAddDate");
-	fileAddDate = str ? (Util::strEq( str, "yes") ? true : false) : false;
+        str         = cs->get("fileAddDate");
+        fileAddDate = str ? (Util::strEq( str, "yes") ? true : false) : false;
 
-	
         localDumpName = cs->get( "localDumpFile");
 
         // go on and create the things
 
         // check for and create the local dump file if needed
         if ( localDumpName != 0 ) {
-	
-	    if (fileAddDate)
-		localDumpName = Util::fileAddDate(localDumpName);
-		
+            if ( fileAddDate ) {
+                localDumpName = Util::fileAddDate(localDumpName);
+            }
+
             localDumpFile = new FileSink( localDumpName);
             if ( !localDumpFile->exists() ) {
                 if ( !localDumpFile->create() ) {
@@ -667,6 +673,9 @@ DarkIce :: configShoutCast (    const Config      & config,
                                     localDumpName);
                     localDumpFile = 0;
                 }
+            }
+            if ( fileAddDate ) {
+                delete[] localDumpFile;
             }
         }
 
@@ -987,6 +996,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.34  2003/02/09 12:57:36  darkeye
+  cosmetic changes to the fileAddDate option
+
   Revision 1.33  2002/11/20 16:52:05  wandereq
   added fileAddDate function
 

@@ -1,4 +1,4 @@
-.TH darkice.cfg 5 "August 20, 2002" "DarkIce" "DarkIce live audio streamer"
+.TH darkice.cfg 5 "February 9, 2003" "DarkIce" "DarkIce live audio streamer"
 .SH NAME
 darkice.cfg \- configuration file for darkice
 .SH DESCRIPTION
@@ -158,8 +158,8 @@ server to this local file.
 .TP
 .I fileAddDate
 "yes" or "no" if you want to automaticaly insert a date string in 
-the file name before his extension or at the end of file name if file name
-doens't have an extension.
+the localDumpFile name before its extension or at the end of file name if
+no extension present
 .TP
 .I lowpass
 Lowpass filter setting for the lame encoder. If not set or set to 0,
@@ -264,8 +264,8 @@ server to this local file.
 .TP
 .I fileAddDate
 "yes" or "no" if you want to automaticaly insert a date string in 
-the file name before his extension or at the end of file name if file name
-doens't have an extension.
+the localDumpFile name before its extension or at the end of file name if
+no extension present
 .PP
 .B [shoutcast-x]
 
@@ -359,8 +359,8 @@ server to this local file.
 .TP
 .I fileAddDate
 "yes" or "no" if you want to automaticaly insert a date string in 
-the file name before his extension or at the end of file name if file name
-doens't have an extension.
+the localDumpFile name before its extension or at the end of file name if
+no extension present
 .PP
 .B [file-x]
 
@@ -463,7 +463,7 @@ genre           = live
 public          = no
 remoteDumpFile  = /tmp/server-dump.mp3
 localDumpFile   = /tmp/encoder-dump.mp3
-fileAddDate	= no
+fileAddDate     = no
 .fi
 
 

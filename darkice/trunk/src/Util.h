@@ -203,16 +203,16 @@ class Util
         strToD ( const char    * str )              throw ( Exception );
 
         /**
-         *  Add a date to a string
+         *  Add current date to a file name, before the file extension (if any)
          *
          *  @param str the string to convert (file name).
          *  @return the new string with the date appended before 
-	 *  extension of the file name
+         *          extension of the file name. the string has to be
+         *          deleted with delete[] after it is not needed
          *  @exception Exception
          */
-	
-	static char *
-	fileAddDate ( const char * str)		    throw ( Exception );
+        static char *
+        fileAddDate ( const char * str )            throw ( Exception );
 
         /**
          *  Convert a string into base64 encoding.
@@ -319,6 +319,9 @@ class Util
   $Source$
 
   $Log$
+  Revision 1.9  2003/02/09 12:57:36  darkeye
+  cosmetic changes to the fileAddDate option
+
   Revision 1.8  2002/11/20 16:52:08  wandereq
   added fileAddDate function
 
