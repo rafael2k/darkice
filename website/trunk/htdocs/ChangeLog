@@ -1,3 +1,16 @@
+15-02-2004: DarkIce 0.14 released
+
+    o added ALSA support, thanks to Christian Forster
+      <forster@like.e-technik.uni-erlangen.de>
+    o added fix to enable downsampling from stereo to mono of mp3 streams
+      when streaming to an icecast2 server. thanks to John Deeny
+      <taqueso@dilapidated.org>
+    o removed _X and _Y symbols from aflibConverter files, which caused
+      a naming collision on Solaris. thanks to Robert Lunnon,
+      <bobl@optushome.com.au>
+    o bug fix: ogg vorbis recording to only a file caused a segfault.
+      now fixed, thanks to Enrico Ardizzoni <craken@users.sourceforge.net>
+
 07-01-2004: DarkIce 0.13.2 released
 
     o bug fix: two bugs fixed that caused core dump when encoding into
