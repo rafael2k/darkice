@@ -128,6 +128,10 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     str = " ICE/1.0";
     sink->write( str, strlen( str));
 
+    /* send the content type, Ogg Vorbis */
+    str = "\nContent-type: application/x-ogg";
+    sink->write( str, strlen( str));
+
     /* send the ice- headers */
     str = "\nice-password: ";
     sink->write( str, strlen(str));
@@ -188,6 +192,9 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.3  2002/02/19 15:24:26  darkeye
+  send Content-type header when logging in to icecast2 servers
+
   Revision 1.2  2001/11/20 09:06:18  darkeye
   fixed public stream reporting
 
