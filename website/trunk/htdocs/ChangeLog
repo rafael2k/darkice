@@ -1,3 +1,12 @@
+20-07-2002: DarkIce 0.10 released
+
+    o added possibility to select constant, average and variable bit rate
+      encoding modes with specifying encoding quality as well.
+      thanks to Nicu Pavel <npavel@ituner.com>
+    o added support for Ogg Vorbis 1.0 final, removed support for rc2
+    o added fault tolerance: if one of several server connection drops,
+      DarkIce carries on with the rest of the servers still connected
+
 09-04-2002: DarkIce 0.9.1 released
 
     o bugfix: a memory leak was introduced in 0.9, which is fixed thanks to
