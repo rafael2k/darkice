@@ -112,7 +112,7 @@ class Sink : public virtual Referable
         open ( void )                               throw ( Exception )    = 0;
 
         /**
-         *  Check if a Sink is open.
+         *  Check if the Sink is open.
          *
          *  @return true if the Sink is open, false otherwise.
          */
@@ -178,6 +178,9 @@ class Sink : public virtual Referable
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/12 13:31:16  darkeye
+  minor change in documentation
+
   Revision 1.2  2000/11/11 12:33:13  darkeye
   added kdoc-style documentation
 
