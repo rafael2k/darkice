@@ -1,0 +1,52 @@
+DarkIce installation notes
+==========================
+
+DarkIce uses the following libraries (and associated header files):
+
+for capability to stream mp3 to IceCast 1.x and Shoutcast:
+- libmp3lame
+
+for capability to stream Ogg Vorbis to IceCast 2:
+- libogg
+- libvoribs
+- libvorbisenc
+
+To install libmp3lame, please refer to INSTALL.lame.
+To install libogg, libvoribs and libvorbisenc, please look at INSTALL.vorbis.
+
+
+Installing DarkIce
+------------------
+
+If you're reading this, you probably have downloaded and extracted the
+DarkIce tarball. Go to the directory you extracted it, and try:
+
+./configure --help
+
+This will give you all the compile configuration options.
+
+On Solaris systems, for some reason the configure script does not
+find the include file lame/lame.h if it uses the SUN Workshop C compiler
+as a preprocessor for testing. Therefore you might consider setting:
+
+export CPP="gcc -E"
+
+This hack is not needed on other systems.
+
+If chosing the default compile options, issue the following commands:
+
+./configure
+make
+make install
+
+For the last step, you need to be root or have write permissions in the
+target directories, usually directories under /usr/local.
+
+Now you should have DarkIce installed. For documentation, try
+
+man darkice
+
+To try out the program, try
+
+darkice -h
+
