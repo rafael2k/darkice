@@ -1,4 +1,4 @@
-DarkIce 0.11
+02-08-2002: DarkIce 0.10.1 released
 
     o bug fix: when the last server dropped connection, darkice crashed
       thanks to Nicu Pavel <npavel@ituner.com>
