@@ -35,8 +35,22 @@
 
 /* ============================================================ include files */
 
-#include <string.h>
+#ifdef HAVE_CONFIG_H
+#include "configure.h"
+#endif
+
+#ifdef HAVE_STDIO_H
 #include <stdio.h>
+#else
+#error need stdio.h
+#endif
+
+#ifdef HAVE_STRING_H
+#include <string.h>
+#else
+#error need string.h
+#endif
+
 
 #include "Exception.h"
 #include "Source.h"
@@ -171,8 +185,11 @@ IceCast :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:52  darkeye
-  Initial revision
+  Revision 1.2  2000/11/05 14:08:28  darkeye
+  changed builting to an automake / autoconf environment
+
+  Revision 1.1.1.1  2000/11/05 10:05:52  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

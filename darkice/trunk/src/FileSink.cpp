@@ -34,13 +34,52 @@
 
 /* ============================================================ include files */
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/time.h>
+#ifdef HAVE_CONFIG_H
+#include "configure.h"
+#endif
+
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#else
+#error need unistd.h
+#endif
+
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
+#else
+#error need stdlib.h
+#endif
+
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#else
+#error need sys/types.h
+#endif
+
+#ifdef HAVE_ERRNO_H
 #include <errno.h>
+#else
+#error need errno.h
+#endif
+
+#ifdef HAVE_SYS_STAT_H
+#include <sys/stat.h>
+#else
+#error need sys/stat.h
+#endif
+
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>
+#else
+#error need fcntl.h
+#endif
+
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>
+#else
+#error need sys/time.h
+#endif
+
 
 #include "Util.h"
 #include "Exception.h"
@@ -272,8 +311,11 @@ FileSink :: close ( void )                          throw ( Exception )
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:51  darkeye
-  Initial revision
+  Revision 1.2  2000/11/05 14:08:27  darkeye
+  changed builting to an automake / autoconf environment
+
+  Revision 1.1.1.1  2000/11/05 10:05:51  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

@@ -34,7 +34,16 @@
 
 /* ============================================================ include files */
 
+#ifdef HAVE_CONFIG_H
+#include "configure.h"
+#endif
+
+#ifdef HAVE_STRING_H
 #include <string.h>
+#else
+#error need string.h
+#endif
+
 
 #include "Util.h"
 
@@ -83,8 +92,11 @@ Util :: strDup( const char    * str ) throw ( Exception )
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:55  darkeye
-  Initial revision
+  Revision 1.2  2000/11/05 14:08:28  darkeye
+  changed builting to an automake / autoconf environment
+
+  Revision 1.1.1.1  2000/11/05 10:05:55  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

@@ -34,10 +34,34 @@
 
 /* ============================================================ include files */
 
-#include <sys/types.h>
+#ifdef HAVE_CONFIG_H
+#include "configure.h"
+#endif
+
+#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
+#else
+#error need sys/stat.h
+#endif
+
+#ifdef HAVE_FCNTL_H
 #include <fcntl.h>
+#else
+#error need fcntl.h
+#endif
+
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#else
+#error need sys/types.h
+#endif
+
+#ifdef HAVE_ERRNO_H
 #include <errno.h>
+#else
+#error need errno.h
+#endif
+
 
 #include "Exception.h"
 #include "PipeSink.h"
@@ -106,8 +130,11 @@ PipeSink :: open ( void )                       throw ( Exception )
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:53  darkeye
-  Initial revision
+  Revision 1.2  2000/11/05 14:08:28  darkeye
+  changed builting to an automake / autoconf environment
+
+  Revision 1.1.1.1  2000/11/05 10:05:53  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

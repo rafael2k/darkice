@@ -38,7 +38,16 @@
 
 /* ============================================================ include files */
 
+#ifdef HAVE_CONFIG_H
+#include "configure.h"
+#endif
+
+#ifdef HAVE_STRING_H
 #include <string.h>
+#else
+#error need string.h
+#endif
+
 
 #include "Exception.h"
 
@@ -120,8 +129,11 @@ Exception :: strip ( void )                         throw ()
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:50  darkeye
-  Initial revision
+  Revision 1.2  2000/11/05 14:08:27  darkeye
+  changed builting to an automake / autoconf environment
+
+  Revision 1.1.1.1  2000/11/05 10:05:50  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

@@ -34,12 +34,43 @@
 
 /* ============================================================ include files */
 
+#ifdef HAVE_CONFIG_H
+#include "configure.h"
+#endif
+
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#else
+#error need unistd.h
+#endif
+
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
-#include <iostream.h>
+#else
+#error need stdlib.h
+#endif
+
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#else
+#error need sys/types.h
+#endif
+
+#ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
+#else
+#error need sys/wait.h
+#endif
+
+#ifdef HAVE_ERRNO_H
 #include <errno.h>
+#else
+#error need errno.h
+#endif
+
+
+#include <iostream.h>
+
 
 #include "DarkIce.h"
 
@@ -53,6 +84,18 @@
  *  File identity
  *----------------------------------------------------------------------------*/
 static const char fileid[] = "$Id$";
+
+
+/*------------------------------------------------------------------------------
+ *  Make sure wait-related stuff is what we expect
+ *----------------------------------------------------------------------------*/
+#ifndef WEXITSTATUS
+# define WEXITSTATUS(stat_val)      ((unsigned)(stat_val) >> 8)
+#endif
+#ifndef WIFEXITED
+# define WIFEXITED(stat_val)        (((stat_val) & 255) == 0)
+#endif
+
 
 
 /* ===============================================  local function prototypes */
@@ -211,8 +254,11 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:49  darkeye
-  Initial revision
+  Revision 1.2  2000/11/05 14:08:27  darkeye
+  changed builting to an automake / autoconf environment
+
+  Revision 1.1.1.1  2000/11/05 10:05:49  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

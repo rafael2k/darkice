@@ -53,7 +53,16 @@
 
 /* ============================================================ include files */
 
+#ifdef HAVE_CONFIG_H
+#include "configure.h"
+#endif
+
+#ifdef HAVE_STRING_H
 #include <string.h>
+#else
+#error need string.h
+#endif
+
 
 #include "Exception.h"
 #include "BufferedSink.h"
@@ -294,8 +303,11 @@ BufferedSink :: close ( void )                      throw ( Exception )
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:48  darkeye
-  Initial revision
+  Revision 1.2  2000/11/05 14:08:27  darkeye
+  changed builting to an automake / autoconf environment
+
+  Revision 1.1.1.1  2000/11/05 10:05:48  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

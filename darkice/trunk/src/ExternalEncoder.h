@@ -42,7 +42,16 @@
 
 /* ============================================================ include files */
 
+#ifdef HAVE_CONFIG_H
+#include "configure.h"
+#endif
+
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#else
+#error need sys/types.h
+#endif
+
 
 #include "Exception.h"
 #include "AudioEncoder.h"
@@ -235,8 +244,11 @@ class ExternalEncoder : public AudioEncoder
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:50  darkeye
-  Initial revision
+  Revision 1.2  2000/11/05 14:08:27  darkeye
+  changed builting to an automake / autoconf environment
+
+  Revision 1.1.1.1  2000/11/05 10:05:50  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

@@ -34,14 +34,58 @@
 
 /* ============================================================ include files */
 
+#ifdef HAVE_CONFIG_H
+#include "configure.h"
+#endif
+
+#ifdef HAVE_STRING_H
 #include <string.h>
+#else
+#error need string.h
+#endif
+
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <unistd.h>
+#else
+#error need sys/types.h
+#endif
+
+#ifdef HAVE_ERRNO_H
 #include <errno.h>
+#else
+#error need errno.h
+#endif
+
+#ifdef HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#else
+#error need sys/socket.h
+#endif
+
+#ifdef HAVE_NETINET_IN_H
+#include <netinet/in.h>
+#else
+#error need netinet/in.h
+#endif
+
+#ifdef HAVE_NETDB_H
+#include <netdb.h>
+#else
+#error need netdb.h
+#endif
+
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#else
+#error need unistd.h
+#endif
+
+#ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
+#else
+#error need sys/time.h
+#endif
+
 
 #include "Util.h"
 #include "Exception.h"
@@ -309,8 +353,11 @@ TcpSocket :: close ( void )                          throw ( Exception )
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:55  darkeye
-  Initial revision
+  Revision 1.2  2000/11/05 14:08:28  darkeye
+  changed builting to an automake / autoconf environment
+
+  Revision 1.1.1.1  2000/11/05 10:05:55  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

@@ -34,13 +34,52 @@
 
 /* ============================================================ include files */
 
-#include <sys/time.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#ifdef HAVE_CONFIG_H
+#include "configure.h"
+#endif
+
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#include <sys/ioctl.h>
+#else
+#error need unistd.h
+#endif
+
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#else
+#error need sys/types.h
+#endif
+
+#ifdef HAVE_SYS_STAT_H
+#include <sys/stat.h>
+#else
+#error need sys/stat.h
+#endif
+
+#ifdef HAVE_FCNTL_H
 #include <fcntl.h>
+#else
+#error need fcntl.h
+#endif
+
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>
+#else
+#error need sys/time.h
+#endif
+
+#ifdef HAVE_SYS_IOCTL_H
+#include <sys/ioctl.h>
+#else
+#error need sys/ioctl.h
+#endif
+
+#ifdef HAVE_SYS_SOUNDCARD_H
 #include <sys/soundcard.h>
+#else
+#error need sys/soundcard.h
+#endif
+
 
 #include "Util.h"
 #include "Exception.h"
@@ -230,8 +269,11 @@ OssDspSource :: close ( void )                  throw ( Exception )
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:53  darkeye
-  Initial revision
+  Revision 1.2  2000/11/05 14:08:28  darkeye
+  changed builting to an automake / autoconf environment
+
+  Revision 1.1.1.1  2000/11/05 10:05:53  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

@@ -177,8 +177,8 @@ inline ostream &
 operator<< (        ostream &           os,
                     const Exception &   e )
 {
-    os << e.getDescription() << " [" << e.getCode() << "] ("
-       << e.getFile() << ":" << e.getLine() << ")";
+    os << e.getFile() << ":" << e.getLine() << ": "
+       << e.getDescription() << " [" << e.getCode() << "]";
 }
 
 
@@ -191,8 +191,11 @@ operator<< (        ostream &           os,
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:50  darkeye
-  Initial revision
+  Revision 1.2  2000/11/05 14:08:27  darkeye
+  changed builting to an automake / autoconf environment
+
+  Revision 1.1.1.1  2000/11/05 10:05:50  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

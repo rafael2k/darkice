@@ -35,10 +35,34 @@
 
 /* ============================================================ include files */
 
+#ifdef HAVE_CONFIG_H
+#include "configure.h"
+#endif
+
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#else
+#error need sys/types.h
+#endif
+
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#else
+#error need unistd.h
+#endif
+
+#ifdef HAVE_SIGNAL_H
 #include <signal.h>
+#else
+#error need signal.h
+#endif
+
+#ifdef HAVE_ERRNO_H
 #include <errno.h>
+#else
+#error need errno.h
+#endif
+
 
 #include "Exception.h"
 #include "Util.h"
@@ -182,8 +206,11 @@ ExternalEncoder :: stop ( void )            throw ( Exception )
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:50  darkeye
-  Initial revision
+  Revision 1.2  2000/11/05 14:08:27  darkeye
+  changed builting to an automake / autoconf environment
+
+  Revision 1.1.1.1  2000/11/05 10:05:50  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/
