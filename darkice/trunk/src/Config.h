@@ -92,13 +92,20 @@ class Config : public virtual Referable
     public:
 
         inline
-        Config ( void )                            throw ( Exception )
+        Config ( void )                             throw ( Exception )
         {
         }
 
 
+        inline
+        Config (    istream   & is )                throw ( Exception )
+        {
+            read( is );
+        }
+
+
         inline virtual
-        ~Config ( void )                           throw ( Exception )
+        ~Config ( void )                            throw ( Exception )
         {
         }
 
@@ -153,6 +160,9 @@ class Config : public virtual Referable
   $Source$
 
   $Log$
+  Revision 1.2  2000/11/09 22:07:19  darkeye
+  added constructor with istream
+
   Revision 1.1  2000/11/08 17:29:50  darkeye
   added configuration file reader
 
