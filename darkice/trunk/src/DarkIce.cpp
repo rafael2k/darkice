@@ -62,9 +62,6 @@
 #include <hash_map>
 #include <string>
 
-#include <iostream.h>
-#include <fstream.h>
-
 
 #include "Util.h"
 #include "DarkIce.h"
@@ -97,45 +94,6 @@ static const char fileid[] = "$Id$";
 
 
 /* =============================================================  module code */
-
-/*------------------------------------------------------------------------------
- *  Constructor
- *----------------------------------------------------------------------------*/
-DarkIce :: DarkIce ( int        argc,
-                     char     * argv[] )            throw ( Exception )
-{
-    const char    * configFileName = 0;
-    int             i;
-
-    while ( (i = getopt( argc, argv, "c:")) != -1 ) {
-        switch ( i ) {
-            case 'c':
-                configFileName = optarg;
-                break;
-
-            default:
-            case ':':
-            case '?':
-                throw Exception( __FILE__, __LINE__,
-                                 "error parsing command line options");
-                break;
-        }
-    }
-
-    if ( !configFileName ) {
-        throw Exception( __FILE__, __LINE__, "no configuration file specified");
-    }
-
-    cout << "configFileName: " << configFileName << endl;
-
-    ifstream    configFile( configFileName);
-    Config      config( configFile);
-
-    init( config);
-
-    cout << "no. of outputs: " << noOutputs << endl;
-}
-
 
 /*------------------------------------------------------------------------------
  *  Initialize the object
@@ -381,8 +339,6 @@ DarkIce :: run ( void )                             throw ( Exception )
 {
     int     i;
     
-    cout << "DarkIce" << endl << endl << flush;
-
     for ( i = 0; i < noOutputs; ++i ) {
         outputs[i].pid = fork();
 
@@ -428,6 +384,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.7  2000/11/13 19:38:55  darkeye
+  moved command line parameter parsing from DarkIce.cpp to main.cpp
+
   Revision 1.6  2000/11/13 18:46:50  darkeye
   added kdoc-style documentation comments
 

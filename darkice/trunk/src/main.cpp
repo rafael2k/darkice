@@ -11,30 +11,40 @@
    
    Abstract : 
 
-     Program entry point
+    Program entry point
 
    Copyright notice:
 
-     This program is free software; you can redistribute it and/or
-     modify it under the terms of the GNU General Public License  
-     as published by the Free Software Foundation; either version 2
-     of the License, or (at your option) any later version.
-    
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of 
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-     GNU General Public License for more details.
-    
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307,
-     USA.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License  
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+   
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of 
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+    GNU General Public License for more details.
+   
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ------------------------------------------------------------------------------*/
 
 /* ============================================================ include files */
 
+#ifdef HAVE_CONFIG_H
+#include "configure.h"
+#endif
+
+#ifdef HAVE_GETOPT_H
+#include <getopt.h>
+#else
+#error need getopt.h
+#endif
+
 #include <iostream.h>
+#include <fstream.h>
 
 #include "Ref.h"
 #include "Exception.h"
@@ -54,6 +64,12 @@ static const char fileid[] = "$Id$";
 
 /* ===============================================  local function prototypes */
 
+/*------------------------------------------------------------------------------
+ *  Show program usage
+ *----------------------------------------------------------------------------*/
+static void
+showUsage (     ostream   & os );
+
 
 /* =============================================================  module code */
 
@@ -67,10 +83,47 @@ main (
 {
     int     res = -1;
     
+    cout << "DarkIce live audio streamer, http://darkice.sourceforge.net"<<endl;
+    cout << "Copyright (C) 2000, Tyrell Hungary, http://tyrell.hu" << endl;
+    cout << endl;
+
     try {
-        
-        Ref<DarkIce>        di = new DarkIce( argc, argv);
-        di->run();
+        const char    * configFileName = 0;
+        int             i;
+        static struct option long_options[] = {
+            { "config", 1, 0, 'c'},
+            { "help", 0, 0, 'h'},
+            { 0, 0, 0, 0}
+        };
+            
+
+        while ( (i = getopt_long( argc, argv, "hc:", long_options, 0)) != -1 ) {
+            switch ( i ) {
+                case 'c':
+                    configFileName = optarg;
+                    break;
+
+                default:
+                case ':':
+                case '?':
+                case 'h':
+                    showUsage( cout);
+                    return 1;
+            }
+        }
+
+        if ( !configFileName ) {
+            throw Exception( __FILE__, __LINE__,
+                             "no configuration file specified");
+        }
+
+        cout << "Using config file: " << configFileName << endl;
+
+        ifstream    configFile( configFileName);
+        Config      config( configFile);
+        Ref<DarkIce>        di = new DarkIce( config);
+
+        res = di->run();
 
     } catch ( Exception   & e ) {
         cout << "DarkIce: " << e << endl << flush;
@@ -81,10 +134,33 @@ main (
 
 
 /*------------------------------------------------------------------------------
+ *  Show program usage
+ *----------------------------------------------------------------------------*/
+static void
+showUsage (     ostream   & os )
+{
+    os
+    << "usage: darkice -c config.file"
+    << endl
+    << endl
+    << "options:"
+    << endl
+    << "   -c, --config=config.file    use configuration file config.file"
+    << endl
+    << "   -h, --help                  print this message and exit"
+    << endl
+    << endl;
+}
+
+
+/*------------------------------------------------------------------------------
  
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/13 19:38:55  darkeye
+  moved command line parameter parsing from DarkIce.cpp to main.cpp
+
   Revision 1.2  2000/11/08 17:29:50  darkeye
   added configuration file reader
 

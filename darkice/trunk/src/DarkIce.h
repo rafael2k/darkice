@@ -156,32 +156,33 @@ class DarkIce : public virtual Referable
 
 
     protected:
-/*
-        virtual void
-        showUsage ( ostream       & os )            throw ( Exception );
-*/
-
-    public:
 
         /**
-         *  Default constructor.
+         *  Default constructor. Always throws an Exception.
          *
          *  @exception Exception
          */
         inline
         DarkIce ( void )                            throw ( Exception )
         {
+            throw Exception( __FILE__, __LINE__);
         }
 
+
+    public:
+
         /**
-         *  Constructor based on command line parameters.
+         *  Constructor based on a configuration object.
          *
-         *  @param argc number of arguments
-         *  @param argv the command line arguments.
+         *  @param config the config Object to read initialization
+         *                information from.
          *  @exception Exception
          */
-        DarkIce (   int         argc,
-                    char      * argv[] )            throw ( Exception );
+        inline
+        DarkIce (   const Config  & config )       throw ( Exception )
+        {
+            init( config);
+        }
 
         /**
          *  Destructor.
@@ -234,6 +235,9 @@ class DarkIce : public virtual Referable
   $Source$
 
   $Log$
+  Revision 1.5  2000/11/13 19:38:55  darkeye
+  moved command line parameter parsing from DarkIce.cpp to main.cpp
+
   Revision 1.4  2000/11/13 18:46:50  darkeye
   added kdoc-style documentation comments
 
