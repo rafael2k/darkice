@@ -4,7 +4,7 @@
 
    Tyrell DarkIce
 
-   File     : LameLibEncoder.h
+   File     : VorbisLibEncoder.h
    Version  : $Revision$
    Author   : $Author$
    Location : $Source$
@@ -26,8 +26,8 @@
     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ------------------------------------------------------------------------------*/
-#ifndef LAME_LIB_ENCODER_H
-#define LAME_LIB_ENCODER_H
+#ifndef VORBIS_LIB_ENCODER_H
+#define VORBIS_LIB_ENCODER_H
 
 #ifndef __cplusplus
 #error This is a C++ include file
@@ -40,11 +40,8 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_LAME_LIB
-#include <lame/lame.h>
-#else
-#error need lame/lame.h
-#endif
+// TODO
+#include <vorbis/vorbisenc.h>
 
 
 #include "Ref.h"
@@ -63,20 +60,40 @@
 /* =============================================================== data types */
 
 /**
- *  A class representing the lame encoder linked as a shared object or as
- *  a static library.
+ *  A class representing the ogg vorbis encoder linked as a shared object or
+ *  as a static library.
  *
  *  @author  $Author$
  *  @version $Revision$
  */
-class LameLibEncoder : public AudioEncoder, public virtual Reporter
+class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
 {
     private:
 
         /**
-         *  Lame library global flags
+         *  Value indicating if the encoding process is going on
          */
-        lame_global_flags             * lameGlobalFlags;
+        bool                            encoderOpen;
+
+        /**
+         *  Ogg Vorbis library global info
+         */
+        vorbis_info                     vorbisInfo;
+
+        /**
+         *  Ogg Vorbis library global DSP state
+         */
+        vorbis_dsp_state                vorbisDspState;
+
+        /**
+         *  Ogg Vorbis library global block
+         */
+        vorbis_block                    vorbisBlock;
+
+        /**
+         *  Ogg library global stream state
+         */
+        ogg_stream_state                oggStreamState;
 
         /**
          *  The Sink to dump mp3 data to
@@ -84,39 +101,15 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
         Ref<Sink>                       sink;
 
         /**
-         *  Highpass filter. Sound frequency in Hz, from where up the
-         *  input is cut.
-         */
-        unsigned int                    lowpass;
-
-        /**
-         *  Lowpass filter. Sound frequency in Hz, from where down the
-         *  input is cut.
-         */
-        unsigned int                    highpass;
-
-        /**
          *  Initialize the object.
          *
          *  @param sink the sink to send mp3 output to
-         *  @param lowpass frequency threshold for the lowpass filter.
-         *                 Input above this frequency is cut.
-         *                 If 0, lame's default values are used,
-         *                 which depends on the out sample rate.
-         *  @param highpass frequency threshold for the highpass filter.
-         *                  Input below this frequency is cut.
-         *                  If 0, lame's default values are used,
-         *                  which depends on the out sample rate.
          *  @exception Exception
          */
         inline void
-        init ( Sink           * sink,
-               unsigned int     lowpass,
-               unsigned int     highpass )                  throw ( Exception )
+        init ( Sink           * sink )                  throw ( Exception )
         {
             this->sink     = sink;
-            this->lowpass  = lowpass;
-            this->highpass = highpass;
 
             if ( getInBitsPerSample() != 16 && getInBitsPerSample() != 8 ) {
                 throw Exception( __FILE__, __LINE__,
@@ -133,6 +126,8 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                 throw Exception( __FILE__, __LINE__,
                                  "different in and out channels not supported");
             }
+
+            encoderOpen = false;
         }
 
         /**
@@ -152,15 +147,15 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *                   channels are interleaved
          *  @param lenPcmBuffer length of pcmBuffer
          *  @param leftBuffer put the left channel here (must be big enough)
-         *  @param rightBuffer put the right channel here (if mono, not
-         *                     touched, must be big enough)
+         *  @param rightBuffer put the right channel here (if mono, same
+         *                     as leftChannel, must be big enough)
          *  @param channels number of channels (1 = mono, 2 = stereo)
          */
         void
         conv8 (     unsigned char     * pcmBuffer,
                     unsigned int        lenPcmBuffer,
-                    short int         * leftBuffer,
-                    short int         * rightBuffer,
+                    float             * leftBuffer,
+                    float             * rightBuffer,
                     unsigned int        channels );
 
         /**
@@ -170,15 +165,15 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *                   channels are interleaved
          *  @param lenPcmBuffer length of pcmBuffer
          *  @param leftBuffer put the left channel here (must be big enough)
-         *  @param rightBuffer put the right channel here (if mono, not
-         *                     touched, must be big enough)
+         *  @param rightBuffer put the right channel here (if mono, same
+         *                     as leftChannel, must be big enough)
          *  @param channels number of channels (1 = mono, 2 = stereo)
          */
         void
         conv16 (    unsigned char     * pcmBuffer,
                     unsigned int        lenPcmBuffer,
-                    short int         * leftBuffer,
-                    short int         * rightBuffer,
+                    float             * leftBuffer,
+                    float             * rightBuffer,
                     unsigned int        channels );
 
 
@@ -190,7 +185,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline
-        LameLibEncoder ( void )                         throw ( Exception )
+        VorbisLibEncoder ( void )                         throw ( Exception )
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -210,26 +205,16 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *                       If 0, inSampleRate is used.
          *  @param outChannel number of channels of the output.
          *                    If 0, inChannel is used.
-         *  @param lowpass frequency threshold for the lowpass filter.
-         *                 Input above this frequency is cut.
-         *                 If 0, lame's default values are used,
-         *                 which depends on the out sample rate.
-         *  @param highpass frequency threshold for the highpass filter.
-         *                  Input below this frequency is cut.
-         *                  If 0, lame's default values are used,
-         *                  which depends on the out sample rate.
          *  @exception Exception
          */
         inline
-        LameLibEncoder (    Sink          * sink,
+        VorbisLibEncoder (  Sink          * sink,
                             unsigned int    inSampleRate,
                             unsigned int    inBitsPerSample,
                             unsigned int    inChannel,
                             unsigned int    outBitrate,
                             unsigned int    outSampleRate = 0,
-                            unsigned int    outChannel    = 0,
-                            unsigned int    lowpass       = 0,
-                            unsigned int    highpass      = 0 )
+                            unsigned int    outChannel    = 0 )
                                                         throw ( Exception )
             
                     : AudioEncoder ( inSampleRate,
@@ -239,7 +224,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                                      outSampleRate,
                                      outChannel )
         {
-            init( sink, lowpass, highpass );
+            init( sink);
         }
 
         /**
@@ -253,24 +238,14 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *                       If 0, input sample rate is used.
          *  @param outChannel number of channels of the output.
          *                    If 0, input channel is used.
-         *  @param lowpass frequency threshold for the lowpass filter.
-         *                 Input above this frequency is cut.
-         *                 If 0, lame's default values are used,
-         *                 which depends on the out sample rate.
-         *  @param highpass frequency threshold for the highpass filter.
-         *                  Input below this frequency is cut.
-         *                  If 0, lame's default values are used,
-         *                  which depends on the out sample rate.
          *  @exception Exception
          */
         inline
-        LameLibEncoder (    Sink                  * sink,
+        VorbisLibEncoder (  Sink                  * sink,
                             const AudioSource     * as,
                             unsigned int            outBitrate,
                             unsigned int            outSampleRate = 0,
-                            unsigned int            outChannel    = 0,
-                            unsigned int            lowpass       = 0,
-                            unsigned int            highpass      = 0 )
+                            unsigned int            outChannel    = 0 )
                                                             throw ( Exception )
             
                     : AudioEncoder ( as,
@@ -278,20 +253,23 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                                      outSampleRate,
                                      outChannel )
         {
-            init( sink, lowpass, highpass );
+            init( sink);
         }
 
         /**
          *  Copy constructor.
          *
-         *  @param encoder the LameLibEncoder to copy.
+         *  @param encoder the VorbisLibEncoder to copy.
          */
         inline
-        LameLibEncoder (  const LameLibEncoder &    encoder )
+        VorbisLibEncoder (  const VorbisLibEncoder &    encoder )
                                                             throw ( Exception )
                     : AudioEncoder( encoder )
         {
-            init( encoder.sink.get(), encoder.lowpass, encoder.highpass );
+            if( encoder.isOpen() ) {
+                throw Exception(__FILE__, __LINE__, "don't copy open encoders");
+            }
+            init( encoder.sink.get());
         }
 
         /**
@@ -300,7 +278,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~LameLibEncoder ( void )                            throw ( Exception )
+        ~VorbisLibEncoder ( void )                         throw ( Exception )
         {
             if ( isOpen() ) {
                 close();
@@ -311,31 +289,24 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
         /**
          *  Assignment operator.
          *
-         *  @param encoder the LameLibEncoder to assign this to.
-         *  @return a reference to this LameLibEncoder.
+         *  @param encoder the VorbisLibEncoder to assign this to.
+         *  @return a reference to this VorbisLibEncoder.
          *  @exception Exception
          */
-        inline virtual LameLibEncoder &
-        operator= ( const LameLibEncoder &      encoder )   throw ( Exception )
+        inline virtual VorbisLibEncoder &
+        operator= ( const VorbisLibEncoder &   encoder )   throw ( Exception )
         {
+            if( encoder.isOpen() ) {
+                throw Exception(__FILE__, __LINE__, "don't copy open encoders");
+            }
+
             if ( this != &encoder ) {
                 strip();
                 AudioEncoder::operator=( encoder);
-                init( encoder.sink.get(), encoder.lowpass, encoder.highpass );
+                init( encoder.sink.get());
             }
 
             return *this;
-        }
-
-        /**
-         *  Get the version string of the underlying lame library.
-         *
-         *  @return the version string of the underlying lame library.
-         */
-        inline const char *
-        getLameVersion( void )
-        {
-            return get_lame_version();
         }
 
         /**
@@ -390,7 +361,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
         inline virtual bool
         isOpen ( void ) const                       throw ()
         {
-            return lameGlobalFlags != 0;
+            return encoderOpen;
         }
 
         /**
@@ -454,7 +425,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
 
 
 
-#endif  /* LAME_LIB_ENCODER_H */
+#endif  /* VORBIS_LIB_ENCODER_H */
 
 
 /*------------------------------------------------------------------------------
@@ -462,28 +433,10 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
-  Revision 1.6  2001/09/14 19:31:06  darkeye
+  Revision 1.1  2001/09/14 19:31:06  darkeye
   added IceCast2 / vorbis support
 
-  Revision 1.5  2001/09/02 09:54:12  darkeye
-  fixed typos in CVS substition keywords
-
-  Revision 1.4  2001/08/31 20:09:05  darkeye
-  added funcitons conv8() and conv16()
-
-  Revision 1.3  2001/08/30 17:25:56  darkeye
-  renamed configure.h to config.h
-
-  Revision 1.2  2001/08/29 21:06:16  darkeye
-  added real support for 8 / 16 bit mono / stereo input
-  (8 bit input still has to be spread on 16 bit words)
-
-  Revision 1.1  2001/08/26 20:44:30  darkeye
-  removed external command-line encoder support
-  replaced it with a shared-object support for lame with the possibility
-  of static linkage
 
 
-  
 ------------------------------------------------------------------------------*/
 

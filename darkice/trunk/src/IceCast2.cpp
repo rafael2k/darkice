@@ -4,7 +4,7 @@
 
    Tyrell DarkIce
 
-   File     : IceCast.cpp
+   File     : IceCast2.cpp
    Version  : $Revision$
    Author   : $Author$
    Location : $Source$
@@ -50,7 +50,7 @@
 #include "Source.h"
 #include "Sink.h"
 #include "Util.h"
-#include "IceCast.h"
+#include "IceCast2.h"
 
 
 /* ===================================================  local data structures */
@@ -79,14 +79,12 @@ static const char fileid[] = "$Id$";
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-IceCast :: init (   const char            * mountPoint,
-                    const char            * description,
-                    const char            * remoteDumpFile )
+IceCast2 :: init (  const char            * mountPoint,
+                    const char            * description )
                                                         throw ( Exception )
 {
     this->mountPoint     = Util::strDup( mountPoint);
     this->description    = description    ? Util::strDup( description) : 0;
-    this->remoteDumpFile = remoteDumpFile ? Util::strDup( remoteDumpFile) : 0;
 }
 
 
@@ -94,29 +92,25 @@ IceCast :: init (   const char            * mountPoint,
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-IceCast :: strip ( void )                           throw ( Exception )
+IceCast2 :: strip ( void )                           throw ( Exception )
 {
     delete[] mountPoint;
     if ( description ) {
         delete[] description;
     }
-    if ( remoteDumpFile ) {
-        delete[] remoteDumpFile;
-    }
 }
 
 
 /*------------------------------------------------------------------------------
- *  Log in to the IceCast server
+ *  Log in to the IceCast2 server
  *----------------------------------------------------------------------------*/
 bool
-IceCast :: sendLogin ( void )                           throw ( Exception )
+IceCast2 :: sendLogin ( void )                           throw ( Exception )
 {
     Sink          * sink   = getSink();
     Source        * source = getSocket();
     const char    * str;
     char            resp[STRBUF_SIZE];
-    unsigned int    len;
 
     if ( !source->isOpen() ) {
         return false;
@@ -126,80 +120,63 @@ IceCast :: sendLogin ( void )                           throw ( Exception )
     }
 
     /* send the request, a string like:
-     * "SOURCE <password> /<mountpoint>\n" */
-    str = "SOURCE ";
-    sink->write( str, strlen( str));
-    str = getPassword();
-    sink->write( str, strlen( str));
-    str = " /";
+     * "SOURCE <mountpoint> ICE/1.0" */
+    str = "SOURCE /";
     sink->write( str, strlen( str));
     str = getMountPoint();
     sink->write( str, strlen( str));
+    str = " ICE/1.0";
+    sink->write( str, strlen( str));
 
-    /* send the x-audiocast headers */
-    str = "\nx-audiocast-bitrate: ";
+    /* send the ice- headers */
+    str = "\nice-password: ";
+    sink->write( str, strlen(str));
+    str = getPassword();
+    sink->write( str, strlen(str));
+
+    str = "\nice-bitrate: ";
     sink->write( str, strlen( str));
     if ( snprintf( resp, STRBUF_SIZE, "%d", getBitRate()) == -1 ) {
         throw Exception( __FILE__, __LINE__, "snprintf overflow");
     }
     sink->write( resp, strlen( resp));
 
-    str = "\nx-audiocast-public: ";
+    str = "\nice-public: ";
     sink->write( str, strlen( str));
     str = getIsPublic() ? "yes" : "no";
     sink->write( str, strlen( str));
 
     if ( getName() ) {
-        str = "\nx-audiocast-name: ";
+        str = "\nice-name: ";
         sink->write( str, strlen( str));
         str = getName();
         sink->write( str, strlen( str));
     }
 
     if ( getDescription() ) {
-        str = "\nx-audiocast-description: ";
+        str = "\nice-description: ";
         sink->write( str, strlen( str));
         str = getDescription();
         sink->write( str, strlen( str));
     }
 
     if ( getUrl() ) {
-        str = "\nx-audiocast-url: ";
+        str = "\nice-url: ";
         sink->write( str, strlen( str));
         str = getUrl();
         sink->write( str, strlen( str));
     }
 
     if ( getGenre() ) {
-        str = "\nx-audiocast-genre: ";
+        str = "\nice-genre: ";
         sink->write( str, strlen( str));
         str = getGenre();
-        sink->write( str, strlen( str));
-    }
-
-    if ( getRemoteDumpFile() ) {
-        str = "\nx-audiocast-dumpfile: ";
-        sink->write( str, strlen( str));
-        str = getRemoteDumpFile();
         sink->write( str, strlen( str));
     }
 
     str = "\n\n";
     sink->write( str, strlen( str));
     sink->flush();
-
-    /* read the anticipated response: "OK" */
-    len = source->read( resp, STRBUF_SIZE);
-    if ( len < 2 || resp[0] != 'O' || resp[1] != 'K' ) {
-        return false;
-    }
-
-    /* suck anything that the other side has to say */
-    while ( source->canRead( 0, 0) && 
-           (len = source->read( resp, STRBUF_SIZE)) ) {
-        ;
-    }
-
 
     return true;
 }
@@ -211,29 +188,9 @@ IceCast :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
-  Revision 1.8  2001/09/14 19:31:06  darkeye
+  Revision 1.1  2001/09/14 19:31:06  darkeye
   added IceCast2 / vorbis support
 
-  Revision 1.7  2001/09/09 11:27:31  darkeye
-  added support for ShoutCast servers
-
-  Revision 1.6  2001/08/30 17:25:56  darkeye
-  renamed configure.h to config.h
-
-  Revision 1.5  2001/08/29 21:08:30  darkeye
-  made some description options in the darkice config file optional
-
-  Revision 1.4  2000/11/12 14:54:50  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.3  2000/11/10 20:14:11  darkeye
-  added support for remote dump file
-
-  Revision 1.2  2000/11/05 14:08:28  darkeye
-  changed builting to an automake / autoconf environment
-
-  Revision 1.1.1.1  2000/11/05 10:05:52  darkeye
-  initial version
 
   
 ------------------------------------------------------------------------------*/

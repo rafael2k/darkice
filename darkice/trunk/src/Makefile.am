@@ -17,10 +17,14 @@ darkice_SOURCES =   AudioEncoder.h\
                     Exception.h\
                     IceCast.cpp\
                     IceCast.h\
+                    IceCast2.cpp\
+                    IceCast2.h\
                     ShoutCast.cpp\
                     ShoutCast.h\
                     LameLibEncoder.cpp\
                     LameLibEncoder.h\
+                    VorbisLibEncoder.cpp\
+                    VorbisLibEncoder.h\
                     OssDspSource.cpp\
                     OssDspSource.h\
                     SolarisDspSource.cpp\

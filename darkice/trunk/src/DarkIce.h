@@ -55,7 +55,7 @@
 #include "AudioSource.h"
 #include "BufferedSink.h"
 #include "Connector.h"
-#include "LameLibEncoder.h"
+#include "AudioEncoder.h"
 #include "TcpSocket.h"
 #include "CastSink.h"
 #include "Config.h"
@@ -82,26 +82,26 @@ class DarkIce : public virtual Referable, public virtual Reporter
         /**
          *  The maximum number of supported outputs.
          */
-        static const unsigned int       maxOutput = 8;
+        static const unsigned int       maxOutput = 24;
         
         /**
          *  Type describing each lame library output.
          */
         typedef struct {
-            Ref<LameLibEncoder>     encoder;
+            Ref<AudioEncoder>       encoder;
             Ref<TcpSocket>          socket;
             Ref<CastSink>           server;
-        } LameLibOutput;
+        } Output;
 
         /**
-         *  The lame library outputs.
+         *  The outputs.
          */
-        LameLibOutput           lameLibOuts[maxOutput];
+        Output                  audioOuts[maxOutput];
 
         /**
          *  Number of lame library outputs.
          */
-        unsigned int            noLameLibOuts;
+        unsigned int            noAudioOuts;
 
         /**
          *  Duration of playing, in seconds.
@@ -149,6 +149,18 @@ class DarkIce : public virtual Referable, public virtual Reporter
         void
         configIceCast (  const Config   & config,
                          unsigned int     bufferSecs  )     throw ( Exception );
+
+        /**
+         *  Look for the icecast2 stream outputs from the config file.
+         *  Called from init()
+         *
+         *  @param config the config Object to read initialization
+         *                information from.
+         *  @exception Exception
+         */
+        void
+        configIceCast2 (  const Config   & config,
+                          unsigned int     bufferSecs  )    throw ( Exception );
 
         /**
          *  Look for the shoutcast stream outputs from the config file.
@@ -281,6 +293,9 @@ class DarkIce : public virtual Referable, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.12  2001/09/14 19:31:06  darkeye
+  added IceCast2 / vorbis support
+
   Revision 1.11  2001/09/11 15:05:21  darkeye
   added Solaris support
 

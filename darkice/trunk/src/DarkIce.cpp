@@ -73,7 +73,10 @@
 
 #include "Util.h"
 #include "IceCast.h"
+#include "IceCast2.h"
 #include "ShoutCast.h"
+#include "LameLibEncoder.h"
+#include "VorbisLibEncoder.h"
 #include "DarkIce.h"
 
 
@@ -148,7 +151,9 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
                                      channel );
     encConnector    = new Connector( dsp.get());
 
+    noAudioOuts = 0;
     configIceCast( config, bufferSecs);
+    configIceCast2( config, bufferSecs);
     configShoutCast( config, bufferSecs);
 }
 
@@ -223,30 +228,116 @@ DarkIce :: configIceCast (  const Config      & config,
         reportEvent( 6, "using buffer size", bs);
 
         // streaming related stuff
-        lameLibOuts[u].socket = new TcpSocket( server, port);
-        lameLibOuts[u].server = new IceCast( lameLibOuts[u].socket.get(),
-                                             password,
-                                             mountPoint,
-                                             bitrate,
-                                             name,
-                                             description,
-                                             url,
-                                             genre,
-                                             isPublic,
-                                             remoteDumpFile );
+        audioOuts[u].socket = new TcpSocket( server, port);
+        audioOuts[u].server = new IceCast( audioOuts[u].socket.get(),
+                                           password,
+                                           mountPoint,
+                                           bitrate,
+                                           name,
+                                           description,
+                                           url,
+                                           genre,
+                                           isPublic,
+                                           remoteDumpFile );
 
-        lameLibOuts[u].encoder = new LameLibEncoder(lameLibOuts[u].server.get(),
-                                                    dsp.get(),
-                                                    bitrate,
-                                                    dsp->getSampleRate(),
-                                                    dsp->getChannel(),
-                                                    lowpass,
-                                                    highpass );
+        audioOuts[u].encoder = new LameLibEncoder( audioOuts[u].server.get(),
+                                                   dsp.get(),
+                                                   bitrate,
+                                                   dsp->getSampleRate(),
+                                                   dsp->getChannel(),
+                                                   lowpass,
+                                                   highpass );
 
-        encConnector->attach( lameLibOuts[u].encoder.get());
+        encConnector->attach( audioOuts[u].encoder.get());
     }
 
-    noLameLibOuts = u;
+    noAudioOuts += u;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Look for the IceCast2 stream outputs in the config file
+ *----------------------------------------------------------------------------*/
+void
+DarkIce :: configIceCast2 (  const Config      & config,
+                             unsigned int        bufferSecs  )
+                                                        throw ( Exception )
+{
+    // look for IceCast2 encoder output streams,
+    // sections [icecast2-0], [icecast2-1], ...
+    char            stream[]        = "icecast2- ";
+    size_t          streamLen       = Util::strLen( stream);
+    unsigned int    u;
+
+    for ( u = 0; u < maxOutput; ++u ) {
+        const ConfigSection    * cs;
+        const char             * str;
+
+        // ugly hack to change the section name to "stream0", "stream1", etc.
+        stream[streamLen-1] = '0' + u;
+
+        if ( !(cs = config.get( stream)) ) {
+            break;
+        }
+
+        unsigned int    bitrate         = 0;
+        const char    * server          = 0;
+        unsigned int    port            = 0;
+        const char    * password        = 0;
+        const char    * mountPoint      = 0;
+        const char    * name            = 0;
+        const char    * description     = 0;
+        const char    * url             = 0;
+        const char    * genre           = 0;
+        bool            isPublic        = false;
+
+        str         = cs->getForSure("bitrate", " missing in section ", stream);
+        bitrate     = Util::strToL( str);
+        server      = cs->getForSure( "server", " missing in section ", stream);
+        str         = cs->getForSure( "port", " missing in section ", stream);
+        port        = Util::strToL( str);
+        password    = cs->getForSure("password"," missing in section ",stream);
+        mountPoint  = cs->getForSure( "mountPoint",
+                                      " missing in section ",
+                                      stream);
+        name        = cs->get( "name");
+        description = cs->get("description");
+        url         = cs->get( "url");
+        genre       = cs->get( "genre");
+        str         = cs->get( "public");
+        isPublic    = str ? (Util::strEq( str, "yes") ? true : false) : false;
+
+        // go on and create the things
+
+        // encoder related stuff
+        unsigned int bs = bufferSecs *
+                          (dsp->getBitsPerSample() / 8) *
+                          dsp->getChannel() *
+                          dsp->getSampleRate();
+        reportEvent( 6, "using buffer size", bs);
+
+        // streaming related stuff
+        audioOuts[u].socket = new TcpSocket( server, port);
+        audioOuts[u].server = new IceCast2( audioOuts[u].socket.get(),
+                                            password,
+                                            mountPoint,
+                                            bitrate,
+                                            name,
+                                            description,
+                                            url,
+                                            genre,
+                                            isPublic );
+
+        audioOuts[u].encoder = new VorbisLibEncoder( audioOuts[u].server.get(),
+                                                     dsp.get(),
+                                                     bitrate,
+                                                     dsp->getSampleRate(),
+                                                     dsp->getChannel() );
+
+        encConnector->attach( audioOuts[u].encoder.get());
+    }
+
+    noAudioOuts += u;
 }
 
 
@@ -318,30 +409,30 @@ DarkIce :: configShoutCast (    const Config      & config,
         reportEvent( 6, "using buffer size", bs);
 
         // streaming related stuff
-        lameLibOuts[u].socket = new TcpSocket( server, port);
-        lameLibOuts[u].server = new ShoutCast( lameLibOuts[u].socket.get(),
-                                               password,
-                                               bitrate,
-                                               name,
-                                               url,
-                                               genre,
-                                               isPublic,
-                                               irc,
-                                               aim,
-                                               icq );
+        audioOuts[u].socket = new TcpSocket( server, port);
+        audioOuts[u].server = new ShoutCast( audioOuts[u].socket.get(),
+                                             password,
+                                             bitrate,
+                                             name,
+                                             url,
+                                             genre,
+                                             isPublic,
+                                             irc,
+                                             aim,
+                                             icq );
 
-        lameLibOuts[u].encoder = new LameLibEncoder(lameLibOuts[u].server.get(),
-                                                    dsp.get(),
-                                                    bitrate,
-                                                    dsp->getSampleRate(),
-                                                    dsp->getChannel(),
-                                                    lowpass,
-                                                    highpass );
+        audioOuts[u].encoder = new LameLibEncoder( audioOuts[u].server.get(),
+                                                   dsp.get(),
+                                                   bitrate,
+                                                   dsp->getSampleRate(),
+                                                   dsp->getChannel(),
+                                                   lowpass,
+                                                   highpass );
 
-        encConnector->attach( lameLibOuts[u].encoder.get());
+        encConnector->attach( audioOuts[u].encoder.get());
     }
 
-    noLameLibOuts = u;
+    noAudioOuts += u;
 }
 
 
@@ -477,6 +568,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.19  2001/09/14 19:31:06  darkeye
+  added IceCast2 / vorbis support
+
   Revision 1.18  2001/09/11 15:05:21  darkeye
   added Solaris support
 

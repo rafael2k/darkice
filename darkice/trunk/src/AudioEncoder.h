@@ -37,6 +37,7 @@
 /* ============================================================ include files */
 
 #include "Referable.h"
+#include "Sink.h"
 #include "AudioSource.h"
 
 
@@ -54,7 +55,7 @@
  *  @author  $Author$
  *  @version $Revision$
  */
-class AudioEncoder : public virtual Referable
+class AudioEncoder : public Sink, public virtual Referable
 {
     private:
 
@@ -359,6 +360,9 @@ class AudioEncoder : public virtual Referable
   $Source$
 
   $Log$
+  Revision 1.3  2001/09/14 19:31:06  darkeye
+  added IceCast2 / vorbis support
+
   Revision 1.2  2000/11/12 14:54:50  darkeye
   added kdoc-style documentation comments
 
