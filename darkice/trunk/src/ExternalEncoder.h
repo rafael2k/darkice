@@ -9,27 +9,21 @@
    Author   : $Author$
    Location : $ExternalEncoder$
    
-   Abstract : 
-
-     A class representing an external audio encoder which is invoked
-     with a frok() and an exec() call
-
    Copyright notice:
 
-     This program is free software; you can redistribute it and/or
-     modify it under the terms of the GNU General Public License  
-     as published by the Free Software Foundation; either version 2
-     of the License, or (at your option) any later version.
-    
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of 
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-     GNU General Public License for more details.
-    
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307,
-     USA.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License  
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+   
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of 
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+    GNU General Public License for more details.
+   
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ------------------------------------------------------------------------------*/
 #ifndef EXTERNAL_ENCODER_H
@@ -65,54 +59,123 @@
 
 /* =============================================================== data types */
 
-/*------------------------------------------------------------------------------
- *  
- *----------------------------------------------------------------------------*/
+/**
+ *  A class representing an external audio encoder which is invoked
+ *  with a frok() and an exec() call
+ *
+ *  @author  $Author$
+ *  @version $Revision$
+ */
 class ExternalEncoder : public AudioEncoder
 {
     private:
 
+        /**
+         *  Name of the encoder (the command to invoke the encoder with).
+         */
         char      * encoderName;
+
+        /**
+         *  Input file parameter for the encoder.
+         */
         char      * inFileName;
+
+        /**
+         *  Output file parameter for the encoder.
+         */
         char      * outFileName;
 
-        static const unsigned int       numCmdArgs = 32;
+        /**
+         *  Maximum number of command line arguments.
+         */
+        static const unsigned int       numCmdArgs = 64;
 
+        /**
+         *  Array of command line arguments.
+         */
         char      * cmdArgs[numCmdArgs];
 
+        /**
+         *  Process ID of the encoder process.
+         */
         pid_t       child;
 
-
+        /**
+         *  Initialize the object.
+         *
+         *  @param encoderName name of the encoder.
+         *  @param inFileName input file parameter for the encoder.
+         *  @param outFileName output file parameter for the encoder.
+         *  @exception Exception
+         */
         void
         init (  const char    * encoderName,
                 const char    * inFileName,
                 const char    * outFileName )           throw ( Exception );
 
-
+        /**
+         *  De-initialize the object.
+         *
+         *  @exception Exception
+         */
         void
         strip ( void )                                  throw ( Exception );
 
 
     protected:
 
+        /**
+         *  Default constructor. Always throws an Exception.
+         *
+         *  @exception Exception
+         */
         inline
         ExternalEncoder ( void )                        throw ( Exception )
         {
             throw Exception( __FILE__, __LINE__);
         }
 
-
+        /**
+         *  Set a command line argument in the argument array.
+         *
+         *  @param str the argument to set.
+         *  @param index the place in the array to set the argument.
+         *  @exception Exception
+         */
         void
         setArg (    const char    * str,
                     unsigned int    index )     throw ( Exception );
 
-
+        /**
+         *  Fill in the list of command line arguments. Puts a 0
+         *  as the last in the list of args.
+         *
+         *  @return the number of arguments filled.
+         *  @exception Exception
+         */
         virtual unsigned int
         makeArgs ( void )               throw ( Exception )     = 0;
 
 
     public:
 
+        /**
+         *  Constructor.
+         *
+         *  @param encoderName name of the encoder.
+         *                     (the command to invoke the encoder with)
+         *  @param inFileName input file parameter for the encoder.
+         *  @param inSampleRate sample rate of the input.
+         *  @param inBitsPerSample number of bits per sample of the input.
+         *  @param inChannel number of channels  of the input.
+         *  @param outFileName output file parameter for the encoder.
+         *  @param outBitrate bit rate of the output (bits/sec).
+         *  @param outSampleRate sample rate of the output.
+         *                       If 0, inSampleRate is used.
+         *  @param outChannel number of channels of the output.
+         *                    If 0, inChannel is used.
+         *  @exception Exception
+         */
         inline
         ExternalEncoder (   const char    * encoderName,
                             const char    * inFileName,
@@ -135,7 +198,22 @@ class ExternalEncoder : public AudioEncoder
             init ( encoderName, inFileName, outFileName );
         }
 
-
+        /**
+         *  Constructor.
+         *
+         *  @param encoderName name of the encoder.
+         *                     (the command to invoke the encoder with)
+         *  @param inFileName input file parameter for the encoder.
+         *  @param as get input sample rate, bits per sample and channels
+         *            from this AudioSource.
+         *  @param outFileName output file parameter for the encoder.
+         *  @param outBitrate bit rate of the output (bits/sec).
+         *  @param outSampleRate sample rate of the output.
+         *                       If 0, input sample rate is used.
+         *  @param outChannel number of channels of the output.
+         *                    If 0, input channel is used.
+         *  @exception Exception
+         */
         inline
         ExternalEncoder (   const char            * encoderName,
                             const char            * inFileName,
@@ -154,7 +232,11 @@ class ExternalEncoder : public AudioEncoder
             init ( encoderName, inFileName, outFileName );
         }
 
-
+        /**
+         *  Copy constructor.
+         *
+         *  @param encoder the ExternalEncoder to copy.
+         */
         inline
         ExternalEncoder (  const ExternalEncoder &    encoder )
                                                             throw ( Exception )
@@ -165,14 +247,24 @@ class ExternalEncoder : public AudioEncoder
                   encoder.outFileName );
         }
 
-
+        /**
+         *  Destructor.
+         *
+         *  @exception Exception
+         */
         inline virtual
         ~ExternalEncoder ( void )                           throw ( Exception )
         {
             strip();
         }
 
-
+        /**
+         *  Assignment operator.
+         *
+         *  @param encoder the ExternalEncoder to assign this to.
+         *  @return a reference to this ExternalEncoder.
+         *  @exception Exception
+         */
         inline virtual ExternalEncoder &
         operator= ( const ExternalEncoder &     encoder )   throw ( Exception )
         {
@@ -187,39 +279,67 @@ class ExternalEncoder : public AudioEncoder
             return *this;
         }
 
-
+        /**
+         *  Get the name of the encoder
+         *  (the command to invoke the encoder with).
+         *
+         *  @return the name of the encoder.
+         */
         const char *
         getEncoderName ( void ) const           throw ()
         {
             return encoderName;
         }
 
-
+        /**
+         *  Get the input file parameter for the encoder.
+         *
+         *  @return the input file parameter for the encoder.
+         */
         const char *
         getInFileName ( void ) const            throw ()
         {
             return inFileName;
         }
 
-
+        /**
+         *  Get the output file parameter for the encoder.
+         *
+         *  @return the output file parameter for the encoder.
+         */
         const char *
         getOutFileName ( void ) const           throw ()
         {
             return outFileName;
         }
 
-
+        /**
+         *  Check wether encoding is in progress.
+         *
+         *  @return true if encoding is in progress, false otherwise.
+         */
         inline virtual bool
         isRunning ( void ) const                throw ()
         {
             return child != 0;
         }
 
-
+        /**
+         *  Start encoding. This function returns as soon as possible,
+         *  with encoding started as a separate process in the
+         *  background.
+         *
+         *  @return true if encoding has started, false otherwise.
+         *  @exception Exception
+         */
         virtual bool
         start ( void )                          throw ( Exception );
 
-
+        /**
+         *  Stop encoding. Stops the encoding running in the background.
+         *
+         *  @exception Exception
+         */
         virtual void
         stop ( void )                           throw ( Exception );
 };
@@ -240,6 +360,9 @@ class ExternalEncoder : public AudioEncoder
   $Source$
 
   $Log$
+  Revision 1.4  2000/11/12 14:54:50  darkeye
+  added kdoc-style documentation comments
+
   Revision 1.3  2000/11/05 17:37:24  darkeye
   removed clone() functions
 

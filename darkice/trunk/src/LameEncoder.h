@@ -53,29 +53,58 @@
 
 /* =============================================================== data types */
 
-/*------------------------------------------------------------------------------
- *  
- *----------------------------------------------------------------------------*/
+/**
+ *  A class representing the lame mp3 encoder
+ *
+ *  @author  $Author$
+ *  @version $Revision$
+ */
 class LameEncoder : public ExternalEncoder
 {
     private:
 
+        /**
+         *  Highpass filter. Sound frequency in Hz, from where up the
+         *  input is cut.
+         */
         unsigned int    lowpass;
+
+        /**
+         *  Lowpass filter. Sound frequency in Hz, from where down the
+         *  input is cut.
+         */
         unsigned int    highpass;
 
     protected:
 
+        /**
+         *  Fill in the list of command line arguments. Puts a 0
+         *  as the last in the list of args.
+         *
+         *  @return the number of arguments filled.
+         *  @exception Exception
+         */
         virtual unsigned int
         makeArgs ( void )                       throw ( Exception );
 
-
+        /**
+         *  Default constructor. Always throws an Exception.
+         *
+         *  @exception Exception
+         */
         inline
         LameEncoder ( void )                    throw ( Exception )
         {
             throw Exception( __FILE__, __LINE__);
         }
 
-
+        /**
+         *  Initialize the object.
+         *
+         *  @param lowpass lowpass filter range.
+         *  @param highpass highpass filter range.
+         *  @exception Exception
+         */
         inline void
         init (  unsigned int    lowpass,
                 unsigned int    highpass )      throw ( Exception )
@@ -84,7 +113,11 @@ class LameEncoder : public ExternalEncoder
             this->highpass = highpass;
         }
 
-
+        /**
+         *  De-initialize the object.
+         *
+         *  @exception Exception
+         */
         inline void
         strip ( void )                          throw ( Exception )
         {
@@ -93,6 +126,31 @@ class LameEncoder : public ExternalEncoder
 
     public:
 
+        /**
+         *  Constructor.
+         *
+         *  @param encoderName name of the encoder.
+         *                     (the command to invoke the encoder with)
+         *  @param inFileName input file parameter for the encoder.
+         *  @param inSampleRate sample rate of the input.
+         *  @param inBitsPerSample number of bits per sample of the input.
+         *  @param inChannel number of channels  of the input.
+         *  @param outFileName output file parameter for the encoder.
+         *  @param outBitrate bit rate of the output (bits/sec).
+         *  @param outSampleRate sample rate of the output.
+         *                       If 0, inSampleRate is used.
+         *  @param outChannel number of channels of the output.
+         *                    If 0, inChannel is used.
+         *  @param lowpass frequency threshold for the lowpass filter.
+         *                 Input above this frequency is cut.
+         *                 If 0, lame's default values are used,
+         *                 which depends on the out sample rate.
+         *  @param highpass frequency threshold for the highpass filter.
+         *                  Input below this frequency is cut.
+         *                  If 0, lame's default values are used,
+         *                  which depends on the out sample rate.
+         *  @exception Exception
+         */
         inline
         LameEncoder (   const char    * encoderName,
                         const char    * inFileName,
@@ -120,7 +178,30 @@ class LameEncoder : public ExternalEncoder
             init( lowpass, highpass);
         }
 
-
+        /**
+         *  Constructor.
+         *
+         *  @param encoderName name of the encoder.
+         *                     (the command to invoke the encoder with)
+         *  @param inFileName input file parameter for the encoder.
+         *  @param as get input sample rate, bits per sample and channels
+         *            from this AudioSource.
+         *  @param outFileName output file parameter for the encoder.
+         *  @param outBitrate bit rate of the output (bits/sec).
+         *  @param outSampleRate sample rate of the output.
+         *                       If 0, inSampleRate is used.
+         *  @param outChannel number of channels of the output.
+         *                    If 0, inChannel is used.
+         *  @param lowpass frequency threshold for the lowpass filter.
+         *                 Input above this frequency is cut.
+         *                 If 0, lame's default values are used,
+         *                 which depends on the out sample rate.
+         *  @param highpass frequency threshold for the highpass filter.
+         *                  Input below this frequency is cut.
+         *                  If 0, lame's default values are used,
+         *                  which depends on the out sample rate.
+         *  @exception Exception
+         */
         inline
         LameEncoder (   const char            * encoderName,
                         const char            * inFileName,
@@ -144,7 +225,11 @@ class LameEncoder : public ExternalEncoder
             init( lowpass, highpass);
         }
 
-
+        /**
+         *  Copy constructor.
+         *
+         *  @param encoder the LameEncoder to copy.
+         */
         inline
         LameEncoder (   const LameEncoder & encoder )       throw ( Exception )
                     : ExternalEncoder( encoder )
@@ -152,14 +237,24 @@ class LameEncoder : public ExternalEncoder
             init( encoder.lowpass, encoder.highpass);
         }
 
-
+        /**
+         *  Destructor.
+         *
+         *  @exception Exception
+         */
         inline virtual
         ~LameEncoder ( void )                               throw ( Exception )
         {
             strip();
         }
 
-
+        /**
+         *  Assignment operator.
+         *
+         *  @param encoder the LameEncoder to assign this to.
+         *  @return a reference to this LameEncoder.
+         *  @exception Exception
+         */
         inline virtual LameEncoder &
         operator= ( const LameEncoder & encoder )           throw ( Exception )
         {
@@ -172,14 +267,26 @@ class LameEncoder : public ExternalEncoder
             return *this;
         }
 
-
+        /**
+         *  Get the lowpass filter threshold. Sound frequency in Hz,
+         *  from where up the input is cut.
+         *
+         *  @return the lowpass filter threshold.
+         */
         inline unsigned int
         getLowpass ( void ) const                       throw ()
         {
             return lowpass;
         }
 
-
+        /**
+         *  Set the lowpass filter threshold. Sound frequency in Hz,
+         *  from where up the input is cut.
+         *  Can be only set if encoding is not in progress.
+         *
+         *  @param lowpass the lowpass filter threshold.
+         *  @return if setting is successful.
+         */
         inline bool
         setLowpass (    unsigned int    lowpass )       throw ()
         {
@@ -191,14 +298,26 @@ class LameEncoder : public ExternalEncoder
             }
         }
 
-
+        /**
+         *  Get the highpass filter threshold. Sound frequency in Hz,
+         *  from where down the input is cut.
+         *
+         *  @return the highpass filter threshold.
+         */
         inline unsigned int
         getHighpass ( void ) const                      throw ()
         {
             return highpass;
         }
 
-
+        /**
+         *  Set the highpass filter threshold. Sound frequency in Hz,
+         *  from where down the input is cut.
+         *  Can be only set if encoding is not in progress.
+         *
+         *  @param highpass the highpass filter threshold.
+         *  @return if setting is successful.
+         */
         inline bool
         setHighpass (   unsigned int    highpass )      throw ()
         {
@@ -229,6 +348,9 @@ class LameEncoder : public ExternalEncoder
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/12 14:54:50  darkeye
+  added kdoc-style documentation comments
+
   Revision 1.2  2000/11/05 17:37:24  darkeye
   removed clone() functions
 
