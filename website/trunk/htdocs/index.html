@@ -25,21 +25,17 @@ DarkIce is a an <a href="http://www.icecast.org/">IceCast</a>
 live streamer. The purose is to take the live input from a soundcard, encode
 it and send the encoded stream to an
 <a href="http://www.icecast.org/">IceCast</a> server.
-DarkIce uses an external mp3 encoder.
+DarkIce uses <a href="http://www.mp3dev.org/mp3">lame</a> as a shared
+object or statically linked as its mp3 encoder.
 <br>
 DarkIce is being written by
 <a href="mailto:darkeye@users.sourceforge.net">&Aacute;kos Mar&oacute;y</a>
 
 <h2>2. Status</h2>
-DarkIce is under development. This is unfinished beta software, use at
-your own peril. You have been warned.
+DarkIce is under development. While still considered beta, it has
+been used for almost a year in production 24 hours per day.
 <br>
-The latest version is <b>0.3.1</b>
-
-<h3>2.1 Supported encoders</h3>
-<ul>
-    <li><a href="http://www.mp3dev.org/mp3/">lame</a></li>
-</ul>
+The latest version is <b>0.4</b>
 
 <h2>3. Download</h2>
 DarkIce is
@@ -50,10 +46,25 @@ and is hosted on
 <a href="http://sourceforge.net/projects/darkice">SourceForge</a>.
 <br>
 You can download DarkIce releases from the project's
-<a href="http://sourceforge.net/project/showfiles.php?group_id=14111">download</a>
+<a href="http://sourceforge.net/project/showfiles.php?group_id=14111">download page</a>
 or
 <a href="ftp://darkice.sourceforge.net/pub/darkice/">FTP site</a>.
-<br>
+I also provided lame packages, which are needed by DarkIce, but you can
+use your own lame libs if you like.
+<p>
+You can either
+<ul>
+    <li>get the RPM packages <b>lame-3.89beta-1.i386.rpm</b> and
+        <b>darkice-0.4-1.i386.rpm</b>, install &amp; enjoy</li>
+    <li>get the package <b>darkice-static-0.4-1.i388.rpm</b>, this is
+        statically linked, and does not need lame libraries</li>
+    <li>download the source tarball <b>darkice-0.4.tar.gz</b>
+        and compile yourself. You will need the lame libs to do this.
+        Try packages <b>lame-3.89beta-1.i386.rpm</b> and
+        <b>lame-devel-3.89beta-1.i386.rpm</b>, or your favourite
+        lame tarball. You'll need lame 3.89 or above.
+</ul>
+<p>
 If you like to live on the edge, you can check the
 <a href="http://www.cvshome.org/">CVS</a> repository by getting module
 <b>darkice</b> as described
