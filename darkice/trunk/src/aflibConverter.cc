@@ -123,8 +123,8 @@ aflibConverter::aflibConverter(
    largeFilter = high_quality;
    linearInterp = linear_interpolation;
 
-   _X = NULL;
-   _Y = NULL;
+   _I = NULL;
+   _J = NULL;
    _vol = 1.0;
 }
 
@@ -140,19 +140,19 @@ aflibConverter::deleteMemory()
    int i;
 
    // Delete memory for the input and output arrays
-   if (_X != NULL)
+   if (_I != NULL)
    {
       for (i = 0; i < _nChans; i++)
       {
-         delete [] _X[i];
-         _X[i] = NULL;
-         delete [] _Y[i];
-         _Y[i] = NULL;
+         delete [] _I[i];
+         _I[i] = NULL;
+         delete [] _J[i];
+         _J[i] = NULL;
       }
-      delete [] _X;
-      _X = NULL;
-      delete [] _Y;
-      _Y = NULL;
+      delete [] _I;
+      _I = NULL;
+      delete [] _J;
+      _J = NULL;
    }
 }
 
@@ -180,15 +180,15 @@ aflibConverter::initialize(
    _vol = volume;
 
    // Allocate all new memory
-   _X = new short * [_nChans];
-   _Y = new short * [_nChans];
+   _I = new short * [_nChans];
+   _J = new short * [_nChans];
 
    for (i = 0; i < _nChans; i++)
    {
       // Add extra to allow of offset of input data (Xoff in main routine)
-      _X[i] = new short[IBUFFSIZE + 256];
-      _Y[i] = new short[(int)(((double)IBUFFSIZE)*_factor)];
-      memset(_X[i], 0, sizeof(short) * (IBUFFSIZE + 256));    
+      _I[i] = new short[IBUFFSIZE + 256];
+      _J[i] = new short[(int)(((double)IBUFFSIZE)*_factor)];
+      memset(_I[i], 0, sizeof(short) * (IBUFFSIZE + 256));    
    }
 }
 
@@ -467,7 +467,7 @@ aflibConverter::resampleFast(  /* number of output samples returned */
     do {
 		if (!last)		/* If haven't read last sample yet */
 		{
-	   	 last = readData(inCount, inArray, _X, 
+	   	 last = readData(inCount, inArray, _I, 
 					 IBUFFSIZE, (int)Xread,first_pass);
           first_pass = FALSE;
 	    	 if (last && (last-Xoff<Nx)) { /* If last sample has been read... */
@@ -487,7 +487,7 @@ aflibConverter::resampleFast(  /* number of output samples returned */
 			orig_Nx = Nx;
 	   	Time2 = _Time;
 	   /* Resample stuff in input buffer */
-	   	Nout=SrcLinear(_X[c],_Y[c],_factor,&Time2,orig_Nx,maxOutput);
+	   	Nout=SrcLinear(_I[c],_J[c],_factor,&Time2,orig_Nx,maxOutput);
       }
 		Nx = orig_Nx;
       _Time = Time2;
@@ -504,7 +504,7 @@ aflibConverter::resampleFast(  /* number of output samples returned */
       for (c = 0; c < _nChans; c++)
       {
 	   	for (i=0; i<IBUFFSIZE-Xp+Xoff; i++) { /* Copy part of input signal */
-	       	_X[c][i] = _X[c][i+Xp-Xoff]; /* that must be re-used */
+	       	_I[c][i] = _I[c][i+Xp-Xoff]; /* that must be re-used */
 	   	}
       }
 		if (last) {		/* If near end of sample... */
@@ -526,7 +526,7 @@ aflibConverter::resampleFast(  /* number of output samples returned */
 
       for (c = 0; c < _nChans; c++)
 	   	for (i = 0; i < Nout; i++)
-            outArray[c * outCount + i + Ycount - Nout] = _Y[c][i];
+            outArray[c * outCount + i + Ycount - Nout] = _J[c][i];
 
       total_inCount += Nx;
 
@@ -583,7 +583,7 @@ aflibConverter::resampleWithFilter(  /* number of output samples returned */
     do {
 		if (!last)		/* If haven't read last sample yet */
 		{
-	    	last = readData(inCount, inArray, _X, 
+	    	last = readData(inCount, inArray, _I, 
 					IBUFFSIZE, (int)Xread,first_pass);
          first_pass = FALSE;
 	    	if (last && (last-Xoff<Nx)) { /* If last sample has been read... */
@@ -604,11 +604,11 @@ aflibConverter::resampleWithFilter(  /* number of output samples returned */
 	   	Time2 = _Time;
            /* Resample stuff in input buffer */
 	   	if (_factor >= 1) {	/* SrcUp() is faster if we can use it */
-	       	Nout=SrcUp(_X[c],_Y[c],_factor,
+	       	Nout=SrcUp(_I[c],_J[c],_factor,
 						&Time2,Nx,maxOutput,Nwing,LpScl,Imp,ImpD,interpFilt);
 	   	}
 	   	else {
-	       	Nout=SrcUD(_X[c],_Y[c],_factor,
+	       	Nout=SrcUD(_I[c],_J[c],_factor,
 						&Time2,Nx,maxOutput,Nwing,LpScl,Imp,ImpD,interpFilt);
 	   	}
       }
@@ -642,7 +642,7 @@ aflibConverter::resampleWithFilter(  /* number of output samples returned */
 		{
 			for (i = 0; i < Nout; i++)
 			{
-				outArray[c * outCount + i + Ycount - Nout] = _Y[c][i];
+				outArray[c * outCount + i + Ycount - Nout] = _J[c][i];
 			}
 		}
 
@@ -651,7 +651,7 @@ aflibConverter::resampleWithFilter(  /* number of output samples returned */
 		for (c = 0; c < _nChans; c++)
 		{
 			for (i=0; i<IBUFFSIZE-act_incount+Xoff; i++) { /* Copy part of input signal */
-				 _X[c][i] = _X[c][i+act_incount]; /* that must be re-used */
+				 _I[c][i] = _I[c][i+act_incount]; /* that must be re-used */
 			}
 		}
 		Xread = IBUFFSIZE - Nx; /* Pos in input buff to read new data into */

@@ -5,6 +5,9 @@ DarkIce next release
     o added fix to enable downsampling from stereo to mono of mp3 streams
       when streaming to an icecast2 server. thanks to John Deeny
       <taqueso@dilapidated.org>
+    o removed _X and _Y symbols from aflibConverter files, which caused
+      a naming collision on Solaris. thanks to Robert Lunnon,
+      <bobl@optushome.com.au>
 
 07-01-2004: DarkIce 0.13.2 released
 
