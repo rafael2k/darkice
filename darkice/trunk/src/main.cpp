@@ -86,7 +86,7 @@ main (
 
     cout << "DarkIce " << VERSION
          << " live audio streamer, http://darkice.sourceforge.net" << endl;
-    cout << "Copyright (c) 2000-2001, Tyrell Hungary, http://tyrell.hu" << endl;
+    cout << "Copyright (c) 2000-2002, Tyrell Hungary, http://tyrell.hu" << endl;
     cout << endl;
 
     try {
@@ -145,7 +145,7 @@ static void
 showUsage (     ostream   & os )
 {
     os
-    << "usage: darkice -c config.file"
+    << "usage: darkice [-v n] -c config.file"
     << endl
     << endl
     << "options:"
@@ -165,6 +165,9 @@ showUsage (     ostream   & os )
   $Source$
 
   $Log$
+  Revision 1.10  2002/02/20 15:08:52  darkeye
+  minor changes
+
   Revision 1.9  2001/09/11 15:05:21  darkeye
   added Solaris support
 
