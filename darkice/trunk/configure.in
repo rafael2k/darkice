@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/DarkIce.cpp)
-AM_INIT_AUTOMAKE(darkice, 0.4)
+AM_INIT_AUTOMAKE(darkice, 0.5)
 
 AM_CONFIG_HEADER(config.h)
 
@@ -34,8 +34,12 @@ AC_ARG_WITH(lame-prefix,
     LA_SEARCH_LIB(LAME_LIB_LOC, LAME_INC_LOC, libmp3lame.a, lame/lame.h, ${CONFIG_LAME_PREFIX})
     if test "x${LAME_LIB_LOC}" != "x" ; then
       AC_DEFINE(HAVE_LAME_LIB, 1, build with lame library calls)
-      LAME_INCFLAGS="-I${LAME_INC_LOC}"
-      LAME_LDFLAGS="-Wl,--rpath -Wl,${LAME_LIB_LOC} -lmp3lame"
+      if test "x${LAME_INC_LOC}" != "x/usr/include" ; then
+          LAME_INCFLAGS="-I${LAME_INC_LOC}"
+          LAME_LDFLAGS="-Wl,--rpath -Wl,${LAME_LIB_LOC} -lmp3lame"
+      else
+          LAME_LDFLAGS="-lmp3lame"
+      fi
       AC_MSG_RESULT( "lame found at ${LAME_LIB_LOC}")
     else
       AC_MSG_ERROR( "lame library not found")
