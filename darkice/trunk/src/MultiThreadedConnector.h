@@ -180,15 +180,6 @@ class MultiThreadedConnector : public virtual Connector
         void
         strip ( void )                              throw ( Exception );
 
-        /**
-         *  This is the function for each thread.
-         *  This function has to return fast
-         *
-         *  @param ixSink the index of the sink this thread works on.
-         */
-        void
-        sinkThread( int     ixSink );
-
     protected:
 
         /**
@@ -310,6 +301,15 @@ class MultiThreadedConnector : public virtual Connector
          */
         virtual void
         close ( void )                                  throw ( Exception );
+
+        /**
+         *  This is the function for each thread.
+         *  This function has to return fast
+         *
+         *  @param ixSink the index of the sink this thread works on.
+         */
+        void
+        sinkThread( int     ixSink );
 };
 
 
@@ -328,6 +328,9 @@ class MultiThreadedConnector : public virtual Connector
   $Source$
 
   $Log$
+  Revision 1.3  2002/11/26 21:41:20  darkeye
+  bugfix: MultiThreadedConnector::sinkThread() was private, now public
+
   Revision 1.2  2002/10/19 13:35:21  darkeye
   when a connection is dropped, DarkIce tries to reconnect, indefinitely
   removed extreme event reporting for thread-related events

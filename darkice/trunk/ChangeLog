@@ -1,3 +1,9 @@
+DarkIce next version:
+
+    o bugfix: MultiThreadedConnector::sinkThread() was private, now public
+    o added fileAddDate configuration option
+      thanks to Nicu Pavel <npavel@ituner.com>
+
 20-10-2002: DarkIce 0.12 released
 
     o ported to FreeBSD (removed reference to MSG_NOSIGNAL in TcpSocket.cpp)
