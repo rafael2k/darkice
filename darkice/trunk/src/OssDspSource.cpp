@@ -168,7 +168,7 @@ OssDspSource :: open ( void )                       throw ( Exception )
          u != getChannel() ) {
         
         close();
-        throw Exception( __FILE__, __LINE__, "can't set channels", i);
+        throw Exception( __FILE__, __LINE__, "can't set channels", u);
     }
 
     u = getSampleRate();
@@ -176,7 +176,7 @@ OssDspSource :: open ( void )                       throw ( Exception )
          u != getSampleRate() ) {
 
         close();
-        throw Exception( __FILE__, __LINE__, "can't set speed", i);
+        throw Exception( __FILE__, __LINE__, "can't set speed", u);
     }
 
     return true;
@@ -265,6 +265,9 @@ OssDspSource :: close ( void )                  throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.6  2000/12/01 15:03:28  darkeye
+  bug fix in error reporting
+
   Revision 1.5  2000/11/17 15:50:48  darkeye
   added -Wall flag to compiler and eleminated new warnings
 
