@@ -1,4 +1,4 @@
-DarkIce 0.1 live audio streamer, http://darkice.sourceforge.net
+DarkIce 0.2 live audio streamer, http://darkice.sourceforge.net
 Copyright (C) 2000, Tyrell Hungary, http://tyrell.hu
 
 
@@ -31,6 +31,9 @@ For command line syntax, try:
 
 darkice --help
 
+It is recommended to run DarkIce as root, with a nice level of -10, like:
+
+nice --10 darkice [options]
 
 
 2. Configuration file format
@@ -125,6 +128,7 @@ Tests were made with version 3.86.
 Lots of bugs, this is the first release.
 
 You must have write permissions in the directory you execute DarkIce.
-It is recommended to run DarkIce as root, with a nice level of -10.
+
+DarkIce was only tested under RedHat Linux
 
 
