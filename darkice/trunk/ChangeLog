@@ -4,6 +4,7 @@ Darkice next release
       Steven G. Johnson <stevenj@alum.mit.edu> and
       Alejandro Forero Cuervo <bachue@bachue.com>
       see http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html
+    o added proper detection of netural endiannes for 16 bit recording
 
 09-02-2003: DarkIce 0.13 released
 

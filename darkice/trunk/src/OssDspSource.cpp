@@ -102,6 +102,18 @@
  *----------------------------------------------------------------------------*/
 static const char fileid[] = "$Id$";
 
+/*------------------------------------------------------------------------------
+ *  Define the natural endiannes of 16 bit recording if not defined,
+ *  based on the endiannes of the system
+ *----------------------------------------------------------------------------*/
+#ifndef AFMT_S16_NE
+#   ifdef WORDS_BIGENDIAN
+#       define AFMT_S16_NE AFMT_S16_BE
+#   else
+#       define AFMT_S16_NE AFMT_S16_LE
+#   endif
+#endif
+
 
 /* ===============================================  local function prototypes */
 
@@ -295,6 +307,9 @@ OssDspSource :: close ( void )                  throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.13  2003/02/12 15:48:22  darkeye
+  added proper guessing for natural endiannes of 16 bit recording
+
   Revision 1.12  2002/12/20 10:40:40  darkeye
   added support for big endian OSS devices (like Linux PowerPC)
 
