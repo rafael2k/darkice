@@ -1,5 +1,5 @@
 SUBDIRS = src
-EXTRA_DIST = stl doc
+EXTRA_DIST = stl doc darkice.cfg
 
 dist-hook: kdocs
 
