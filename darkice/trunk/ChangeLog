@@ -3,7 +3,7 @@ DarkIce 0.7
     o added support for FreeBSD
       thanks to Robin P. Blanchard, <Robin_Blanchard@gactr.uga.edu>
     o added support for resampling mp3 streams
-
+    o DarkIce config file now may contain spaces and tabs as white space
 
 18-09-2001: DarkIce 0.6 released
 

@@ -52,6 +52,12 @@
 static const char fileid[] = "$Id$";
 
 
+/*------------------------------------------------------------------------------
+ *  string containing all white space characters
+ *----------------------------------------------------------------------------*/
+#define WHITE_SPACE_STR      " \t"
+
+
 /* ===============================================  local function prototypes */
 
 
@@ -133,11 +139,11 @@ ConfigSection :: addLine (  const char    * line )          throw ( Exception )
         str.erase( ix);
     }
     /* eat up all white space from the front */
-    if ( (ix = str.find_first_not_of( ' ')) != str.npos ) {
+    if ( (ix = str.find_first_not_of( WHITE_SPACE_STR)) != str.npos ) {
         str.erase( 0, ix);
     }
     /* eat up all white space from the end */
-    if ( (ix = str.find_last_not_of( ' ')) != str.npos ) {
+    if ( (ix = str.find_last_not_of( WHITE_SPACE_STR)) != str.npos ) {
         str.erase( ix + 1);
     }
     if ( !str.length() ) {
@@ -153,11 +159,11 @@ ConfigSection :: addLine (  const char    * line )          throw ( Exception )
     std::string     value( str, ix + 1);
 
     /* eat up all white space from the front of value */
-    if ( (ix = value.find_first_not_of( ' ')) != value.npos ) {
+    if ( (ix = value.find_first_not_of( WHITE_SPACE_STR)) != value.npos ) {
         value.erase( 0, ix);
     }
     /* eat up all white space from the end of key */
-    if ( (ix = key.find_last_not_of( ' ')) != key.npos ) {
+    if ( (ix = key.find_last_not_of( WHITE_SPACE_STR)) != key.npos ) {
         key.erase( ix + 1);
     }
 
@@ -171,6 +177,9 @@ ConfigSection :: addLine (  const char    * line )          throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.7  2001/10/19 09:20:09  darkeye
+  config file now may contain tabs also as white space
+
   Revision 1.6  2001/09/09 11:26:43  darkeye
   full line comments skipped earlier: commens allowed before the first secion
 
