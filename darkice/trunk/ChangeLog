@@ -5,8 +5,8 @@ DarkIce next release
     o added possibility to downsample from stereo to mono when encoding
       to Ogg Vorbis, thanks to Deti Fliegl, <deti@fliegl.de>
     o added support for Jack inputs, enabling a lot of interesting usage,
-	  including support for MacOS X.
-	  Thanks to Nicholas J. Humfrey <njh@ecs.soton.ac.uk>
+      including support for MacOS X.
+      Thanks to Nicholas J. Humfrey <njh@ecs.soton.ac.uk>
 
 15-02-2004: DarkIce 0.14 released
 
