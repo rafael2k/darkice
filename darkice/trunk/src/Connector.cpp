@@ -164,6 +164,7 @@ Connector :: detach (   Sink              * sink )          throw ( Exception )
         sinks[0] = 0;
         delete[] sinks;
         sinks    = 0;
+        --numSinks;
 
         return true;
 
@@ -255,7 +256,6 @@ Connector :: transfer ( unsigned long       bytes,
 {
     unsigned int    u;
     unsigned long   b;
-    unsigned char * buf = new unsigned char[bufSize];
 
     if ( numSinks == 0 ) {
         return 0;
@@ -264,6 +264,8 @@ Connector :: transfer ( unsigned long       bytes,
     if ( bufSize == 0 ) {
         return 0;
     }
+
+    unsigned char * buf = new unsigned char[bufSize];
 
     reportEvent( 6, "Connector :: tranfer, bytes", bytes);
     
@@ -288,9 +290,6 @@ Connector :: transfer ( unsigned long       bytes,
                     } catch ( Exception     & e ) {
                         sinks[u]->close();
                         detach( sinks[u].get() );
-                        /* with the call to detach, numSinks gets 1 lower,
-                         * and the next sink comes to sinks[u] */
-                        --u;
 
                         reportEvent( 4,
                               "Connector :: transfer, sink removed, remaining",
@@ -299,8 +298,12 @@ Connector :: transfer ( unsigned long       bytes,
                         if ( numSinks == 0 ) {
                             reportEvent( 4,
                                         "Connector :: transfer, no more sinks");
-                            break;
+                            delete[] buf;
+                            return b;
                         }
+                        /* with the call to detach, numSinks gets 1 lower,
+                         * and the next sink comes to sinks[u] */
+                        --u;
                     }
                 }
             }
@@ -338,6 +341,9 @@ Connector :: close ( void )                         throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.9  2002/08/02 17:59:17  darkeye
+  bug fix: when the last server dropped connection, darkice crashed
+
   Revision 1.8  2002/07/20 16:37:06  darkeye
   added fault tolerance in case a server connection is dropped
 

@@ -1,5 +1,7 @@
 DarkIce 0.11
 
+    o bug fix: when the last server dropped connection, darkice crashed
+      thanks to Nicu Pavel <npavel@ituner.com>
     o bug fix for LameLibEncoder: the mp3 encoding buffer was deleted too
       early, resulting in mp3 data corruption.
       thanks to Nicu Pavel <npavel@ituner.com>
