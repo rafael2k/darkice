@@ -257,7 +257,7 @@ VorbisLibEncoder :: flush ( void )
  *  Send pending Vorbis blocks to the underlying stream
  *----------------------------------------------------------------------------*/
 void
-VorbisLibEncoder :: vorbisBlocksOut ( void )                throw ()
+VorbisLibEncoder :: vorbisBlocksOut ( void )                throw ( Exception )
 {
     while ( 1 == vorbis_analysis_blockout( &vorbisDspState, &vorbisBlock) ) {
         ogg_packet      oggPacket;
@@ -316,6 +316,9 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.11  2002/07/20 16:37:06  darkeye
+  added fault tolerance in case a server connection is dropped
+
   Revision 1.10  2002/07/20 10:59:00  darkeye
   added support for Ogg Vorbis 1.0, removed support for rc2
 

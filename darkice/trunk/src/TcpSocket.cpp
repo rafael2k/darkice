@@ -313,7 +313,7 @@ TcpSocket :: write (    const void    * buf,
     }
 
 //    ret = send( sockfd, buf, len, MSG_DONTWAIT);
-    ret = send( sockfd, buf, len, 0);
+    ret = send( sockfd, buf, len, MSG_NOSIGNAL);
 
     if ( ret == -1 ) {
         if ( errno == EAGAIN ) {
@@ -349,6 +349,9 @@ TcpSocket :: close ( void )                          throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.7  2002/07/20 16:37:06  darkeye
+  added fault tolerance in case a server connection is dropped
+
   Revision 1.6  2001/09/18 16:44:10  darkeye
   TcpSocket did not report closed state when could not connect()
 

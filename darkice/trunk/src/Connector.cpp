@@ -281,22 +281,26 @@ Connector :: transfer ( unsigned long       bytes,
             }
 
             for ( u = 0; u < numSinks; ++u ) {
-                
+
                 if ( sinks[u]->canWrite( sec, usec) ) {
-                    e = sinks[u]->write( buf, d);
-                } else {
-                    sinks[u]->close();
-                    detach( sinks[u].get() );
-                    /* with the call to detach, numSinks gets 1 lower,
-                     * and the next sink comes to sinks[u] */
-                    --u;
+                    try {
+                        e = sinks[u]->write( buf, d);
+                    } catch ( Exception     & e ) {
+                        sinks[u]->close();
+                        detach( sinks[u].get() );
+                        /* with the call to detach, numSinks gets 1 lower,
+                         * and the next sink comes to sinks[u] */
+                        --u;
 
-                    reportEvent( 5,
-                         "Connector :: transfer, sink removed, remaining", u);
+                        reportEvent( 4,
+                              "Connector :: transfer, sink removed, remaining",
+                              numSinks);
 
-                    if ( numSinks == 0 ) {
-                        reportEvent( 4, "Connector :: transfer, no more sinks");
-                        break;
+                        if ( numSinks == 0 ) {
+                            reportEvent( 4,
+                                        "Connector :: transfer, no more sinks");
+                            break;
+                        }
                     }
                 }
             }
@@ -334,6 +338,9 @@ Connector :: close ( void )                         throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.8  2002/07/20 16:37:06  darkeye
+  added fault tolerance in case a server connection is dropped
+
   Revision 1.7  2002/05/28 12:35:41  darkeye
   code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
 

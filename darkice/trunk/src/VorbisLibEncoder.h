@@ -171,7 +171,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  Send pending Vorbis blocks to the underlying stream
          */
         void
-        vorbisBlocksOut( void )                         throw ();
+        vorbisBlocksOut( void )                         throw ( Exception );
 
 
     protected:
@@ -445,6 +445,9 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.6  2002/07/20 16:37:06  darkeye
+  added fault tolerance in case a server connection is dropped
+
   Revision 1.5  2002/04/13 11:26:00  darkeye
   added cbr, abr and vbr setting feature with encoding quality
 
