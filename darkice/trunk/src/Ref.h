@@ -167,7 +167,7 @@ class Ref
         operator= ( Ref<T>  other )             throw ( Exception )
         {
             set( other.object);
-            return this;
+            return *this;
         }
 
         /**
@@ -274,6 +274,9 @@ class Ref
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/11 14:55:31  darkeye
+  minor bugfix
+
   Revision 1.2  2000/11/11 12:33:13  darkeye
   added kdoc-style documentation
 
