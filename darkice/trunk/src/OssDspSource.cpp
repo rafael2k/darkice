@@ -172,11 +172,17 @@ OssDspSource :: open ( void )                       throw ( Exception )
     }
 
     u = getSampleRate();
-    if ( ioctl( fileDescriptor, SNDCTL_DSP_SPEED, &u) == -1 ||
-         u != getSampleRate() ) {
+    if ( ioctl( fileDescriptor, SNDCTL_DSP_SPEED, &u) == -1 ) {
 
         close();
-        throw Exception( __FILE__, __LINE__, "can't set speed", u);
+        throw Exception( __FILE__, __LINE__,
+                         "can't set soundcard recording sample rate", u);
+    }
+    if ( u != getSampleRate() ) {
+        reportEvent( 2, "sound card recording sample rate set to ", u,
+                        " while trying to set it to ", getSampleRate());
+        reportEvent( 2, "this is probably not a problem, but a slight "
+                        "drift in the sound card driver");
     }
 
     return true;
@@ -265,6 +271,10 @@ OssDspSource :: close ( void )                  throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.8  2001/09/02 14:08:40  darkeye
+  setting the sound card recording sample rate is now more relaxed
+  there is no error reported if the sample rate is not exactly the same
+
   Revision 1.7  2001/08/30 17:25:56  darkeye
   renamed configure.h to config.h
 

@@ -36,6 +36,7 @@
 
 /* ============================================================ include files */
 
+#include "Reporter.h"
 #include "AudioSource.h"
 
 
@@ -53,7 +54,7 @@
  *  @author  $Author$
  *  @version $Revision$
  */
-class OssDspSource : public AudioSource
+class OssDspSource : public AudioSource, public virtual Reporter
 {
     private:
 
@@ -250,6 +251,10 @@ class OssDspSource : public AudioSource
   $Source$
 
   $Log$
+  Revision 1.4  2001/09/02 14:08:40  darkeye
+  setting the sound card recording sample rate is now more relaxed
+  there is no error reported if the sample rate is not exactly the same
+
   Revision 1.3  2000/11/12 13:31:40  darkeye
   added kdoc-style documentation comments
 
