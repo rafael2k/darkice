@@ -1,5 +1,5 @@
 SUBDIRS = src
-EXTRA_DIST = doc
+EXTRA_DIST = stl doc
 
 dist-hook: kdocs
 
