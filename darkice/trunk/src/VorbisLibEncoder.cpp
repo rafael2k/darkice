@@ -72,13 +72,38 @@ VorbisLibEncoder :: open ( void )
     }
 
     vorbis_info_init( &vorbisInfo);
-    if ( (ret = vorbis_encode_init( &vorbisInfo,
-                                    getInChannel(),
-                                    getInSampleRate(),
-                                    getOutBitrate() * 1000,
-                                    getOutBitrate() * 1000,
-                                    -1 )) ) {
-        throw Exception( __FILE__, __LINE__, "vorbis encode init error", ret);
+
+    if ( isVBR() ) {
+
+        if ( (ret = vorbis_encode_init_vbr( &vorbisInfo,
+                                            getInChannel(),
+                                            getOutSampleRate(),
+                                            getOutQuality() )) ) {
+            throw Exception( __FILE__, __LINE__,
+                             "vorbis encode init error", ret);
+        }
+    } else {
+#ifdef VORBIS_LIB_RC3
+        if ( (ret = vorbis_encode_init( &vorbisInfo,
+                                        getInChannel(),
+                                        getOutSampleRate(),
+                                        getOutBitrate() * 1024,
+                                        getOutBitrate() * 1024,
+                                        -1 )) ) {
+            throw Exception( __FILE__, __LINE__,
+                             "vorbis encode init error", ret);
+        }
+#else
+        if ( (ret = vorbis_encode_init( &vorbisInfo,
+                                        getInChannel(),
+                                        getOutSampleRate(),
+                                        -1,
+                                        getOutBitrate() * 1024,
+                                        -1 )) ) {
+            throw Exception( __FILE__, __LINE__,
+                             "vorbis encode init error", ret);
+        }
+#endif
     }
 
     if ( (ret = vorbis_analysis_init( &vorbisDspState, &vorbisInfo)) ) {
@@ -100,8 +125,6 @@ VorbisLibEncoder :: open ( void )
     }
 
     // create an empty vorbis_comment structure
-    vorbis_comment  vorbisComment;
-
     vorbis_comment_init( &vorbisComment);
 
     // create the vorbis stream headers and send them to the underlying sink
@@ -117,8 +140,6 @@ VorbisLibEncoder :: open ( void )
         throw Exception( __FILE__, __LINE__, "vorbis header init error", ret);
     }
 
-    vorbis_comment_init( &vorbisComment);
-
     ogg_stream_packetin( &oggStreamState, &header);
     ogg_stream_packetin( &oggStreamState, &commentHeader);
     ogg_stream_packetin( &oggStreamState, &codeHeader);
@@ -131,114 +152,14 @@ VorbisLibEncoder :: open ( void )
 
     vorbis_comment_clear( &vorbisComment );
 
+    // initialize the resampling coverter if needed
+    if ( converter ) {
+        converter->initialize( resampleRatio, getInChannel());
+    }
+
     encoderOpen = true;
 
     return true;
-}
-
-/*------------------------------------------------------------------------------
- *  Convert an unsigned char buffer holding 8 bit PCM values with channels
- *  interleaved to two float buffers (one for each channel)
- *----------------------------------------------------------------------------*/
-void
-VorbisLibEncoder :: conv8 ( unsigned char     * pcmBuffer,
-                            unsigned int        lenPcmBuffer,
-                            float             * leftBuffer,
-                            float             * rightBuffer,
-                            unsigned int        channels )
-{
-    if ( channels == 1 ) {
-        unsigned int    i, j;
-
-        for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-            short int  value;
-
-            value          = pcmBuffer[i++];
-            leftBuffer[j]  = ((float) value) / 128.f;
-            ++j;
-        }
-    } else {
-        unsigned int    i, j;
-
-        for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-            short int  value;
-
-            value          = pcmBuffer[i++];
-            leftBuffer[j]  = ((float) value) / 128.f;
-            value          = pcmBuffer[i++];
-            rightBuffer[j] = ((float) value) / 128.f;
-            ++j;
-        }
-    }
-}
-
-
-/*------------------------------------------------------------------------------
- *  Convert an unsigned char buffer holding 16 bit PCM values with channels
- *  interleaved to two float buffers (one for each channel)
- *----------------------------------------------------------------------------*/
-void
-VorbisLibEncoder :: conv16 (    unsigned char     * pcmBuffer,
-                                unsigned int        lenPcmBuffer,
-                                float             * leftBuffer,
-                                float             * rightBuffer,
-                                unsigned int        channels )
-{
-    if ( isInBigEndian() ) {
-        if ( channels == 1 ) {
-            unsigned int    i, j;
-
-            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-                short int   value;
-
-                value           = pcmBuffer[i++] << 8;
-                value          |= pcmBuffer[i++];
-                leftBuffer[j]   = ((float) value) / 32768.f;
-                ++j;
-            }
-        } else {
-            unsigned int    i, j;
-
-            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-                short int   value;
-
-                value           = pcmBuffer[i++] << 8;
-                value          |= pcmBuffer[i++];
-                leftBuffer[j]   = ((float) value) / 32768.f;
-                value           = pcmBuffer[i++] << 8;
-                value          |= pcmBuffer[i++];
-                rightBuffer[j]  = ((float) value) / 32768.f;
-                ++j;
-            }
-        }
-    } else {
-        if ( channels == 1 ) {
-            unsigned int    i, j;
-
-            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-                short int   value;
-
-                value           = pcmBuffer[i++];
-                value          |= pcmBuffer[i++] << 8;
-                leftBuffer[j]   = ((float) value) / 32768.f;
-                ++j;
-            }
-        } else {
-            unsigned int    i, j;
-
-            for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-                short int   value;
-
-                value           = pcmBuffer[i++];
-                value          |= pcmBuffer[i++] << 8;
-                leftBuffer[j]   = ((float) value) / 32768.f;
-                value           = pcmBuffer[i++];
-                value          |= pcmBuffer[i++] << 8;
-                rightBuffer[j]  = ((float) value) / 32768.f;
-                ++j;
-            }
-        }
-    }
 }
 
 
@@ -268,19 +189,37 @@ VorbisLibEncoder :: write ( const void    * buf,
     unsigned int    nSamples = processed / sampleSize;
     float        ** vorbisBuffer;
 
-    vorbisBuffer = vorbis_analysis_buffer( &vorbisDspState, nSamples);
 
-    if ( bitsPerSample == 8 ) {
-        conv8( b, processed, vorbisBuffer[0], vorbisBuffer[1], channels);
-    } else if ( bitsPerSample == 16 ) {
-        conv16( b, processed, vorbisBuffer[0], vorbisBuffer[1], channels);
+    // convert the byte-based raw input into a short buffer
+    // with channels still interleaved
+    unsigned int    totalSamples = nSamples * channels;
+    short int       shortBuffer[totalSamples];
+    Util::conv( bitsPerSample, b, processed, shortBuffer, isInBigEndian());
+    
+    if ( converter ) {
+        // resample if needed
+        int         inCount  = totalSamples;
+        int         outCount = (int) (inCount * resampleRatio);
+        short int   resampledBuffer[outCount * channels];
+        int         converted;
+
+        converted = converter->resample( inCount,
+                                         outCount,
+                                         shortBuffer,
+                                         resampledBuffer );
+
+        vorbisBuffer = vorbis_analysis_buffer( &vorbisDspState,
+                                               converted / channels);
+        Util::conv( resampledBuffer, converted, vorbisBuffer, channels);
+        vorbis_analysis_wrote( &vorbisDspState, converted / channels);
+
     } else {
-        throw Exception( __FILE__, __LINE__,
-                        "unsupported number of bits per sample for the encoder",
-                         bitsPerSample );
+
+        vorbisBuffer = vorbis_analysis_buffer( &vorbisDspState, nSamples);
+        Util::conv( shortBuffer, totalSamples, vorbisBuffer, channels);
+        vorbis_analysis_wrote( &vorbisDspState, nSamples);
     }
 
-    vorbis_analysis_wrote( &vorbisDspState, nSamples);
     vorbisBlocksOut();
 
     return processed;
@@ -315,9 +254,11 @@ VorbisLibEncoder :: vorbisBlocksOut ( void )                throw ()
         ogg_page        oggPage;
 
         vorbis_analysis( &vorbisBlock, &oggPacket);
+#ifdef VORBIS_LIB_RC3
         vorbis_bitrate_addblock( &vorbisBlock);
 
         while ( vorbis_bitrate_flushpacket( &vorbisDspState, &oggPacket) ) {
+#endif
 
             ogg_stream_packetin( &oggStreamState, &oggPacket);
 
@@ -334,7 +275,9 @@ VorbisLibEncoder :: vorbisBlocksOut ( void )                throw ()
                            oggPage.header_len + oggPage.body_len - written);
                 }
             }
+#ifdef VORBIS_LIB_RC3
         }
+#endif
     }
 }
 
@@ -351,6 +294,7 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
         ogg_stream_clear( &oggStreamState);
         vorbis_block_clear( &vorbisBlock);
         vorbis_dsp_clear( &vorbisDspState);
+        vorbis_comment_clear( &vorbisComment);
         vorbis_info_clear( &vorbisInfo);
 
         encoderOpen = false;
@@ -366,6 +310,11 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.7  2002/03/28 16:47:38  darkeye
+  moved functions conv8() and conv16() to class Util (as conv())
+  added resampling functionality
+  added support for variable bitrates
+
   Revision 1.6  2002/02/20 10:35:35  darkeye
   updated to work with Ogg Vorbis libs rc3 and current IceCast2 cvs
 

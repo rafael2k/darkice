@@ -52,6 +52,7 @@
 #include "Reporter.h"
 #include "AudioEncoder.h"
 #include "Sink.h"
+#include "aflibConverter.h"
 
 
 /* ================================================================ constants */
@@ -94,6 +95,11 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
         vorbis_block                    vorbisBlock;
 
         /**
+         *  Ogg Vorbis library global comment
+         */
+        vorbis_comment                  vorbisComment;
+
+        /**
          *  Ogg library global stream state
          */
         ogg_stream_state                oggStreamState;
@@ -102,6 +108,16 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  The Sink to dump mp3 data to
          */
         Ref<Sink>                       sink;
+
+        /**
+         *  Resample ratio
+         */
+        double                          resampleRatio;
+
+        /**
+         *  aflibConverter object for possible resampling
+         */
+        aflibConverter                * converter;
 
         /**
          *  Initialize the object.
@@ -120,9 +136,17 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
                                  getInBitsPerSample() );
             }
 
-            if ( getOutSampleRate() != getInSampleRate() ) {
-                throw Exception( __FILE__, __LINE__,
-                              "different in and out sample rate not supported");
+            if ( getOutSampleRate() == getInSampleRate() ) {
+                resampleRatio = 1;
+                converter     = 0;
+            } else {
+                resampleRatio = ( (double) getOutSampleRate() /
+                                  (double) getInSampleRate() );
+                // open the aflibConverter in
+                // - high quality
+                // - not linear (quadratic) interpolation
+                // - not filter interpolation
+                converter = new aflibConverter( true, true, false);
             }
 
             if ( getInChannel() != getOutChannel() ) {
@@ -142,42 +166,6 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
         strip ( void )                                  throw ( Exception )
         {
         }
-
-        /**
-         *  Convert a char buffer holding 8 bit PCM values to a short buffer
-         *
-         *  @param pcmBuffer buffer holding 8 bit PCM audio values,
-         *                   channels are interleaved
-         *  @param lenPcmBuffer length of pcmBuffer
-         *  @param leftBuffer put the left channel here (must be big enough)
-         *  @param rightBuffer put the right channel here (if mono, not
-         *                     touched, must be big enough)
-         *  @param channels number of channels (1 = mono, 2 = stereo)
-         */
-        void
-        conv8 (     unsigned char     * pcmBuffer,
-                    unsigned int        lenPcmBuffer,
-                    float             * leftBuffer,
-                    float             * rightBuffer,
-                    unsigned int        channels );
-
-        /**
-         *  Convert a char buffer holding 16 bit PCM values to a short buffer
-         *
-         *  @param pcmBuffer buffer holding 16 bit PCM audio values,
-         *                   channels are interleaved
-         *  @param lenPcmBuffer length of pcmBuffer
-         *  @param leftBuffer put the left channel here (must be big enough)
-         *  @param rightBuffer put the right channel here (if mono, not
-         *                     touched, must be big enough)
-         *  @param channels number of channels (1 = mono, 2 = stereo)
-         */
-        void
-        conv16 (    unsigned char     * pcmBuffer,
-                    unsigned int        lenPcmBuffer,
-                    float             * leftBuffer,
-                    float             * rightBuffer,
-                    unsigned int        channels );
 
         /**
          *  Send pending Vorbis blocks to the underlying stream
@@ -203,13 +191,13 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
     public:
 
         /**
-         *  Constructor.
+         *  Constructor for fixed bitrate encoding.
          *
          *  @param sink the sink to send mp3 output to
          *  @param inSampleRate sample rate of the input.
          *  @param inBitsPerSample number of bits per sample of the input.
          *  @param inChannel number of channels  of the input.
-         *  @param outBitrate bit rate of the output (bits/sec).
+         *  @param outBitrate bit rate of the output (kbits/sec).
          *  @param outSampleRate sample rate of the output.
          *                       If 0, inSampleRate is used.
          *  @param outChannel number of channels of the output.
@@ -237,12 +225,46 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
         }
 
         /**
-         *  Constructor.
+         *  Constructor for variable bitrate encoding.
+         *
+         *  @param sink the sink to send mp3 output to
+         *  @param inSampleRate sample rate of the input.
+         *  @param inBitsPerSample number of bits per sample of the input.
+         *  @param inChannel number of channels  of the input.
+         *  @param outQuality the quality of the stream (0.0 .. 1.0).
+         *  @param outSampleRate sample rate of the output.
+         *                       If 0, inSampleRate is used.
+         *  @param outChannel number of channels of the output.
+         *                    If 0, inChannel is used.
+         *  @exception Exception
+         */
+        inline
+        VorbisLibEncoder (  Sink          * sink,
+                            unsigned int    inSampleRate,
+                            unsigned int    inBitsPerSample,
+                            unsigned int    inChannel,
+                            double          outQuality,
+                            unsigned int    outSampleRate = 0,
+                            unsigned int    outChannel    = 0 )
+                                                        throw ( Exception )
+            
+                    : AudioEncoder ( inSampleRate,
+                                     inBitsPerSample,
+                                     inChannel, 
+                                     outQuality,
+                                     outSampleRate,
+                                     outChannel )
+        {
+            init( sink);
+        }
+
+        /**
+         *  Constructor for fixed bitrate encoding.
          *
          *  @param sink the sink to send mp3 output to
          *  @param as get input sample rate, bits per sample and channels
          *            from this AudioSource.
-         *  @param outBitrate bit rate of the output (bits/sec).
+         *  @param outBitrate bit rate of the output (kbits/sec).
          *  @param outSampleRate sample rate of the output.
          *                       If 0, input sample rate is used.
          *  @param outChannel number of channels of the output.
@@ -259,6 +281,35 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
             
                     : AudioEncoder ( as,
                                      outBitrate,
+                                     outSampleRate,
+                                     outChannel )
+        {
+            init( sink);
+        }
+
+        /**
+         *  Constructor for variable bitrate encoding.
+         *
+         *  @param sink the sink to send mp3 output to
+         *  @param as get input sample rate, bits per sample and channels
+         *            from this AudioSource.
+         *  @param outQuality the quality of the stream (0.0 .. 1.0).
+         *  @param outSampleRate sample rate of the output.
+         *                       If 0, input sample rate is used.
+         *  @param outChannel number of channels of the output.
+         *                    If 0, input channel is used.
+         *  @exception Exception
+         */
+        inline
+        VorbisLibEncoder (  Sink                  * sink,
+                            const AudioSource     * as,
+                            double                  outQuality,
+                            unsigned int            outSampleRate = 0,
+                            unsigned int            outChannel    = 0 )
+                                                            throw ( Exception )
+            
+                    : AudioEncoder ( as,
+                                     outQuality,
                                      outSampleRate,
                                      outChannel )
         {
@@ -442,6 +493,11 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.4  2002/03/28 16:47:38  darkeye
+  moved functions conv8() and conv16() to class Util (as conv())
+  added resampling functionality
+  added support for variable bitrates
+
   Revision 1.3  2001/10/19 12:39:42  darkeye
   created configure options to compile with or without lame / Ogg Vorbis
 
