@@ -1,4 +1,4 @@
-DarkIce 0.8
+20-02-2002: DarkIce 0.8 released
 
     o added possibility to disable lowpass and highpass filtering for lame
     o fixed incorrect vorbis bitrate setting
