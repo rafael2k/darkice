@@ -1,4 +1,4 @@
-DarkIce next release
+20-10-2002: DarkIce 0.12 released
 
     o ported to FreeBSD (removed reference to MSG_NOSIGNAL in TcpSocket.cpp)
     o bug fix: maximum bitrate setting fixed for Ogg Vorbis streams
