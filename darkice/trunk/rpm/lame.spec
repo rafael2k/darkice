@@ -38,7 +38,7 @@
 %define name lame
 %define ver 3.89
 %define quality beta
-%define rel 1
+%define rel 2
 %define prefix /usr
 
 
@@ -64,6 +64,7 @@ psycho acoustics, noise shaping and speed of MP3.  Another goal of the LAME
 project is to use these improvements for the basis of a  patent free audio
 compression codec for the GNU project.
 
+This build is optimized for %{_target}.
 
 # ============================================================ devel sub-package
 %package devel
@@ -79,6 +80,7 @@ LAME project.
 You will also need to install the main lame package in order to install
 these libraries.
 
+This build is optimized for %{_target}.
 
 # =================================================================== prep stage
 %prep
@@ -87,8 +89,13 @@ these libraries.
 
 # ================================================================== build stage
 %build
-export CC=kgcc
-%configure
+export CC=gcc3
+export CFLAGS="-O9"
+%configure --with-fileio=lame   \
+           --without-vorbis     \
+           --disable-gtktest    \
+           --enable-nasm        \
+           --enable-expopt=full
 make
 
 
@@ -126,6 +133,9 @@ make clean
 # =================================================================== change log
 #
 #   $Log$
+#   Revision 1.2  2001/09/09 09:06:26  darkeye
+#   lame RPM is now created with gcc3 and full optimizations
+#
 #   Revision 1.1  2001/09/02 12:46:05  darkeye
 #   added RPM package creation scripts
 #
