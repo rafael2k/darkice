@@ -1,6 +1,7 @@
 DarkIce next release
 
-    o ported to OpenBSD, though real-time scheduling not yet supported
+    o ported to OpenBSD, though real-time scheduling not supported,
+      since it is not implemented in OpenBSD
 
 15-02-2004: DarkIce 0.14 released
 

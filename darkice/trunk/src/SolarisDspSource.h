@@ -176,7 +176,11 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
         virtual inline bool
         isBigEndian ( void ) const           throw ()
         {
+#ifdef WORDS_BIGENDIAN
             return true;
+#else
+            return false;
+#endif
         }
 
         /**
@@ -257,6 +261,9 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.4  2004/02/19 06:47:06  darkeye
+  finalized OpenBSD port
+
   Revision 1.3  2004/02/18 21:08:11  darkeye
   ported to OpenBSD (real-time scheduling not yet supported)
 

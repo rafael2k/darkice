@@ -875,8 +875,7 @@ DarkIce :: setRealTimeScheduling ( void )               throw ( Exception )
 {
 // don't include the following on OpenBSD, as the scheduling functions are
 // not implemented.
-// FIXME: using HAVE_SYS_AUDIOIO_H as a sign of being on OpenBSD is buggy
-#if !defined( HAVE_SYS_AUDIOIO_H )
+#if !defined( __OpenBSD__ )
     uid_t   euid;
 
     euid = geteuid();
@@ -921,7 +920,10 @@ DarkIce :: setRealTimeScheduling ( void )               throw ( Exception )
         reportEvent( 1,
         "It is recommended that you run this program as super-user");
     }
-#endif
+#else
+    reportEvent( 1, "POSIX scheduling not supported on OpenBSD, "
+                    "this may cause recording skips");
+#endif // __OpenBSD__
 }
 
 
@@ -935,8 +937,7 @@ DarkIce :: setOriginalScheduling ( void )               throw ( Exception )
 {
 // don't include the following on OpenBSD, as the scheduling functions are
 // not implemented.
-// FIXME: using HAVE_SYS_AUDIOIO_H as a sign of being on OpenBSD is buggy
-#if !defined( HAVE_SYS_AUDIOIO_H )
+#if !defined( __OpenBSD__ )
     uid_t   euid;
 
     euid = geteuid();
@@ -956,7 +957,7 @@ DarkIce :: setOriginalScheduling ( void )               throw ( Exception )
 
         reportEvent( 5, "reverted to original scheduling");
     }
-#endif
+#endif // __OpenBSD__
 }
 
 
@@ -1009,6 +1010,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.39  2004/02/19 06:47:06  darkeye
+  finalized OpenBSD port
+
   Revision 1.38  2004/02/18 21:08:11  darkeye
   ported to OpenBSD (real-time scheduling not yet supported)
 
