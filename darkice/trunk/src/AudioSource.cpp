@@ -67,13 +67,13 @@ AudioSource :: createDspSource( const char    * deviceName,
 {
     if ( Util::strEq( deviceName, "/dev", 4) ) {
 #if defined( SUPPORT_OSS_DSP )
-        Reporter::reportEvent( 1, "using OSS DSP input device:", deviceName);
+        Reporter::reportEvent( 1, "Using OSS DSP input device:", deviceName);
         return new OssDspSource( deviceName,
                                  sampleRate,
                                  bitsPerSample,
                                  channel);
 #elif defined( SUPPORT_SOLARIS_DSP )
-        Reporter::reportEvent( 1, "using Solaris DSP input device:",deviceName);
+        Reporter::reportEvent( 1, "Using Solaris DSP input device:",deviceName);
         return new SolarisDspSource( deviceName,
                                      sampleRate,
                                      bitsPerSample,
@@ -85,7 +85,7 @@ AudioSource :: createDspSource( const char    * deviceName,
 #endif
     } else {
 #if defined( SUPPORT_ALSA_DSP )
-        Reporter::reportEvent( 1, "using ALSA DSP input device:", deviceName);
+        Reporter::reportEvent( 1, "Using ALSA DSP input device:", deviceName);
         return new AlsaDspSource( deviceName,
                                   sampleRate,
                                   bitsPerSample,
@@ -104,6 +104,9 @@ AudioSource :: createDspSource( const char    * deviceName,
   $Source$
 
   $Log$
+  Revision 1.2  2004/02/15 22:26:16  darkeye
+  fixed typo, minimal cosmetic change
+
   Revision 1.1  2004/02/15 12:06:29  darkeye
   added ALSA support, thanks to Christian Forster
 
