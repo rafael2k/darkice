@@ -73,7 +73,7 @@ main (
         di->run();
 
     } catch ( Exception   & e ) {
-        cout << "Exception: " << e << endl << flush;
+        cout << "DarkIce: " << e << endl << flush;
     }
 
     return res;
@@ -85,8 +85,11 @@ main (
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:52  darkeye
-  Initial revision
+  Revision 1.2  2000/11/08 17:29:50  darkeye
+  added configuration file reader
+
+  Revision 1.1.1.1  2000/11/05 10:05:52  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

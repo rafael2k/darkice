@@ -1,4 +1,6 @@
 bin_PROGRAMS = darkice
+INCLUDES = -I../stl
+CXXFLAGS = -g
 
 darkice_SOURCES =   AudioEncoder.h\
                     AudioSource.h\
@@ -36,5 +38,9 @@ darkice_SOURCES =   AudioEncoder.h\
                     TcpSocket.h\
                     Util.cpp\
                     Util.h\
+                    ConfigSection.h\
+                    ConfigSection.cpp\
+                    Config.h\
+                    Config.cpp\
                     main.cpp
 

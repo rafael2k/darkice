@@ -4,7 +4,7 @@
 
    Tyrell DarkIce
 
-   File     : darkice.cpp
+   File     : DarkIce.cpp
    Version  : $Revision$
    Author   : $Author$
    Location : $Source$
@@ -69,9 +69,13 @@
 #endif
 
 
+#include <hash_map>
+#include <string>
+
 #include <iostream.h>
 
 
+#include "Config.h"
 #include "DarkIce.h"
 
 
@@ -210,7 +214,29 @@ DarkIce :: run ( void )                             throw ( Exception )
     pid_t   pid;
     
     cout << "DarkIce" << endl << endl << flush;
+/*
+    Config                  config;
+    const ConfigSection   * cs;
+    const char            * str;
 
+    config.read( cin);
+    
+    cs = config.get( "first");
+    if ( cs ) {
+        str = cs->get( "blahblah");
+        cout << str << endl;
+        str = cs->get( "ejj");
+        cout << str << endl;
+        str = cs->get( "ojj");
+        cout << str << endl;
+    }
+    
+    cs = config.get( "second");
+    if ( cs ) {
+        str = cs->get( "blahblah");
+        cout << str << endl;
+    }
+*/
     init();
 
     cout << "init OK" << endl << flush;
@@ -254,6 +280,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/08 17:29:50  darkeye
+  added configuration file reader
+
   Revision 1.2  2000/11/05 14:08:27  darkeye
   changed builting to an automake / autoconf environment
 
