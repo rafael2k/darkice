@@ -33,12 +33,6 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_STRING_H
-#include <string.h>
-#else
-#error need string.h
-#endif
-
 
 #include "Exception.h"
 #include "Util.h"
@@ -215,7 +209,7 @@ LameLibEncoder :: conv8 (   unsigned char     * pcmBuffer,
         for ( i = 0, j = 0; i < lenPcmBuffer; ) {
             unsigned short int  value;
 
-            value       = pcmBuffer[i++];
+            value         = pcmBuffer[i++];
             leftBuffer[j] = (short int) value;
             ++j;
         }
@@ -225,9 +219,9 @@ LameLibEncoder :: conv8 (   unsigned char     * pcmBuffer,
         for ( i = 0, j = 0; i < lenPcmBuffer; ) {
             unsigned short int  value;
 
-            value  = pcmBuffer[i++];
-            leftBuffer[j] = (short int) value;
-            value  = pcmBuffer[i++];
+            value          = pcmBuffer[i++];
+            leftBuffer[j]  = (short int) value;
+            value          = pcmBuffer[i++];
             rightBuffer[j] = (short int) value;
             ++j;
         }
@@ -252,9 +246,9 @@ LameLibEncoder :: conv16 (  unsigned char     * pcmBuffer,
         for ( i = 0, j = 0; i < lenPcmBuffer; ) {
             unsigned short int   value;
 
-            value  = pcmBuffer[i++];
-            value += pcmBuffer[i++] << 8;
-            leftBuffer[j] = (short int) value;
+            value          = pcmBuffer[i++];
+            value         |= pcmBuffer[i++] << 8;
+            leftBuffer[j]  = (short int) value;
             ++j;
         }
     } else {
@@ -263,12 +257,12 @@ LameLibEncoder :: conv16 (  unsigned char     * pcmBuffer,
         for ( i = 0, j = 0; i < lenPcmBuffer; ) {
             unsigned short int   value;
 
-            value  = pcmBuffer[i++];
-            value += pcmBuffer[i++] << 8;
-            leftBuffer[j] = (short int) value;
-            value  = pcmBuffer[i++];
-            value += pcmBuffer[i++] << 8;
-            rightBuffer[j] = (short int) value;
+            value           = pcmBuffer[i++];
+            value          |= pcmBuffer[i++] << 8;
+            leftBuffer[j]   = (short int) value;
+            value           = pcmBuffer[i++];
+            value          |= pcmBuffer[i++] << 8;
+            rightBuffer[j]  = (short int) value;
             ++j;
         }
     }
@@ -366,6 +360,8 @@ LameLibEncoder :: flush ( void )
                      "couldn't write all from encoder to underlying sink",
                      ret - written);
     }
+
+    sink->flush();
 }
 
 
@@ -389,6 +385,9 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.6  2001/09/15 11:35:08  darkeye
+  minor fixes
+
   Revision 1.5  2001/09/02 09:54:12  darkeye
   fixed typos in CVS substition keywords
 

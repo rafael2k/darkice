@@ -40,7 +40,7 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_LAME_LIB
+#ifdef HAVE_LAME_LAME_H
 #include <lame/lame.h>
 #else
 #error need lame/lame.h
@@ -462,6 +462,9 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.7  2001/09/15 11:35:08  darkeye
+  minor fixes
+
   Revision 1.6  2001/09/14 19:31:06  darkeye
   added IceCast2 / vorbis support
 
