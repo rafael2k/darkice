@@ -125,29 +125,25 @@ LameLibEncoder :: open ( void )
 
     reportEvent( 5, "set lame bit rate", lame_get_brate( lameGlobalFlags));
     
-    if ( lowpass ) {
-        if ( 0 > lame_set_lowpassfreq( lameGlobalFlags, lowpass) ) {
-            throw Exception( __FILE__, __LINE__,
-                             "lame lib setting lowpass frequency error",
-                             lowpass );
-        }
-
-        reportEvent( 5,
-                     "set lame lowpass frequency",
-                     lame_get_lowpassfreq( lameGlobalFlags));
+    if ( 0 > lame_set_lowpassfreq( lameGlobalFlags, lowpass) ) {
+        throw Exception( __FILE__, __LINE__,
+                         "lame lib setting lowpass frequency error",
+                         lowpass );
     }
+
+    reportEvent( 5,
+                 "set lame lowpass frequency",
+                 lame_get_lowpassfreq( lameGlobalFlags));
     
-    if ( highpass ) {
-        if ( 0 > lame_set_highpassfreq( lameGlobalFlags, highpass) ) {
-            throw Exception( __FILE__, __LINE__,
-                             "lame lib setting highpass frequency error",
-                             lowpass );
-        }
-
-        reportEvent( 5,
-                     "set lame highpass frequency",
-                     lame_get_highpassfreq( lameGlobalFlags));
+    if ( 0 > lame_set_highpassfreq( lameGlobalFlags, highpass) ) {
+        throw Exception( __FILE__, __LINE__,
+                         "lame lib setting highpass frequency error",
+                         lowpass );
     }
+
+    reportEvent( 5,
+                 "set lame highpass frequency",
+                 lame_get_highpassfreq( lameGlobalFlags));
 
     // not configurable lame settings
 
@@ -419,6 +415,9 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.9  2001/10/20 10:56:45  darkeye
+  added possibility to disable highpass and lowpass filters for lame
+
   Revision 1.8  2001/10/19 12:39:42  darkeye
   created configure options to compile with or without lame / Ogg Vorbis
 

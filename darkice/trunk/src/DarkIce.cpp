@@ -210,8 +210,8 @@ DarkIce :: configIceCast (  const Config      & config,
         const char    * url             = 0;
         const char    * genre           = 0;
         bool            isPublic        = false;
-        unsigned int    lowpass         = 0;
-        unsigned int    highpass        = 0;
+        int             lowpass         = 0;
+        int             highpass        = 0;
 
         str         = cs->get( "sampleRate");
         sampleRate  = str ? Util::strToL( str) : dsp->getSampleRate();
@@ -411,8 +411,8 @@ DarkIce :: configShoutCast (    const Config      & config,
         const char    * url             = 0;
         const char    * genre           = 0;
         bool            isPublic        = false;
-        unsigned int    lowpass         = 0;
-        unsigned int    highpass        = 0;
+        int             lowpass         = 0;
+        int             highpass        = 0;
         const char    * irc             = 0;
         const char    * aim             = 0;
         const char    * icq             = 0;
@@ -608,6 +608,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.22  2001/10/20 10:56:45  darkeye
+  added possibility to disable highpass and lowpass filters for lame
+
   Revision 1.21  2001/10/19 12:39:42  darkeye
   created configure options to compile with or without lame / Ogg Vorbis
 

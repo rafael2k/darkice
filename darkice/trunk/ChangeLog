@@ -1,3 +1,7 @@
+DarkIce 0.8
+
+    o added possibility to disable lowpass and highpass filtering for lame
+
 19-10-2001: DarkIce 0.7 released
 
     o added support for FreeBSD

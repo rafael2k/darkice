@@ -135,12 +135,14 @@ server should dump the contents of
 this stream on its side.
 .TP
 .I lowpass
-Lowpass filter setting for the lame encoder. If not set,
-the encoder's default behaviour is used
+Lowpass filter setting for the lame encoder. If not set or set to 0,
+the encoder's default behaviour is used. If set to -1, the filter is
+disabled.
 .TP
 .I highpass
-Highpass filter setting for the lame encoder. If not set,
-the encoder's default behaviour is used
+Highpass filter setting for the lame encoder. If not set or set to 0,
+the encoder's default behaviour is used. If set to -1, the filter is
+disabled.
 
 .PP
 .B [icecast2-x]
@@ -256,12 +258,14 @@ AIM information related to the stream
 ICQ information related to the stream
 .TP
 .I lowpass
-Lowpass filter setting for the lame encoder. If not set,
-the encoder's default behaviour is used
+Lowpass filter setting for the lame encoder. If not set or set to 0,
+the encoder's default behaviour is used. If set to -1, the filter is
+disabled.
 .TP
 .I highpass
-Highpass filter setting for the lame encoder. If not set,
-the encoder's default behaviour is used
+Highpass filter setting for the lame encoder. If not set or set to 0,
+the encoder's default behaviour is used. If set to -1, the filter is
+disabled.
 
 .PP
 A sample configuration file follows. This file makes

@@ -84,16 +84,16 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
         Ref<Sink>                       sink;
 
         /**
-         *  Highpass filter. Sound frequency in Hz, from where up the
+         *  Lowpass filter. Sound frequency in Hz, from where up the
          *  input is cut.
          */
-        unsigned int                    lowpass;
+        int                             lowpass;
 
         /**
-         *  Lowpass filter. Sound frequency in Hz, from where down the
+         *  Highpass filter. Sound frequency in Hz, from where down the
          *  input is cut.
          */
-        unsigned int                    highpass;
+        int                             highpass;
 
         /**
          *  Initialize the object.
@@ -111,8 +111,8 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          */
         inline void
         init ( Sink           * sink,
-               unsigned int     lowpass,
-               unsigned int     highpass )                  throw ( Exception )
+               int              lowpass,
+               int              highpass )                  throw ( Exception )
         {
             this->sink     = sink;
             this->lowpass  = lowpass;
@@ -223,8 +223,8 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int    outBitrate,
                             unsigned int    outSampleRate = 0,
                             unsigned int    outChannel    = 0,
-                            unsigned int    lowpass       = 0,
-                            unsigned int    highpass      = 0 )
+                            int             lowpass       = 0,
+                            int             highpass      = 0 )
                                                         throw ( Exception )
             
                     : AudioEncoder ( inSampleRate,
@@ -264,8 +264,8 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int            outBitrate,
                             unsigned int            outSampleRate = 0,
                             unsigned int            outChannel    = 0,
-                            unsigned int            lowpass       = 0,
-                            unsigned int            highpass      = 0 )
+                            int                     lowpass       = 0,
+                            int                     highpass      = 0 )
                                                             throw ( Exception )
             
                     : AudioEncoder ( as,
@@ -456,6 +456,9 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.10  2001/10/20 10:56:45  darkeye
+  added possibility to disable highpass and lowpass filters for lame
+
   Revision 1.9  2001/10/19 12:39:42  darkeye
   created configure options to compile with or without lame / Ogg Vorbis
 
