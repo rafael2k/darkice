@@ -274,7 +274,7 @@ TcpSocket :: read (     void          * buf,
  *----------------------------------------------------------------------------*/
 bool
 TcpSocket :: canWrite (    unsigned int    sec,
-                            unsigned int    usec )      throw ( Exception )
+                           unsigned int    usec )      throw ( Exception )
 {
     fd_set              fdset;
     struct timeval      tv;
@@ -352,6 +352,9 @@ TcpSocket :: close ( void )                          throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.9  2002/10/19 12:22:27  darkeye
+  cosmetic change
+
   Revision 1.8  2002/08/28 18:24:46  darkeye
   ported to FreeBSD (removed reference to MSG_NOSIGNAL in TcpSocket.cpp)
 
