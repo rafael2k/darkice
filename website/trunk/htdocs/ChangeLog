@@ -1,3 +1,14 @@
+20-02-2002: DarkIce 0.8 released
+
+    o added possibility to disable lowpass and highpass filtering for lame
+    o fixed incorrect vorbis bitrate setting
+    o fix: DarkIce now reports public streams correctly
+      thanks to Tom Gray, <tomg@future-i.com>
+    o made up-to-date with Ogg Vorbis rc3 libs
+      thanks to Michael Smith, <msmith@labyrinth.net.au>
+    o made up-to-date with current IceCast2 cvs version
+    o added local stream dump possibility
+
 19-10-2001: DarkIce 0.7 released
 
     o added support for FreeBSD
