@@ -77,6 +77,7 @@
 #include "IceCast2.h"
 #include "ShoutCast.h"
 #include "FileCast.h"
+#include "MultiThreadedConnector.h"
 #include "DarkIce.h"
 
 #ifdef HAVE_LAME_LIB
@@ -157,7 +158,7 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
                                      sampleRate,
                                      bitsPerSample,
                                      channel );
-    encConnector    = new Connector( dsp.get());
+    encConnector    = new MultiThreadedConnector( dsp.get());
 
     noAudioOuts = 0;
     configIceCast( config, bufferSecs);
@@ -964,6 +965,10 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.32  2002/10/19 12:24:55  darkeye
+  anged internals so that now each encoding/server connection is
+  a separate thread
+
   Revision 1.31  2002/08/20 19:35:37  darkeye
   added possibility to specify maximum bitrate for Ogg Vorbis streams
 

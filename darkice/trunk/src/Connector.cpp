@@ -161,6 +161,10 @@ Connector :: detach (   Sink              * sink )          throw ( Exception )
 
     } else if ( numSinks == 1 ) {
 
+        if ( sinks[0].get() != sink ) {
+            return false;
+        }
+
         sinks[0] = 0;
         delete[] sinks;
         sinks    = 0;
@@ -286,6 +290,7 @@ Connector :: transfer ( unsigned long       bytes,
 
                 if ( sinks[u]->canWrite( sec, usec) ) {
                     try {
+                        /* we expect the sink to accept all data written */
                         e = sinks[u]->write( buf, d);
                     } catch ( Exception     & e ) {
                         sinks[u]->close();
@@ -341,6 +346,10 @@ Connector :: close ( void )                         throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.10  2002/10/19 12:24:55  darkeye
+  anged internals so that now each encoding/server connection is
+  a separate thread
+
   Revision 1.9  2002/08/02 17:59:17  darkeye
   bug fix: when the last server dropped connection, darkice crashed
 

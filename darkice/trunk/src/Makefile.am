@@ -13,6 +13,8 @@ darkice_SOURCES =   AudioEncoder.h\
                     FileSink.cpp\
                     Connector.cpp\
                     Connector.h\
+                    MultiThreadedConnector.cpp\
+                    MultiThreadedConnector.h\
                     DarkIce.cpp\
                     DarkIce.h\
                     Exception.cpp\

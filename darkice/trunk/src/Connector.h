@@ -62,21 +62,6 @@ class Connector : public virtual Referable, public virtual Reporter
     private:
 
         /**
-         *  The source to read from.
-         */
-        Ref<Source>     source;
-
-        /**
-         *  The sinks to connect the source to.
-         */
-        Ref<Sink>     * sinks;
-
-        /**
-         *  Total number of sinks.
-         */
-        unsigned int    numSinks;
-
-        /**
          *  Initialize the object.
          *
          *  @param source the source to read from.
@@ -97,6 +82,21 @@ class Connector : public virtual Referable, public virtual Reporter
     protected:
 
         /**
+         *  The source to read from.
+         */
+        Ref<Source>     source;
+
+        /**
+         *  The sinks to connect the source to.
+         */
+        Ref<Sink>     * sinks;
+
+        /**
+         *  Total number of sinks.
+         */
+        unsigned int    numSinks;
+
+        /**
          *  Default constructor. Always throws an Exception.
          *
          *  @exception Exception
@@ -106,6 +106,16 @@ class Connector : public virtual Referable, public virtual Reporter
         {
             throw Exception( __FILE__, __LINE__);
         }
+
+        /**
+         *  Detach an already attached Sink from the Source of this Connector.
+         *
+         *  @param sink the Sink to detach.
+         *  @return true if the detachment was successful, false otherwise.
+         *  @exception Exception
+         */
+        virtual bool
+        detach (    Sink          * sink )          throw ( Exception );
 
 
     public:
@@ -172,7 +182,7 @@ class Connector : public virtual Referable, public virtual Reporter
          *  @return the number of Sinks in the Connector.
          *  @exception Exception
          */
-        inline unsigned int
+        inline virtual unsigned int
         getNumSinks ( void ) const              throw ()
         {
             return numSinks;
@@ -184,18 +194,8 @@ class Connector : public virtual Referable, public virtual Reporter
          *  @param sink the Sink to attach.
          *  @exception Exception
          */
-        void
+        virtual void
         attach (    Sink          * sink )              throw ( Exception );
-
-        /**
-         *  Detach an already attached Sink from the Source of this Connector.
-         *
-         *  @param sink the Sink to detach.
-         *  @return true if the detachment was successful, false otherwise.
-         *  @exception Exception
-         */
-        bool
-        detach (    Sink          * sink )          throw ( Exception );
 
         /**
          *  Open the connector. Opens the Source and the Sinks if necessary.
@@ -203,7 +203,7 @@ class Connector : public virtual Referable, public virtual Reporter
          *  @return true if opening was successful, false otherwise.
          *  @exception Exception
          */
-        bool
+        virtual bool
         open ( void )                                   throw ( Exception );
 
         /**
@@ -222,13 +222,13 @@ class Connector : public virtual Referable, public virtual Reporter
          *  @param sec the number of seconds to wait for the Source to have
          *             data available in each turn, and the number of seconds
          *             to wait for the Sinks to accept data.
-         *  @param usec the number of micros seconds to wait for the Source to
+         *  @param usec the number of micro seconds to wait for the Source to
          *             have data available in each turn, and the number of
          *             micro seconds to wait for the Sinks to accept data.
          *  @return the number of bytes read from the Source.
          *  @exception Exception
          */
-        unsigned int
+        virtual unsigned int
         transfer (  unsigned long       bytes,
                     unsigned int        bufSize,
                     unsigned int        sec,
@@ -239,7 +239,7 @@ class Connector : public virtual Referable, public virtual Reporter
          *
          *  @exception Exception
          */
-        void
+        virtual void
         close ( void )                                  throw ( Exception );
 };
 
@@ -259,6 +259,10 @@ class Connector : public virtual Referable, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.6  2002/10/19 12:24:55  darkeye
+  anged internals so that now each encoding/server connection is
+  a separate thread
+
   Revision 1.5  2001/08/26 20:44:30  darkeye
   removed external command-line encoder support
   replaced it with a shared-object support for lame with the possibility

@@ -3,7 +3,7 @@ o make a master config file, and a small one ?
 o reconnect to server if connection is dropped
 o add support for multiple servers for one stream ?
 o libtoolize ?
-o revisit real-time scheduling and one-thread-per-connection
+o revisit real-time scheduling
 o look into performance
 o create proper error-reporting module
 o set comment fields for Ogg Vorbis streams as in
