@@ -1,3 +1,93 @@
+DarkIce installation notes
+==========================
+
+Installing Lame
+---------------
+
+To install DarkIce, you need the lame 3.89 or later libraries already
+installed on your system. If you already have done this, skip to the next
+section.
+
+Compiling Lame is a tricky issue. Please refer to Lame online resources
+for details. Here are steps I took to compile lame 3.89 on my RedHat 7.1
+system.
+
+First make sure you have the compatibility compiler packages installed
+on your system, compat-egcs in particular. This provides an older, not
+so much tweaked version of gcc/egcs that is able to compile Lame properly.
+To check this condition easily, try:
+
+rpm -q compat-egcs
+
+for this command I get the response:
+
+compat-egcs-6.2-1.1.2.14
+
+Grab the latest lame source tarball from
+ftp://ftp.sourceforge.net/projects/lame
+
+I took lame lame3.89beta.tar.gz. Go to the directory where you saved it,
+and issue the following commands:
+
+tar xfz lame3.89beta.tar.gz
+cd lame-3.89
+export CC=kgcc
+./configure
+make
+make install
+
+For the last step, you need to be root or have write permissions in the
+target directories, usually directories under /usr/local.
+
+
+Installing DarkIce
+------------------
+
+If you're reading this, you probably have downloaded and extracted the
+DarkIce tarball. Go to the directory you extracted it, and try:
+
+./configure --help
+
+This will give you all the compile configuration options. Options of
+particlar interest are:
+
+  --with-lame-prefix=DIR  alternate location for lame [/usr/local]
+                          files looked for: LAME-PREFIX/lib/libmp3lame.a
+                                            LAME-PREFIX/include/lame/lame.h
+  --enable-static         link everything into the executable statically [no]
+
+Use --with-lame-prefix to specify a location for the Lame libraries and
+include files other than /usr/local. Typicall Lame is installed into
+this location. Should you have it somewhere else, this option gives you
+the possibility to notify DarkIce of Lame's location.
+
+Use --enable-static to build a statically linked executable. This is good
+if you plan to deploy DarkIce on a system where either the Lame shared
+object is not installed or its location is unknown. In general it is a
+better idea to link dynamically (not using this option).
+
+If chosing the default compile options, compilation is done as follows:
+
+./configure
+make
+make install
+
+For the last step, you need to be root or have write permissions in the
+target directories, usually directories under /usr/local.
+
+Now you should have DarkIce installed. For documentation, try
+
+man darkice
+
+To try out the program, try
+
+darkice -h
+
+
+
+
+Here follows the stock text for autoconf installation procedures:
+
 Basic Installation
 ==================
 
