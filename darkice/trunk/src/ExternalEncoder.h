@@ -48,6 +48,7 @@
 
 
 #include "Exception.h"
+#include "Reporter.h"
 #include "AudioEncoder.h"
 
 
@@ -66,7 +67,7 @@
  *  @author  $Author$
  *  @version $Revision$
  */
-class ExternalEncoder : public AudioEncoder
+class ExternalEncoder : public AudioEncoder, public virtual Reporter
 {
     private:
 
@@ -360,6 +361,10 @@ class ExternalEncoder : public AudioEncoder
   $Source$
 
   $Log$
+  Revision 1.5  2000/11/18 11:13:27  darkeye
+  removed direct reference to cout, except from main.cpp
+  all class use the Reporter interface to report events
+
   Revision 1.4  2000/11/12 14:54:50  darkeye
   added kdoc-style documentation comments
 

@@ -163,7 +163,7 @@ ExternalEncoder :: start ( void )           throw ( Exception )
     if ( pid == -1 ) {
         throw Exception( __FILE__, __LINE__, "fork error");
     } else if ( pid == 0 ) {
-        cout << "wow, I'm a voodoo child!" << endl;
+        reportEvent( 5, "child process", getpid(), "started");
 
         makeArgs();
         execvp( getEncoderName(), cmdArgs);
@@ -171,7 +171,7 @@ ExternalEncoder :: start ( void )           throw ( Exception )
         throw Exception( __FILE__, __LINE__, "exec returned");
     } else {
         child = pid;
-        cout << "I'm a parent, the child's pid is " << child << endl;
+        reportEvent( 5, "parent", getpid(), "started child process", child);
 
         return true;
     }
@@ -200,6 +200,10 @@ ExternalEncoder :: stop ( void )            throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.4  2000/11/18 11:13:27  darkeye
+  removed direct reference to cout, except from main.cpp
+  all class use the Reporter interface to report events
+
   Revision 1.3  2000/11/12 14:54:50  darkeye
   added kdoc-style documentation comments
 

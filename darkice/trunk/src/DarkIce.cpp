@@ -294,7 +294,7 @@ DarkIce :: encode ( void )                          throw ( Exception )
                                   1,
                                   0 );
 
-    cout << len << " bytes transfered" << endl;
+    reportEvent( 1, len, "bytes transfered to the encoders");
 
     encConnector->close();
 
@@ -326,7 +326,7 @@ DarkIce :: shout ( unsigned int     ix )                throw ( Exception )
     bytes = outputs[ix].encoder->getOutBitrate() * (1024UL / 8UL) * duration;
     len = outputs[ix].shoutConnector->transfer ( bytes, 4096, 10, 0 );
 
-    cout << len << " bytes transfered" << endl;
+    reportEvent( 1, len, "bytes transfered to stream", ix);
 
     outputs[ix].shoutConnector->close();
 
@@ -353,9 +353,9 @@ DarkIce :: run ( void )                             throw ( Exception )
 
             sleep ( 1 );
 
-            cout << "shouting " << u << endl << flush;
+            reportEvent( 3, "shouting", u);
             shout( u);
-            cout << "shouting ends " << u << endl << flush;
+            reportEvent( 3, "shouting ends", u);
 
             exit(0);
         }
@@ -363,9 +363,9 @@ DarkIce :: run ( void )                             throw ( Exception )
 
     // this is the parent
 
-    cout << "encoding" << endl << flush;
+    reportEvent( 3, "encoding");
     encode();
-    cout << "encoding ends" << endl << flush;
+    reportEvent( 3, "encoding ends");
 
     for ( u = 0; u < noOutputs; ++u ) {
         int     status;
@@ -387,6 +387,10 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.11  2000/11/18 11:13:27  darkeye
+  removed direct reference to cout, except from main.cpp
+  all class use the Reporter interface to report events
+
   Revision 1.10  2000/11/17 15:50:48  darkeye
   added -Wall flag to compiler and eleminated new warnings
 
