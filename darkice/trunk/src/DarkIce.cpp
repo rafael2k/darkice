@@ -319,7 +319,9 @@ DarkIce :: configIceCast2 (  const Config      & config,
         const char    * str;
 
         IceCast2::StreamFormat  format;
+        unsigned int            sampleRate      = 0;
         unsigned int            bitrate         = 0;
+        double                  quality         = 0.0;
         const char            * server          = 0;
         unsigned int            port            = 0;
         const char            * password        = 0;
@@ -346,8 +348,26 @@ DarkIce :: configIceCast2 (  const Config      & config,
                              "unsupported stream format: ", str);
         }
                 
-        str         = cs->getForSure("bitrate", " missing in section ", stream);
-        bitrate     = Util::strToL( str);
+        str         = cs->get( "sampleRate");
+        sampleRate  = str ? Util::strToL( str) : dsp->getSampleRate();
+        
+        // determine fixed bitrate or variable bitrate quality
+        str         = cs->get( "bitrate");
+        bitrate     = str ? Util::strToL( str) : 0;
+        str         = cs->get( "quality");
+        quality     = str ? Util::strToD( str) : 0.0;
+
+        if ( bitrate == 0 && quality == 0.0 ) {
+            throw Exception( __FILE__, __LINE__,
+                         "neither fixed bitrate nor VBR quality specified in ",
+                             stream);
+        }
+        if ( bitrate != 0 && quality != 0.0 ) {
+            throw Exception( __FILE__, __LINE__,
+                             "both fixed bitrate and VBR quality specified in ",
+                             stream);
+        }
+        
         server      = cs->getForSure( "server", " missing in section ", stream);
         str         = cs->getForSure( "port", " missing in section ", stream);
         port        = Util::strToL( str);
@@ -410,7 +430,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                                     audioOuts[u].server.get(),
                                                     dsp.get(),
                                                     bitrate,
-                                                    dsp->getSampleRate(),
+                                                    sampleRate,
                                                     dsp->getChannel() );
 #endif // HAVE_LAME_LIB
                 break;
@@ -422,12 +442,21 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                 "thus can't Ogg Vorbis stream: ",
                                 stream);
 #else
-                audioOuts[u].encoder = new VorbisLibEncoder(
+                if ( bitrate != 0 ) {
+                    audioOuts[u].encoder = new VorbisLibEncoder(
                                                     audioOuts[u].server.get(),
                                                     dsp.get(),
                                                     bitrate,
-                                                    dsp->getSampleRate(),
+                                                    sampleRate,
                                                     dsp->getChannel() );
+                } else {
+                    audioOuts[u].encoder = new VorbisLibEncoder(
+                                                    audioOuts[u].server.get(),
+                                                    dsp.get(),
+                                                    quality,
+                                                    sampleRate,
+                                                    dsp->getChannel() );
+                }
 #endif // HAVE_VORBIS_LIB
                 break;
 
@@ -805,6 +834,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.26  2002/03/28 16:43:11  darkeye
+  enabled resampling and variable bitrates for vorbis (icecast2) streams
+
   Revision 1.25  2002/02/28 09:49:25  darkeye
   added possibility to save the encoded stream to a local file only
   (no streaming server needed)
