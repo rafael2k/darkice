@@ -288,6 +288,8 @@ operator<< (        ostream &           os,
 {
     os << e.getFile() << ":" << e.getLine() << ": "
        << e.getDescription() << " [" << e.getCode() << "]";
+
+    return os;
 }
 
 
@@ -300,6 +302,9 @@ operator<< (        ostream &           os,
   $Source$
 
   $Log$
+  Revision 1.5  2000/11/17 15:33:54  darkeye
+  bug fix: ostream << operator overload didn't return the ostream
+
   Revision 1.4  2000/11/11 12:33:13  darkeye
   added kdoc-style documentation
 
