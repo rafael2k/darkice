@@ -192,7 +192,7 @@ class Ref
          *  @exception Exception
          */
         inline void
-        set ( T*    newobj )                    throw ( Exception )
+        set ( T   * newobj )                    throw ( Exception )
         {
             // If equal do nothing
             if ( newobj == object ) {
@@ -235,6 +235,19 @@ class Ref
         /**
          *  Equality operator.
          *
+         *  @param other the pointer to compare this with.
+         *  @return true is this Ref refers to the same object as other,
+         *          false otherwise.
+         */
+        inline bool
+        operator== ( const T        * other ) const     throw ()
+        {
+            return object == other;
+        }
+
+        /**
+         *  Equality operator.
+         *
          *  @param other the Ref to compare this with.
          *  @return true is the two Refs refer to the same object,
          *          false otherwise.
@@ -243,6 +256,19 @@ class Ref
         operator== ( const Ref<T> &   other ) const     throw ()
         {
             return object == other.object;
+        }
+
+        /**
+         *  Unequality operator.
+         *
+         *  @param other the pointer to compare this with.
+         *  @return false is this Ref refers to a different object then other,
+         *          true otherwise.
+         */
+        inline bool
+        operator!= ( const T        * other ) const     throw ()
+        {
+            return object != other;
         }
 
         /**
@@ -274,6 +300,9 @@ class Ref
   $Source$
 
   $Log$
+  Revision 1.4  2002/02/20 11:51:27  darkeye
+  added equality operators to compare with pointers
+
   Revision 1.3  2000/11/11 14:55:31  darkeye
   minor bugfix
 
