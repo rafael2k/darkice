@@ -3,6 +3,7 @@
 #   Update the automake / autoconf configuration
 #
 
-rm config.* configure configure.h aclocal.m4
+rm -f config.cache config.log config.status
+rm -f configure configure.h aclocal.m4
 autoheader && automake && aclocal && autoconf && ./configure
 
