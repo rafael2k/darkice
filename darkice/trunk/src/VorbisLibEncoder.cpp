@@ -121,6 +121,12 @@ VorbisLibEncoder :: open ( void )
         close();
     }
 
+    // open the underlying sink
+    if ( !sink->open() ) {
+        throw Exception( __FILE__, __LINE__,
+                         "vorbis lib opening underlying sink error");
+    }
+
     vorbis_info_init( &vorbisInfo);
 
     switch ( getOutBitrateMode() ) {
@@ -178,12 +184,6 @@ VorbisLibEncoder :: open ( void )
 
     if ( (ret = ogg_stream_init( &oggStreamState, 0)) ) {
         throw Exception( __FILE__, __LINE__, "ogg stream init error", ret);
-    }
-
-    // open the underlying sink
-    if ( !sink->open() ) {
-        throw Exception( __FILE__, __LINE__,
-                         "vorbis lib opening underlying sink error");
     }
 
     // create an empty vorbis_comment structure
@@ -356,6 +356,8 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
         vorbis_info_clear( &vorbisInfo);
 
         encoderOpen = false;
+
+        sink->close();
     }
 }
 
@@ -368,6 +370,9 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.16  2002/10/19 13:31:46  darkeye
+  some cleanup with the open() / close() functions
+
   Revision 1.15  2002/10/19 12:22:10  darkeye
   return 0 immediately for write() if supplied length is 0
 

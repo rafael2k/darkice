@@ -70,6 +70,12 @@ LameLibEncoder :: open ( void )
         close();
     }
 
+    // open the underlying sink
+    if ( !sink->open() ) {
+        throw Exception( __FILE__, __LINE__,
+                         "lame lib opening underlying sink error");
+    }
+ 
     lameGlobalFlags = lame_init();
 
     // ugly lame returns -1 in a pointer on allocation errors
@@ -246,12 +252,6 @@ LameLibEncoder :: open ( void )
 
     lame_print_config( lameGlobalFlags);
 
-    // open the underlying sink
-    if ( !sink->open() ) {
-        throw Exception( __FILE__, __LINE__,
-                         "lame lib opening underlying sink error");
-    }
- 
     return true;
 }
 
@@ -372,6 +372,8 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
         flush();
         lame_close( lameGlobalFlags);
         lameGlobalFlags = 0;
+
+        sink->close();
     }
 }
 
@@ -384,6 +386,9 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.18  2002/10/19 13:31:46  darkeye
+  some cleanup with the open() / close() functions
+
   Revision 1.17  2002/10/19 12:22:10  darkeye
   return 0 immediately for write() if supplied length is 0
 
