@@ -3,6 +3,7 @@
 
     o code cleanup
     o first real tests made
+    o added verbosity command line option
 
 
 13-11-2000: DarkIce 0.1 released
