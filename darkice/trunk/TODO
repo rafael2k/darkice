@@ -1,6 +1,5 @@
 o change Ref to follow inheritance
 o make a master config file, and a small one ?
-o reconnect to server if connection is dropped
 o add support for multiple servers for one stream ?
 o libtoolize ?
 o revisit real-time scheduling

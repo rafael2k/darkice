@@ -95,6 +95,11 @@ class MultiThreadedConnector : public virtual Connector
                 pthread_t                   thread;
 
                 /**
+                 *  Marks if the thread is accepting data.
+                 */
+                bool                        accepting;
+
+                /**
                  *  Marks if the thread has processed the last batch
                  *  of data.
                  */
@@ -109,6 +114,7 @@ class MultiThreadedConnector : public virtual Connector
                     this->connector = 0;
                     this->ixSink    = 0;
                     this->thread    = 0;
+                    this->accepting = false;
                     this->isDone    = false;
                 }
 
@@ -132,16 +138,6 @@ class MultiThreadedConnector : public virtual Connector
          *  The conditional variable for presenting new data.
          */
         pthread_cond_t          condProduce;
-
-        /**
-         *  The mutex of this object.
-         */
-        pthread_mutex_t         mutexConsume;
-
-        /**
-         *  The conditional variable for consuming data.
-         */
-        pthread_cond_t          condConsume;
 
         /**
          *  The thread attributes.
@@ -332,6 +328,10 @@ class MultiThreadedConnector : public virtual Connector
   $Source$
 
   $Log$
+  Revision 1.2  2002/10/19 13:35:21  darkeye
+  when a connection is dropped, DarkIce tries to reconnect, indefinitely
+  removed extreme event reporting for thread-related events
+
   Revision 1.1  2002/10/19 12:25:47  darkeye
   changed internals so that now each encoding/server connection is
   a separate thread
