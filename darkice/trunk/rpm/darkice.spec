@@ -32,23 +32,24 @@
 #-------------------------------------------------------------------------------
 
 # ===================================================================== preamble
-Summary : DarkIce live IceCast streamer
+Summary : DarkIce live IceCast / ShoutCast streamer
 Name: darkice
 Vendor: Tyrell Hungary
 Packager: Akos Maroy <darkeye@tyrell.hu>
-Version: 0.4
+Version: 0.5
 Release: 1
 Copyright: GPL
 Group: Applications/Multimedia
-Source: ftp://darkice.sourceforge.net/pub/darkice/darkice-%{version}.tar.gz
+Source: ftp://darkice.sourceforge.net/pub/darkice/%{version}/darkice-%{version}.tar.gz
 URL: http://darkice.sourceforge.net/
 Provides: darkice
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 Prefix: /usr
 
 %description
-DarkIce  is an IceCast live audio streamer. It takes audio input from a sound
-card, encodes it into  mp3, and sends the stream to an IceCast server.
+DarkIce is an IceCast / ShoutCast live audio streamer. It takes audio input
+from a sound card, encodes it into  mp3, and sends the stream to one or more
+IceCast and/or ShoutCast servers.
 
 
 # =========================================================== static sub-package
@@ -57,10 +58,11 @@ Summary: %{summary} static version
 Group: Applications/Multimedia
 
 %description static
-DarkIce  is an IceCast live audio streamer. It takes audio input from a sound
-card, encodes it into  mp3, and sends the stream to an IceCast server.
+DarkIce is an IceCast / ShoutCast live audio streamer. It takes audio input
+from a sound card, encodes it into  mp3, and sends the stream to one or more
+IceCast and/or ShoutCast servers.
 
-This is the statically linked version 
+This is the statically linked version.
 
 
 # =================================================================== prep stage
@@ -114,6 +116,7 @@ make clean
 %config %{_sysconfdir}/darkice.cfg
 %{_bindir}/darkice
 %{_mandir}/man1/darkice.1*
+%{_mandir}/man5/darkice.cfg.5*
 
 
 # ===================================================== static sub-package files
@@ -129,6 +132,9 @@ make clean
 # =================================================================== change log
 #
 #   $Log$
+#   Revision 1.4  2001/09/09 12:26:33  darkeye
+#   updated to reflect that DarkIce is now both an IceCast and ShoutCast streamer
+#
 #   Revision 1.3  2001/09/09 11:48:09  darkeye
 #   added man page darkice.cfg.5
 #
