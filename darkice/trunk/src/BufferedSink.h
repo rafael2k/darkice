@@ -142,13 +142,6 @@ class BufferedSink : public Sink
         operator= ( const BufferedSink &    bs )        throw ( Exception );
 
 
-        inline virtual BufferedSink *
-        clone ( void ) const                            throw ( Exception )
-        {
-            return new BufferedSink(*this);
-        }
-
-
         inline virtual bool
         open ( void )                                   throw ( Exception )
         {
@@ -205,8 +198,11 @@ class BufferedSink : public Sink
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:48  darkeye
-  Initial revision
+  Revision 1.2  2000/11/05 17:37:24  darkeye
+  removed clone() functions
+
+  Revision 1.1.1.1  2000/11/05 10:05:48  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

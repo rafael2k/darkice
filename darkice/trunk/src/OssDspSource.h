@@ -123,13 +123,6 @@ class OssDspSource : public AudioSource
         }
 
 
-        inline virtual OssDspSource *
-        clone ( void ) const                            throw ( Exception )
-        {
-            return new OssDspSource( *this );
-        }
-
-
         virtual bool
         open ( void )                                   throw ( Exception );
 
@@ -171,8 +164,11 @@ class OssDspSource : public AudioSource
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:53  darkeye
-  Initial revision
+  Revision 1.2  2000/11/05 17:37:24  darkeye
+  removed clone() functions
+
+  Revision 1.1.1.1  2000/11/05 10:05:53  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

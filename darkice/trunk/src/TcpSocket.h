@@ -107,13 +107,6 @@ class TcpSocket : public Source, public Sink
         operator= ( const TcpSocket &    ss )        throw ( Exception );
 
 
-        inline virtual TcpSocket *
-        clone ( void ) const                        throw ( Exception )
-        {
-            TcpSocket   * s = new TcpSocket(*this);
-        }
-
-
         inline const char *
         getHost ( void ) const                      throw ()
         {
@@ -185,8 +178,11 @@ class TcpSocket : public Source, public Sink
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:55  darkeye
-  Initial revision
+  Revision 1.2  2000/11/05 17:37:24  darkeye
+  removed clone() functions
+
+  Revision 1.1.1.1  2000/11/05 10:05:55  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

@@ -173,13 +173,6 @@ class LameEncoder : public ExternalEncoder
         }
 
 
-        inline virtual LameEncoder *
-        clone ( void ) const                                throw ( Exception )
-        {
-            return new LameEncoder( *this );
-        }
-
-
         inline unsigned int
         getLowpass ( void ) const                       throw ()
         {
@@ -236,8 +229,11 @@ class LameEncoder : public ExternalEncoder
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:52  darkeye
-  Initial revision
+  Revision 1.2  2000/11/05 17:37:24  darkeye
+  removed clone() functions
+
+  Revision 1.1.1.1  2000/11/05 10:05:52  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

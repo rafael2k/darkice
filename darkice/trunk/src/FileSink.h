@@ -105,13 +105,6 @@ class FileSink : public Sink
         operator= ( const FileSink &    fs )        throw ( Exception );
 
 
-        inline virtual FileSink *
-        clone ( void ) const                        throw ( Exception )
-        {
-            return new FileSink(*this);
-        }
-
-
         inline const char *
         getFileName ( void ) const                  throw ()
         {
@@ -174,8 +167,11 @@ class FileSink : public Sink
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:51  darkeye
-  Initial revision
+  Revision 1.2  2000/11/05 17:37:24  darkeye
+  removed clone() functions
+
+  Revision 1.1.1.1  2000/11/05 10:05:51  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

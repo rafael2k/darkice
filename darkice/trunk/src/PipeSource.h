@@ -96,13 +96,6 @@ class PipeSource : public FileSource
         }
 
 
-        inline virtual PipeSource *
-        clone ( void ) const                            throw ( Exception )
-        {
-            return new PipeSource(*this);
-        }
-
-
         virtual inline
         ~PipeSource( void )                             throw ( Exception )
         {
@@ -129,8 +122,11 @@ class PipeSource : public FileSource
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:53  darkeye
-  Initial revision
+  Revision 1.2  2000/11/05 17:37:24  darkeye
+  removed clone() functions
+
+  Revision 1.1.1.1  2000/11/05 10:05:53  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

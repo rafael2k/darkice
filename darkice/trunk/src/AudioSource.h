@@ -120,10 +120,6 @@ class AudioSource : public Source
         }
 
 
-        virtual AudioSource *
-        clone ( void ) const                throw ( Exception ) = 0;
-
-
     public:
 
         inline unsigned int
@@ -163,8 +159,11 @@ class AudioSource : public Source
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:47  darkeye
-  Initial revision
+  Revision 1.2  2000/11/05 17:37:24  darkeye
+  removed clone() functions
+
+  Revision 1.1.1.1  2000/11/05 10:05:47  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

@@ -188,10 +188,6 @@ class ExternalEncoder : public AudioEncoder
         }
 
 
-        inline virtual ExternalEncoder *
-        clone ( void ) const                    throw ( Exception )     = 0;
-
-
         const char *
         getEncoderName ( void ) const           throw ()
         {
@@ -244,6 +240,9 @@ class ExternalEncoder : public AudioEncoder
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/05 17:37:24  darkeye
+  removed clone() functions
+
   Revision 1.2  2000/11/05 14:08:27  darkeye
   changed builting to an automake / autoconf environment
 
