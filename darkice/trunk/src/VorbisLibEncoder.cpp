@@ -80,11 +80,6 @@ VorbisLibEncoder :: init ( CastSink       * sink,
                          "unsupported number of channels for the encoder",
                          getInChannel() );
     }
-    if ( getInChannel() != getOutChannel() ) {
-        throw Exception( __FILE__, __LINE__,
-                         "different number of input and output channels",
-                         getOutChannel() );
-    }
 
     if ( getOutSampleRate() == getInSampleRate() ) {
         resampleRatio = 1;
@@ -97,11 +92,6 @@ VorbisLibEncoder :: init ( CastSink       * sink,
         // - not linear (quadratic) interpolation
         // - not filter interpolation
         converter = new aflibConverter( true, true, false);
-    }
-
-    if ( getInChannel() != getOutChannel() ) {
-        throw Exception( __FILE__, __LINE__,
-                         "different in and out channels not supported");
     }
 
     encoderOpen = false;
@@ -137,7 +127,7 @@ VorbisLibEncoder :: open ( void )
                     maxBitrate = -1;
                 }
                 if ( (ret = vorbis_encode_init( &vorbisInfo,
-                                                getInChannel(),
+                                                getOutChannel(),
                                                 getOutSampleRate(),
                                                 maxBitrate,
                                                 getOutBitrate() * 1000,
@@ -150,7 +140,7 @@ VorbisLibEncoder :: open ( void )
         case abr:
             /* set non-managed VBR around the average bitrate */
             ret = vorbis_encode_setup_managed( &vorbisInfo,
-                                               getInChannel(),
+                                               getOutChannel(),
                                                getOutSampleRate(),
                                                -1,
                                                getOutBitrate() * 1000,
@@ -165,7 +155,7 @@ VorbisLibEncoder :: open ( void )
 
         case vbr:
             if ( (ret = vorbis_encode_init_vbr( &vorbisInfo,
-                                                getInChannel(),
+                                                getOutChannel(),
                                                 getOutSampleRate(),
                                                 getOutQuality() )) ) {
                 throw Exception( __FILE__, __LINE__,
@@ -241,10 +231,30 @@ VorbisLibEncoder :: write ( const void    * buf,
         return 0;
     }
 
-    unsigned int    bitsPerSample = getInBitsPerSample();
     unsigned int    channels      = getInChannel();
-
+    unsigned int    bitsPerSample = getInBitsPerSample();
     unsigned int    sampleSize = (bitsPerSample / 8) * channels;
+
+    unsigned int i;
+
+    if ( getInChannel() == 2 && getOutChannel() == 1 ) {
+        for ( i = 0; i < len/sampleSize; i++) {
+            if ( bitsPerSample == 8 ) {
+                char          * buf8 = (char *) buf;
+                unsigned int    ix   = sampleSize * i;
+                buf8[i] = (buf8[ix] + buf8[++ix]) / 2;
+            }
+            if ( bitsPerSample == 16 ) {
+                short         * buf16 = (short *) buf;
+                unsigned int    ix    = (bitsPerSample >> 3) * i;
+                buf16[i] = (buf16[ix] + buf16[++ix]) / 2;
+            }
+        }
+        len      >>= 1;
+        channels   = 1;
+    }
+
+    sampleSize = (bitsPerSample / 8) * channels;
     unsigned char * b = (unsigned char*) buf;
     unsigned int    processed = len - (len % sampleSize);
     unsigned int    nSamples = processed / sampleSize;
@@ -255,6 +265,8 @@ VorbisLibEncoder :: write ( const void    * buf,
     // with channels still interleaved
     unsigned int    totalSamples = nSamples * channels;
     short int     * shortBuffer  = new short int[totalSamples];
+
+
     Util::conv( bitsPerSample, b, processed, shortBuffer, isInBigEndian());
     
     if ( converter ) {
@@ -375,6 +387,10 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.19  2004/03/13 10:41:39  darkeye
+  added possibility to downsample from stereo to mono when encoding
+  to Ogg Vorbis
+
   Revision 1.18  2004/02/15 13:07:42  darkeye
   ogg vorbis recording to only a file caused a segfault. now fixed
 
