@@ -1,8 +1,8 @@
 Installing Ogg Vorbis
 ---------------------
 
-To install DarkIce, you need the Ogg Vorbis libraries (and related
-header files:
+To install DarkIce, you need the following Ogg Vorbis 1.0 or later
+libraries (and related header files):
 
 - libogg
 - libvoribs
@@ -18,18 +18,18 @@ options.
 Grab the latest Ogg Vorbis tarballs from
 http://www.xiph.org/ogg/vorbis/download.html
 
-I took libogg-1.0rc3.tar.gz and libvorbis-1.0rc3.tar.gz. Go to the
+I took libogg-1.0.tar.gz and libvorbis-1.0.tar.gz. Go to the
 directory where you saved them, and issue the following commands:
 
-tar xfz libogg-1.0rc3.tar.gz
-cd libogg-1.0rc3
+tar xfz libogg-1.0.tar.gz
+cd libogg-1.0
 ./configure --prefix=/usr
 make
 make install
 cd ..
 
-tar xfz libvorbis-1.0rc3.tar.gz
-cd libvorbis-1.0rc3
+tar xfz libvorbis-1.0.tar.gz
+cd libvorbis-1.0
 ./configure --prefix=/usr
 make
 make install
