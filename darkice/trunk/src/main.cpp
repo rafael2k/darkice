@@ -82,8 +82,9 @@ main (
     char  * argv[] )
 {
     int     res = -1;
-    
-    cout << "DarkIce live audio streamer, http://darkice.sourceforge.net"<<endl;
+
+    cout << "DarkIce " << VERSION
+         << " live audio streamer, http://darkice.sourceforge.net" << endl;
     cout << "Copyright (C) 2000, Tyrell Hungary, http://tyrell.hu" << endl;
     cout << endl;
 
@@ -158,6 +159,9 @@ showUsage (     ostream   & os )
   $Source$
 
   $Log$
+  Revision 1.4  2000/11/13 20:21:29  darkeye
+  added program version display on startup
+
   Revision 1.3  2000/11/13 19:38:55  darkeye
   moved command line parameter parsing from DarkIce.cpp to main.cpp
 
