@@ -29,6 +29,17 @@
 
 /* ============================================================ include files */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#else
+#error need sys/types.h
+#endif
+
+
 #include "Exception.h"
 #include "MultiThreadedConnector.h"
 
@@ -132,6 +143,7 @@ bool
 MultiThreadedConnector :: open ( void )                     throw ( Exception )
 {
     unsigned int        i;
+    size_t              st;
 
     if ( !Connector::open() ) {
         return false;
@@ -140,6 +152,13 @@ MultiThreadedConnector :: open ( void )                     throw ( Exception )
     running = true;
 
     pthread_attr_init( &threadAttr);
+    pthread_attr_getstacksize(&threadAttr, &st);
+    if (st < 128 * 1024) {
+        reportEvent( 5, "MultiThreadedConnector :: open, stack size ",
+                        (long)st);
+        st = 128 * 1024;
+        pthread_attr_setstacksize(&threadAttr, st);
+    }
     pthread_attr_setdetachstate( &threadAttr, PTHREAD_CREATE_JOINABLE);
 
     threads = new ThreadData[numSinks];
@@ -347,6 +366,9 @@ MultiThreadedConnector :: ThreadData :: threadFunction( void  * param )
   $Source$
 
   $Log$
+  Revision 1.4  2004/01/07 13:18:17  darkeye
+  commited patch sent by John Hay, fixing FreeBSD problems
+
   Revision 1.3  2002/10/20 20:43:17  darkeye
   more graceful reconnect
 

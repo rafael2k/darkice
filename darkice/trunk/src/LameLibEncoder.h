@@ -114,9 +114,10 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                int              lowpass,
                int              highpass )              throw ( Exception )
         {
-            this->sink        = sink;
-            this->lowpass     = lowpass;
-            this->highpass    = highpass;
+            this->lameGlobalFlags = NULL;
+            this->sink            = sink;
+            this->lowpass         = lowpass;
+            this->highpass        = highpass;
 
             if ( getInBitsPerSample() != 16 && getInBitsPerSample() != 8 ) {
                 throw Exception( __FILE__, __LINE__,
@@ -447,6 +448,9 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.15  2004/01/07 13:18:17  darkeye
+  commited patch sent by John Hay, fixing FreeBSD problems
+
   Revision 1.14  2002/08/04 10:26:06  darkeye
   added additional error checking to make sure that outChannel < inChannel
 
