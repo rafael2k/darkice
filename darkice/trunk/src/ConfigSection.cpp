@@ -140,6 +140,9 @@ ConfigSection :: addLine (  const char    * line )          throw ( Exception )
     if ( (ix = str.find_last_not_of( ' ')) != str.npos ) {
         str.erase( ix + 1);
     }
+    if ( !str.length() ) {
+        return true;
+    }
 
     /* find the '=' delimiter between key and value */
     if ( (ix = str.find( '=')) == str.npos ) {
@@ -168,6 +171,9 @@ ConfigSection :: addLine (  const char    * line )          throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.6  2001/09/09 11:26:43  darkeye
+  full line comments skipped earlier: commens allowed before the first secion
+
   Revision 1.5  2001/09/05 20:11:15  darkeye
   removed dependency on locally stored SGI STL header files
   now compiler-supplied C++ library STL header files are used

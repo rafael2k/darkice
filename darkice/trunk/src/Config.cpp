@@ -107,6 +107,9 @@ Config :: addLine (  const char    * line )          throw ( Exception )
         str.erase( ix + 1);
     }
 
+    if ( !str.length() ) {
+        return true;
+    }
     if ( str[0] == '[' && str[str.size()-1] == ']' ) {
         // a new section starts
 
@@ -161,6 +164,9 @@ Config :: read (    istream &     is  )                 throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.5  2001/09/09 11:26:43  darkeye
+  full line comments skipped earlier: commens allowed before the first secion
+
   Revision 1.4  2001/09/05 20:11:15  darkeye
   removed dependency on locally stored SGI STL header files
   now compiler-supplied C++ library STL header files are used
