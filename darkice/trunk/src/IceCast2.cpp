@@ -172,6 +172,10 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
         delete[] base64;
     }
 
+    /* send user agent info */
+    str = "\nUser-Agent: DarkIce/" VERSION " (http://darkice.sourceforge.net/)";
+    sink->write( str, strlen( str));
+
     /* send the ice- headers */
     str = "\nice-bitrate: ";
     sink->write( str, strlen( str));
@@ -229,6 +233,9 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.8  2002/08/20 20:16:59  darkeye
+  added User-Agent header to HTTP login
+
   Revision 1.7  2002/08/20 19:34:43  darkeye
   minor fix
 
