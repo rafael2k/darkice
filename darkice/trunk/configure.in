@@ -35,7 +35,7 @@ AC_ARG_WITH(lame-prefix,
     if test "x${LAME_LIB_LOC}" != "x" ; then
       AC_DEFINE(HAVE_LAME_LIB, 1, build with lame library calls)
       LAME_INCFLAGS="-I${LAME_INC_LOC}"
-      LAME_LDFLAGS="-L${LAME_LIB_LOC} -lmp3lame"
+      LAME_LDFLAGS="-Wl,--rpath -Wl,${LAME_LIB_LOC} -lmp3lame"
       AC_MSG_RESULT( "lame found at ${LAME_LIB_LOC}")
     else
       AC_MSG_ERROR( "lame library not found")
