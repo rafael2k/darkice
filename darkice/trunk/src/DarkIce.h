@@ -9,26 +9,21 @@
    Author   : $Author$
    Location : $Source$
    
-   Abstract : 
-
-     Program main object
-
    Copyright notice:
 
-     This program is free software; you can redistribute it and/or
-     modify it under the terms of the GNU General Public License  
-     as published by the Free Software Foundation; either version 2
-     of the License, or (at your option) any later version.
-    
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of 
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-     GNU General Public License for more details.
-    
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307,
-     USA.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License  
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+   
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of 
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+    GNU General Public License for more details.
+   
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ------------------------------------------------------------------------------*/
 #ifndef DARK_ICE_H
@@ -75,15 +70,24 @@
 
 /* =============================================================== data types */
 
-/*------------------------------------------------------------------------------
- *  
- *----------------------------------------------------------------------------*/
+/**
+ *  Program main object.
+ *
+ *  @author  $Author$
+ *  @version $Revision$
+ */
 class DarkIce : public virtual Referable
 {
     private:
 
+        /**
+         *  The maximum number of supported outputs.
+         */
         static const unsigned int       maxOutput = 8;
         
+        /**
+         *  Type describing each output.
+         */
         typedef struct {
             Ref<PipeSink>           encInPipe;
             Ref<BufferedSink>       encIn;
@@ -95,23 +99,58 @@ class DarkIce : public virtual Referable
             pid_t                   pid;
         } Output;
 
-
+        /**
+         *  Duration of playing, in seconds.
+         */
         unsigned int            duration;
+
+        /**
+         *  The dsp to record from.
+         */
         Ref<OssDspSource>       dsp;
+
+        /**
+         *  The encoding Connector, connecting the dsp to the encoders.
+         */
         Ref<Connector>          encConnector;
 
+        /**
+         *  The outputs.
+         */
         Output                  outputs[maxOutput];
+
+        /**
+         *  Number of outputs.
+         */
         unsigned int            noOutputs;
 
-
+        /**
+         *  Initialize the object.
+         *
+         *  @param config the config Object to read initialization
+         *                information from.
+         *  @exception Exception
+         */
         void
         init (  const Config   & config )            throw ( Exception );
 
-
+        /**
+         *  Start encoding. Spawns all encoders, opens the dsp and
+         *  starts sending data to the encoders.
+         *
+         *  @return if encoding was successful.
+         *  @exception Exception
+         */
         bool
         encode ( void )                             throw ( Exception );
 
-
+        /**
+         *  Start shouting. fork()-s a process for each output, reads
+         *  the output of the encoders and sends them to an IceCast server.
+         *
+         *  @return if shouting was successful.
+         *  @exception Exception
+         */
         bool
         shout ( unsigned int )                      throw ( Exception );
 
@@ -124,23 +163,37 @@ class DarkIce : public virtual Referable
 
     public:
 
+        /**
+         *  Default constructor.
+         *
+         *  @exception Exception
+         */
         inline
         DarkIce ( void )                            throw ( Exception )
         {
         }
 
-
+        /**
+         *  Constructor based on command line parameters.
+         *
+         *  @param argc number of arguments
+         *  @param argv the command line arguments.
+         *  @exception Exception
+         */
         DarkIce (   int         argc,
                     char      * argv[] )            throw ( Exception );
 
-
+        /**
+         *  Destructor.
+         *
+         *  @exception Exception
+         */
         inline virtual
         ~DarkIce ( void )                           throw ( Exception )
         {
         }
 
-
-/*
+/* TODO
 
         inline
         DarkIce ( const DarkIce   & di )            throw ( Exception )
@@ -154,6 +207,12 @@ class DarkIce : public virtual Referable
         }
 */
 
+        /**
+         *  Run the process of recording / encoding / sending to the servers.
+         *
+         *  @return 0 on success
+         *  @exception Exception
+         */
         virtual int
         run ( void )                                throw ( Exception );
 
@@ -175,6 +234,9 @@ class DarkIce : public virtual Referable
   $Source$
 
   $Log$
+  Revision 1.4  2000/11/13 18:46:50  darkeye
+  added kdoc-style documentation comments
+
   Revision 1.3  2000/11/10 20:16:21  darkeye
   first real tests with multiple streaming
 
