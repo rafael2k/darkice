@@ -164,9 +164,9 @@ class BufferedSink : public Sink, public virtual Reporter
 
             u = outp <= inp ? inp - outp : (bufferEnd - outp) + (inp - buffer);
             if ( peak < u ) {
+                peak = u;
                 reportEvent( 4, "BufferedSink, new peak:", peak);
                 reportEvent( 4, "BufferedSink, remaining:", bufferSize - peak);
-                peak = u;
             }
         }
 
@@ -391,6 +391,9 @@ class BufferedSink : public Sink, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.8  2005/04/03 05:01:46  jbebel
+  Fix peak reporting to report new peak rather than previous
+
   Revision 1.7  2002/07/21 08:47:06  darkeye
   some exception cleanup (throw clauses in function declarations)
 
