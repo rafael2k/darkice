@@ -20,15 +20,7 @@ DarkIce tarball. Go to the directory you extracted it, and try:
 
 ./configure --help
 
-This will give you all the compile configuration options. Options of
-particlar interest are:
-
-  --enable-static         link everything into the executable statically [no]
-
-Use --enable-static to build a statically linked executable. This is good
-if you plan to deploy DarkIce on a system where either the Lame shared
-object is not installed or its location is unknown. In general it is a
-better idea to link dynamically (not using this option).
+This will give you all the compile configuration options.
 
 On Solaris systems, for some reason the configure script does not
 find the include file lame/lame.h if it uses the SUN Workshop C compiler

@@ -54,20 +54,6 @@ the Ogg Vorbis stream to one or more IceCast2 servers.
 
 
 
-# =========================================================== static sub-package
-%package static
-Summary: %{summary} static version
-Group: Applications/Multimedia
-
-%description static
-DarkIce is an IceCast, IceCast2 and ShoutCast live audio streamer. It
-takes audio input from a sound card, encodes it into mp3 and/or Ogg Vorbis,
-and sends the mp3 stream to one or more IceCast and/or ShoutCast servers,
-the Ogg Vorbis stream to one or more IceCast2 servers.
-
-This is the statically linked version.
-
-
 # =================================================================== prep stage
 %prep
 %setup
@@ -75,17 +61,6 @@ This is the statically linked version.
 
 # ================================================================== build stage
 %build
-# first build the static executable
-%configure --enable-static
-make all
-
-mv src/darkice src/darkice.static
-
-# there is no need to clean, as the object files are the same for the static
-# and dynamic builds
-#make distclean
-
-# secondly build the dynamic executable
 %configure
 make all
 
@@ -93,9 +68,6 @@ make all
 # ================================================================ install stage
 %install
 %makeinstall
-
-# copy the static executable as well
-cp src/darkice.static $RPM_BUILD_ROOT/%{_bindir}
 
 
 # ========================================================== pre-install scripts
@@ -122,19 +94,12 @@ make clean
 %{_mandir}/man5/darkice.cfg.5*
 
 
-# ===================================================== static sub-package files
-%files static
-%defattr (-, root, root)
-%doc COPYING ChangeLog README TODO
-%config %{_sysconfdir}/darkice.cfg
-%{_bindir}/darkice.static
-%{_mandir}/man1/darkice.1*
-%{_mandir}/man5/darkice.cfg.5*
-
-
 # =================================================================== change log
 #
 #   $Log$
+#   Revision 1.7  2001/09/18 18:00:02  darkeye
+#   removed --enable-static configure option
+#
 #   Revision 1.6  2001/09/18 17:35:15  darkeye
 #   for version 0.6
 #

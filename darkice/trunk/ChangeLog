@@ -4,6 +4,8 @@
       Ogg Vorbis support thanks to aNa|0Gue <analogue@glop.org>
     o added support for SUN Solaris
     o removed long command line options (as these are extensions to UNIX)
+    o removed configure option to specify location of lame library
+    o removed configure option to compile static executable
 
 09-09-2001: DarkIce 0.5 released
 
