@@ -25,10 +25,10 @@ dnl checkin for lame library
 AC_MSG_CHECKING(lame library)
 WARNING=
 AC_ARG_WITH(lame-prefix,
-[  --with-lame-prefix=DIR  alternate location for lame [/usr/local]
+[  --with-lame-prefix=DIR  alternate location for lame [/usr]
                           files looked for: LAME-PREFIX/lib/libmp3lame.a
                                             LAME-PREFIX/include/lame/lame.h],
-  CONFIG_LAME_PREFIX="${withval}", CONFIG_LAME_PREFIX="/usr/local")
+  CONFIG_LAME_PREFIX="${withval}", CONFIG_LAME_PREFIX="/usr")
   if test "x${CONFIG_LAME_PREFIX}" != "x" ; then
     # look for lame lib. This overrides any standard location
     LA_SEARCH_LIB(LAME_LIB_LOC, LAME_INC_LOC, libmp3lame.a, lame/lame.h, ${CONFIG_LAME_PREFIX})

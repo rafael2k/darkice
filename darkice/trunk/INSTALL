@@ -51,7 +51,7 @@ DarkIce tarball. Go to the directory you extracted it, and try:
 This will give you all the compile configuration options. Options of
 particlar interest are:
 
-  --with-lame-prefix=DIR  alternate location for lame [/usr/local]
+  --with-lame-prefix=DIR  alternate location for lame [/usr]
                           files looked for: LAME-PREFIX/lib/libmp3lame.a
                                             LAME-PREFIX/include/lame/lame.h
   --enable-static         link everything into the executable statically [no]
@@ -66,9 +66,10 @@ if you plan to deploy DarkIce on a system where either the Lame shared
 object is not installed or its location is unknown. In general it is a
 better idea to link dynamically (not using this option).
 
-If chosing the default compile options, compilation is done as follows:
+If chosing the default compile options, with lame installed under /usr/local,
+compilation is done as follows:
 
-./configure
+./configure --with-lame-prefix=/usr/local
 make
 make install
 
