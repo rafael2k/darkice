@@ -1,10 +1,11 @@
-Darkice next release
+12-02-2003: Darkice 0.13.1 released
 
     o added cross-platform pthread detection, thanks to
       Steven G. Johnson <stevenj@alum.mit.edu> and
       Alejandro Forero Cuervo <bachue@bachue.com>
       see http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html
     o added proper detection of netural endiannes for 16 bit recording
+    o basically these changes allow compilation on FreeBSD
 
 09-02-2003: DarkIce 0.13 released
 
