@@ -14,11 +14,11 @@ http://www.mp3dev.org/mp3/download/download.html
 or from the DarkIce SourceForge project download area
 http://sourceforge.net/project/showfiles.php?group_id=14111
 
-I took lame lame3.89beta.tar.gz. Go to the directory where you saved it,
+I took lame lame-3.91.tar.gz. Go to the directory where you saved it,
 and issue the following commands:
 
-tar xfz lame3.89beta.tar.gz
-cd lame-3.89
+tar xfz lame-3.91.tar.gz
+cd lame-3.91
 ./configure --with-fileio=lame --without-vorbis --disable-gtktest --enable-expopt=full --prefix=/usr
 make
 make install
@@ -34,7 +34,7 @@ On RedHat Linux
 ---------------
 
 Compiling Lame on RedHat Linux is a tricky issue, because of gcc 2.96
-packaged with this distributions 7.0 and 7.1. You either have to use
+packaged with the distributions 7.0 and 7.1. You either have to use
 the comaptibility compiler package (compat-egcs and related packages,
 providing gcc 2.91), or even better, gcc 3.0.
 
@@ -42,8 +42,8 @@ It is recommended that you compile lame with gcc 3. For maximum performance,
 use the nasm assembler to compile assembly optimizations into lame.
 Try the following commands:
 
-tar xfz lame3.89beta.tar.gz
-cd lame-3.89
+tar xfz lame-3.91.tar.gz
+cd lame-3.91
 export CC=gcc3
 ./configure --with-fileio=lame --without-vorbis --disable-gtktest --enable-nasm --enable-expopt=full --prefix=/usr
 make
