@@ -9,13 +9,18 @@ darkice \- an icecast / shoutcast live audio streamer
 .B DarkIce
 is an
 .B IceCast
+,
+.B IceCast2
 and
 .B ShoutCast
 live audio streamer. It takes audio input from a
-sound card, encodes it into mp3, and sends the stream to one or more
+sound card, encodes it into mp3 and/or Ogg Vorbis,
+and sends the mp3 stream to one or more
 .B IceCast
-and / or
+and/or
 .B ShoutCast
+servers, the Ogg Vorbis stream to one or more
+.B IceCast2
 servers.
 
 .B DarkIce
@@ -31,32 +36,22 @@ is run as root.
 .B DarkIce
 uses the
 .B Lame
-mp3 encoder as a library to encode audio intput to mp3.
+mp3 encoder as a library to encode audio intput to mp3, and uses the
+.B Ogg Vorbis
+library to encode into Ogg Vorbis.
 
 .SH OPTIONS
 .TP
 .BI "\-c " config.file
-.br
-.ns
-.TP
-.BI \-\-config= config.file
 Specifies what configuration file to use.
 
 .TP
 .BI "\-v " n
-.br
-.ns
-.TP
-.BI \-\-verbosity= n
 Sets the verbosity level, between 0 and 10. 0 is silent, 10 is loud.
 Defaults to 1.
 
 .TP
 .BI "\-h "
-.br
-.ns
-.TP
-.BI \-\-help
 Prints the help page and exists.
 
 
@@ -78,6 +73,9 @@ Akos Maroy
 Some contributions by Jim Crilly
 .I <JCrilly@MSA.com>
 
+Ogg Vorbis encoding code based on the contribution of aNa|0Gue
+.I <analogue@glop.org>
+
 
 .SH LINKS
 Project homepage:
@@ -95,3 +93,6 @@ homepage:
 homepage:
 .I http://www.mp3dev.org/mp3/
 
+.B Ogg Vorbis
+homepage:
+.I http://www.xiph.org/ogg/vorbis/
