@@ -21,14 +21,20 @@
 <h1 align="center">DarkIce</h1>
 
 <h2>1. What Is DarkIce?</h2>
-DarkIce is a an <a href="http://www.icecast.org/">IceCast</a>
-and <a href="http://www.shoutcast.com/">ShoutCast</a>
-live streamer. The purpose is to take the live input from a soundcard, encode
-it and send the encoded stream to one or more
+DarkIce is an <a href="http://www.icecast.org/">IceCast</a>,
+IceCast2 and <a href="http://www.shoutcast.com/">ShoutCast</a>
+live audio streamer. It takes audio input from a sound card, encodes it
+into mp3 and/or <a href="http://www.xiph.org/ogg/vorbis/">Ogg Vorbis</a>,
+and sends the mp3 stream to one or more
 <a href="http://www.icecast.org/">IceCast</a> and/or
-<a href="http://www.shoutcast.com/">ShoutCast</a> servers.
+<a href="http://www.shoutcast.com/">ShoutCast</a> servers,
+the <a href="http://www.xiph.org/ogg/vorbis/">Ogg Vorbis</a>
+stream to one or more IceCast2 servers.
+
 DarkIce uses <a href="http://www.mp3dev.org/mp3">lame</a> as a shared
-object or statically linked as its mp3 encoder.
+object as its mp3 encoder, and the
+<a href="http://www.xiph.org/ogg/vorbis/">Ogg Vorbis</a> as its
+Ogg Vorbis encoder.
 <br>
 DarkIce is being written by
 <a href="mailto:darkeye@users.sourceforge.net">&Aacute;kos Mar&oacute;y</a>
@@ -38,7 +44,7 @@ DarkIce is under development. While still considered beta, it has
 been used for almost a year in <a href="http://tilos.hu/">production</a>
 24 hours per day.
 <br>
-The latest version is <b>0.5</b>, check out the
+The latest version is <b>0.6</b>, check out the
 <a href="ChangeLog">ChangeLog</a>.
 
 <h2>3. Download</h2>
@@ -57,19 +63,19 @@ use your own lame libs if you like.
 You can either
 <ul>
     <li>get the RPM packages
-        <a href="http://prdownloads.sourceforge.net/darkice/lame-3.89beta-2.i386.rpm">lame-3.89beta-2.i386.rpm</a> and
-        <a href="http://prdownloads.sourceforge.net/darkice/darkice-0.5-1.i386.rpm">darkice-0.5-1.i386.rpm</a>,
+        <ul>
+            <li><a href="http://prdownloads.sourceforge.net/darkice/lame-3.89beta-2.i386.rpm">lame-3.89beta-2.i386.rpm</a>
+            <li><a href="http://www.vorbis.com/files/rc2/unix/libogg-1.0rc2-2.i386.rpm">libogg-1.0rc2-2.i386.rpm</a>
+            <li><a href="http://www.vorbis.com/files/rc2/unix/libvorbis-1.0rc2-2.i386.rpm">libvorbis-1.0rc2-2.i386.rpm</a>
+            <li><a href="http://prdownloads.sourceforge.net/darkice/darkice-0.6-1.i386.rpm">darkice-0.6-1.i386.rpm</a>
+        </ul>
         install &amp; enjoy</li>
-    <li>get the package
-        <a href="http://prdownloads.sourceforge.net/darkice/darkice-static-0.5-1.i386.rpm">darkice-static-0.5-1.i386.rpm</a>, this is
-        statically linked, and does not need lame libraries</li>
     <li>download the source tarball
-        <a href="http://prdownloads.sourceforge.net/darkice/darkice-0.5.tar.gz">darkice-0.5.tar.gz</a>
-        and compile yourself. You will need the lame libs to do this.
-        Try packages
-        <a href="http://prdownloads.sourceforge.net/darkice/lame-3.89beta-2.i386.rpm">lame-3.89beta-2.i386.rpm</a> and
-        <a href="http://prdownloads.sourceforge.net/darkice/lame-devel-3.89beta-2.i386.rpm">lame-devel-3.89beta-2.i386.rpm</a>, or your favourite
-        <a href="http://www.mp3dev.org/mp3/download/download.html">lame tarball</a>.
+        <a href="http://prdownloads.sourceforge.net/darkice/darkice-0.6.tar.gz">darkice-0.6.tar.gz</a>
+        and compile yourself. You will need the
+        <a href="http://www.mp3dev.org/mp3/download/download.html">lame</a> and
+        <a href="http://www.xiph.org/ogg/vorbis/download.html">Ogg Vorbis</a>
+        libs to do this.
         You'll need lame 3.89 or above.
 </ul>
 <p>
