@@ -9,26 +9,21 @@
    Author   : $Author$
    Location : $Source$
    
-   Abstract : 
-
-     FIFO pipe data output
-
    Copyright notice:
 
-     This program is free software; you can redistribute it and/or
-     modify it under the terms of the GNU General Public License  
-     as published by the Free Software Foundation; either version 2
-     of the License, or (at your option) any later version.
-    
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of 
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-     GNU General Public License for more details.
-    
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307,
-     USA.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License  
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+   
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of 
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+    GNU General Public License for more details.
+   
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ------------------------------------------------------------------------------*/
 #ifndef PIPE_SINK_H
@@ -52,9 +47,12 @@
 
 /* =============================================================== data types */
 
-/*------------------------------------------------------------------------------
- *  
- *----------------------------------------------------------------------------*/
+/**
+ *  FIFO pipe data output
+ *
+ *  @author  $Author$
+ *  @version $Revision$
+ */
 class PipeSink : public FileSink
 {
     private:
@@ -62,6 +60,11 @@ class PipeSink : public FileSink
 
     protected:
 
+        /**
+         *  Default constructor. Always throws an Exception.
+         *  
+         *  @exception Exception
+         */
         inline
         PipeSink ( void )                               throw ( Exception )
         {
@@ -71,41 +74,72 @@ class PipeSink : public FileSink
 
     public:
 
+        /**
+         *  Constructor by a pipe name.
+         *
+         *  @param name name of the pipe to be represented by the object.
+         *  @exception Exception
+         */
         inline
         PipeSink (  const char        * name )          throw ( Exception )
             : FileSink( name )
         {
         }
 
-
+        /**
+         *  Copy constructor.
+         *
+         *  @param fsink the PipeSink to copy.
+         *  @exception Exception
+         */
         inline
         PipeSink (  const PipeSink &    ps )            throw ( Exception )
             : FileSink( ps )
         {
         }
 
-
+        /**
+         *  Assignment operator.
+         *
+         *  @param ps the PipeSink to assign to this object.
+         *  @return a reference to this object.
+         *  @exception Exception
+         */
         inline virtual PipeSink &
-        operator= ( const PipeSink &    fs )            throw ( Exception )
+        operator= ( const PipeSink &    ps )            throw ( Exception )
         {
-            if ( this != &fs ) {
-                FileSink::operator=( fs );
+            if ( this != &ps ) {
+                FileSink::operator=( ps );
             }
 
             return *this;
         }
 
-
+        /**
+         *  Destructor.
+         *
+         *  @exception Exception
+         */
         virtual inline
         ~PipeSink( void )                               throw ( Exception )
         {
         }
 
-
+        /**
+         *  Create the pipe.
+         *
+         *  @return true if creation was successful, false otherwise.
+         *  @exception Exception
+         */
         virtual bool
         create ( void )                                 throw ( Exception );
 
-
+        /**
+         *  Open the pipe.
+         *
+         *  @return true if opening was successful, false otherwise.
+         *  @exception Exception
+         */
         virtual bool
         open ( void )                                   throw ( Exception );
 };
@@ -126,6 +160,9 @@ class PipeSink : public FileSink
   $Source$
 
   $Log$
+  Revision 1.3  2000/11/11 12:33:13  darkeye
+  added kdoc-style documentation
+
   Revision 1.2  2000/11/05 17:37:24  darkeye
   removed clone() functions
 

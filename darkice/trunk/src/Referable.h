@@ -9,34 +9,21 @@
    Author   : $Author$
    Location : $Source$
    
-   Abstract : 
-
-     Base class for an object for which references can be made
-     with the reference class Ref (see Ref.h)
-
-     usage:
-    
-     class A : public virtual Referable
-     {
-        ...
-     };
-
    Copyright notice:
 
-     This program is free software; you can redistribute it and/or
-     modify it under the terms of the GNU General Public License  
-     as published by the Free Software Foundation; either version 2
-     of the License, or (at your option) any later version.
-    
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of 
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-     GNU General Public License for more details.
-    
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307,
-     USA.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License  
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+   
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of 
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+    GNU General Public License for more details.
+   
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ------------------------------------------------------------------------------*/
 #ifndef REFERABLE_H
@@ -60,21 +47,45 @@
 
 /* =============================================================== data types */
 
-/*------------------------------------------------------------------------------
+/**
+ *  Base class for an object for which references can be made
+ *  with the reference class Ref.
+ *
+ *  usage:
+ * 
+ *  <pre>
+ *  class A : public virtual Referable
+ *  {
+ *     ...
+ *  };
+ *  </pre>
  *  
- *----------------------------------------------------------------------------*/
+ *  @ref Ref
+ *
+ *  @author  $Author$
+ *  @version $Revision$
+ */
 class Referable
 {
     private:
-    
+
+        /**
+         *  Number of references to the object.
+         */
         unsigned int    referenceCount;
 
+        /**
+         *  Maximum number of references before an overflow occurs.
+         */
         static const
         unsigned int    maxCount = ~((unsigned int)0);
 
 
     protected:
 
+        /**
+         *  Default constructor.
+         */
         inline
         Referable ( void )                              throw ()
         {
@@ -82,6 +93,11 @@ class Referable
         }
 
         
+        /**
+         *  Desctructor.
+         *
+         *  @exception Exception
+         */
         inline virtual
         ~Referable ( void )                             throw ( Exception )
         {
@@ -95,6 +111,12 @@ class Referable
 
     public:
         
+        /**
+         *  Increase reference count.
+         *
+         *  @return the new reference count.
+         *  @exception Exception
+         */
         inline unsigned int
         increaseReferenceCount ( void )                 throw ( Exception )
         {
@@ -107,7 +129,12 @@ class Referable
             return ++referenceCount;
         }
 
-
+        /**
+         *  Decrease reference count.
+         *
+         *  @return the new reference count.
+         *  @exception Exception
+         */
         inline unsigned int
         decreaseReferenceCount ( void )                 throw ( Exception )
         {
@@ -119,7 +146,11 @@ class Referable
             return --referenceCount;
         }
 
-
+        /**
+         *  Get the reference count.
+         *
+         *  @return the reference count.
+         */
         inline unsigned int
         getReferenceCount ( void ) const                throw ()
         {
@@ -143,8 +174,11 @@ class Referable
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:54  darkeye
-  Initial revision
+  Revision 1.2  2000/11/11 12:33:13  darkeye
+  added kdoc-style documentation
+
+  Revision 1.1.1.1  2000/11/05 10:05:54  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

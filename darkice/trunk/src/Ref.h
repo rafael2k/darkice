@@ -9,48 +9,21 @@
    Author   : $Author$
    Location : $Source$
    
-   Abstract : 
-
-     Java-like object reference class
-     Objects used with this reference class have to be descandents
-     of class Referable
-
-     sample usage:
-
-     #include "Ref.h"
-     #include "Referable.h"
-     
-     class  A : public virtual Referable;
-
-     ...
-     
-     A        * a = new A();
-     Ref<A>     ref1 = a;       // 1 reference to a
-     Ref<A>     ref2 = ref1;    // 2 references to a
-
-     ref1 = 0;      // 1 reference to a
-     ref2 = 0;       // at this point object a is destroyed
-    
-
-     Based on Tima Saarinen's work,
-     http://gamma.nic.fi/~timosa/comp/refcount.html
-
    Copyright notice:
 
-     This program is free software; you can redistribute it and/or
-     modify it under the terms of the GNU General Public License  
-     as published by the Free Software Foundation; either version 2
-     of the License, or (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License  
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
     
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of 
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-     GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of 
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+    GNU General Public License for more details.
     
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307,
-     USA.
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ------------------------------------------------------------------------------*/
 #ifndef REF_H
@@ -74,14 +47,46 @@
 
 /* =============================================================== data types */
 
-/*------------------------------------------------------------------------------
+/**
+ *  Java-like object reference class.
+ *  Objects used with this reference class have to be descandents
+ *  of class Referable.
+ *
+ *  sample usage:
+ *
+ *  <pre>
+ *  #include "Ref.h"
+ *  #include "Referable.h"
+ *
+ *  class  A : public virtual Referable;
+ *
+ *  ...
+ *   
+ *  A        * a = new A();
+ *  Ref<A>     ref1 = a;       // 1 reference to a
+ *  Ref<A>     ref2 = ref1;    // 2 references to a
+ *
+ *  ref1 = 0;      // 1 reference to a
+ *  ref2 = 0;      // at this point object a is destroyed
+ *  </pre>
+ *
+ *  Based on Tima Saarinen's work,
+ *  http://gamma.nic.fi/~timosa/comp/refcount.html
+ *
+ *  @ref Referable
  *  
- *----------------------------------------------------------------------------*/
+ *  @author  $Author$
+ *  @version $Revision$
+ */
 template <class T>
 class Ref
 {
     private:
         
+        /**
+         *  The object referenced by this Ref.
+         *  Must be a descandant of Referable.
+         */
         T* object;
 
 
@@ -90,13 +95,21 @@ class Ref
 
     public:
 
+        /**
+         *  Default constructor.
+         */
         inline
         Ref ( void )                            throw ()
         {
             object = NULL;
         }
 
-
+        /**
+         *  Copy constructor.
+         *
+         *  @param other the Ref to copy.
+         *  @exception Exception
+         */
         inline
         Ref ( const Ref<T> &    other )         throw ( Exception )
         {
@@ -104,7 +117,12 @@ class Ref
             set( other.object);
         }
 
-
+        /**
+         *  Constructor based on an object to reference.
+         *
+         *  @param obj the object to reference.
+         *  @exception Exception
+         */
         inline
         Ref ( T   * obj )                       throw ( Exception )
         {
@@ -112,14 +130,22 @@ class Ref
             obj->increaseReferenceCount();
         }
 
-        
+        /**
+         *  Destructor.
+         *
+         *  @exception Exception
+         */
         inline virtual
         ~Ref ( void )                           throw ( Exception )
         {
             set( 0 );
         }
 
-        
+        /**
+         *  Operator overload to make the reference seem like a pointer.
+         *
+         *  @return the pointer to the object referenced.
+         */
         inline T*
         operator->() const                      throw ()
         {
@@ -130,14 +156,27 @@ class Ref
             return object;
         }
 
-
+        /**
+         *  Assignment operator.
+         *
+         *  @param other the Ref to assign to this one.
+         *  @return a reference to this Ref.
+         *  @exception Exception
+         */
         inline Ref<T> &
         operator= ( Ref<T>  other )             throw ( Exception )
         {
             set( other.object);
+            return this;
         }
 
-        
+        /**
+         *  Assignment operator.
+         *
+         *  @param obj pointer to the object to assign to this Ref.
+         *  @return a reference to this Ref.
+         *  @exception Exception
+         */
         inline Ref<T> &
         operator= ( T*  obj )                   throw ( Exception )
         {
@@ -145,7 +184,13 @@ class Ref
             return *this;
         }
 
-
+        /**
+         *  Set the object referenced.
+         *  Deletes the old referenced object is this was it's last reference.
+         *
+         *  @param newobj pointer to the object to reference by this Ref.
+         *  @exception Exception
+         */
         inline void
         set ( T*    newobj )                    throw ( Exception )
         {
@@ -170,17 +215,16 @@ class Ref
             object = newobj;
         }
 
-        
         /**
-         * Return object pointer. This method should be used with
-         * care because it breaks the encapsulation.
-         * Typically this method is needed for the method calls
-         * which require literal object pointer.
+         *  Return object pointer. This method should be used with
+         *  care because it breaks the encapsulation.
+         *  Typically this method is needed for the method calls
+         *  which require literal object pointer.
          *
-         * <P>It may not be bad idea to pass the <CODE>Ref</CODE>
-         * objects as method arguments.</P>
+         *  It may not be bad idea to pass the Ref
+         *  objects as method arguments.
          *
-         * @return Object pointer or <CODE>NULL</CODE>.
+         *  @return Object pointer or NULL.
          */
         inline T*
         get ( void ) const                      throw ()
@@ -188,14 +232,26 @@ class Ref
             return object;
         }
 
-
+        /**
+         *  Equality operator.
+         *
+         *  @param other the Ref to compare this with.
+         *  @return true is the two Refs refer to the same object,
+         *          false otherwise.
+         */
         inline bool
         operator== ( const Ref<T> &   other ) const     throw ()
         {
             return object == other.object;
         }
 
-
+        /**
+         *  Unequality operator.
+         *
+         *  @param other the Ref to compare this with.
+         *  @return false is the two Refs refer to the same object,
+         *          true otherwise.
+         */
         inline bool
         operator!= ( const Ref<T> &   other ) const     throw ()
         {
@@ -218,8 +274,11 @@ class Ref
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:54  darkeye
-  Initial revision
+  Revision 1.2  2000/11/11 12:33:13  darkeye
+  added kdoc-style documentation
+
+  Revision 1.1.1.1  2000/11/05 10:05:54  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/

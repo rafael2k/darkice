@@ -9,26 +9,21 @@
    Author   : $Author$
    Location : $Source$
    
-   Abstract : 
-
-     A general data sink
-
    Copyright notice:
 
-     This program is free software; you can redistribute it and/or
-     modify it under the terms of the GNU General Public License  
-     as published by the Free Software Foundation; either version 2
-     of the License, or (at your option) any later version.
-    
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of 
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-     GNU General Public License for more details.
-    
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307,
-     USA.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License  
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+   
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of 
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+    GNU General Public License for more details.
+   
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ------------------------------------------------------------------------------*/
 #ifndef SINK_H
@@ -42,6 +37,7 @@
 /* ============================================================ include files */
 
 #include "Referable.h"
+#include "Exception.h"
 
 
 /* ================================================================ constants */
@@ -52,9 +48,12 @@
 
 /* =============================================================== data types */
 
-/*------------------------------------------------------------------------------
- *  
- *----------------------------------------------------------------------------*/
+/**
+ *  A general data sink
+ *
+ *  @author  $Author$
+ *  @version $Revision$
+ */
 class Sink : public virtual Referable
 {
     private:
@@ -62,20 +61,32 @@ class Sink : public virtual Referable
 
     protected:
 
+        /**
+         *  Default constructor.
+         */
         inline
-        Sink ( void )
+        Sink ( void )                                   throw ()
         {
         }
 
-
+        /**
+         *  Copy constructor.
+         *
+         *  @param sink the Sink to copy.
+         */
         inline
-        Sink (      const Sink &    sink )
+        Sink (      const Sink &    sink )              throw ()
         {
         }
 
-
+        /**
+         *  Assignment operator.
+         *
+         *  @param sink the Sink to assign this to.
+         *  @return a reference to this Sink.
+         */
         inline virtual Sink &
-        operator= ( const Sink &    sink )
+        operator= ( const Sink &    sink )              throw ()
         {
             return *this;
         }
@@ -83,36 +94,72 @@ class Sink : public virtual Referable
 
     public:
 
+        /**
+         *  Destructor.
+         */
         inline virtual
-        ~Sink ( void )
+        ~Sink ( void )                                  throw ()
         {
         }
 
-
+        /**
+         *  Open the sink.
+         *
+         *  @return true if opening was successfull, false otherwise.
+         *  @exception Exception
+         */
         virtual bool
-        open ( void )           = 0;
+        open ( void )                               throw ( Exception )    = 0;
 
-
+        /**
+         *  Check if a Sink is open.
+         *
+         *  @return true if the Sink is open, false otherwise.
+         */
         virtual bool
-        isOpen ( void ) const   = 0;
+        isOpen ( void ) const                       throw ()    = 0;
 
-
+        /**
+         *  Check if the Sink is ready to accept data.
+         *  Blocks until the specified time for data to be available.
+         *
+         *  @param sec the maximum seconds to block.
+         *  @param usec micro seconds to block after the full seconds.
+         *  @return true if the Sink is ready to accept data, false otherwise.
+         *  @exception Exception
+         */
         virtual bool
         canWrite (              unsigned int    sec,
-                                unsigned int    usec )      = 0;
+                                unsigned int    usec )  throw ( Exception ) = 0;
 
-
+        /**
+         *  Write data to the Sink.
+         *
+         *  @param buf the data to write.
+         *  @param len number of bytes to write from buf.
+         *  @return the number of bytes written (may be less than len).
+         *  @exception Exception
+         */
         virtual unsigned int
         write (                 const void    * buf,
-                                unsigned int    len )       = 0;
+                                unsigned int    len )   throw ( Exception ) = 0;
 
-
+        /**
+         *  Flush all data that was written to the Sink to the underlying
+         *  construct.
+         *
+         *  @exception Exception
+         */
         virtual void
-        flush ( void )          = 0;
+        flush ( void )                                  throw ( Exception ) = 0;
 
-
+        /**
+         *  Close the Sink.
+         *
+         *  @exception Exception
+         */
         virtual void
-        close ( void )          = 0;
+        close ( void )                                  throw ( Exception ) = 0;
 };
 
 
@@ -131,8 +178,11 @@ class Sink : public virtual Referable
   $Source$
 
   $Log$
-  Revision 1.1  2000/11/05 10:05:54  darkeye
-  Initial revision
+  Revision 1.2  2000/11/11 12:33:13  darkeye
+  added kdoc-style documentation
+
+  Revision 1.1.1.1  2000/11/05 10:05:54  darkeye
+  initial version
 
   
 ------------------------------------------------------------------------------*/
