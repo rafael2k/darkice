@@ -1,11 +1,14 @@
-SUBDIRS = src
-EXTRA_DIST = stl doc darkice.cfg
+KDOC_DIR=kdoc
 
-dist-hook: kdocs
+SUBDIRS = src man
+
+EXTRA_DIST = stl $(KDOC_DIR) darkice.cfg
+
+dist-hook: $(KDOC_DIR)
 
 kdocs: src
-	cd src; kdoc --private --strip-h-path --name DarkIce --outputdir ../doc/ *.h
+	cd src; kdoc --private --strip-h-path --name DarkIce --outputdir ../$(KDOC_DIR)/ *.h
 
 kdocs_clean:
-	rm -rf doc/
+	rm -rf $(KDOC_DIR)
 

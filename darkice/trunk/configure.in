@@ -48,5 +48,5 @@ AC_ARG_ENABLE( static,
 
 
 
-AC_OUTPUT(Makefile src/Makefile)
+AC_OUTPUT(Makefile src/Makefile man/Makefile)
 

@@ -1,3 +1,9 @@
+DarkIce 0.4
+
+    o support for external command line encoder removed, replaced
+      with using lame as a shared object or statically linked library
+    o added darkice man page
+
 26-08-2001: DarkIce 0.3.1 released
 
     o support for unlimited time encoding

@@ -1,17 +1,11 @@
-DarkIce 0.2 live audio streamer, http://darkice.sourceforge.net
-Copyright (C) 2000, Tyrell Hungary, http://tyrell.hu
+DarkIce 0.4 live audio streamer, http://darkice.sourceforge.net
+Copyright (c) 2000-2001, Tyrell Hungary, http://tyrell.hu
 
 
 Contents
 --------
 
 1. Compiling and installing
-2. Configuration file format
-2.1 Section [general]
-2.2 Section [input]
-2.3 Section [lamex]
-3. Supported encoders
-4. Kown bugs and issues
 
 
 
@@ -23,110 +17,15 @@ impatient, try:
 
 ./configure
 make
-make install
 
 The executable built is src/darkice.
+To install, try as root:
 
-For command line syntax, try:
-
-darkice --help
-
-It is recommended to run DarkIce as root.
+make install
 
 
-2. Configuration file format
-----------------------------
+For documentation, try:
 
-DarkIce requires a configuration file. Please take a look at the supplied
-darkice.cfg sample configuration file.
-
-The file has to following general format:
-
-[section1]
-# this is a whole line comment
-key = value
-an ugly key name = long value    # this end is a comment too
-
-[section2]
-# this is a whole line comment in section 2
-key = value
-an ugly key name = long value    # this end is a comment too
-
-
-In particular, the following sections and values are required:
-
-
-2.1 Section [general]
----------------------
-This section describes general operational parameters.
-
-Required values:
-
-duration        Time for DarkIce to run, in seconds.  If 0, run forever.
-bufferSecs      Data read from the sound card is buffered before sent to
-                the mp3 encoder. Each buffer will be able to hold this
-                many seconds of samples.
-
-
-2.2 Section [input]
----------------------
-This section describes the input.
-
-Required values:
-
-device          OSS DSP audio device to record from (e.g. /dev/dsp)
-sampleRate      The sample rate to record with, samples per second
-                (e.g. 44100 for 44.1kHz CD-quality audio)
-bitsPerSample   Bites to use for each sample (e.g. 8 bits or 16 bits)
-channel         Number of channels to record (e.g. 1 for mono, 2 for stereo)
-
-
-2.3 Section [lamex]
----------------------
-This section describes an output to an IceCast server, while encoding
-with a lame encoder. There may be at most 8 outputs, numbered from 0 ... 7.
-The number is included in the section name (e.g. [lame0] ... [lame7]).
-
-Required values:
-
-encoder         The command used to invoke the encoder
-bitrate         Bit rate to encode to in kBits / sec (e.g. 96)
-server          The IceCast server's name (e.g. yp.sourserver.com)
-port            The port to connect to the IceCast server (e.g. 8000)
-password        The password to use to connet to the IceCast server
-mountPoint      Mount point for the stream on the server
-name            Name of the stream
-description     Description of the stream
-url             Url related to the stream
-genre           Genre of the stream
-public          "yes" or "no", wether the stream is public
-
-Optional values:
-
-remoteDumpFile  The file the IceCast server should dump the contents of
-                this stream on its side.
-lowpass         Lowpass filter setting for the lame encoder. If not set,
-                the encoder's default behaviour is used
-highpass        Highpass filter setting for the lame encoder. If not set,
-                the encoder's default behaviour is used
-
-
-
-3. Supported encoders
----------------------
-
-Currently the lame encoder is supported (http://www.mp3dev.org/mp3/).
-Tests were made with version 3.86.
-
-
-
-4. Kown bugs and issues
------------------------
-
-Lots of bugs, this is the first release.
-
-You must have write permissions in the directory you execute DarkIce.
-
-DarkIce was only tested under RedHat Linux
+man darkice
 
 
