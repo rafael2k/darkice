@@ -2,6 +2,9 @@ DarkIce next release
 
     o added ALSA support, thanks to Christian Forster
       <forster@like.e-technik.uni-erlangen.de>
+    o added fix to enable downsampling from stereo to mono of mp3 streams
+      when streaming to an icecast2 server. thanks to John Deeny
+      <taqueso@dilapidated.org>
 
 07-01-2004: DarkIce 0.13.2 released
 

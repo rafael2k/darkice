@@ -369,6 +369,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
 
         IceCast2::StreamFormat      format;
         unsigned int                sampleRate      = 0;
+        unsigned int                channel         = 0;
         AudioEncoder::BitrateMode   bitrateMode;
         unsigned int                bitrate         = 0;
         unsigned int                maxBitrate      = 0;
@@ -398,7 +399,9 @@ DarkIce :: configIceCast2 (  const Config      & config,
                 
         str         = cs->get( "sampleRate");
         sampleRate  = str ? Util::strToL( str) : dsp->getSampleRate();
-        
+        str         = cs->get( "channel");
+        channel     = str ? Util::strToL( str) : dsp->getChannel();
+
         // determine fixed bitrate or variable bitrate quality
         str         = cs->get( "bitrate");
         bitrate     = str ? Util::strToL( str) : 0;
@@ -505,7 +508,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                                     bitrate,
                                                     quality,
                                                     sampleRate,
-                                                    dsp->getChannel() );
+                                                    channel );
 #endif // HAVE_LAME_LIB
                 break;
 
@@ -996,6 +999,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.37  2004/02/15 12:14:38  darkeye
+  added patch to allow mp3 stream downsampling to mono for icecast2 as well
+
   Revision 1.36  2004/02/15 12:06:30  darkeye
   added ALSA support, thanks to Christian Forster
 

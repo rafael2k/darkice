@@ -239,6 +239,12 @@ Optional values:
 The sample rate of the encoded mp3 output. If not specified, defaults
 to the value of the input sample rate.
 .TP
+.I channel
+Number of channels for the mp3 output (e.g. 1 for mono, 2 for stereo).
+If not specified, defaults to the value of the input sample rate.
+Different channels for input and output are only supported for mp3,
+but not for Ogg Vorbis.
+.TP
 .I maxBitrate
 The maximum bitrate of the stream. Only used when in cbr mode and in
 Ogg Vorbis format.
