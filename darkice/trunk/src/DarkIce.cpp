@@ -410,10 +410,6 @@ DarkIce :: configIceCast2 (  const Config      & config,
                 throw Exception( __FILE__, __LINE__,
                                  "bitrate not specified for CBR encoding");
             }
-            if ( quality == 0 ) {
-                throw Exception( __FILE__, __LINE__,
-                                 "quality not specified for CBR encoding");
-            }
         } else if ( Util::strEq( str, "abr") ) {
             bitrateMode = AudioEncoder::abr;
 
@@ -980,6 +976,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.28  2002/07/20 10:59:00  darkeye
+  added support for Ogg Vorbis 1.0, removed support for rc2
+
   Revision 1.27  2002/04/13 11:26:00  darkeye
   added cbr, abr and vbr setting feature with encoding quality
 

@@ -76,18 +76,21 @@ VorbisLibEncoder :: open ( void )
     switch ( getOutBitrateMode() ) {
 
         case cbr:
-        case abr:
-#ifdef VORBIS_LIB_RC3
-            if ( (ret = vorbis_encode_init( &vorbisInfo,
-                                            getInChannel(),
-                                            getOutSampleRate(),
-                                            getOutBitrate() * 1000,
-                                            getOutBitrate() * 1000,
-                                            -1 )) ) {
+            ret = vorbis_encode_setup_managed( &vorbisInfo,
+                                               getInChannel(),
+                                               getOutSampleRate(),
+                                               -1,
+                                               getOutBitrate() * 1000,
+                                               -1)
+               || vorbis_encode_ctl( &vorbisInfo, OV_ECTL_RATEMANAGE_AVG, NULL)
+               || vorbis_encode_setup_init( &vorbisInfo);
+            if ( ret ) {
                 throw Exception( __FILE__, __LINE__,
                                  "vorbis encode init error", ret);
             }
-#else
+            break;
+
+        case abr:
             if ( (ret = vorbis_encode_init( &vorbisInfo,
                                             getInChannel(),
                                             getOutSampleRate(),
@@ -97,11 +100,9 @@ VorbisLibEncoder :: open ( void )
                 throw Exception( __FILE__, __LINE__,
                                  "vorbis encode init error", ret);
             }
-#endif
             break;
 
         case vbr:
-
             if ( (ret = vorbis_encode_init_vbr( &vorbisInfo,
                                                 getInChannel(),
                                                 getOutSampleRate(),
@@ -263,11 +264,9 @@ VorbisLibEncoder :: vorbisBlocksOut ( void )                throw ()
         ogg_page        oggPage;
 
         vorbis_analysis( &vorbisBlock, &oggPacket);
-#ifdef VORBIS_LIB_RC3
         vorbis_bitrate_addblock( &vorbisBlock);
 
         while ( vorbis_bitrate_flushpacket( &vorbisDspState, &oggPacket) ) {
-#endif
 
             ogg_stream_packetin( &oggStreamState, &oggPacket);
 
@@ -284,9 +283,7 @@ VorbisLibEncoder :: vorbisBlocksOut ( void )                throw ()
                            oggPage.header_len + oggPage.body_len - written);
                 }
             }
-#ifdef VORBIS_LIB_RC3
         }
-#endif
     }
 }
 
@@ -319,6 +316,9 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.10  2002/07/20 10:59:00  darkeye
+  added support for Ogg Vorbis 1.0, removed support for rc2
+
   Revision 1.9  2002/05/28 12:35:41  darkeye
   code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
 

@@ -102,23 +102,6 @@ else
 fi
 
 
-dnl-----------------------------------------------------------------------------
-dnl  find out which vorbis libs to use: rc2 or rc3
-dnl-----------------------------------------------------------------------------
-AC_ARG_WITH( vorbis-lib,
-[  --with-vorbis-lib=VERSION   use vorbis lib version rc2 or rc3 [rc3] ],
-    USE_VORBIS_LIB=${withval}, USE_VORBIS_LIB="rc3" )
-
-if test "x${USE_VORBIS_LIB}" != "xrc2" -a "x${USE_VORBIS_LIB}" != "xrc3" ; then
-    AC_MSG_ERROR( [bad vorbis lib version specified: ${USE_VORBIS_LIB}])
-fi
-if test "x${USE_VORBIS_LIB}" = "xrc2" ; then
-    AC_DEFINE( VORBIS_LIB_RC2, 1, [use vorbis library verison rc2])
-fi
-if test "x${USE_VORBIS_LIB}" = "xrc3" ; then
-    AC_DEFINE( VORBIS_LIB_RC3, 1, [use vorbis library version rc3])
-fi
-
 dnl make sure at least one of lame and vorbis present
 if test "x${LAME_LDFLAGS}" = "x" -a "x${VORBIS_LDFLAGS}" = "x" ; then
     AC_MSG_ERROR( [neither lame nor Ogg Vorbis configured])

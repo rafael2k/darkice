@@ -3,6 +3,7 @@ DarkIce 0.10
     o added possibility to select constant, average and variable bit rate
       encoding modes with specifying encoding quality as well.
       thanks to Nicu Pavel <npavel@ituner.com>
+    o added support for Ogg Vorbis 1.0 final, removed support for rc2
 
 09-04-2002: DarkIce 0.9.1 released
 
