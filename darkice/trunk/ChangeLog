@@ -1,8 +1,12 @@
-DarkIce 0.4
+02-09-2001: DarkIce 0.4 released
 
     o support for external command line encoder removed, replaced
       with using lame as a shared object or statically linked library
     o added darkice man page
+    o created RPM packages
+    o DarkIce no longer reports an error if the sound card recording
+      sample rate could not be set to the exact specified amount
+      (e.g. the sound card reports 44101 Hz instead of 44100 Hz)
 
 
 26-08-2001: DarkIce 0.3.1 released
