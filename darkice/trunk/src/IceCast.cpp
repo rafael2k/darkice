@@ -30,7 +30,7 @@
 /* ============================================================ include files */
 
 #ifdef HAVE_CONFIG_H
-#include "configure.h"
+#include "config.h"
 #endif
 
 #ifdef HAVE_STDIO_H
@@ -194,6 +194,9 @@ IceCast :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.6  2001/08/30 17:25:56  darkeye
+  renamed configure.h to config.h
+
   Revision 1.5  2001/08/29 21:08:30  darkeye
   made some description options in the darkice config file optional
 

@@ -31,7 +31,7 @@
 /* ============================================================ include files */
 
 #ifdef HAVE_CONFIG_H
-#include "configure.h"
+#include "config.h"
 #endif
 
 #ifdef HAVE_STDLIB_H
@@ -380,6 +380,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.15  2001/08/30 17:25:56  darkeye
+  renamed configure.h to config.h
+
   Revision 1.14  2001/08/29 21:08:30  darkeye
   made some description options in the darkice config file optional
 

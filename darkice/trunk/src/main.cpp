@@ -34,7 +34,7 @@
 /* ============================================================ include files */
 
 #ifdef HAVE_CONFIG_H
-#include "configure.h"
+#include "config.h"
 #endif
 
 #ifdef HAVE_GETOPT_H
@@ -171,6 +171,9 @@ showUsage (     ostream   & os )
   $Source$
 
   $Log$
+  Revision 1.7  2001/08/30 17:25:56  darkeye
+  renamed configure.h to config.h
+
   Revision 1.6  2001/08/26 08:43:13  darkeye
   added support for unlimited time encoding
 

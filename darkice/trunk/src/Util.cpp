@@ -30,7 +30,7 @@
 /* ============================================================ include files */
 
 #ifdef HAVE_CONFIG_H
-#include "configure.h"
+#include "config.h"
 #endif
 
 #ifdef HAVE_STRING_H
@@ -186,6 +186,9 @@ Util :: strToL( const char    * str,
   $Source$
 
   $Log$
+  Revision 1.6  2001/08/30 17:25:56  darkeye
+  renamed configure.h to config.h
+
   Revision 1.5  2000/11/12 13:31:40  darkeye
   added kdoc-style documentation comments
 

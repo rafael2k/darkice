@@ -46,7 +46,7 @@
 /* ============================================================ include files */
 
 #ifdef HAVE_CONFIG_H
-#include "configure.h"
+#include "config.h"
 #endif
 
 #ifdef HAVE_STRING_H
@@ -372,6 +372,9 @@ BufferedSink :: close ( void )                      throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.5  2001/08/30 17:25:56  darkeye
+  renamed configure.h to config.h
+
   Revision 1.4  2000/11/11 12:33:13  darkeye
   added kdoc-style documentation
 

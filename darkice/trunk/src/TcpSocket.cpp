@@ -30,7 +30,7 @@
 /* ============================================================ include files */
 
 #ifdef HAVE_CONFIG_H
-#include "configure.h"
+#include "config.h"
 #endif
 
 #ifdef HAVE_STRING_H
@@ -348,6 +348,9 @@ TcpSocket :: close ( void )                          throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.5  2001/08/30 17:25:56  darkeye
+  renamed configure.h to config.h
+
   Revision 1.4  2000/11/17 15:50:48  darkeye
   added -Wall flag to compiler and eleminated new warnings
 

@@ -37,7 +37,7 @@
 /* ============================================================ include files */
 
 #ifdef HAVE_CONFIG_H
-#include "configure.h"
+#include "config.h"
 #endif
 
 #ifdef HAVE_UNISTD_H
@@ -307,6 +307,9 @@ class Reporter
   $Source$
 
   $Log$
+  Revision 1.4  2001/08/30 17:25:56  darkeye
+  renamed configure.h to config.h
+
   Revision 1.3  2000/12/20 12:47:40  darkeye
   added prefixVerbosity value. in a low verbosity setting no time-stamp
   prefix is displayed

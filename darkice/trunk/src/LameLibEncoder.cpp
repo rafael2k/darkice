@@ -30,7 +30,7 @@
 /* ============================================================ include files */
 
 #ifdef HAVE_CONFIG_H
-#include "configure.h"
+#include "config.h"
 #endif
 
 #ifdef HAVE_STRING_H
@@ -356,6 +356,9 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.3  2001/08/30 17:25:56  darkeye
+  renamed configure.h to config.h
+
   Revision 1.2  2001/08/29 21:06:16  darkeye
   added real support for 8 / 16 bit mono / stereo input
   (8 bit input still has to be spread on 16 bit words)

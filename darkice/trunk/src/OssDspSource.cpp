@@ -30,7 +30,7 @@
 /* ============================================================ include files */
 
 #ifdef HAVE_CONFIG_H
-#include "configure.h"
+#include "config.h"
 #endif
 
 #ifdef HAVE_UNISTD_H
@@ -265,6 +265,9 @@ OssDspSource :: close ( void )                  throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.7  2001/08/30 17:25:56  darkeye
+  renamed configure.h to config.h
+
   Revision 1.6  2000/12/01 15:03:28  darkeye
   bug fix in error reporting
 

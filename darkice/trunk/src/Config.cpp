@@ -30,7 +30,7 @@
 /* ============================================================ include files */
 
 #ifdef HAVE_CONFIG_H
-#include "configure.h"
+#include "config.h"
 #endif
 
 #include <iterator>
@@ -160,6 +160,9 @@ Config :: read (    istream &     is  )                 throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.3  2001/08/30 17:25:56  darkeye
+  renamed configure.h to config.h
+
   Revision 1.2  2000/11/13 18:46:50  darkeye
   added kdoc-style documentation comments
 

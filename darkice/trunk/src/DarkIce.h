@@ -37,7 +37,7 @@
 /* ============================================================ include files */
 
 #ifdef HAVE_CONFIG_H
-#include "configure.h"
+#include "config.h"
 #endif
 
 #ifdef HAVE_UNISTD_H
@@ -269,6 +269,9 @@ class DarkIce : public virtual Referable, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.9  2001/08/30 17:25:56  darkeye
+  renamed configure.h to config.h
+
   Revision 1.8  2001/08/26 20:44:30  darkeye
   removed external command-line encoder support
   replaced it with a shared-object support for lame with the possibility
