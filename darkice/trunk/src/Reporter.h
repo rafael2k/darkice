@@ -94,17 +94,25 @@ class Reporter
         static ostream        * os;
 
         /**
+         *  Print timestamp for every report only if verbosity level
+         *  is above this value.
+         */
+        static const unsigned int   prefixVerbosity = 3;
+
+        /**
          *  Print a prefix to each report.
          */
         void
         printPrefix( void )                         throw ()
         {
-            char    str[32];
-            time_t  now;
+            if ( verbosity > prefixVerbosity ) {
+                char    str[32];
+                time_t  now;
 
-            now = time(NULL);
-            strftime( str, 32, "%H:%M:%S: ", localtime(&now) );
-            (*(Reporter::os)) << str;
+                now = time(NULL);
+                strftime( str, 32, "%H:%M:%S: ", localtime(&now) );
+                (*(Reporter::os)) << str;
+            }
         }
 
 
@@ -299,6 +307,10 @@ class Reporter
   $Source$
 
   $Log$
+  Revision 1.3  2000/12/20 12:47:40  darkeye
+  added prefixVerbosity value. in a low verbosity setting no time-stamp
+  prefix is displayed
+
   Revision 1.2  2000/11/18 11:12:01  darkeye
   added timestamp display, removed process id display in reports
   changed reportEvent functions to template functions
