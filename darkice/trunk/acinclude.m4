@@ -59,6 +59,49 @@ dnl Steven G. Johnson <stevenj@alum.mit.edu>
 dnl and Alejandro Forero Cuervo <bachue@bachue.com>
 dnl see http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html
 dnl-----------------------------------------------------------------------------
+dnl @synopsis ACX_PTHREAD([ACTION-IF-FOUND[, ACTION-IF-NOT-FOUND]])
+dnl
+dnl This macro figures out how to build C programs using POSIX
+dnl threads.  It sets the PTHREAD_LIBS output variable to the threads
+dnl library and linker flags, and the PTHREAD_CFLAGS output variable
+dnl to any special C compiler flags that are needed.  (The user can also
+dnl force certain compiler flags/libs to be tested by setting these
+dnl environment variables.)
+dnl
+dnl Also sets PTHREAD_CC to any special C compiler that is needed for
+dnl multi-threaded programs (defaults to the value of CC otherwise).
+dnl (This is necessary on AIX to use the special cc_r compiler alias.)
+dnl
+dnl NOTE: You are assumed to not only compile your program with these
+dnl flags, but also link it with them as well.  e.g. you should link
+dnl with $PTHREAD_CC $CFLAGS $PTHREAD_CFLAGS $LDFLAGS ... $PTHREAD_LIBS $LIBS
+dnl
+dnl If you are only building threads programs, you may wish to
+dnl use these variables in your default LIBS, CFLAGS, and CC:
+dnl
+dnl        LIBS="$PTHREAD_LIBS $LIBS"
+dnl        CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+dnl        CC="$PTHREAD_CC"
+dnl
+dnl In addition, if the PTHREAD_CREATE_JOINABLE thread-attribute
+dnl constant has a nonstandard name, defines PTHREAD_CREATE_JOINABLE
+dnl to that name (e.g. PTHREAD_CREATE_UNDETACHED on AIX).
+dnl
+dnl ACTION-IF-FOUND is a list of shell commands to run if a threads
+dnl library is found, and ACTION-IF-NOT-FOUND is a list of commands
+dnl to run it if it is not found.  If ACTION-IF-FOUND is not specified,
+dnl the default action will define HAVE_PTHREAD.
+dnl
+dnl Please let the authors know if this macro fails on any platform,
+dnl or if you have any other suggestions or comments.  This macro was
+dnl based on work by SGJ on autoconf scripts for FFTW (www.fftw.org)
+dnl (with help from M. Frigo), as well as ac_pthread and hb_pthread
+dnl macros posted by AFC to the autoconf macro repository.  We are also
+dnl grateful for the helpful feedback of numerous users.
+dnl
+dnl @version $Id$
+dnl @author Steven G. Johnson <stevenj@alum.mit.edu> and Alejandro Forero Cuervo <bachue@bachue.com>
+
 AC_DEFUN([ACX_PTHREAD], [
 AC_REQUIRE([AC_CANONICAL_HOST])
 AC_LANG_SAVE
@@ -97,11 +140,12 @@ fi
 # C compiler flags, and other items are library names, except for "none"
 # which indicates that we try without any flags at all.
 
-acx_pthread_flags="pthreads none -Kthread -kthread lthread -pthread -pthreads -mthreads pthread --thread-safe -mt"
+acx_pthread_flags="pthread-config pthreads none -Kthread -kthread lthread -pthread -pthreads -mthreads pthread --thread-safe -mt"
 
 # The ordering *is* (sometimes) important.  Some notes on the
 # individual items follow:
 
+# pthread-config: use pthread-config program (on NetBSD)
 # pthreads: AIX (must check this before -lpthread)
 # none: in case threads are in libc; should be tried before -Kthread and
 #       other compiler flags to prevent continual compiler warnings
@@ -130,15 +174,6 @@ case "${host_cpu}-${host_os}" in
 
         acx_pthread_flags="-pthread -pthreads pthread -mt $acx_pthread_flags"
         ;;
-
-        *netbsd*)
- 
-        # On NetBSD, use the pthread-config utility to generate proper
-        # flags
-        PTHREAD_CFLAGS="`pthread-config --cflags`"
-        PTHREAD_LIBS="`pthread-config --ldflags` `pthread-config --libs`"
-        acx_pthread_ok=yes
-        ;;
 esac
 
 if test x"$acx_pthread_ok" = xno; then
@@ -153,6 +188,13 @@ for flag in $acx_pthread_flags; do
                 AC_MSG_CHECKING([whether pthreads work with $flag])
                 PTHREAD_CFLAGS="$flag"
                 ;;
+
+		pthread-config)
+		AC_CHECK_PROG(acx_pthread_config, pthread-config, yes, no)
+		if test x"$acx_pthread_config" = xno; then continue; fi
+		PTHREAD_CFLAGS="`pthread-config --cflags`"
+		PTHREAD_LIBS="`pthread-config --ldflags` `pthread-config --libs`"
+		;;
 
                 *)
                 AC_MSG_CHECKING([for the pthreads library -l$flag])
