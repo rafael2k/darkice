@@ -4,4 +4,4 @@ o add support for VBR encoding
 o reconnect to server if connection is dropped
 o add support for multiple servers for one stream ?
 o create RPMs
-o update INSTALL file with DarkIce specific options
+o libtoolize ?
