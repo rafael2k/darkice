@@ -248,13 +248,13 @@ Connector :: open ( void )                          throw ( Exception )
  *  Transfer some data from the source to the sink
  *----------------------------------------------------------------------------*/
 unsigned int
-Connector :: transfer ( unsigned int        bytes,
+Connector :: transfer ( unsigned long       bytes,
                         unsigned int        bufSize,
                         unsigned int        sec,
                         unsigned int        usec )      throw ( Exception )
 {
     unsigned int    u;
-    unsigned int    b;
+    unsigned long   b;
     unsigned char   buf[bufSize];
 
     if ( numSinks == 0 ) {
@@ -333,6 +333,9 @@ Connector :: close ( void )                         throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.4  2000/11/15 18:37:37  darkeye
+  changed the transferable number of bytes to unsigned long
+
   Revision 1.3  2000/11/15 18:08:43  darkeye
   added multiple verbosity-level event reporting and verbosity command
   line option

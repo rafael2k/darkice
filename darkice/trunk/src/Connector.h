@@ -228,7 +228,7 @@ class Connector : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         unsigned int
-        transfer (  unsigned int        bytes,
+        transfer (  unsigned long       bytes,
                     unsigned int        bufSize,
                     unsigned int        sec,
                     unsigned int        usec )          throw ( Exception );
@@ -258,6 +258,9 @@ class Connector : public virtual Referable, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.4  2000/11/15 18:37:37  darkeye
+  changed the transferable number of bytes to unsigned long
+
   Revision 1.3  2000/11/15 18:08:43  darkeye
   added multiple verbosity-level event reporting and verbosity command
   line option

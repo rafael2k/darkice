@@ -272,7 +272,7 @@ DarkIce :: encode ( void )                          throw ( Exception )
 {
     unsigned int       len;
     int                i;
-    unsigned int       bytes;
+    unsigned long      bytes;
 
     for ( i = 0; i < noOutputs; ++i ) {
         outputs[i].encoder->start();
@@ -285,7 +285,7 @@ DarkIce :: encode ( void )                          throw ( Exception )
     }
     
     bytes = dsp->getSampleRate() *
-            (dsp->getBitsPerSample() / 8) *
+            (dsp->getBitsPerSample() / 8UL) *
             dsp->getChannel() *
             duration;
                                                 
@@ -313,7 +313,7 @@ bool
 DarkIce :: shout ( unsigned int     ix )                throw ( Exception )
 {
     unsigned int       len;
-    unsigned int       bytes;
+    unsigned long      bytes;
 
     if ( ix >= noOutputs ) {
         return false;
@@ -323,7 +323,7 @@ DarkIce :: shout ( unsigned int     ix )                throw ( Exception )
         throw Exception( __FILE__, __LINE__, "can't open connector");
     }
     
-    bytes = outputs[ix].encoder->getOutBitrate() * (1024 / 8) * duration;
+    bytes = outputs[ix].encoder->getOutBitrate() * (1024UL / 8UL) * duration;
     len = outputs[ix].shoutConnector->transfer ( bytes, 4096, 10, 0 );
 
     cout << len << " bytes transfered" << endl;
@@ -387,6 +387,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.9  2000/11/15 18:37:37  darkeye
+  changed the transferable number of bytes to unsigned long
+
   Revision 1.8  2000/11/15 18:08:43  darkeye
   added multiple verbosity-level event reporting and verbosity command
   line option
