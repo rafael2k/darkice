@@ -7,3 +7,5 @@ o libtoolize ?
 o revisit real-time scheduling and one-thread-per-connection
 o look into performance
 o create proper error-reporting module
+o add local stream dump capability
+o add Ogg Vorbis resampling
