@@ -7,3 +7,5 @@ o libtoolize ?
 o revisit real-time scheduling and one-thread-per-connection
 o look into performance
 o create proper error-reporting module
+o enable TABs in the config file
+o add support for downsampling the input for a given output
