@@ -1,0 +1,3 @@
+o Add POSIX realtime scheduling
+o make FIFO pipes in /tmp with valid temp filenames
+o change Ref to follow inheritance
