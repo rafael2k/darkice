@@ -40,6 +40,12 @@
 #error need stdlib.h
 #endif
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#else
+#error need unistd.h
+#endif
+
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #else
@@ -56,6 +62,12 @@
 #include <errno.h>
 #else
 #error need errno.h
+#endif
+
+#ifdef HAVE_SCHED_H
+#include <sched.h>
+#else
+#error need sched.h
 #endif
 
 
@@ -265,6 +277,89 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
 
 
 /*------------------------------------------------------------------------------
+ *  Set POSIX real-time scheduling, if super-user
+ *----------------------------------------------------------------------------*/
+void
+DarkIce :: setRealTimeScheduling ( void )               throw ( Exception )
+{
+    uid_t   euid;
+
+    euid = geteuid();
+
+    if ( euid == 0 ) {
+        int                 high_priority;
+        struct sched_param  param;
+
+        /* store the old scheduling parameters */
+        if ( (origSchedPolicy = sched_getscheduler(0)) == -1 ) {
+            throw Exception( __FILE__, __LINE__, "sched_getscheduler", errno);
+        }
+
+        if ( sched_getparam( 0, &param) == -1 ) {
+            throw Exception( __FILE__, __LINE__, "sched_getparam", errno);
+        }
+        origSchedPriority = param.sched_priority;
+        
+        /* set SCHED_FIFO with max - 1 priority */
+        if ( (high_priority = sched_get_priority_max(SCHED_FIFO)) == -1 ) {
+            throw Exception(__FILE__,__LINE__,"sched_get_priority_max",errno);
+        }
+        reportEvent( 8, "scheduler high priority", high_priority);
+
+        param.sched_priority = high_priority - 1;
+
+        if ( sched_setscheduler( 0, SCHED_FIFO, &param) == -1 ) {
+            throw Exception( __FILE__, __LINE__, "sched_setscheduler", errno);
+        }
+
+        /* ask the new priortiy and report it */
+        if ( sched_getparam( 0, &param) == -1 ) {
+            throw Exception( __FILE__, __LINE__, "sched_getparam", errno);
+        }
+
+        reportEvent( 1,
+                     "Using POSIX real-time scheduling, priority",
+                     param.sched_priority );
+    } else {
+        reportEvent( 1,
+        "Not running as super-user, unable to use POSIX real-time scheduling" );
+        reportEvent( 1,
+        "It is recommended that you run this program as super-user");
+    }
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Set the original scheduling of the process, the one prior to the
+ *  setRealTimeScheduling call.
+ *  WARNING: make sure you don't call this before setRealTimeScheduling!!
+ *----------------------------------------------------------------------------*/
+void
+DarkIce :: setOriginalScheduling ( void )               throw ( Exception )
+{
+    uid_t   euid;
+
+    euid = geteuid();
+
+    if ( euid == 0 ) {
+        struct sched_param  param;
+
+        if ( sched_getparam( 0, &param) == -1 ) {
+            throw Exception( __FILE__, __LINE__, "sched_getparam", errno);
+        }
+
+        param.sched_priority = origSchedPriority;
+
+        if ( sched_setscheduler( 0, origSchedPolicy, &param) == -1 ) {
+            throw Exception( __FILE__, __LINE__, "sched_setscheduler", errno);
+        }
+
+        reportEvent( 5, "reverted to original scheduling");
+    }
+}
+
+
+/*------------------------------------------------------------------------------
  *  Run the encoder
  *----------------------------------------------------------------------------*/
 bool
@@ -289,10 +384,7 @@ DarkIce :: encode ( void )                          throw ( Exception )
             dsp->getChannel() *
             duration;
                                                 
-    len = encConnector->transfer( bytes,
-                                  4096,
-                                  1,
-                                  0 );
+    len = encConnector->transfer( bytes, 4096, 1, 0 );
 
     reportEvent( 1, len, "bytes transfered to the encoders");
 
@@ -364,7 +456,9 @@ DarkIce :: run ( void )                             throw ( Exception )
     // this is the parent
 
     reportEvent( 3, "encoding");
+    setRealTimeScheduling();
     encode();
+    setOriginalScheduling();
     reportEvent( 3, "encoding ends");
 
     for ( u = 0; u < noOutputs; ++u ) {
@@ -387,6 +481,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.12  2000/12/20 12:36:47  darkeye
+  added POSIX real-time scheduling
+
   Revision 1.11  2000/11/18 11:13:27  darkeye
   removed direct reference to cout, except from main.cpp
   all class use the Reporter interface to report events

@@ -11,6 +11,7 @@ dnl AC_STDC_HEADERS
 AC_HAVE_HEADERS(errno.h fcntl.h stdio.h stdlib.h string.h unistd.h limits.h)
 AC_HAVE_HEADERS(getopt.h signal.h time.h sys/time.h sys/types.h sys/soundcard.h)
 AC_HAVE_HEADERS(netdb.h netinet/in.h sys/ioctl.h sys/socket.h sys/stat.h)
+AC_HAVE_HEADERS(sched.h)
 AC_HEADER_SYS_WAIT()
 
 AC_TYPE_PID_T()

@@ -126,6 +126,16 @@ class DarkIce : public virtual Referable, public virtual Reporter
         unsigned int            noOutputs;
 
         /**
+         *  Original scheduling policy
+         */
+        int                     origSchedPolicy;
+
+        /**
+         *  Original scheduling priority
+         */
+        int                     origSchedPriority;
+
+        /**
          *  Initialize the object.
          *
          *  @param config the config Object to read initialization
@@ -134,6 +144,24 @@ class DarkIce : public virtual Referable, public virtual Reporter
          */
         void
         init (  const Config   & config )            throw ( Exception );
+
+        /**
+         *  Set POSIX real-time scheduling for the encoding process,
+         *  if user permissions enable it.
+         *
+         *  @exception Exception
+         */
+        void
+        setRealTimeScheduling ( void )              throw ( Exception );
+
+        /**
+         *  Set the scheduling that was before setting real-time scheduling.
+         *  This function must be called _only_ after setRealTimeScheduling.
+         *
+         *  @exception Exception
+         */
+        void
+        setOriginalScheduling ( void )              throw ( Exception );
 
         /**
          *  Start encoding. Spawns all encoders, opens the dsp and
@@ -236,6 +264,9 @@ class DarkIce : public virtual Referable, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.7  2000/12/20 12:36:47  darkeye
+  added POSIX real-time scheduling
+
   Revision 1.6  2000/11/15 18:08:43  darkeye
   added multiple verbosity-level event reporting and verbosity command
   line option
