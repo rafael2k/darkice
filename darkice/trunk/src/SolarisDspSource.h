@@ -68,12 +68,6 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
          */
         int         fileDescriptor;
 
-        /**
-         *  Indicates wether the low-level Solaris DSP device is in a recording
-         *  state.
-         */
-        bool        running;
-
 
     protected:
 
@@ -263,6 +257,9 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.3  2004/02/18 21:08:11  darkeye
+  ported to OpenBSD (real-time scheduling not yet supported)
+
   Revision 1.2  2001/09/18 14:57:19  darkeye
   finalized Solaris port
 

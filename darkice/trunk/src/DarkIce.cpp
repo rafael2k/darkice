@@ -873,6 +873,10 @@ DarkIce :: configFileCast (  const Config      & config )
 void
 DarkIce :: setRealTimeScheduling ( void )               throw ( Exception )
 {
+// don't include the following on OpenBSD, as the scheduling functions are
+// not implemented.
+// FIXME: using HAVE_SYS_AUDIOIO_H as a sign of being on OpenBSD is buggy
+#if !defined( HAVE_SYS_AUDIOIO_H )
     uid_t   euid;
 
     euid = geteuid();
@@ -917,6 +921,7 @@ DarkIce :: setRealTimeScheduling ( void )               throw ( Exception )
         reportEvent( 1,
         "It is recommended that you run this program as super-user");
     }
+#endif
 }
 
 
@@ -928,6 +933,10 @@ DarkIce :: setRealTimeScheduling ( void )               throw ( Exception )
 void
 DarkIce :: setOriginalScheduling ( void )               throw ( Exception )
 {
+// don't include the following on OpenBSD, as the scheduling functions are
+// not implemented.
+// FIXME: using HAVE_SYS_AUDIOIO_H as a sign of being on OpenBSD is buggy
+#if !defined( HAVE_SYS_AUDIOIO_H )
     uid_t   euid;
 
     euid = geteuid();
@@ -947,6 +956,7 @@ DarkIce :: setOriginalScheduling ( void )               throw ( Exception )
 
         reportEvent( 5, "reverted to original scheduling");
     }
+#endif
 }
 
 
@@ -999,6 +1009,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.38  2004/02/18 21:08:11  darkeye
+  ported to OpenBSD (real-time scheduling not yet supported)
+
   Revision 1.37  2004/02/15 12:14:38  darkeye
   added patch to allow mp3 stream downsampling to mono for icecast2 as well
 

@@ -80,10 +80,12 @@
 #error need sys/ioctl.h
 #endif
 
-#ifdef HAVE_SYS_AUDIO_H
+#if defined( HAVE_SYS_AUDIO_H )
 #include <sys/audio.h>
+#elif defined( HAVE_SYS_AUDIOIO_H )
+#include <sys/audioio.h>
 #else
-#error need sys/audio.h
+#error need sys/audio.h or sys/audioio.h
 #endif
 
 
@@ -116,7 +118,6 @@ SolarisDspSource :: init (  const char      * name )    throw ( Exception )
 {
     fileName       = Util::strDup( name);
     fileDescriptor = 0;
-    running        = false;
 }
 
 
@@ -157,6 +158,9 @@ SolarisDspSource :: open ( void )                       throw ( Exception )
     audioInfo.record.channels    = getChannel();
     audioInfo.record.precision   = getBitsPerSample();
     audioInfo.record.encoding    = AUDIO_ENCODING_LINEAR;
+    // for stupid OpenBSD we need to add the following, as it masks
+    // read/write calls when using -pthread
+    audioInfo.record.pause       = 0;
 
     if ( ioctl( fileDescriptor, AUDIO_SETINFO, &audioInfo) == -1 ) {
 
@@ -185,6 +189,7 @@ SolarisDspSource :: open ( void )                       throw ( Exception )
                         "drift in the sound card driver");
     }
 
+    
     return true;
 }
 
@@ -194,7 +199,7 @@ SolarisDspSource :: open ( void )                       throw ( Exception )
  *----------------------------------------------------------------------------*/
 bool
 SolarisDspSource :: canRead ( unsigned int    sec,
-                          unsigned int    usec )    throw ( Exception )
+                              unsigned int    usec )    throw ( Exception )
 {
     fd_set              fdset;
     struct timeval      tv;
@@ -204,13 +209,6 @@ SolarisDspSource :: canRead ( unsigned int    sec,
         return false;
     }
 
-    if ( !running ) {
-        /* ugly workaround to get the dsp into recording state */
-        unsigned char   b[getChannel()*getBitsPerSample()/8];
-
-        read( b, getChannel()*getBitsPerSample()/8);
-    }
-    
     FD_ZERO( &fdset);
     FD_SET( fileDescriptor, &fdset);
     tv.tv_sec  = sec;
@@ -231,7 +229,7 @@ SolarisDspSource :: canRead ( unsigned int    sec,
  *----------------------------------------------------------------------------*/
 unsigned int
 SolarisDspSource :: read (    void          * buf,
-                          unsigned int    len )     throw ( Exception )
+                              unsigned int    len )     throw ( Exception )
 {
     ssize_t     ret;
 
@@ -245,7 +243,6 @@ SolarisDspSource :: read (    void          * buf,
         throw Exception( __FILE__, __LINE__, "read error");
     }
 
-    running = true;
     return ret;
 }
 
@@ -262,7 +259,6 @@ SolarisDspSource :: close ( void )                  throw ( Exception )
 
     ::close( fileDescriptor);
     fileDescriptor = 0;
-    running        = false;
 }
 
 #endif // SUPPORT_SOLARIS_DSP
@@ -273,6 +269,9 @@ SolarisDspSource :: close ( void )                  throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.2  2004/02/18 21:08:11  darkeye
+  ported to OpenBSD (real-time scheduling not yet supported)
+
   Revision 1.1  2001/09/11 15:05:21  darkeye
   added Solaris support
 

@@ -58,8 +58,8 @@
 #define SUPPORT_OSS_DSP
 #endif
 
-#if defined( HAVE_SYS_AUDIO_H )
-// we have a Solaris DSP sound device available
+#if defined( HAVE_SYS_AUDIO_H ) || defined( HAVE_SYS_AUDIOIO_H )
+// we have a Solaris DSP sound device available (same for OpenBSD)
 #define SUPPORT_SOLARIS_DSP
 #endif
 
@@ -288,6 +288,9 @@ class AudioSource : public Source, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.7  2004/02/18 21:08:11  darkeye
+  ported to OpenBSD (real-time scheduling not yet supported)
+
   Revision 1.6  2004/02/15 12:06:29  darkeye
   added ALSA support, thanks to Christian Forster
 
