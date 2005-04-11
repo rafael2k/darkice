@@ -153,7 +153,7 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
             break;
 
         case oggVorbis:
-            str = "application/x-ogg";
+            str = "application/ogg";
             break;
 
         default:
@@ -255,6 +255,9 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.11  2005/04/11 18:32:32  darkeye
+  changed MIME type to application/ogg, which is now official
+
   Revision 1.10  2002/11/29 08:14:47  darkeye
   fixed minor bug in IcecCast2.cpp, which could have lead to a buffer
   overflow
