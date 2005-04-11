@@ -92,21 +92,28 @@ VorbisLibEncoder :: init ( CastSink       * sink,
         // The inverse of the ratio must be a power of two for linear mode to
         // be of sufficient quality.
         
-        bool useLinear = true;
-        double inverse = 1 / resampleRatio;
-        int integer = inverse;
+        bool    useLinear = true;
+        double  inverse   = 1 / resampleRatio;
+        int     integer   = (int) inverse;
 
-        if( integer == inverse ) { // Check that the inverse of the ratio is an integer
-           while( useLinear && integer ) { // Loop through the bits
-              if( integer & 1 && integer != 1 ) // If the lowest order bit is not the only one set
-                 useLinear = false; // Not a power of two; cannot use linear
-              else
-                 integer >>= 1; // Shift all the bits over and try again
-           }
-        } else
+        // Check that the inverse of the ratio is an integer
+        if( integer == inverse ) {
+            while( useLinear && integer ) { // Loop through the bits
+                // If the lowest order bit is not the only one set
+                if( integer & 1 && integer != 1 ) {
+                    // Not a power of two; cannot use linear
+                    useLinear = false;
+                } else {
+                    // Shift all the bits over and try again
+                    integer >>= 1;
+                }
+            }
+        } else {
            useLinear = false;
+        }
 
-        // If we get here and useLinear is still true, then we have a power of two.
+        // If we get here and useLinear is still true, then we have
+        // a power of two.
            
         // open the aflibConverter in
         // - high quality
@@ -408,6 +415,10 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.21  2005/04/11 19:26:55  darkeye
+  cosmetic changes
+  fixed warning for implicit cast from doulbe to int
+
   Revision 1.20  2005/04/03 05:18:24  jbebel
   Add test to determine if the sample rate conversion ratio is a power of 2.
   If so, use linear interpolation.  Otherwise use more complicated quadratic
