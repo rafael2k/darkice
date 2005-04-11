@@ -7,6 +7,7 @@ DarkIce next release
     o added support for Jack inputs, enabling a lot of interesting usage,
       including support for MacOS X.
       Thanks to Nicholas J. Humfrey <njh@ecs.soton.ac.uk>
+	o various improvements by Joel Ebel <jbebel@ncsu.edu>
 
 15-02-2004: DarkIce 0.14 released
 
