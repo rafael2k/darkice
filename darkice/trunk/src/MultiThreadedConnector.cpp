@@ -64,8 +64,10 @@ static const char fileid[] = "$Id$";
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-MultiThreadedConnector :: init ( void )                 throw ( Exception )
+MultiThreadedConnector :: init ( bool    reconnect )    throw ( Exception )
 {
+    this->reconnect = reconnect;
+
     pthread_mutex_init( &mutexProduce, 0);
     pthread_cond_init( &condProduce, 0);
     threads = 0;
@@ -96,6 +98,7 @@ MultiThreadedConnector :: MultiThreadedConnector (
                                                             throw ( Exception )
             : Connector( connector)
 {
+    reconnect       = connector.reconnect;
     mutexProduce    = connector.mutexProduce;
     condProduce     = connector.condProduce;
 
@@ -119,6 +122,7 @@ MultiThreadedConnector :: operator= ( const MultiThreadedConnector & connector )
     if ( this != &connector ) {
         Connector::operator=( connector);
 
+        reconnect       = connector.reconnect;
         mutexProduce    = connector.mutexProduce;
         condProduce     = connector.condProduce;
 
@@ -310,13 +314,18 @@ MultiThreadedConnector :: sinkThread( int       ixSink )
         pthread_mutex_unlock( &mutexProduce);
 
         if ( !threadData->accepting ) {
-            // if we're not accepting, try to reopen the sink
-            try {
-                sink->close();
-                sink->open();
-                threadData->accepting = sink->isOpen();
-            } catch ( Exception   & e ) {
-                // don't care, just try and try again
+            if ( reconnect ) {
+                // if we're not accepting, try to reopen the sink
+                try {
+                    sink->close();
+                    sink->open();
+                    threadData->accepting = sink->isOpen();
+                } catch ( Exception   & e ) {
+                    // don't care, just try and try again
+                }
+            } else {
+                // if !reconnect, just stop the connector
+                running = false;
             }
         }
     }
@@ -366,6 +375,9 @@ MultiThreadedConnector :: ThreadData :: threadFunction( void  * param )
   $Source$
 
   $Log$
+  Revision 1.5  2005/04/11 19:27:43  darkeye
+  added option to turn off automatic reconnect feature
+
   Revision 1.4  2004/01/07 13:18:17  darkeye
   commited patch sent by John Hay, fixing FreeBSD problems
 

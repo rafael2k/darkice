@@ -157,6 +157,12 @@ class MultiThreadedConnector : public virtual Connector
         bool                    running;
 
         /**
+         *  Flag to show if the connector should try to reconnect if
+         *  the connection is dropped on the other side.
+         */
+        bool                    reconnect;
+
+        /**
          *  The buffer of information presented to each thread.
          */
         unsigned char         * dataBuffer;
@@ -169,10 +175,13 @@ class MultiThreadedConnector : public virtual Connector
         /**
          *  Initialize the object.
          *
+         *  @param reconnect flag to indicate if the connector should
+         *                   try to reconnect if the connection was
+         *                   dropped by the other end
          *  @exception Exception
          */
         void
-        init ( void )                               throw ( Exception );
+        init ( bool     reconnect )                 throw ( Exception );
 
         /**
          *  De-initialize the object.
@@ -202,14 +211,18 @@ class MultiThreadedConnector : public virtual Connector
          *  Constructor based on a Source.
          *
          *  @param source the source to connect to the sinks.
+         *  @param reconnect flag to indicate if the connector should
+         *                   try to reconnect if the connection was
+         *                   dropped by the other end
          *  @exception Exception
          */
         inline
-        MultiThreadedConnector (    Source        * source )
+        MultiThreadedConnector (    Source        * source,
+                                    bool            reconnect )
                                                             throw ( Exception )
                     : Connector( source )
         {
-            init();
+            init(reconnect);
         }
 
         /**
@@ -217,15 +230,19 @@ class MultiThreadedConnector : public virtual Connector
          *
          *  @param source the source to connect to the sinks.
          *  @param sink a sink to connect to the source.
+         *  @param reconnect flag to indicate if the connector should
+         *                   try to reconnect if the connection was
+         *                   dropped by the other end
          *  @exception Exception
          */
         inline
         MultiThreadedConnector ( Source            * source,
-                                 Sink              * sink )
+                                 Sink              * sink,
+                                 bool                reconnect )
                                                             throw ( Exception )
                     : Connector( source, sink)
         {
-            init();
+            init(reconnect);
         }
 
         /**
@@ -330,6 +347,9 @@ class MultiThreadedConnector : public virtual Connector
   $Source$
 
   $Log$
+  Revision 1.5  2005/04/11 19:27:43  darkeye
+  added option to turn off automatic reconnect feature
+
   Revision 1.4  2004/02/23 19:12:52  darkeye
   ported to NetBSD
 

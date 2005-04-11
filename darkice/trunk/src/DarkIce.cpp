@@ -129,6 +129,7 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
     unsigned int             sampleRate;
     unsigned int             bitsPerSample;
     unsigned int             channel;
+    bool                     reconnect;
     const char             * device;
 
     // the [general] section
@@ -139,6 +140,8 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
     duration = Util::strToL( str);
     str = cs->getForSure( "bufferSecs", " missing in section [general]");
     bufferSecs = Util::strToL( str);
+    str           = cs->get( "reconnect");
+    reconnect     = str ? (Util::strEq( str, "yes") ? true : false) : true;
 
 
     // the [input] section
@@ -146,19 +149,19 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
         throw Exception( __FILE__, __LINE__, "no section [general] in config");
     }
     
-    str = cs->getForSure( "sampleRate", " missing in section [input]");
+    str        = cs->getForSure( "sampleRate", " missing in section [input]");
     sampleRate = Util::strToL( str);
-    str = cs->getForSure( "bitsPerSample", " missing in section [input]");
+    str       = cs->getForSure( "bitsPerSample", " missing in section [input]");
     bitsPerSample = Util::strToL( str);
-    str = cs->getForSure( "channel", " missing in section [input]");
-    channel = Util::strToL( str);
-    device = cs->getForSure( "device", " missing in section [input]");
+    str           = cs->getForSure( "channel", " missing in section [input]");
+    channel       = Util::strToL( str);
+    device        = cs->getForSure( "device", " missing in section [input]");
 
     dsp             = AudioSource::createDspSource( device,
                                                     sampleRate,
                                                     bitsPerSample,
                                                     channel );
-    encConnector    = new MultiThreadedConnector( dsp.get());
+    encConnector    = new MultiThreadedConnector( dsp.get(), reconnect );
 
     noAudioOuts = 0;
     configIceCast( config, bufferSecs);
@@ -1008,6 +1011,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.43  2005/04/11 19:27:43  darkeye
+  added option to turn off automatic reconnect feature
+
   Revision 1.42  2005/04/04 08:36:17  darkeye
   commited changes to enable Jack support
   thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk
