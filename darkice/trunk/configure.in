@@ -25,6 +25,8 @@ AC_CHECK_LIB( socket, socket)
 AC_CHECK_LIB( nsl, gethostbyname)
 AC_CHECK_LIB( rt, sched_getscheduler)
 
+AC_CHECK_FUNC( getaddrinfo, AC_DEFINE(HAVE_GETADDRINFO, 1, [Does function getaddrinfo exist?] ))
+
 dnl-----------------------------------------------------------------------------
 dnl funky posix threads checking, thanks to
 dnl Steven G. Johnson <stevenj@alum.mit.edu>

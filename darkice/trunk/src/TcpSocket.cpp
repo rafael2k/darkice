@@ -186,13 +186,31 @@ TcpSocket :: operator= (  const TcpSocket &    ss )   throw ( Exception )
 bool
 TcpSocket :: open ( void )                       throw ( Exception )
 {
+#ifdef HAVE_ADDRINFO
+    struct addrinfo         hints
+    struct addrinfo       * ptr;
+    struct sockaddr_storage addr;
+    char                    portstr[6];
+#else
     struct sockaddr_in      addr;
     struct hostent        * pHostEntry;
-    
+#endif
+ 
     if ( isOpen() ) {
         return false;
     }
 
+#ifdef HAVE_ADDRINFO
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_family = AF_ANY;
+    snprintf(portstr, sizeof(portstr), "%d", port);
+
+    if (getaddrinfo(host , portstr, &hints, &ptr))
+	throw Exception( __FILE__, __LINE__, "getaddrinfo error", errno);
+    memcpy ( addr, ptr->ai_addr, ptr->ai_addrlen);
+    freeaddrinfo(ptr);
+#else
     if ( !(pHostEntry = gethostbyname( host)) ) {
         throw Exception( __FILE__, __LINE__, "gethostbyname error", errno);
     }
@@ -205,7 +223,7 @@ TcpSocket :: open ( void )                       throw ( Exception )
     addr.sin_family      = AF_INET;
     addr.sin_port        = htons(port);
     addr.sin_addr.s_addr = *((long*) pHostEntry->h_addr_list[0]);
-
+#endif
     if ( connect( sockfd, (struct sockaddr*)&addr, sizeof(addr)) == -1 ) {
         ::close( sockfd);
         sockfd = 0;
@@ -352,6 +370,9 @@ TcpSocket :: close ( void )                          throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.10  2005/04/11 19:34:23  darkeye
+  added IPv6 support, thanks to <jochen2@users.sourceforge.net>
+
   Revision 1.9  2002/10/19 12:22:27  darkeye
   cosmetic change
 
