@@ -139,7 +139,12 @@ LameLibEncoder :: open ( void )
                          lame_get_brate( lameGlobalFlags));
             
             double  d = (1.0 - getOutQuality()) * 10.0;
-            int     q = int (d + 0.499999);
+
+            if ( d > 9 ) {
+                d = 9;
+            }
+
+            int     q = int (d);
 
             if ( 0 > lame_set_quality( lameGlobalFlags, q) ) {
                 throw Exception( __FILE__, __LINE__,
@@ -186,7 +191,12 @@ LameLibEncoder :: open ( void )
                          lame_get_VBR( lameGlobalFlags));
 
             double  d = (1.0 - getOutQuality()) * 10.0;
-            int     q = int (d + 0.499999);
+
+            if ( d > 9 ) {
+                d = 9;
+            }
+
+            int     q = int (d);
 
             if ( 0 > lame_set_VBR_q( lameGlobalFlags, q) ) {
                 throw Exception( __FILE__, __LINE__,
@@ -386,6 +396,9 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.19  2005/04/13 19:04:55  jbebel
+  Distribute lame qualities better, and prevent values greater than 9 which are invalid.
+
   Revision 1.18  2002/10/19 13:31:46  darkeye
   some cleanup with the open() / close() functions
 
