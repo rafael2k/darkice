@@ -363,7 +363,34 @@ MultiThreadedConnector :: close ( void )                    throw ( Exception )
 void *
 MultiThreadedConnector :: ThreadData :: threadFunction( void  * param )
 {
+    struct sched_param  sched;
+    int sched_type;
     ThreadData     * threadData = (ThreadData*) param;
+    
+    pthread_getschedparam( threadData->thread, &sched_type, &sched );
+
+    reportEvent( 5, "MultiThreadedConnector :: ThreadData :: threadFunction, was (thread, priority, type): ",
+        param,
+	sched.sched_priority,
+        sched_type == SCHED_FIFO ? "SCHED_FIFO" :
+            sched_type == SCHED_RR ? "SCHED_RR" :
+            sched_type == SCHED_OTHER ? "SCHED_OTHER" :
+            "INVALID"
+    );
+
+    sched.sched_priority = 1;
+    pthread_setschedparam( threadData->thread, SCHED_FIFO, &sched);
+
+    pthread_getschedparam( threadData->thread, &sched_type, &sched );
+    reportEvent( 5, "MultiThreadedConnector :: ThreadData :: threadFunction, now is (thread, priority, type): ",
+        param,
+	sched.sched_priority,
+        sched_type == SCHED_FIFO ? "SCHED_FIFO" :
+            sched_type == SCHED_RR ? "SCHED_RR" :
+            sched_type == SCHED_OTHER ? "SCHED_OTHER" :
+            "INVALID"
+    );
+
     threadData->connector->sinkThread( threadData->ixSink);
 
     return 0;
@@ -375,6 +402,9 @@ MultiThreadedConnector :: ThreadData :: threadFunction( void  * param )
   $Source$
 
   $Log$
+  Revision 1.6  2005/04/13 22:03:32  jbebel
+  Set priority explicitly for encoding threads.  This needs more testing.
+
   Revision 1.5  2005/04/11 19:27:43  darkeye
   added option to turn off automatic reconnect feature
 
