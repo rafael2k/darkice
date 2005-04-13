@@ -150,7 +150,7 @@ class AudioEncoder : public Sink, public virtual Referable
             this->outSampleRate    = outSampleRate;
             this->outChannel       = outChannel;
 
-            if ( outQuality < 0 || 1.0 < outQuality ) {
+            if ( outQuality < -0.1 || 1.0 < outQuality ) {
                 throw Exception( __FILE__, __LINE__, "invalid encoder quality");
             }
         }
@@ -456,6 +456,9 @@ class AudioEncoder : public Sink, public virtual Referable
   $Source$
 
   $Log$
+  Revision 1.9  2005/04/13 18:03:43  jbebel
+  Allow quality settings down to -0.1 for ogg
+
   Revision 1.8  2002/08/20 19:35:37  darkeye
   added possibility to specify maximum bitrate for Ogg Vorbis streams
 
