@@ -1,13 +1,12 @@
-KDOC_DIR=kdoc
+DOC_DIR        = doc
+DOXYGEN_DIR    = doc/doxygen
+DOXYGEN_CONFIG = etc/doxygen.config
 
 SUBDIRS = src man
 
 sysconf_DATA = darkice.cfg
 
-EXTRA_DIST = $(KDOC_DIR) darkice.cfg INSTALL.lame INSTALL.vorbis
-
-DOXYGEN_DIR    = doc/doxygen
-DOXYGEN_CONFIG = etc/doxygen.config
+EXTRA_DIST = $(DOC_DIR) darkice.cfg INSTALL.lame INSTALL.vorbis
 
 .PHONY: doc
 
