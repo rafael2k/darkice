@@ -167,12 +167,12 @@ class JackDspSource : public AudioSource, public virtual Reporter
         /**
          *  Copy Constructor.
          *
-         *  @param source the object to copy.
+         *  @param jds the object to copy.
          *  @exception Exception
          */
         inline
-        JackDspSource (  const JackDspSource &    ds )    throw ( Exception )
-                    : AudioSource( ds )
+        JackDspSource (  const JackDspSource &    jds )   throw ( Exception )
+                    : AudioSource( jds )
         {
             throw Exception( __FILE__, __LINE__, "JackDspSource doesn't copy");
         }
@@ -280,6 +280,9 @@ class JackDspSource : public AudioSource, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.2  2005/04/14 11:53:17  darkeye
+  fixed API documentation issues
+
   Revision 1.1  2005/04/04 08:36:17  darkeye
   commited changes to enable Jack support
   thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk

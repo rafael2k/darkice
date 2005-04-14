@@ -138,7 +138,7 @@ class Util
          *
          *  @param dest place for the copy. Storage size must be at least
          *              Util::strLen(src) + 1 long.
-         *  @param str the string to copy.
+         *  @param src the string to copy.
          *  @exception Exception
          */
         static void
@@ -151,7 +151,7 @@ class Util
          *  @param dest the string to concatenate to.
          *              Storage size of dest must be at least
          *              Util::strLen(dest) + Util::strLen(src) + 1 long.
-         *  @param str the string to concatenate.
+         *  @param src the string to concatenate.
          *  @exception Exception
          */
         static void
@@ -322,6 +322,9 @@ class Util
   $Source$
 
   $Log$
+  Revision 1.11  2005/04/14 11:53:17  darkeye
+  fixed API documentation issues
+
   Revision 1.10  2004/02/15 12:06:30  darkeye
   added ALSA support, thanks to Christian Forster
 

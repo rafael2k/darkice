@@ -136,6 +136,8 @@ class IceCast : public CastSink
          *  @param genre genre of the stream.
          *  @param bitRate bitrate of the stream (e.g. mp3 bitrate).
          *  @param isPublic is the stream public?
+         *  @param streamDump an optional sink to dump the binary stream
+         *                    data to.
          *  @param bufferDuration duration of the BufferedSink buffer
          *                        in seconds.
          *  @exception Exception
@@ -263,6 +265,9 @@ class IceCast : public CastSink
   $Source$
 
   $Log$
+  Revision 1.8  2005/04/14 11:53:17  darkeye
+  fixed API documentation issues
+
   Revision 1.7  2002/02/20 11:54:11  darkeye
   added local dump file possibility
 

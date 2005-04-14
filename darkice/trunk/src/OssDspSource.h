@@ -134,14 +134,14 @@ class OssDspSource : public AudioSource, public virtual Reporter
         /**
          *  Copy Constructor.
          *
-         *  @param source the object to copy.
+         *  @param ods the object to copy.
          *  @exception Exception
          */
         inline
-        OssDspSource (  const OssDspSource &    ds )    throw ( Exception )
-                    : AudioSource( ds )
+        OssDspSource (  const OssDspSource &    ods )   throw ( Exception )
+                    : AudioSource( ods )
         {
-            init( ds.fileName);
+            init( ods.fileName);
         }
 
         /**
@@ -259,6 +259,9 @@ class OssDspSource : public AudioSource, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.7  2005/04/14 11:53:17  darkeye
+  fixed API documentation issues
+
   Revision 1.6  2002/12/20 10:40:40  darkeye
   added support for big endian OSS devices (like Linux PowerPC)
 

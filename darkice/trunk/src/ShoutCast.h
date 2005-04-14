@@ -136,6 +136,8 @@ class ShoutCast : public CastSink
          *  @param irc IRC info string for the stream.
          *  @param aim AIM info string for the stream.
          *  @param icq ICQ info string for the stream.
+         *  @param streamDump an optional sink to dump the binary stream
+         *                    data to.
          *  @param bufferDuration duration of the BufferedSink buffer
          *                        in seconds.
          *  @exception Exception
@@ -259,6 +261,9 @@ class ShoutCast : public CastSink
   $Source$
 
   $Log$
+  Revision 1.3  2005/04/14 11:53:17  darkeye
+  fixed API documentation issues
+
   Revision 1.2  2002/02/20 11:54:11  darkeye
   added local dump file possibility
 

@@ -155,7 +155,7 @@ class AlsaDspSource : public AudioSource, public virtual Reporter
         /**
          *  Copy Constructor.
          *
-         *  @param source the object to copy.
+         *  @param ds the object to copy.
          *  @exception Exception
          */
         inline
@@ -301,6 +301,9 @@ class AlsaDspSource : public AudioSource, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.2  2005/04/14 11:53:17  darkeye
+  fixed API documentation issues
+
   Revision 1.1  2004/02/15 12:06:29  darkeye
   added ALSA support, thanks to Christian Forster
 

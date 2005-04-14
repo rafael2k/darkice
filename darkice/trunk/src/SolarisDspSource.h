@@ -128,15 +128,15 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
         /**
          *  Copy Constructor.
          *
-         *  @param source the object to copy.
+         *  @param sds the object to copy.
          *  @exception Exception
          */
         inline
-        SolarisDspSource (  const SolarisDspSource &    ds )
+        SolarisDspSource (  const SolarisDspSource &    sds )
                                                         throw ( Exception )
-                    : AudioSource( ds )
+                    : AudioSource( sds )
         {
-            init( ds.fileName);
+            init( sds.fileName);
         }
 
         /**
@@ -261,6 +261,9 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.5  2005/04/14 11:53:17  darkeye
+  fixed API documentation issues
+
   Revision 1.4  2004/02/19 06:47:06  darkeye
   finalized OpenBSD port
 

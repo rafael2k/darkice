@@ -162,7 +162,7 @@ class AudioSource : public Source, public virtual Reporter
         /**
          *  Copy Constructor.
          *
-         *  @param source the object to copy.
+         *  @param as the object to copy.
          *  @exception Exception
          */
         inline
@@ -258,7 +258,7 @@ class AudioSource : public Source, public virtual Reporter
          *  appropriate type, based on the compiled DSP support and
          *  the supplied DSP name parameter.
          *
-         *  @param name the audio device (/dev/dspX, hwplug:0,0, etc)
+         *  @param deviceName the audio device (/dev/dspX, hwplug:0,0, etc)
          *  @param sampleRate samples per second (e.g. 44100 for 44.1kHz).
          *  @param bitsPerSample bits per sample (e.g. 16 bits).
          *  @param channel number of channels of the audio source
@@ -307,6 +307,9 @@ class AudioSource : public Source, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.9  2005/04/14 11:53:17  darkeye
+  fixed API documentation issues
+
   Revision 1.8  2005/04/04 08:36:16  darkeye
   commited changes to enable Jack support
   thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk

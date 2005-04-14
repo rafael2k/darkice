@@ -179,7 +179,7 @@ class Config : public virtual Referable
         /**
          *  Read a line of confiugration information.
          *
-         *  @param line the line to read.
+         *  @param is the input stream to read from
          *  @return true if the line was correct, false otherwise.
          *  @exception Exception
          */
@@ -213,6 +213,9 @@ class Config : public virtual Referable
   $Source$
 
   $Log$
+  Revision 1.2  2005/04/14 11:53:17  darkeye
+  fixed API documentation issues
+
   Revision 1.1  2005/04/04 08:36:17  darkeye
   commited changes to enable Jack support
   thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk
