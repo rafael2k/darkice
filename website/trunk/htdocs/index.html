@@ -28,11 +28,28 @@ into mp3 and/or <a href="http://www.xiph.org/ogg/vorbis/">Ogg Vorbis</a>,
 and sends the streams to one or more
 <a href="http://www.icecast.org/">IceCast</a>,
 <a href="http://www.shoutcast.com/">ShoutCast</a> and/or IceCast2 servers.
-
+<br>
 DarkIce uses <a href="http://www.mp3dev.org/mp3">lame</a> as a shared
 object as its mp3 encoder, and the
 <a href="http://www.xiph.org/ogg/vorbis/">Ogg Vorbis</a> libs as its
 Ogg Vorbis encoder.
+<br>
+DarkIce can record from:
+<ul>
+    <li><a href="http://www.opensound.com/">OSS</a> audio devices</li>
+    <li><a href="http://www.alsa-project.org/">ALSA</a> audio devices</li>
+    <li>Solaris audio interface</li>
+    <li><a href="http://jackit.sourceforge.net/">Jack</a> sources</li>
+</ul>
+<br>
+Darkice runs on the following operating systems:
+<ul>
+    <li>FreeBSD</li>
+    <li>Linux on intel and PowerPC</li>
+    <li>MacOS X</li>
+    <li>NetBDS / OpenBSD</li>
+    <li>SUN Solaris</li>
+</ul>
 <br>
 DarkIce is being written by
 <a href="mailto:darkeye@users.sourceforge.net">&Aacute;kos Mar&oacute;y</a>
@@ -42,7 +59,7 @@ DarkIce is under development. While still considered beta, it has
 been used since fall 2000 in <a href="http://tilos.hu/">production</a>
 24 hours per day.
 <br>
-The latest version is <b>0.14</b>, check out the
+The latest version is <b>0.15</b>, check out the
 <a href="ChangeLog">ChangeLog</a>.
 <br>
 Rafael Diniz is wrting a GTK front-end for DarkIce, called
@@ -69,36 +86,18 @@ You can download DarkIce releases from the project's
 I also provided lame packages, which are needed by DarkIce, but you can
 use your own lame libs if you like.
 <p>
-You can either
-<ul>
-    <li>Download the source tarball
-        <a href="http://prdownloads.sourceforge.net/darkice/darkice-0.14.tar.gz">darkice-0.14.tar.gz</a>
-        and compile yourself. You will also need
-        <a href="http://www.mp3dev.org/mp3/download/download.html">lame</a>
-        (version 3.89 or above) and
-        <a href="http://www.xiph.org/ogg/vorbis/download.html">Ogg Vorbis</a>
-        libs. I used the following libs:
-        <ul>
-            <li><a href="http://prdownloads.sourceforge.net/lame/lame-3.95.1.tar.gz">lame-3.95.1.tar.gz</a>
-            <li><a href="http://www.vorbis.com/files/1.0.1/unix/libogg-1.1.tar.gz">libogg-1.1.tar.gz</a>
-            <li><a href="http://www.vorbis.com/files/1.0.1/unix/libvorbis-1.0.1.tar.gz">libvorbis-1.0.1.tar.gz</a>
-        </ul>
-    </li>
-    <li>Get the RPM package
-        <a href="http://prdownloads.sourceforge.net/darkice/darkice-0.14-1.i386.rpm">darkice-0.14-1.i386.rpm</a>,
-        install &amp; enjoy.
-        Also install 
-        <a href="http://shrike.freshrpms.net/rpm.html?id=1347">lame</a>
-        (version 3.89 or above) and
-        <a href="http://www.xiph.org/ogg/vorbis/download.html">Ogg Vorbis</a>
-        packages. I used the following packages:
-        <ul>
-            <li><a href="http://ftp.freshrpms.net/pub/freshrpms/redhat/9/lame/lame-3.93.1-fr2.i386.rpm">lame-3.93.1-fr2.i386.rpm</a>
-            <li><a href="http://www.vorbis.com/files/1.0.1/unix/RH9/libogg-1.1-1.i386.rpm">libogg-1.1-1.i386.rpm</a>
-            <li><a href="http://www.vorbis.com/files/1.0.1/unix/RH9/libvorbis-1.0.1-1.i386.rpm">libvorbis-1.0.1-1.i386.rpm</a>
-        </ul>
-    </li>
-</ul>
+Download the source tarball
+    <a href="http://prdownloads.sourceforge.net/darkice/darkice-0.15.tar.gz">darkice-0.15.tar.gz</a>
+    and compile it. You will also need
+    <a href="http://lame.sourceforge.net/download/download.html">lame</a>
+    (version 3.89 or above) and
+    <a href="http://www.vorbis.com/download.psp">Ogg Vorbis</a>
+    libs. I used the following libs:
+    <ul>
+        <li><a href="http://prdownloads.sourceforge.net/lame/lame-3.96.1.tar.gz?download">lame-3.96.1.tar.gz</a>
+        <li><a href="http://www.vorbis.com/files/1.0.1/unix/libogg-1.1.tar.gz">libogg-1.1.tar.gz</a>
+        <li><a href="http://www.vorbis.com/files/1.0.1/unix/libvorbis-1.0.1.tar.gz">libvorbis-1.0.1.tar.gz</a>
+    </ul>
 <p>
 If you like to live on the edge, you can check the
 <a href="http://www.cvshome.org/">CVS</a> repository by getting module
