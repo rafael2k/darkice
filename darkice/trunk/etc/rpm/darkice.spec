@@ -100,6 +100,9 @@ make clean
 # =================================================================== change log
 #
 #   $Log$
+#   Revision 1.1  2005/04/14 11:58:08  darkeye
+#   moved directory rpm to etc/rpm
+#
 #   Revision 1.24  2005/04/14 11:11:59  darkeye
 #   for version 0.15
 #

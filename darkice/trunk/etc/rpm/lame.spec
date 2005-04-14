@@ -132,6 +132,9 @@ make clean
 # =================================================================== change log
 #
 #   $Log$
+#   Revision 1.1  2005/04/14 11:58:08  darkeye
+#   moved directory rpm to etc/rpm
+#
 #   Revision 1.4  2002/02/19 14:52:41  darkeye
 #   updated for lame 3.91
 #
