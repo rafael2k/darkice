@@ -87,7 +87,7 @@ main (
     std::cout << "DarkIce " << VERSION
          << " live audio streamer, http://darkice.sourceforge.net"
          << std::endl
-         << "Copyright (c) 2000-2004, Tyrell Hungary, http://tyrell.hu"
+         << "Copyright (c) 2000-2005, Tyrell Hungary, http://tyrell.hu"
          << std::endl << std::endl;
 
     try {
@@ -166,6 +166,9 @@ showUsage (     std::ostream      & os )
   $Source$
 
   $Log$
+  Revision 1.15  2005/04/14 11:24:42  darkeye
+  updated copyright notice to extend to 2005
+
   Revision 1.14  2005/04/03 05:10:07  jbebel
   Moved initialization of Reporter class so it would happen before
   instantiation of Darkice class.  Any logging that might be reported
