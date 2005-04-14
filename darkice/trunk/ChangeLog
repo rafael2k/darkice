@@ -1,4 +1,4 @@
-DarkIce next release
+14-04-2005 DarkIce 0.15 released
 
     o ported to OpenBSD and NetBSD, though real-time scheduling not supported,
       since it is not implemented in OpenBSD / NetBSD
