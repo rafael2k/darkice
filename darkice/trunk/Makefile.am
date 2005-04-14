@@ -6,11 +6,15 @@ sysconf_DATA = darkice.cfg
 
 EXTRA_DIST = $(KDOC_DIR) darkice.cfg INSTALL.lame INSTALL.vorbis
 
-$(KDOC_DIR): kdocs
+DOXYGEN_DIR    = doc/doxygen
+DOXYGEN_CONFIG = etc/doxygen.config
 
-kdocs: src kdocs_clean
-	cd src; kdoc --private --strip-h-path --name DarkIce --outputdir ../$(KDOC_DIR)/ *.h
+.PHONY: doc
 
-kdocs_clean:
-	rm -rf $(KDOC_DIR)
+doc: src 
+	mkdir -p $(DOXYGEN_DIR)
+	doxygen etc/doxygen.config
+
+doxygen_clean:
+	rm -rf $(DOXYGEN_DIR)
 
