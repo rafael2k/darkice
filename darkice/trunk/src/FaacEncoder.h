@@ -109,7 +109,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
          *  @param sink the sink to send mp3 output to
          *  @param lowpass frequency threshold for the lowpass filter.
          *                 Input above this frequency is cut.
-         *                 If 0, lame's default values are used,
+         *                 If 0, faac's default values are used,
          *                 which depends on the out sample rate.
          *  @exception Exception
          */
@@ -117,6 +117,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
         init ( Sink           * sink,
                int              lowpass)                throw (Exception)
         {
+            this->faacOpen        = false;
             this->sink            = sink;
             this->lowpass         = lowpass;
 
@@ -186,7 +187,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
          *                    If 0, inChannel is used.
          *  @param lowpass frequency threshold for the lowpass filter.
          *                 Input above this frequency is cut.
-         *                 If 0, lame's default values are used,
+         *                 If 0, faac's default values are used,
          *                 which depends on the out sample rate.
          *  @exception Exception
          */
@@ -232,7 +233,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
          *                    If 0, input channel is used.
          *  @param lowpass frequency threshold for the lowpass filter.
          *                 Input above this frequency is cut.
-         *                 If 0, lame's default values are used,
+         *                 If 0, faac's default values are used,
          *                 which depends on the out sample rate.
          *  @exception Exception
          */
@@ -442,6 +443,9 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.2  2005/04/16 22:19:20  darkeye
+  changed remaining typos
+
   Revision 1.1  2005/04/16 21:57:34  darkeye
   added AAC support through the faac codec, http://www.audiocoding.com/
 

@@ -33,7 +33,7 @@
 #include "config.h"
 #endif
 
-// compile the whole file only if lame support configured in
+// compile the whole file only if faac support configured in
 #ifdef HAVE_FAAC_LIB
 
 
@@ -195,6 +195,9 @@ FaacEncoder :: close ( void )                           throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.2  2005/04/16 22:19:20  darkeye
+  changed remaining typos
+
   Revision 1.1  2005/04/16 21:57:34  darkeye
   added AAC support through the faac codec, http://www.audiocoding.com/
 
