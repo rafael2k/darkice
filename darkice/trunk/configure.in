@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(darkice, 0.15)
+AC_INIT(darkice, 0.16beta)
 AC_CONFIG_SRCDIR(src/DarkIce.cpp)
 AM_CONFIG_HEADER(src/config.h)
 
@@ -112,6 +112,40 @@ if test "x${USE_VORBIS}" = "xyes" ; then
     fi
 else
     AC_MSG_RESULT( [building without Ogg Vorbis] )
+fi
+
+
+dnl-----------------------------------------------------------------------------
+dnl link the faac library if requested
+dnl-----------------------------------------------------------------------------
+AC_SUBST( FAAC_INCFLAGS)
+AC_SUBST( FAAC_LDFLAGS)
+
+AC_ARG_WITH( faac,
+[  --with-faac             use faac for encoding AAC streams [yes] ],
+    USE_FAAC=${withval}, USE_FAAC="yes" )
+AC_ARG_WITH( faac-prefix,
+[  --with-faac-prefix=DIR  alternate location for faac [/usr]
+                              look for libraries in FAAC-PREFIX/lib,
+                              for headers in FAAC-PREFIX/include],
+    CONFIG_FAAC_PREFIX="${withval}", CONFIG_FAAC_PREFIX="/usr")
+
+if test "x${USE_FAAC}" = "xyes" ; then
+    AC_MSG_CHECKING( [for faac library at ${CONFIG_FAAC_PREFIX}] )
+    LA_SEARCH_LIB( FAAC_LIB_LOC, FAAC_INC_LOC, libfaac.a, faac.h,
+                   ${CONFIG_FAAC_PREFIX})
+    if test "x${FAAC_LIB_LOC}" != "x" ; then
+        AC_DEFINE( HAVE_FAAC_LIB, 1, [build with faac library] )
+        if test "x${FAAC_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
+            FAAC_INCFLAGS="-I${FAAC_INC_LOC}"
+        fi
+        FAAC_LDFLAGS="-L${FAAC_LIB_LOC} -lfaac"
+        AC_MSG_RESULT( [found at ${CONFIG_FAAC_PREFIX}] )
+    else
+        AC_MSG_WARN( [not found, building without faac])
+    fi
+else
+    AC_MSG_RESULT( [building without faac] )
 fi
 
 

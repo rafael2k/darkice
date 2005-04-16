@@ -1,3 +1,7 @@
+DarkIce next version
+
+	o added AAC support through the faac codec, http://www.audiocoding.com
+
 14-04-2005 DarkIce 0.15 released
 
     o ported to OpenBSD and NetBSD, though real-time scheduling not supported,

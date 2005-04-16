@@ -296,7 +296,7 @@ VorbisLibEncoder :: write ( const void    * buf,
 
 
     Util::conv( bitsPerSample, b, processed, shortBuffer, isInBigEndian());
-    
+
     if ( converter ) {
         // resample if needed
         int         inCount  = nSamples;
@@ -415,6 +415,9 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.22  2005/04/16 21:57:34  darkeye
+  added AAC support through the faac codec, http://www.audiocoding.com/
+
   Revision 1.21  2005/04/11 19:26:55  darkeye
   cosmetic changes
   fixed warning for implicit cast from doulbe to int

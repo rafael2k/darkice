@@ -1,10 +1,10 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2005 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
-   File     : LameLibEncoder.h
+   File     : FaacEncoder.h
    Version  : $Revision$
    Author   : $Author$
    Location : $Source$
@@ -26,8 +26,8 @@
     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ------------------------------------------------------------------------------*/
-#ifndef LAME_LIB_ENCODER_H
-#define LAME_LIB_ENCODER_H
+#ifndef AAC_ENCODER_H
+#define AAC_ENCODER_H
 
 #ifndef __cplusplus
 #error This is a C++ include file
@@ -40,10 +40,10 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_LAME_LIB
-#include <lame/lame.h>
+#ifdef HAVE_FAAC_LIB
+#include <faac.h>
 #else
-#error configure with lame
+#error configure with faac
 #endif
 
 
@@ -63,25 +63,34 @@
 /* =============================================================== data types */
 
 /**
- *  A class representing the lame encoder linked as a shared object or as
- *  a static library.
+ *  A class representing faac AAC encoder.
  *
  *  @author  $Author$
  *  @version $Revision$
  */
-class LameLibEncoder : public AudioEncoder, public virtual Reporter
+class FaacEncoder : public AudioEncoder, public virtual Reporter
 {
     private:
 
         /**
-         *  Lame library global flags
+         *  A flag to indicate if the encoding session is open.
          */
-        lame_global_flags             * lameGlobalFlags;
+        bool                        faacOpen;;
 
         /**
-         *  The Sink to dump mp3 data to
+         *  The handle to the AAC encoder instance.
          */
-        Ref<Sink>                       sink;
+        faacEncHandle               encoderHandle;
+
+        /**
+         *  The maximum number of input samples to supply to the encoder.
+         */
+        unsigned long               inputSamples;
+
+        /**
+         *  The maximum number of output bytes the encoder returns in one call.
+         */
+        unsigned long               maxOutputBytes;
 
         /**
          *  Lowpass filter. Sound frequency in Hz, from where up the
@@ -90,10 +99,9 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
         int                             lowpass;
 
         /**
-         *  Highpass filter. Sound frequency in Hz, from where down the
-         *  input is cut.
+         *  The Sink to dump mp3 data to
          */
-        int                             highpass;
+        Ref<Sink>                   sink;
 
         /**
          *  Initialize the object.
@@ -103,21 +111,14 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *                 Input above this frequency is cut.
          *                 If 0, lame's default values are used,
          *                 which depends on the out sample rate.
-         *  @param highpass frequency threshold for the highpass filter.
-         *                  Input below this frequency is cut.
-         *                  If 0, lame's default values are used,
-         *                  which depends on the out sample rate.
          *  @exception Exception
          */
         inline void
         init ( Sink           * sink,
-               int              lowpass,
-               int              highpass )              throw ( Exception )
+               int              lowpass)                throw (Exception)
         {
-            this->lameGlobalFlags = NULL;
             this->sink            = sink;
             this->lowpass         = lowpass;
-            this->highpass        = highpass;
 
             if ( getInBitsPerSample() != 16 && getInBitsPerSample() != 8 ) {
                 throw Exception( __FILE__, __LINE__,
@@ -135,10 +136,9 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                         "unsupported number of output channels for the encoder",
                                  getOutChannel() );
             }
-            if ( getInChannel() < getOutChannel() ) {
+            if ( getInChannel() != getOutChannel() ) {
                 throw Exception( __FILE__, __LINE__,
-                                 "output channels greater then input channels",
-                                 getOutChannel() );
+                             "input channels and output channels do not match");
             }
         }
 
@@ -161,7 +161,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline
-        LameLibEncoder ( void )                         throw ( Exception )
+        FaacEncoder ( void )                         throw ( Exception )
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -188,25 +188,20 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *                 Input above this frequency is cut.
          *                 If 0, lame's default values are used,
          *                 which depends on the out sample rate.
-         *  @param highpass frequency threshold for the highpass filter.
-         *                  Input below this frequency is cut.
-         *                  If 0, lame's default values are used,
-         *                  which depends on the out sample rate.
          *  @exception Exception
          */
         inline
-        LameLibEncoder (    Sink          * sink,
-                            unsigned int    inSampleRate,
-                            unsigned int    inBitsPerSample,
-                            unsigned int    inChannel,
-                            bool            inBigEndian,
-                            BitrateMode     outBitrateMode,
-                            unsigned int    outBitrate,
-                            double          outQuality,
-                            unsigned int    outSampleRate = 0,
-                            unsigned int    outChannel    = 0,
-                            int             lowpass       = 0,
-                            int             highpass      = 0 )
+        FaacEncoder (   Sink          * sink,
+                        unsigned int    inSampleRate,
+                        unsigned int    inBitsPerSample,
+                        unsigned int    inChannel,
+                        bool            inBigEndian,
+                        BitrateMode     outBitrateMode,
+                        unsigned int    outBitrate,
+                        double          outQuality,
+                        unsigned int    outSampleRate = 0,
+                        unsigned int    outChannel    = 0,
+                        int             lowpass       = 0)
                                                         throw ( Exception )
             
                     : AudioEncoder ( inSampleRate,
@@ -219,7 +214,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                                      outSampleRate,
                                      outChannel )
         {
-            init( sink, lowpass, highpass);
+            init( sink, lowpass);
         }
 
         /**
@@ -239,22 +234,17 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *                 Input above this frequency is cut.
          *                 If 0, lame's default values are used,
          *                 which depends on the out sample rate.
-         *  @param highpass frequency threshold for the highpass filter.
-         *                  Input below this frequency is cut.
-         *                  If 0, lame's default values are used,
-         *                  which depends on the out sample rate.
          *  @exception Exception
          */
         inline
-        LameLibEncoder (    Sink                  * sink,
-                            const AudioSource     * as,
-                            BitrateMode             outBitrateMode,
-                            unsigned int            outBitrate,
-                            double                  outQuality,
-                            unsigned int            outSampleRate = 0,
-                            unsigned int            outChannel    = 0,
-                            int                     lowpass       = 0,
-                            int                     highpass      = 0 )
+        FaacEncoder (   Sink                  * sink,
+                        const AudioSource     * as,
+                        BitrateMode             outBitrateMode,
+                        unsigned int            outBitrate,
+                        double                  outQuality,
+                        unsigned int            outSampleRate = 0,
+                        unsigned int            outChannel    = 0,
+                        int                     lowpass       = 0)
                                                             throw ( Exception )
             
                     : AudioEncoder ( as,
@@ -264,20 +254,20 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                                      outSampleRate,
                                      outChannel )
         {
-            init( sink, lowpass, highpass);
+            init( sink, lowpass);
         }
 
         /**
          *  Copy constructor.
          *
-         *  @param encoder the LameLibEncoder to copy.
+         *  @param encoder the FaacEncoder to copy.
          */
         inline
-        LameLibEncoder (  const LameLibEncoder &    encoder )
+        FaacEncoder (  const FaacEncoder &    encoder )
                                                             throw ( Exception )
                     : AudioEncoder( encoder )
         {
-            init( encoder.sink.get(), encoder.lowpass, encoder.highpass );
+            init( encoder.sink.get(), encoder.lowpass);
         }
          
 
@@ -287,7 +277,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~LameLibEncoder ( void )                            throw ( Exception )
+        ~FaacEncoder ( void )                            throw ( Exception )
         {
             if ( isOpen() ) {
                 close();
@@ -298,31 +288,35 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
         /**
          *  Assignment operator.
          *
-         *  @param encoder the LameLibEncoder to assign this to.
-         *  @return a reference to this LameLibEncoder.
+         *  @param encoder the FaacEncoder to assign this to.
+         *  @return a reference to this FaacEncoder.
          *  @exception Exception
          */
-        inline virtual LameLibEncoder &
-        operator= ( const LameLibEncoder &      encoder )   throw ( Exception )
+        inline virtual FaacEncoder &
+        operator= ( const FaacEncoder &      encoder )   throw ( Exception )
         {
             if ( this != &encoder ) {
                 strip();
                 AudioEncoder::operator=( encoder);
-                init( encoder.sink.get(), encoder.lowpass, encoder.highpass );
+                init( encoder.sink.get(), encoder.lowpass);
             }
 
             return *this;
         }
 
         /**
-         *  Get the version string of the underlying lame library.
+         *  Get the version string of the underlying faac library.
          *
-         *  @return the version string of the underlying lame library.
+         *  @return the version string of the underlying faac library.
          */
         inline const char *
-        getLameVersion( void )
+        getFaacVersion( void )
         {
-            return get_lame_version();
+            char      * id;
+            char      * copyright;
+
+            faacEncGetVersion(&id, &copyright);
+            return id;
         }
 
         /**
@@ -377,7 +371,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
         inline virtual bool
         isOpen ( void ) const                       throw ()
         {
-            return lameGlobalFlags != 0;
+            return faacOpen;
         }
 
         /**
@@ -440,7 +434,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
 /* ====================================================== function prototypes */
 
 
-#endif  /* LAME_LIB_ENCODER_H */
+#endif  /* AAC_ENCODER_H */
 
 
 /*------------------------------------------------------------------------------
@@ -448,56 +442,8 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
-  Revision 1.16  2005/04/16 21:57:34  darkeye
+  Revision 1.1  2005/04/16 21:57:34  darkeye
   added AAC support through the faac codec, http://www.audiocoding.com/
-
-  Revision 1.15  2004/01/07 13:18:17  darkeye
-  commited patch sent by John Hay, fixing FreeBSD problems
-
-  Revision 1.14  2002/08/04 10:26:06  darkeye
-  added additional error checking to make sure that outChannel < inChannel
-
-  Revision 1.13  2002/08/03 12:41:18  darkeye
-  added possibility to stream in mono when recording in stereo
-
-  Revision 1.12  2002/04/13 11:26:00  darkeye
-  added cbr, abr and vbr setting feature with encoding quality
-
-  Revision 1.11  2002/03/28 16:38:37  darkeye
-  moved functions conv8() and conv16() to class Util
-
-  Revision 1.10  2001/10/20 10:56:45  darkeye
-  added possibility to disable highpass and lowpass filters for lame
-
-  Revision 1.9  2001/10/19 12:39:42  darkeye
-  created configure options to compile with or without lame / Ogg Vorbis
-
-  Revision 1.8  2001/10/19 09:03:39  darkeye
-  added support for resampling mp3 streams
-
-  Revision 1.7  2001/09/15 11:35:08  darkeye
-  minor fixes
-
-  Revision 1.6  2001/09/14 19:31:06  darkeye
-  added IceCast2 / vorbis support
-
-  Revision 1.5  2001/09/02 09:54:12  darkeye
-  fixed typos in CVS substition keywords
-
-  Revision 1.4  2001/08/31 20:09:05  darkeye
-  added funcitons conv8() and conv16()
-
-  Revision 1.3  2001/08/30 17:25:56  darkeye
-  renamed configure.h to config.h
-
-  Revision 1.2  2001/08/29 21:06:16  darkeye
-  added real support for 8 / 16 bit mono / stereo input
-  (8 bit input still has to be spread on 16 bit words)
-
-  Revision 1.1  2001/08/26 20:44:30  darkeye
-  removed external command-line encoder support
-  replaced it with a shared-object support for lame with the possibility
-  of static linkage
 
 
   

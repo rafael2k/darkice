@@ -156,6 +156,10 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
             str = "application/ogg";
             break;
 
+        case aac:
+            str = "audio/aac";
+            break;
+
         default:
             throw Exception( __FILE__, __LINE__,
                              "unsupported stream format", format);
@@ -255,6 +259,9 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.12  2005/04/16 21:57:34  darkeye
+  added AAC support through the faac codec, http://www.audiocoding.com/
+
   Revision 1.11  2005/04/11 18:32:32  darkeye
   changed MIME type to application/ogg, which is now official
 

@@ -88,6 +88,10 @@
 #include "VorbisLibEncoder.h"
 #endif
 
+#ifdef HAVE_FAAC_LIB
+#include "FaacEncoder.h"
+#endif
+
 
 /* ===================================================  local data structures */
 
@@ -395,6 +399,8 @@ DarkIce :: configIceCast2 (  const Config      & config,
             format = IceCast2::oggVorbis;
         } else if ( Util::strEq( str, "mp3") ) {
             format = IceCast2::mp3;
+        } else if ( Util::strEq( str, "aac") ) {
+            format = IceCast2::aac;
         } else {
             throw Exception( __FILE__, __LINE__,
                              "unsupported stream format: ", str);
@@ -532,6 +538,24 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                                 dsp->getChannel(),
                                                 maxBitrate);
 #endif // HAVE_VORBIS_LIB
+                break;
+
+            case IceCast2::aac:
+#ifndef HAVE_FAAC_LIB
+                throw Exception( __FILE__, __LINE__,
+                                "DarkIce not compiled with AAC support, "
+                                "thus can't aac stream: ",
+                                stream);
+#else
+                audioOuts[u].encoder = new FaacEncoder(
+                                                audioOuts[u].server.get(),
+                                                dsp.get(),
+                                                bitrateMode,
+                                                bitrate,
+                                                quality,
+                                                sampleRate,
+                                                dsp->getChannel());
+#endif // HAVE_FAAC_LIB
                 break;
 
             default:
@@ -753,7 +777,9 @@ DarkIce :: configFileCast (  const Config      & config )
         int                         highpass        = 0;
 
         format      = cs->getForSure( "format", " missing in section ", stream);
-        if ( !Util::strEq( format, "vorbis") && !Util::strEq( format, "mp3") ) {
+        if ( !Util::strEq( format, "vorbis")
+          && !Util::strEq( format, "mp3")
+          && !Util::strEq( format, "aac") ) {
             throw Exception( __FILE__, __LINE__,
                              "unsupported stream format: ", format);
         }
@@ -802,6 +828,12 @@ DarkIce :: configFileCast (  const Config      & config )
         } else {
             throw Exception( __FILE__, __LINE__,
                              "invalid bitrate mode: ", str);
+        }
+
+        if (Util::strEq(format, "aac") && bitrateMode != AudioEncoder::abr) {
+            throw Exception(__FILE__, __LINE__,
+                            "currently the AAC format only supports "
+                            "average bitrate mode");
         }
 
         str         = cs->get( "lowpass");
@@ -858,6 +890,22 @@ DarkIce :: configFileCast (  const Config      & config )
                                                     dsp->getSampleRate(),
                                                     dsp->getChannel() );
 #endif // HAVE_VORBIS_LIB
+        } else if ( Util::strEq( format, "aac") ) {
+#ifndef HAVE_FAAC_LIB
+                throw Exception( __FILE__, __LINE__,
+                                "DarkIce not compiled with AAC support, "
+                                "thus can't aac stream: ",
+                                stream);
+#else
+                audioOuts[u].encoder = new FaacEncoder(
+                                                audioOuts[u].server.get(),
+                                                dsp.get(),
+                                                bitrateMode,
+                                                bitrate,
+                                                quality,
+                                                sampleRate,
+                                                dsp->getChannel());
+#endif // HAVE_FAAC_LIB
         } else {
                 throw Exception( __FILE__, __LINE__,
                                 "Illegal stream format: ", format);
@@ -1011,6 +1059,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.44  2005/04/16 21:57:34  darkeye
+  added AAC support through the faac codec, http://www.audiocoding.com/
+
   Revision 1.43  2005/04/11 19:27:43  darkeye
   added option to turn off automatic reconnect feature
 

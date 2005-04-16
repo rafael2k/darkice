@@ -63,7 +63,7 @@ class IceCast2 : public CastSink
         /**
          *  Type for specifying the format of the stream.
          */
-       enum StreamFormat { mp3, oggVorbis };
+       enum StreamFormat { mp3, oggVorbis, aac };
 
 
     private:
@@ -273,6 +273,9 @@ class IceCast2 : public CastSink
   $Source$
 
   $Log$
+  Revision 1.5  2005/04/16 21:57:34  darkeye
+  added AAC support through the faac codec, http://www.audiocoding.com/
+
   Revision 1.4  2005/04/14 11:53:17  darkeye
   fixed API documentation issues
 

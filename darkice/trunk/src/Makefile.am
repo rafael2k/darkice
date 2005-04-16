@@ -1,7 +1,9 @@
 bin_PROGRAMS = darkice
-AM_CXXFLAGS = -O2 -pedantic -Wall @DEBUG_CXXFLAGS@ @PTHREAD_CFLAGS@ @JACK_CFLAGS@
-INCLUDES = @LAME_INCFLAGS@ @VORBIS_INCFLAGS@ @ALSA_INCFLAGS@
-LDADD = @PTHREAD_LIBS@ @LAME_LDFLAGS@ @VORBIS_LDFLAGS@ @ALSA_LDFLAGS@ @JACK_LIBS@
+AM_CXXFLAGS = -O2 -pedantic -Wall @DEBUG_CXXFLAGS@ @PTHREAD_CFLAGS@
+			  @JACK_CFLAGS@
+INCLUDES = @LAME_INCFLAGS@ @VORBIS_INCFLAGS@ @FAAC_INCFLAGS@ @ALSA_INCFLAGS@
+LDADD = @PTHREAD_LIBS@ @LAME_LDFLAGS@ @VORBIS_LDFLAGS@ @FAAC_LDFLAGS@ \
+		@ALSA_LDFLAGS@ @JACK_LIBS@
 
 darkice_SOURCES =   AudioEncoder.h\
                     AudioSource.h\
@@ -32,6 +34,8 @@ darkice_SOURCES =   AudioEncoder.h\
                     LameLibEncoder.h\
                     VorbisLibEncoder.cpp\
                     VorbisLibEncoder.h\
+                    FaacEncoder.cpp\
+                    FaacEncoder.h\
                     aflibDebug.h\
                     aflibDebug.cc\
                     aflibConverter.h\
