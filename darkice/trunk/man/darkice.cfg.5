@@ -173,14 +173,16 @@ the localDumpFile name before its extension or at the end of file name if
 no extension present
 .TP
 .I lowpass
-Lowpass filter setting for the lame encoder. If not set or set to 0,
-the encoder's default behaviour is used. If set to -1, the filter is
-disabled.
+Lowpass filter setting for the lame encoder, in Hz. Frequencies above
+the specified value will be cut.
+If not set or set to 0, the encoder's default behaviour is used.
+If set to -1, the filter is disabled.
 .TP
 .I highpass
-Highpass filter setting for the lame encoder. If not set or set to 0,
-the encoder's default behaviour is used. If set to -1, the filter is
-disabled.
+Highpass filter setting for the lame encoder, in Hz. Frequencies below
+the specified value will be cut.
+If not set or set to 0, the encoder's default behaviour is used.
+If set to -1, the filter is disabled.
 
 .PP
 .B [icecast2-x]
@@ -283,6 +285,21 @@ server to this local file.
 "yes" or "no" if you want to automaticaly insert a date string in 
 the localDumpFile name before its extension or at the end of file name if
 no extension present
+.TP
+.I lowpass
+Lowpass filter setting for the lame encoder, in Hz. Frequencies above
+the specified value will be cut.
+If not set or set to 0, the encoder's default behaviour is used.
+If set to -1, the filter is disabled.
+Only has effect if the mp3 format is used.
+.TP
+.I highpass
+Highpass filter setting for the lame encoder, in Hz. Frequencies below
+the specified value will be cut.
+If not set or set to 0, the encoder's default behaviour is used.
+If set to -1, the filter is disabled.
+Only has effect if the mp3 format is used.
+
 .PP
 .B [shoutcast-x]
 
@@ -360,14 +377,16 @@ AIM information related to the stream
 ICQ information related to the stream
 .TP
 .I lowpass
-Lowpass filter setting for the lame encoder. If not set or set to 0,
-the encoder's default behaviour is used. If set to -1, the filter is
-disabled.
+Lowpass filter setting for the lame encoder, in Hz. Frequencies above
+the specified value will be cut.
+If not set or set to 0, the encoder's default behaviour is used.
+If set to -1, the filter is disabled.
 .TP
 .I highpass
-Highpass filter setting for the lame encoder. If not set or set to 0,
-the encoder's default behaviour is used. If set to -1, the filter is
-disabled.
+Highpass filter setting for the lame encoder, in Hz. Frequencies below
+the specified value will be cut.
+If not set or set to 0, the encoder's default behaviour is used.
+If set to -1, the filter is disabled.
 .TP
 .I localDumpFile
 Dump the same mp3 data sent to the
@@ -420,15 +439,17 @@ to the value of the input sample rate.
 Only used if the output format is mp3.
 .TP
 .I lowpass
-Lowpass filter setting for the lame encoder. If not set or set to 0,
-the encoder's default behaviour is used. If set to -1, the filter is
-disabled.
+Lowpass filter setting for the lame encoder, in Hz. Frequencies above
+the specified value will be cut.
+If not set or set to 0, the encoder's default behaviour is used.
+If set to -1, the filter is disabled.
 Only used if the output format is mp3.
 .TP
 .I highpass
-Highpass filter setting for the lame encoder. If not set or set to 0,
-the encoder's default behaviour is used. If set to -1, the filter is
-disabled.
+Highpass filter setting for the lame encoder, in Hz. Frequencies below
+the specified value will be cut.
+If not set or set to 0, the encoder's default behaviour is used.
+If set to -1, the filter is disabled.
 Only used if the output format is mp3.
 
 .PP
