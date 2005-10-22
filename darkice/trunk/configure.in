@@ -152,8 +152,10 @@ fi
 dnl-----------------------------------------------------------------------------
 dnl make sure at least one of lame and vorbis present
 dnl-----------------------------------------------------------------------------
-if test "x${LAME_LDFLAGS}" = "x" -a "x${VORBIS_LDFLAGS}" = "x" ; then
-    AC_MSG_ERROR( [neither lame nor Ogg Vorbis configured])
+if test "x${LAME_LDFLAGS}" = "x"
+     -a "x${VORBIS_LDFLAGS}" = "x" 
+     -a "x${FAAC_LDFLAGS}" = "x"; then
+    AC_MSG_ERROR([neither lame, Ogg Vorbis nor faac configured])
 fi
 
 
