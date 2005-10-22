@@ -1,8 +1,8 @@
 22-10-2005 DarkIce 0.16 released
 
-	o added AAC support through the faac codec, http://www.audiocoding.com
-	o bug fix: icecast2 sections didn't honor lowpass or highpass filters
-	  when using the mp3 format
+    o added AAC support through the faac codec, http://www.audiocoding.com
+    o bug fix: icecast2 sections didn't honor lowpass or highpass filters
+      when using the mp3 format
 
 14-04-2005 DarkIce 0.15 released
 
