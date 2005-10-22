@@ -390,6 +390,8 @@ DarkIce :: configIceCast2 (  const Config      & config,
         const char                * url             = 0;
         const char                * genre           = 0;
         bool                        isPublic        = false;
+        int                         lowpass         = 0;
+        int                         highpass        = 0;
         const char                * localDumpName   = 0;
         FileSink                  * localDumpFile   = 0;
         bool                        fileAddDate     = false;
@@ -461,6 +463,10 @@ DarkIce :: configIceCast2 (  const Config      & config,
         genre       = cs->get( "genre");
         str         = cs->get( "public");
         isPublic    = str ? (Util::strEq( str, "yes") ? true : false) : false;
+        str         = cs->get( "lowpass");
+        lowpass     = str ? Util::strToL( str) : 0;
+        str         = cs->get( "highpass");
+        highpass    = str ? Util::strToL( str) : 0;
         str         = cs->get( "fileAddDate");
         fileAddDate = str ? (Util::strEq( str, "yes") ? true : false) : false;
         
@@ -517,7 +523,9 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                                     bitrate,
                                                     quality,
                                                     sampleRate,
-                                                    channel );
+                                                    channel,
+                                                    lowpass,
+                                                    highpass );
 #endif // HAVE_LAME_LIB
                 break;
 
@@ -1059,6 +1067,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.45  2005/10/22 10:34:21  darkeye
+  added highpass and lowpass values to icecast2 sections
+
   Revision 1.44  2005/04/16 21:57:34  darkeye
   added AAC support through the faac codec, http://www.audiocoding.com/
 
