@@ -144,6 +144,10 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
     duration = Util::strToL( str);
     str = cs->getForSure( "bufferSecs", " missing in section [general]");
     bufferSecs = Util::strToL( str);
+    if (bufferSecs == 0) {
+        throw Exception(__FILE__, __LINE__,
+                        "setting bufferSecs to 0 not supported");
+    }
     str           = cs->get( "reconnect");
     reconnect     = str ? (Util::strEq( str, "yes") ? true : false) : true;
 
@@ -1067,6 +1071,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.46  2006/01/19 16:09:05  darkeye
+  added check for bufferSecs setting not to be 0
+
   Revision 1.45  2005/10/22 10:34:21  darkeye
   added highpass and lowpass values to icecast2 sections
 

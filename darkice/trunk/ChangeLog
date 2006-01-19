@@ -1,3 +1,8 @@
+next release
+
+    o added check for bufferSecs set to 0
+      thanks to Toph <fangiotophia@gmail.com>
+
 22-10-2005 DarkIce 0.16 released
 
     o added AAC support through the faac codec, http://www.audiocoding.com
