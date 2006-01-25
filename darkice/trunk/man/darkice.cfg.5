@@ -1,4 +1,4 @@
-.TH darkice.cfg 5 "October 22, 2005" "DarkIce" "DarkIce live audio streamer"
+.TH darkice.cfg 5 "January 25, 2006" "DarkIce" "DarkIce live audio streamer"
 .SH NAME
 darkice.cfg \- configuration file for darkice
 .SH DESCRIPTION
@@ -50,10 +50,19 @@ Time for DarkIce to run, in seconds.  If 0, run forever.
 Data read from the sound card is buffered before sent to
 the encoder. Each buffer will be able to hold this
 many seconds of samples.
+
+.PP
+Optional values:
+
 .TP
 .I reconnect
 Try to reconnect to the server(s) if the connection is broken during
 streaming, "yes" or "no". (optional parameter, defaults to "yes")
+.TP
+.I realtime
+Use POSIX realtime scheduling, "yes" or "no".
+(optional parameter, defaults to "yes")
+
 
 .PP
 .B [input]
@@ -209,7 +218,7 @@ Required values:
 .I format
 Format of the stream sent to the
 .B IceCast2
-server. Supported formats are 'vorbis', 'mp3' and 'aac'.
+server. Supported formats are 'vorbis', 'mp3', 'mp2' and 'aac'.
 .TP
 .I bitrateMode
 The bit rate mode of the encoding, either "cbr", "abr" or "vbr",
@@ -225,7 +234,7 @@ abr bit rate modes are specified.
 The quality of encoding a value between 0.0 .. 1.0 (e.g. 0.8), with 1.0 being
 the highest quality. Use a value greater than 0.0. Only used when vbr
 bit rate mode is specified for Ogg Vorbis format, or in vbr and abr
-modes for mp3 format.
+modes for mp3 and mp2 format.
 .TP
 .I server
 The
@@ -248,11 +257,11 @@ Optional values:
 
 .TP
 .I sampleRate
-The sample rate of the encoded mp3 output. If not specified, defaults
+The sample rate of the encoded output. If not specified, defaults
 to the value of the input sample rate.
 .TP
 .I channel
-Number of channels for the mp3 output (e.g. 1 for mono, 2 for stereo).
+Number of channels for the output (e.g. 1 for mono, 2 for stereo).
 If not specified, defaults to the value of the input sample rate.
 Different channels for input and output are only supported for mp3,
 but not for Ogg Vorbis.
@@ -291,14 +300,14 @@ Lowpass filter setting for the lame encoder, in Hz. Frequencies above
 the specified value will be cut.
 If not set or set to 0, the encoder's default behaviour is used.
 If set to -1, the filter is disabled.
-Only has effect if the mp3 format is used.
+Only has effect if the mp3 or mp2 format is used.
 .TP
 .I highpass
 Highpass filter setting for the lame encoder, in Hz. Frequencies below
 the specified value will be cut.
 If not set or set to 0, the encoder's default behaviour is used.
 If set to -1, the filter is disabled.
-Only has effect if the mp3 format is used.
+Only has effect if the mp3 or mp2 format is used.
 
 .PP
 .B [shoutcast-x]

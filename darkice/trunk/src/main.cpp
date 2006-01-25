@@ -87,7 +87,7 @@ main (
     std::cout << "DarkIce " << VERSION
          << " live audio streamer, http://darkice.sourceforge.net"
          << std::endl
-         << "Copyright (c) 2000-2005, Tyrell Hungary, http://tyrell.hu"
+         << "Copyright (c) 2000-2006, Tyrell Hungary, http://tyrell.hu"
          << std::endl << std::endl;
 
     try {
@@ -166,6 +166,9 @@ showUsage (     std::ostream      & os )
   $Source$
 
   $Log$
+  Revision 1.16  2006/01/25 22:47:15  darkeye
+  added mpeg2 support, thanks to Nicholas J Humfrey
+
   Revision 1.15  2005/04/14 11:24:42  darkeye
   updated copyright notice to extend to 2005
 

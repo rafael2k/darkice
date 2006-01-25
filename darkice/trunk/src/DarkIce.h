@@ -120,6 +120,11 @@ class DarkIce : public virtual Referable, public virtual Reporter
         Ref<Connector>          encConnector;
 
         /**
+         *  Should we turn real-time scheduling on ?
+         */
+        int                     enableRealTime;
+
+        /**
          *  Original scheduling policy
          */
         int                     origSchedPolicy;
@@ -309,6 +314,9 @@ class DarkIce : public virtual Referable, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.16  2006/01/25 22:47:15  darkeye
+  added mpeg2 support, thanks to Nicholas J Humfrey
+
   Revision 1.15  2005/04/04 08:36:17  darkeye
   commited changes to enable Jack support
   thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk

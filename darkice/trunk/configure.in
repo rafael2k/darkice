@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(darkice, 0.16)
+AC_INIT(darkice, 0.17)
 AC_CONFIG_SRCDIR(src/DarkIce.cpp)
 AM_CONFIG_HEADER(src/config.h)
 
@@ -21,11 +21,11 @@ AC_TYPE_PID_T()
 AC_TYPE_SIZE_T()
 AC_C_BIGENDIAN()
 
-AC_CHECK_LIB( socket, socket)
-AC_CHECK_LIB( nsl, gethostbyname)
-AC_CHECK_LIB( rt, sched_getscheduler)
+AC_CHECK_LIB(socket, socket)
+AC_CHECK_LIB(nsl, gethostbyname)
+AC_CHECK_LIB(rt, sched_getscheduler)
 
-AC_CHECK_FUNC( getaddrinfo, AC_DEFINE(HAVE_GETADDRINFO, 1, [Does function getaddrinfo exist?] ))
+AC_CHECK_FUNC(getaddrinfo, AC_DEFINE(HAVE_GETADDRINFO, 1, [Does function getaddrinfo exist?] ))
 
 dnl-----------------------------------------------------------------------------
 dnl funky posix threads checking, thanks to
@@ -41,13 +41,13 @@ SYSTEM_INCLUDE=/usr/include
 dnl-----------------------------------------------------------------------------
 dnl link the lame library if requested
 dnl-----------------------------------------------------------------------------
-AC_SUBST( LAME_INCFLAGS)
-AC_SUBST( LAME_LDFLAGS)
+AC_SUBST(LAME_INCFLAGS)
+AC_SUBST(LAME_LDFLAGS)
 
-AC_ARG_WITH( lame,
+AC_ARG_WITH(lame,
 [  --with-lame             use lame for encoding mp3 streams [yes] ],
     USE_LAME=${withval}, USE_LAME="yes" )
-AC_ARG_WITH( lame-prefix,
+AC_ARG_WITH(lame-prefix,
 [  --with-lame-prefix=DIR  alternate location for lame [/usr]
                               look for libraries in LAME-PREFIX/lib,
                               for headers in LAME-PREFIX/include],
@@ -75,13 +75,13 @@ fi
 dnl-----------------------------------------------------------------------------
 dnl link the ogg vorbis libraries if requested
 dnl-----------------------------------------------------------------------------
-AC_SUBST( VORBIS_INCFLAGS)
-AC_SUBST( VORBIS_LDFLAGS)
+AC_SUBST(VORBIS_INCFLAGS)
+AC_SUBST(VORBIS_LDFLAGS)
 
-AC_ARG_WITH( vorbis,
+AC_ARG_WITH(vorbis,
 [  --with-vorbis           use Ogg Vorbis for encoding vorbis streams [yes] ],
     USE_VORBIS=${withval}, USE_VORBIS="yes" )
-AC_ARG_WITH( vorbis-prefix,
+AC_ARG_WITH(vorbis-prefix,
 [  --with-vorbis-prefix=DIR    alternate location for vorbis [/usr]
                               look for libraries in VORBIS-PREFIX/lib,
                               for headers in VORBIS-PREFIX/include],
@@ -118,13 +118,13 @@ fi
 dnl-----------------------------------------------------------------------------
 dnl link the faac library if requested
 dnl-----------------------------------------------------------------------------
-AC_SUBST( FAAC_INCFLAGS)
-AC_SUBST( FAAC_LDFLAGS)
+AC_SUBST(FAAC_INCFLAGS)
+AC_SUBST(FAAC_LDFLAGS)
 
-AC_ARG_WITH( faac,
+AC_ARG_WITH(faac,
 [  --with-faac             use faac for encoding AAC streams [yes] ],
     USE_FAAC=${withval}, USE_FAAC="yes" )
-AC_ARG_WITH( faac-prefix,
+AC_ARG_WITH(faac-prefix,
 [  --with-faac-prefix=DIR  alternate location for faac [/usr]
                               look for libraries in FAAC-PREFIX/lib,
                               for headers in FAAC-PREFIX/include],
@@ -150,25 +150,60 @@ fi
 
 
 dnl-----------------------------------------------------------------------------
+dnl link the twolame library if requested
+dnl-----------------------------------------------------------------------------
+AC_SUBST(TWOLAME_INCFLAGS)
+AC_SUBST(TWOLAME_LDFLAGS)
+
+AC_ARG_WITH(twolame,
+[  --with-twolame             use twolame for encoding MP2 streams [yes] ],
+    USE_TWOLAME=${withval}, USE_TWOLAME="yes" )
+AC_ARG_WITH(twolame-prefix,
+[  --with-twolame-prefix=DIR  alternate location for twolame [/usr]
+                              look for libraries in TWOLAME-PREFIX/lib,
+                              for headers in TWOLAME-PREFIX/include],
+    CONFIG_TWOLAME_PREFIX="${withval}", CONFIG_TWOLAME_PREFIX="/usr")
+
+if test "x${USE_TWOLAME}" = "xyes" ; then
+    AC_MSG_CHECKING( [for twolame library at ${CONFIG_TWOLAME_PREFIX}] )
+    LA_SEARCH_LIB( TWOLAME_LIB_LOC, TWOLAME_INC_LOC, libtwolame.a, twolame.h,
+                   ${CONFIG_TWOLAME_PREFIX})
+    if test "x${TWOLAME_LIB_LOC}" != "x" ; then
+        AC_DEFINE( HAVE_TWOLAME_LIB, 1, [build with twolame library] )
+        if test "x${TWOLAME_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
+            TWOLAME_INCFLAGS="-I${TWOLAME_INC_LOC}"
+        fi
+        TWOLAME_LDFLAGS="-L${TWOLAME_LIB_LOC} -ltwolame"
+        AC_MSG_RESULT( [found at ${CONFIG_TWOLAME_PREFIX}] )
+    else
+        AC_MSG_WARN( [not found, building without twolame])
+    fi
+else
+    AC_MSG_RESULT( [building without twolame] )
+fi
+
+
+dnl-----------------------------------------------------------------------------
 dnl make sure at least one of lame and vorbis present
 dnl-----------------------------------------------------------------------------
-if test "x${LAME_LDFLAGS}" = "x"
-     -a "x${VORBIS_LDFLAGS}" = "x" 
-     -a "x${FAAC_LDFLAGS}" = "x"; then
-    AC_MSG_ERROR([neither lame, Ogg Vorbis nor faac configured])
+if test "x${LAME_LDFLAGS}" = "x" \
+     -a "x${VORBIS_LDFLAGS}" = "x" \
+     -a "x${FAAC_LDFLAGS}" = "x" \
+     -a "x${TWOLAME_LDFLAGS}" = "x"; then
+    AC_MSG_ERROR([neither lame, Ogg Vorbis, faac nor twolame configured])
 fi
 
 
 dnl-----------------------------------------------------------------------------
 dnl link ALSA sound system if requested 
 dnl-----------------------------------------------------------------------------
-AC_SUBST( ALSA_INCFLAGS)
-AC_SUBST( ALSA_LDFLAGS)
+AC_SUBST(ALSA_INCFLAGS)
+AC_SUBST(ALSA_LDFLAGS)
 
-AC_ARG_WITH( alsa,
+AC_ARG_WITH(alsa,
 [  --with-alsa             use ALSA sound system [yes] ],
     USE_ALSA=${withval}, USE_ALSA="yes" )
-AC_ARG_WITH( alsa-prefix,
+AC_ARG_WITH(alsa-prefix,
 [  --with-alsa-prefix=DIR      alternate location for ALSA [/usr]
                               look for libraries in ALSA-PREFIX/lib,
                               for headers in ALSA-PREFIX/include],
@@ -200,13 +235,15 @@ dnl link JACK sound server if requested
 dnl-----------------------------------------------------------------------------
 AC_SUBST(JACK_CFLAGS)
 AC_SUBST(JACK_LIBS)
+
 AC_ARG_WITH( jack,
 [  --with-jack             use JACK audio server [yes] ],
     USE_JACK=${withval}, USE_JACK="yes" )
 
 if test "x${USE_JACK}" = "xyes" ; then
 	PKG_CHECK_MODULES(JACK, jack,
-			AC_DEFINE( HAVE_JACK_LIB, 1, [build with JACK audio server support] )
+		[ AC_DEFINE( HAVE_JACK_LIB, 1, [build with JACK audio server support] ) ],
+		[ HAVE_JACK_LIB=0 ]
 	)
 else
     AC_MSG_RESULT( [building without JACK support] )
@@ -238,9 +275,9 @@ AC_CHECK_FUNCS( sched_getscheduler sched_getparam )
 dnl-----------------------------------------------------------------------------
 dnl enable compilation with debug flags
 dnl-----------------------------------------------------------------------------
-AC_SUBST( DEBUG_CXXFLAGS)
+AC_SUBST(DEBUG_CXXFLAGS)
 
-AC_ARG_WITH( debug,
+AC_ARG_WITH(debug,
 [  --with-debug            enable debug mode [no] ],
     USE_DEBUG=${withval}, USE_DEBUG="no" )
     

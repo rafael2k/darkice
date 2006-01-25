@@ -2,6 +2,9 @@ next release
 
     o added check for bufferSecs set to 0
       thanks to Toph <fangiotophia@gmail.com>
+	o added realtime parameter to the general section
+	o added MPEG2 support through the TwoLame library.
+	  thanks to Nicholas J Humfrey <njh@ecs.soton.ac.uk>
 
 22-10-2005 DarkIce 0.16 released
 

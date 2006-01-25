@@ -84,6 +84,10 @@
 #include "LameLibEncoder.h"
 #endif
 
+#ifdef HAVE_TWOLAME_LIB
+#include "TwoLameLibEncoder.h"
+#endif
+
 #ifdef HAVE_VORBIS_LIB
 #include "VorbisLibEncoder.h"
 #endif
@@ -151,10 +155,14 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
     str           = cs->get( "reconnect");
     reconnect     = str ? (Util::strEq( str, "yes") ? true : false) : true;
 
+    // real-time scheduling is enabled by default
+    str = cs->get( "realtime" );
+    enableRealTime = str ? (Util::strEq( str, "yes") ? true : false) : true;
+
 
     // the [input] section
     if ( !(cs = config.get( "input")) ) {
-        throw Exception( __FILE__, __LINE__, "no section [general] in config");
+        throw Exception( __FILE__, __LINE__, "no section [input] in config");
     }
     
     str        = cs->getForSure( "sampleRate", " missing in section [input]");
@@ -275,6 +283,8 @@ DarkIce :: configIceCast (  const Config      & config,
             throw Exception( __FILE__, __LINE__,
                              "invalid bitrate mode: ", str);
         }
+        
+        
 
         server      = cs->getForSure( "server", " missing in section ", stream);
         str         = cs->getForSure( "port", " missing in section ", stream);
@@ -334,15 +344,31 @@ DarkIce :: configIceCast (  const Config      & config,
                                            localDumpFile,
                                            bufferSecs );
 
-        audioOuts[u].encoder = new LameLibEncoder( audioOuts[u].server.get(),
-                                                   dsp.get(),
-                                                   bitrateMode,
-                                                   bitrate,
-                                                   quality,
-                                                   sampleRate,
-                                                   channel,
-                                                   lowpass,
-                                                   highpass );
+        str = cs->getForSure( "format", " missing in section ", stream);
+        if ( Util::strEq( str, "mp3") ) {
+			audioOuts[u].encoder = new LameLibEncoder( audioOuts[u].server.get(),
+													   dsp.get(),
+													   bitrateMode,
+													   bitrate,
+													   quality,
+													   sampleRate,
+													   channel,
+													   lowpass,
+													   highpass );
+        } else if ( Util::strEq( str, "mp2") ) {
+			audioOuts[u].encoder = new TwoLameLibEncoder(
+                                                      audioOuts[u].server.get(),
+													  dsp.get(),
+													  bitrateMode,
+													  bitrate,
+													  sampleRate,
+													  channel );
+        } else {
+            throw Exception( __FILE__, __LINE__,
+                             "unsupported stream format: ", str);
+        }
+
+
 
         encConnector->attach( audioOuts[u].encoder.get());
 #endif // HAVE_LAME_LIB
@@ -405,6 +431,8 @@ DarkIce :: configIceCast2 (  const Config      & config,
             format = IceCast2::oggVorbis;
         } else if ( Util::strEq( str, "mp3") ) {
             format = IceCast2::mp3;
+        } else if ( Util::strEq( str, "mp2") ) {
+            format = IceCast2::mp2;
         } else if ( Util::strEq( str, "aac") ) {
             format = IceCast2::aac;
         } else {
@@ -533,6 +561,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
 #endif // HAVE_LAME_LIB
                 break;
 
+
             case IceCast2::oggVorbis:
 #ifndef HAVE_VORBIS_LIB
                 throw Exception( __FILE__, __LINE__,
@@ -551,6 +580,24 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                                 maxBitrate);
 #endif // HAVE_VORBIS_LIB
                 break;
+
+            case IceCast2::mp2:
+#ifndef HAVE_TWOLAME_LIB
+                throw Exception( __FILE__, __LINE__,
+                                 "DarkIce not compiled with TwoLame support, "
+                                 "thus can't create mp2 stream: ",
+                                 stream);
+#else
+                audioOuts[u].encoder = new TwoLameLibEncoder(
+                                                    audioOuts[u].server.get(),
+                                                    dsp.get(),
+                                                    bitrateMode,
+                                                    bitrate,
+                                                    sampleRate,
+                                                    channel );
+#endif // HAVE_TWOLAME_LIB
+                break;
+
 
             case IceCast2::aac:
 #ifndef HAVE_FAAC_LIB
@@ -791,6 +838,7 @@ DarkIce :: configFileCast (  const Config      & config )
         format      = cs->getForSure( "format", " missing in section ", stream);
         if ( !Util::strEq( format, "vorbis")
           && !Util::strEq( format, "mp3")
+          && !Util::strEq( format, "mp2")
           && !Util::strEq( format, "aac") ) {
             throw Exception( __FILE__, __LINE__,
                              "unsupported stream format: ", format);
@@ -818,10 +866,6 @@ DarkIce :: configFileCast (  const Config      & config )
             if ( bitrate == 0 ) {
                 throw Exception( __FILE__, __LINE__,
                                  "bitrate not specified for CBR encoding");
-            }
-            if ( cs->get( "quality" ) == 0 ) {
-                throw Exception( __FILE__, __LINE__,
-                                 "quality not specified for CBR encoding");
             }
         } else if ( Util::strEq( str, "abr") ) {
             bitrateMode = AudioEncoder::abr;
@@ -885,7 +929,22 @@ DarkIce :: configFileCast (  const Config      & config )
                                                     dsp->getChannel(),
                                                     lowpass,
                                                     highpass );
-#endif // HAVE_LAME_LIB
+#endif // HAVE_TWOLAME_LIB
+        } else if ( Util::strEq( format, "mp2") ) {
+#ifndef HAVE_TWOLAME_LIB
+                throw Exception( __FILE__, __LINE__,
+                                "DarkIce not compiled with TwoLAME support, "
+                                "thus can't create MPEG Audio Layer 2 stream: ",
+                                stream);
+#else
+                audioOuts[u].encoder = new TwoLameLibEncoder(
+                                                    audioOuts[u].server.get(),
+                                                    dsp.get(),
+                                                    bitrateMode,
+                                                    bitrate,
+                                                    sampleRate,
+                                                    dsp->getChannel() );
+#endif // HAVE_TWOLAME_LIB
         } else if ( Util::strEq( format, "vorbis") ) {
 #ifndef HAVE_VORBIS_LIB
                 throw Exception( __FILE__, __LINE__,
@@ -898,7 +957,6 @@ DarkIce :: configFileCast (  const Config      & config )
                                                     dsp.get(),
                                                     bitrateMode,
                                                     bitrate,
-                                                    quality,
                                                     dsp->getSampleRate(),
                                                     dsp->getChannel() );
 #endif // HAVE_VORBIS_LIB
@@ -1057,9 +1115,14 @@ int
 DarkIce :: run ( void )                             throw ( Exception )
 {
     reportEvent( 3, "encoding");
-    setRealTimeScheduling();
+    
+    if (enableRealTime) {
+        setRealTimeScheduling();
+    }
     encode();
-    setOriginalScheduling();
+    if (enableRealTime) {
+        setOriginalScheduling();
+    }
     reportEvent( 3, "encoding ends");
 
     return 0;
@@ -1071,6 +1134,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.47  2006/01/25 22:47:15  darkeye
+  added mpeg2 support, thanks to Nicholas J Humfrey
+
   Revision 1.46  2006/01/19 16:09:05  darkeye
   added check for bufferSecs setting not to be 0
 

@@ -260,8 +260,10 @@ LameLibEncoder :: open ( void )
                          "lame lib initializing params error" );
     }
 
-    lame_print_config( lameGlobalFlags);
-
+	if (getReportVerbosity() >= 3) {
+ 	   lame_print_config( lameGlobalFlags);
+	}
+	
     return true;
 }
 
@@ -396,6 +398,9 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.20  2006/01/25 22:47:15  darkeye
+  added mpeg2 support, thanks to Nicholas J Humfrey
+
   Revision 1.19  2005/04/13 19:04:55  jbebel
   Distribute lame qualities better, and prevent values greater than 9 which are invalid.
 
