@@ -75,7 +75,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
         /**
          *  A flag to indicate if the encoding session is open.
          */
-        bool                        faacOpen;;
+        bool                        faacOpen;
 
         /**
          *  The handle to the AAC encoder instance.
@@ -443,6 +443,9 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
   $Source$
 
   $Log$
+  Revision 1.3  2006/01/27 08:51:23  darkeye
+  fixed issue of double colons at the end of the declaration
+
   Revision 1.2  2005/04/16 22:19:20  darkeye
   changed remaining typos
 
