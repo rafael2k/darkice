@@ -211,7 +211,7 @@ DarkIce :: configIceCast (  const Config      & config,
             break;
         }
 
-#ifndef HAVE_LAME_LIB
+#if !defined HAVE_LAME_LIB || !defined HAVE_TWOLAME_LIB
         throw Exception( __FILE__, __LINE__,
                          "DarkIce not compiled with lame support, "
                          "thus can't connect to IceCast 1.x, stream: ",
@@ -345,6 +345,14 @@ DarkIce :: configIceCast (  const Config      & config,
                                            bufferSecs );
 
         str = cs->getForSure( "format", " missing in section ", stream);
+
+        if (!Util::strEq(str, "mp3") || !Util::strEq(str, "mp2")) {
+            throw Exception( __FILE__, __LINE__,
+                             "unsupported stream format: ", str);
+
+        }
+
+#ifdef HAVE_LAME_LIB
         if ( Util::strEq( str, "mp3") ) {
 			audioOuts[u].encoder = new LameLibEncoder( audioOuts[u].server.get(),
 													   dsp.get(),
@@ -355,7 +363,10 @@ DarkIce :: configIceCast (  const Config      & config,
 													   channel,
 													   lowpass,
 													   highpass );
-        } else if ( Util::strEq( str, "mp2") ) {
+        }
+#endif
+#ifdef HAVE_TWOLAME_LIB
+        if ( Util::strEq( str, "mp2") ) {
 			audioOuts[u].encoder = new TwoLameLibEncoder(
                                                       audioOuts[u].server.get(),
 													  dsp.get(),
@@ -363,15 +374,11 @@ DarkIce :: configIceCast (  const Config      & config,
 													  bitrate,
 													  sampleRate,
 													  channel );
-        } else {
-            throw Exception( __FILE__, __LINE__,
-                             "unsupported stream format: ", str);
         }
-
-
+#endif
 
         encConnector->attach( audioOuts[u].encoder.get());
-#endif // HAVE_LAME_LIB
+#endif // HAVE_LAME_LIB || HAVE_TWOLAME_LIB
     }
 
     noAudioOuts += u;
@@ -1134,6 +1141,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.48  2006/01/27 15:02:05  darkeye
+  fixued issue of compiling without lame, but with twolame
+
   Revision 1.47  2006/01/25 22:47:15  darkeye
   added mpeg2 support, thanks to Nicholas J Humfrey
 
