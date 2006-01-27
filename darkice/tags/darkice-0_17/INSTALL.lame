@@ -1,0 +1,52 @@
+Installing Lame
+---------------
+
+To install DarkIce, you need the Lame 3.89 or later libraries and
+related header files already installed on your system.
+
+It is recommended that use install Lame to the usual system locations,
+/usr/lib, /usr/include, so that DarkIce will find the header files and
+libraries. Thus when configuring, add --prefix=/usr to the configure
+options.
+
+Grab the latest lame source tarball from a download site found at
+http://www.mp3dev.org/mp3/download/download.html
+or from the DarkIce SourceForge project download area
+http://sourceforge.net/project/showfiles.php?group_id=14111
+
+I took lame lame-3.91.tar.gz. Go to the directory where you saved it,
+and issue the following commands:
+
+tar xfz lame-3.91.tar.gz
+cd lame-3.91
+./configure --with-fileio=lame --without-vorbis --disable-gtktest --enable-expopt=full --prefix=/usr
+make
+make install
+
+For the last step, you need to be root or have write permissions in the
+target directories.
+
+You might consider using nasm if you're on a i386 system, with the
+configure option --enable-nasmm, for maximum performance.
+
+
+On RedHat Linux
+---------------
+
+Compiling Lame on RedHat Linux is a tricky issue, because of gcc 2.96
+packaged with the distributions 7.0 and 7.1. You either have to use
+the comaptibility compiler package (compat-egcs and related packages,
+providing gcc 2.91), or even better, gcc 3.0.
+
+It is recommended that you compile lame with gcc 3. For maximum performance,
+use the nasm assembler to compile assembly optimizations into lame.
+Try the following commands:
+
+tar xfz lame-3.91.tar.gz
+cd lame-3.91
+export CC=gcc3
+./configure --with-fileio=lame --without-vorbis --disable-gtktest --enable-nasm --enable-expopt=full --prefix=/usr
+make
+make install
+
+
