@@ -2,6 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header$
 
+IUSE=""
 DESCRIPTION="TwoLAME is an optimised MPEG Audio Layer 2 (MP2) encoder"
 HOMEPAGE="http://www.twolame.org/"
 SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz"
