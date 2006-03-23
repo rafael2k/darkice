@@ -211,9 +211,9 @@ DarkIce :: configIceCast (  const Config      & config,
             break;
         }
 
-#if !defined HAVE_LAME_LIB || !defined HAVE_TWOLAME_LIB
+#if !defined HAVE_LAME_LIB && !defined HAVE_TWOLAME_LIB
         throw Exception( __FILE__, __LINE__,
-                         "DarkIce not compiled with lame support, "
+                         "DarkIce not compiled with lame or twolame support, "
                          "thus can't connect to IceCast 1.x, stream: ",
                          stream);
 #else
@@ -346,7 +346,7 @@ DarkIce :: configIceCast (  const Config      & config,
 
         str = cs->getForSure( "format", " missing in section ", stream);
 
-        if (!Util::strEq(str, "mp3") || !Util::strEq(str, "mp2")) {
+        if (!Util::strEq(str, "mp3") && !Util::strEq(str, "mp2")) {
             throw Exception( __FILE__, __LINE__,
                              "unsupported stream format: ", str);
 
@@ -1141,6 +1141,9 @@ DarkIce :: run ( void )                             throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.49  2006/03/23 09:34:57  darkeye
+  fixed checking for mp3 and mp2 lib support for icecast-1.x streams
+
   Revision 1.48  2006/01/27 15:02:05  darkeye
   fixued issue of compiling without lame, but with twolame
 
