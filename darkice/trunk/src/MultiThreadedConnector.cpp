@@ -315,10 +315,15 @@ MultiThreadedConnector :: sinkThread( int       ixSink )
 
         if ( !threadData->accepting ) {
             if ( reconnect ) {
+                reportEvent( 4,
+                           "MultiThreadedConnector :: sinkThread reconnecting ",
+                            ixSink);
                 // if we're not accepting, try to reopen the sink
                 try {
                     sink->close();
+                    sched_yield();
                     sink->open();
+                    sched_yield();
                     threadData->accepting = sink->isOpen();
                 } catch ( Exception   & e ) {
                     // don't care, just try and try again
@@ -402,6 +407,9 @@ MultiThreadedConnector :: ThreadData :: threadFunction( void  * param )
   $Source$
 
   $Log$
+  Revision 1.7  2006/05/16 09:00:08  darkeye
+  added yield calls to the connector, when trying to reconnect...
+
   Revision 1.6  2005/04/13 22:03:32  jbebel
   Set priority explicitly for encoding threads.  This needs more testing.
 
