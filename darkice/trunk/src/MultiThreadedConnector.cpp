@@ -374,26 +374,30 @@ MultiThreadedConnector :: ThreadData :: threadFunction( void  * param )
     
     pthread_getschedparam( threadData->thread, &sched_type, &sched );
 
-    reportEvent( 5, "MultiThreadedConnector :: ThreadData :: threadFunction, was (thread, priority, type): ",
-        param,
-	sched.sched_priority,
-        sched_type == SCHED_FIFO ? "SCHED_FIFO" :
-            sched_type == SCHED_RR ? "SCHED_RR" :
-            sched_type == SCHED_OTHER ? "SCHED_OTHER" :
-            "INVALID"
+    reportEvent( 5,
+                 "MultiThreadedConnector :: ThreadData :: threadFunction, "
+                 "was (thread, priority, type): ",
+                 param,
+	             sched.sched_priority,
+                 sched_type == SCHED_FIFO ? "SCHED_FIFO" :
+                    sched_type == SCHED_RR ? "SCHED_RR" :
+                    sched_type == SCHED_OTHER ? "SCHED_OTHER" :
+                    "INVALID"
     );
 
     sched.sched_priority = 1;
     pthread_setschedparam( threadData->thread, SCHED_FIFO, &sched);
 
     pthread_getschedparam( threadData->thread, &sched_type, &sched );
-    reportEvent( 5, "MultiThreadedConnector :: ThreadData :: threadFunction, now is (thread, priority, type): ",
-        param,
-	sched.sched_priority,
-        sched_type == SCHED_FIFO ? "SCHED_FIFO" :
-            sched_type == SCHED_RR ? "SCHED_RR" :
-            sched_type == SCHED_OTHER ? "SCHED_OTHER" :
-            "INVALID"
+    reportEvent( 5,
+                 "MultiThreadedConnector :: ThreadData :: threadFunction, "
+                 "now is (thread, priority, type): ",
+                 param,
+	             sched.sched_priority,
+                 sched_type == SCHED_FIFO ? "SCHED_FIFO" :
+                    sched_type == SCHED_RR ? "SCHED_RR" :
+                    sched_type == SCHED_OTHER ? "SCHED_OTHER" :
+                    "INVALID"
     );
 
     threadData->connector->sinkThread( threadData->ixSink);
@@ -407,6 +411,9 @@ MultiThreadedConnector :: ThreadData :: threadFunction( void  * param )
   $Source$
 
   $Log$
+  Revision 1.8  2006/05/18 07:13:00  darkeye
+  cosmetic changes
+
   Revision 1.7  2006/05/16 09:00:08  darkeye
   added yield calls to the connector, when trying to reconnect...
 
