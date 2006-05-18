@@ -1,0 +1,21 @@
+DarkIce Frequenty Asked Questions
+
+
+Q: I get the following error:
+
+DarkIce: LameLibEncoder.cpp:75: lame lib opening underlying sink error [0]
+
+What am I doing wrong?
+
+
+A: This error means (quite anti-intuitively), that darkice coulnd't connect
+   to the streaming server. Please double-check the following values in
+   your config file:
+    - server
+    - port
+    - password
+
+   If you're streaming to a shoutcast server, make sure that the port
+   you use is the _source_ port, which is usually 1 above the _client_
+   port for shoutcast (the defaults are 8000 for client, 8001 for source).
+
