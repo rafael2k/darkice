@@ -206,8 +206,9 @@ TcpSocket :: open ( void )                       throw ( Exception )
     hints.ai_family = AF_ANY;
     snprintf(portstr, sizeof(portstr), "%d", port);
 
-    if (getaddrinfo(host , portstr, &hints, &ptr))
-	throw Exception( __FILE__, __LINE__, "getaddrinfo error", errno);
+    if (getaddrinfo(host , portstr, &hints, &ptr)) {
+	    throw Exception( __FILE__, __LINE__, "getaddrinfo error", errno);
+    }
     memcpy ( addr, ptr->ai_addr, ptr->ai_addrlen);
     freeaddrinfo(ptr);
 #else
@@ -280,7 +281,16 @@ TcpSocket :: read (     void          * buf,
     ret = recv( sockfd, buf, len, 0);
 
     if ( ret == -1 ) {
-        throw Exception( __FILE__, __LINE__, "recv error", errno);
+        switch (errno) {
+            case ECONNRESET:
+                // re-open the socket if it has been reset by the peer
+                close();
+                open();
+                break;
+
+            default:
+                throw Exception( __FILE__, __LINE__, "recv error", errno);
+        }
     }
 
     return ret;
@@ -370,6 +380,9 @@ TcpSocket :: close ( void )                          throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.11  2006/05/19 12:39:19  darkeye
+  added reconnection capability if the TCP connection is reset by the peer
+
   Revision 1.10  2005/04/11 19:34:23  darkeye
   added IPv6 support, thanks to <jochen2@users.sourceforge.net>
 
