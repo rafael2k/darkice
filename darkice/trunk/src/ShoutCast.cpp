@@ -162,13 +162,6 @@ ShoutCast :: sendLogin ( void )                           throw ( Exception )
         sink->write( str, strlen( str));
     }
 
-    if ( getUrl() ) {
-        str = "\nicy-url:";
-        sink->write( str, strlen( str));
-        str = getUrl();
-        sink->write( str, strlen( str));
-    }
-
     if ( getGenre() ) {
         str = "\nicy-genre:";
         sink->write( str, strlen( str));
@@ -176,26 +169,10 @@ ShoutCast :: sendLogin ( void )                           throw ( Exception )
         sink->write( str, strlen( str));
     }
 
-    if ( getIrc() ) {
-        str = "\nicy-irc:";
-        sink->write( str, strlen( str));
-        str = getIrc();
-        sink->write( str, strlen( str));
-    }
-
-    if ( getAim() ) {
-        str = "\nicy-aim:";
-        sink->write( str, strlen( str));
-        str = getAim();
-        sink->write( str, strlen( str));
-    }
-
-    if ( getIcq() ) {
-        str = "\nicy-icq:";
-        sink->write( str, strlen( str));
-        str = getIcq();
-        sink->write( str, strlen( str));
-    }
+    str = "\nicy-pub:";
+    sink->write( str, strlen( str));
+    str = getIsPublic() ? "1" : "0";
+    sink->write( str, strlen( str));
 
     str = "\nicy-br:";
     sink->write( str, strlen( str));
@@ -206,14 +183,47 @@ ShoutCast :: sendLogin ( void )                           throw ( Exception )
     sprintf( resp, "%d", getBitRate());
     sink->write( resp, strlen( resp));
 
-    str = "\nicy-pub:";
-    sink->write( str, strlen( str));
-    str = getIsPublic() ? "1" : "0";
-    sink->write( str, strlen( str));
+    if ( getUrl() ) {
+        str = "\nicy-url:";
+        sink->write( str, strlen( str));
+        str = getUrl();
+        sink->write( str, strlen( str));
+    }
+
+    if ( getIrc() ) {
+        str = "\nicy-irc:";
+        sink->write( str, strlen( str));
+        str = getIrc();
+        sink->write( str, strlen( str));
+    }
+
+    if ( getIcq() ) {
+        str = "\nicy-icq:";
+        sink->write( str, strlen( str));
+        str = getIcq();
+        sink->write( str, strlen( str));
+    }
+
+    if ( getAim() ) {
+        str = "\nicy-aim:";
+        sink->write( str, strlen( str));
+        str = getAim();
+        sink->write( str, strlen( str));
+    }
 
     str = "\n\n";
     sink->write( str, strlen( str));
     sink->flush();
+
+    /* suck anything that the other side has to say */
+    len = source->read( resp, STRBUF_SIZE);
+    reportEvent(8, "server response length: ", len);
+    reportEvent(8, "server response: ", resp);
+
+    while ( source->canRead( 0, 0) && 
+           (len = source->read( resp, STRBUF_SIZE)) ) {
+        ;
+    }
 
     return true;
 }
@@ -225,6 +235,9 @@ ShoutCast :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.5  2006/07/16 16:46:40  darkeye
+  changed the order of shoutcast metadata
+
   Revision 1.4  2006/07/16 16:24:46  darkeye
   moved shoutcast server response checking right after passing password
   to the server. this should solve connection issues for recent
