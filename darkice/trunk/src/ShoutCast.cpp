@@ -140,6 +140,20 @@ ShoutCast :: sendLogin ( void )                           throw ( Exception )
     sink->write( str, strlen( str));
     sink->flush();
 
+    /* read the anticipated response: "OK" */
+    len = source->read( resp, STRBUF_SIZE);
+    reportEvent(8, "server response length: ", len);
+    reportEvent(8, "server response: ", resp);
+    if ( len < 2 || resp[0] != 'O' || resp[1] != 'K' ) {
+        return false;
+    }
+
+    /* suck anything that the other side has to say */
+    while ( source->canRead( 0, 0) && 
+           (len = source->read( resp, STRBUF_SIZE)) ) {
+        ;
+    }
+
     /* send the icy headers */
     if ( getName() ) {
         str = "icy-name:";
@@ -201,18 +215,6 @@ ShoutCast :: sendLogin ( void )                           throw ( Exception )
     sink->write( str, strlen( str));
     sink->flush();
 
-    /* read the anticipated response: "OK" */
-    len = source->read( resp, STRBUF_SIZE);
-    if ( len < 2 || resp[0] != 'O' || resp[1] != 'K' ) {
-        return false;
-    }
-
-    /* suck anything that the other side has to say */
-    while ( source->canRead( 0, 0) && 
-           (len = source->read( resp, STRBUF_SIZE)) ) {
-        ;
-    }
-
     return true;
 }
 
@@ -223,6 +225,11 @@ ShoutCast :: sendLogin ( void )                           throw ( Exception )
   $Source$
 
   $Log$
+  Revision 1.4  2006/07/16 16:24:46  darkeye
+  moved shoutcast server response checking right after passing password
+  to the server. this should solve connection issues for recent
+  shoutcast servers
+
   Revision 1.3  2002/05/28 12:35:41  darkeye
   code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
 
