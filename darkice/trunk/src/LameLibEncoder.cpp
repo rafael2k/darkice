@@ -79,10 +79,12 @@ LameLibEncoder :: open ( void )
     lameGlobalFlags = lame_init();
 
     // ugly lame returns -1 in a pointer on allocation errors
-    if ( !lameGlobalFlags || ((int)lameGlobalFlags) == -1 ) {
+    // this is cast to (long int) so that the pointer can be handled
+    // on 64 bit systems as well
+    if ( !lameGlobalFlags || ((long int)lameGlobalFlags) == -1 ) {
         throw Exception( __FILE__, __LINE__,
                          "lame lib init error",
-                         (int) lameGlobalFlags);
+                         (long int) lameGlobalFlags);
     }
 
     if ( 0 > lame_set_num_channels( lameGlobalFlags, getInChannel()) ) {

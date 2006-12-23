@@ -1,3 +1,8 @@
+DarkIce next release
+
+	o fix to enable compiling on 64 bit platforms
+	  thanks to Alexander Vlasov <zulu@galaradio.com>
+
 19-05-2006 DarkIce 0.17.1 released
 
     o bugfix: automatic reconnect works more reliably
