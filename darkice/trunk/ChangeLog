@@ -1,7 +1,9 @@
 DarkIce next release
 
 	o fix to enable compiling on 64 bit platforms
-	  thanks to Alexander Vlasov <zulu@galaradio.com>
+	  thanks to Alexander Vlasov <zulu@galaradio.com> and
+      Mariusz Mazur <mmazur@kernel.pl>
+
 
 19-05-2006 DarkIce 0.17.1 released
 
