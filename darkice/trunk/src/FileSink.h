@@ -80,6 +80,16 @@ class FileSink : public Sink, public virtual Reporter
         void
         strip ( void )                              throw ( Exception );
 
+        /**
+         *  Get the file name to where to move the data saved so far.
+         *  Used in cut().
+         *
+         *  @return the file name where to move the data saved so far.
+         *  @throws Exception on file operation errors
+         */
+        std::string
+        getArchiveFileName( void )                  throw ( Exception );
+
 
     protected:
 
@@ -226,6 +236,14 @@ class FileSink : public Sink, public virtual Reporter
         flush ( void )                              throw ( Exception )
         {
         }
+
+        /**
+         *  Cut what the sink has been doing so far, and start anew.
+         *  This usually means separating the data sent to the sink up
+         *  until now, and start saving a new chunk of data.
+         */
+        virtual void
+        cut ( void )                                    throw ();
 
         /**
          *  Close the FileSink.

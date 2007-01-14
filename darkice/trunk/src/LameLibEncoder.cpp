@@ -71,7 +71,7 @@ LameLibEncoder :: open ( void )
     }
 
     // open the underlying sink
-    if ( !sink->open() ) {
+    if ( !getSink()->open() ) {
         throw Exception( __FILE__, __LINE__,
                          "lame lib opening underlying sink error");
     }
@@ -331,7 +331,7 @@ LameLibEncoder :: write (   const void    * buf,
         return 0;
     }
 
-    unsigned int    written = sink->write( mp3Buf, ret);
+    unsigned int    written = getSink()->write( mp3Buf, ret);
     delete[] mp3Buf;
     // just let go data that could not be written
     if ( written < (unsigned int) ret ) {
@@ -362,7 +362,7 @@ LameLibEncoder :: flush ( void )
 
     ret = lame_encode_flush( lameGlobalFlags, mp3Buf, mp3Size );
 
-    unsigned int    written = sink->write( mp3Buf, ret);
+    unsigned int    written = getSink()->write( mp3Buf, ret);
     delete[] mp3Buf;
 
     // just let go data that could not be written
@@ -372,7 +372,7 @@ LameLibEncoder :: flush ( void )
                      ret - written);
     }
 
-    sink->flush();
+    getSink()->flush();
 }
 
 
@@ -387,7 +387,7 @@ LameLibEncoder :: close ( void )                    throw ( Exception )
         lame_close( lameGlobalFlags);
         lameGlobalFlags = 0;
 
-        sink->close();
+        getSink()->close();
     }
 }
 

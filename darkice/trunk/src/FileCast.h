@@ -239,6 +239,17 @@ class FileCast : public CastSink
         }
 
         /**
+         *  Cut what the sink has been doing so far, and start anew.
+         *  This usually means separating the data sent to the sink up
+         *  until now, and start saving a new chunk of data.
+         */
+        inline virtual void
+        cut ( void )                                    throw ()
+        {
+            targetFile->cut();
+        }
+
+        /**
          *  Close the FileCast.
          *
          *  @exception Exception

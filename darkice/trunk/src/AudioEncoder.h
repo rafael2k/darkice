@@ -72,6 +72,11 @@ class AudioEncoder : public Sink, public virtual Referable
     private:
 
         /**
+         *  The Sink to dump the encoded data to
+         */
+        Ref<Sink>           sink;
+
+        /**
          *  Sample rate of the input.
          */
         unsigned int        inSampleRate;
@@ -119,6 +124,7 @@ class AudioEncoder : public Sink, public virtual Referable
         /**
          *  Initialize the object.
          *
+         *  @param sink the sink to send encoded output to
          *  @param inSampleRate sample rate of the input.
          *  @param inBitsPerSample number of bits per sample of the input.
          *  @param inChannel number of channels  of the input.
@@ -130,7 +136,8 @@ class AudioEncoder : public Sink, public virtual Referable
          *  @exception Exception
          */
         inline void
-        init (      unsigned int    inSampleRate,
+        init (      Sink          * sink,
+                    unsigned int    inSampleRate,
                     unsigned int    inBitsPerSample,
                     unsigned int    inChannel,
                     bool            inBigEndian,
@@ -140,6 +147,7 @@ class AudioEncoder : public Sink, public virtual Referable
                     unsigned int    outSampleRate,
                     unsigned int    outChannel )        throw ( Exception )
         {
+            this->sink             = sink;
             this->inSampleRate     = inSampleRate;
             this->inBitsPerSample  = inBitsPerSample;
             this->inChannel        = inChannel;
@@ -182,6 +190,7 @@ class AudioEncoder : public Sink, public virtual Referable
         /**
          *  Constructor.
          *
+         *  @param sink the sink to send encoded output to
          *  @param inSampleRate sample rate of the input.
          *  @param inBitsPerSample number of bits per sample of the input.
          *  @param inChannel number of channels  of the input.
@@ -196,7 +205,8 @@ class AudioEncoder : public Sink, public virtual Referable
          *  @exception Exception
          */
         inline
-        AudioEncoder (  unsigned int    inSampleRate,
+        AudioEncoder (  Sink          * sink,
+                        unsigned int    inSampleRate,
                         unsigned int    inBitsPerSample,
                         unsigned int    inChannel, 
                         bool            inBigEndian,
@@ -207,7 +217,8 @@ class AudioEncoder : public Sink, public virtual Referable
                         unsigned int    outChannel    = 0 )
                                                         throw ( Exception )
         {
-            init ( inSampleRate,
+            init ( sink,
+                   inSampleRate,
                    inBitsPerSample,
                    inChannel,
                    inBigEndian,
@@ -221,6 +232,7 @@ class AudioEncoder : public Sink, public virtual Referable
         /**
          *  Constructor.
          *
+         *  @param sink the sink to send encoded output to
          *  @param as get input sample rate, bits per sample and channels
          *            from this AudioSource.
          *  @param outBitrateMode the bit rate mode of the output.
@@ -233,7 +245,8 @@ class AudioEncoder : public Sink, public virtual Referable
          *  @exception Exception
          */
         inline
-        AudioEncoder (  const AudioSource     * as,
+        AudioEncoder (  Sink                  * sink,
+                        const AudioSource     * as,
                         BitrateMode             outBitrateMode,
                         unsigned int            outBitrate,
                         double                  outQuality,
@@ -241,7 +254,8 @@ class AudioEncoder : public Sink, public virtual Referable
                         unsigned int            outChannel    = 0 )
                                                         throw ( Exception)
         {
-            init( as->getSampleRate(),
+            init( sink,
+                  as->getSampleRate(),
                   as->getBitsPerSample(),
                   as->getChannel(),
                   as->isBigEndian(),
@@ -260,7 +274,8 @@ class AudioEncoder : public Sink, public virtual Referable
         inline
         AudioEncoder (  const AudioEncoder &    encoder )   throw ( Exception )
         {
-            init ( encoder.inSampleRate,
+            init ( encoder.sink.get(),
+                   encoder.inSampleRate,
                    encoder.inBitsPerSample,
                    encoder.inChannel,
                    encoder.inBigEndian,
@@ -284,7 +299,8 @@ class AudioEncoder : public Sink, public virtual Referable
             if ( this != &encoder ) {
                 strip();
 
-                init ( encoder.inSampleRate,
+                init ( encoder.sink.get(),
+                       encoder.inSampleRate,
                        encoder.inBitsPerSample,
                        encoder.inChannel,
                        encoder.inBigEndian,
@@ -310,6 +326,17 @@ class AudioEncoder : public Sink, public virtual Referable
         ~AudioEncoder ( void )          throw ( Exception )
         {
             strip();
+        }
+
+        /**
+         *  Get the underlying sink, that the encoded content is sent to.
+         *
+         *  @return the underlying sink
+         */
+        inline virtual Ref<Sink>
+        getSink(void)                   throw ()
+        {
+            return sink;
         }
 
         /**
@@ -438,6 +465,20 @@ class AudioEncoder : public Sink, public virtual Referable
          */
         virtual void
         stop ( void )                       throw ( Exception )     = 0;
+
+        /**
+         *  Cut what the sink has been doing so far, and start anew.
+         *  This usually means separating the data sent to the sink up
+         *  until now, and start saving a new chunk of data.
+         *
+         *  Typically this action is delegated to the underlying sink.
+         */
+        inline virtual void
+        cut ( void )                                    throw ()
+        {
+            sink->cut();
+        }
+
 };
 
 

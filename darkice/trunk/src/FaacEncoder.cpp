@@ -71,7 +71,7 @@ FaacEncoder :: open ( void )
     }
 
     // open the underlying sink
-    if ( !sink->open() ) {
+    if ( !getSink()->open() ) {
         throw Exception( __FILE__, __LINE__,
                          "faac lib opening underlying sink error");
     }
@@ -145,7 +145,7 @@ FaacEncoder :: write (  const void    * buf,
                                     inSamples,
                                     faacBuf,
                                     maxOutputBytes);
-        sink->write(faacBuf, outputBytes);
+        getSink()->write(faacBuf, outputBytes);
 
         processedSamples += inSamples;
     }
@@ -167,7 +167,7 @@ FaacEncoder :: flush ( void )
         return;
     }
 
-    sink->flush();
+    getSink()->flush();
 }
 
 
@@ -182,7 +182,7 @@ FaacEncoder :: close ( void )                           throw ( Exception )
         faacEncClose(encoderHandle);
         faacOpen = false;
 
-        sink->close();
+        getSink()->close();
     }
 }
 

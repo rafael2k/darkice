@@ -79,11 +79,6 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
         lame_global_flags             * lameGlobalFlags;
 
         /**
-         *  The Sink to dump mp3 data to
-         */
-        Ref<Sink>                       sink;
-
-        /**
          *  Lowpass filter. Sound frequency in Hz, from where up the
          *  input is cut.
          */
@@ -98,7 +93,6 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
         /**
          *  Initialize the object.
          *
-         *  @param sink the sink to send mp3 output to
          *  @param lowpass frequency threshold for the lowpass filter.
          *                 Input above this frequency is cut.
          *                 If 0, lame's default values are used,
@@ -110,12 +104,10 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline void
-        init ( Sink           * sink,
-               int              lowpass,
+        init ( int              lowpass,
                int              highpass )              throw ( Exception )
         {
             this->lameGlobalFlags = NULL;
-            this->sink            = sink;
             this->lowpass         = lowpass;
             this->highpass        = highpass;
 
@@ -209,7 +201,8 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                             int             highpass      = 0 )
                                                         throw ( Exception )
             
-                    : AudioEncoder ( inSampleRate,
+                    : AudioEncoder ( sink,
+                                     inSampleRate,
                                      inBitsPerSample,
                                      inChannel,
                                      inBigEndian,
@@ -219,7 +212,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                                      outSampleRate,
                                      outChannel )
         {
-            init( sink, lowpass, highpass);
+            init( lowpass, highpass);
         }
 
         /**
@@ -257,14 +250,15 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                             int                     highpass      = 0 )
                                                             throw ( Exception )
             
-                    : AudioEncoder ( as,
+                    : AudioEncoder ( sink,
+                                     as,
                                      outBitrateMode,
                                      outBitrate,
                                      outQuality,
                                      outSampleRate,
                                      outChannel )
         {
-            init( sink, lowpass, highpass);
+            init( lowpass, highpass);
         }
 
         /**
@@ -277,7 +271,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                                                             throw ( Exception )
                     : AudioEncoder( encoder )
         {
-            init( encoder.sink.get(), encoder.lowpass, encoder.highpass );
+            init( encoder.lowpass, encoder.highpass );
         }
          
 
@@ -308,7 +302,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
             if ( this != &encoder ) {
                 strip();
                 AudioEncoder::operator=( encoder);
-                init( encoder.sink.get(), encoder.lowpass, encoder.highpass );
+                init( encoder.lowpass, encoder.highpass );
             }
 
             return *this;

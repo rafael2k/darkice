@@ -65,10 +65,9 @@ static const char fileid[] = "$Id$";
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-TwoLameLibEncoder :: init ( Sink	* sink )           throw ( Exception )
+TwoLameLibEncoder :: init ( void )                  throw ( Exception )
 {
 	this->twolame_opts    = NULL;
-	this->sink            = sink;
 
 	if ( getInBitsPerSample() != 16 ) {
 		throw Exception( __FILE__, __LINE__,
@@ -106,7 +105,7 @@ TwoLameLibEncoder :: open ( void )
     }
 
     // open the underlying sink
-    if ( !sink->open() ) {
+    if ( !getSink()->open() ) {
         throw Exception( __FILE__, __LINE__,
                          "TwoLAME lib opening underlying sink error");
     }
@@ -239,7 +238,7 @@ TwoLameLibEncoder :: write (   const void    * buf,
         return 0;
     }
 
-    unsigned int    written = sink->write( mp2Buf, ret);
+    unsigned int    written = getSink()->write( mp2Buf, ret);
     delete[] mp2Buf;
     // just let go data that could not be written
     if ( written < (unsigned int) ret ) {
@@ -270,7 +269,7 @@ TwoLameLibEncoder :: flush ( void )
 
     ret = twolame_encode_flush( twolame_opts, mp2Buf, mp2Size );
 
-    unsigned int    written = sink->write( mp2Buf, ret);
+    unsigned int    written = getSink()->write( mp2Buf, ret);
     delete[] mp2Buf;
 
     // just let go data that could not be written
@@ -280,7 +279,7 @@ TwoLameLibEncoder :: flush ( void )
 			 ret - written);
     }
 
-    sink->flush();
+    getSink()->flush();
 }
 
 
@@ -293,7 +292,7 @@ TwoLameLibEncoder :: close ( void )                    throw ( Exception )
     if ( isOpen() ) {
         flush();
         twolame_close( &twolame_opts );
-        sink->close();
+        getSink()->close();
     }
 }
 

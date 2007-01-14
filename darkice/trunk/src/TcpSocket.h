@@ -259,6 +259,18 @@ class TcpSocket : public Source, public Sink
         }
 
         /**
+         *  Cut what the sink has been doing so far, and start anew.
+         *  This usually means separating the data sent to the sink up
+         *  until now, and start saving a new chunk of data.
+         *
+         *  For TcpSocket, this is a no-op.
+         */
+        inline virtual void
+        cut ( void )                                    throw ()
+        {
+        }
+
+        /**
          *  Close the TcpSocket.
          *
          *  @exception Exception

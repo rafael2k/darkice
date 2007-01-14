@@ -62,11 +62,9 @@ static const char fileid[] = "$Id$";
  *  Initialize the encoder
  *----------------------------------------------------------------------------*/
 void
-VorbisLibEncoder :: init ( CastSink       * sink,
-                           unsigned int     outMaxBitrate )
+VorbisLibEncoder :: init ( unsigned int     outMaxBitrate )
                                                             throw ( Exception )
 {
-    this->sink          = sink;
     this->outMaxBitrate = outMaxBitrate;
 
     if ( getInBitsPerSample() != 16 && getInBitsPerSample() != 8 ) {
@@ -140,7 +138,7 @@ VorbisLibEncoder :: open ( void )
     }
 
     // open the underlying sink
-    if ( !sink->open() ) {
+    if ( !getSink()->open() ) {
         throw Exception( __FILE__, __LINE__,
                          "vorbis lib opening underlying sink error");
     }
@@ -206,11 +204,17 @@ VorbisLibEncoder :: open ( void )
 
     // create an empty vorbis_comment structure
     vorbis_comment_init( &vorbisComment);
+    /* FIXME: removed title metadata when the sink type was changed from
+     *        CastSink to the more generic Sink.
+     *        make sure to add metadata somehow
     // Add comment to vorbis headers to show title in players
     // stupid cast to (char*) because of stupid vorbis API
-    if ( sink->getName() ) {
-        vorbis_comment_add_tag(&vorbisComment, "TITLE", (char*)sink->getName());
+    if ( getSink()->getName() ) {
+        vorbis_comment_add_tag(&vorbisComment,
+                               "TITLE",
+                               (char*) getSink()->getName());
     }
+    */
 
     // create the vorbis stream headers and send them to the underlying sink
     ogg_packet      header;
@@ -231,8 +235,8 @@ VorbisLibEncoder :: open ( void )
 
     ogg_page        oggPage;
     while ( ogg_stream_flush( &oggStreamState, &oggPage) ) {
-        sink->write( oggPage.header, oggPage.header_len);
-        sink->write( oggPage.body, oggPage.body_len);
+        getSink()->write( oggPage.header, oggPage.header_len);
+        getSink()->write( oggPage.body, oggPage.body_len);
     }
 
     vorbis_comment_clear( &vorbisComment );
@@ -346,7 +350,7 @@ VorbisLibEncoder :: flush ( void )
 
     vorbis_analysis_wrote( &vorbisDspState, 0);
     vorbisBlocksOut();
-    sink->flush();
+    getSink()->flush();
 }
 
 
@@ -370,8 +374,8 @@ VorbisLibEncoder :: vorbisBlocksOut ( void )                throw ( Exception )
             while ( ogg_stream_pageout( &oggStreamState, &oggPage) ) {
                 int    written;
                 
-                written  = sink->write( oggPage.header, oggPage.header_len);
-                written += sink->write( oggPage.body, oggPage.body_len);
+                written  = getSink()->write(oggPage.header, oggPage.header_len);
+                written += getSink()->write( oggPage.body, oggPage.body_len);
 
                 if ( written < oggPage.header_len + oggPage.body_len ) {
                     // just let go data that could not be written
@@ -402,7 +406,7 @@ VorbisLibEncoder :: close ( void )                    throw ( Exception )
 
         encoderOpen = false;
 
-        sink->close();
+        getSink()->close();
     }
 }
 

@@ -81,6 +81,12 @@
 #error need sys/time.h
 #endif
 
+#ifdef HAVE_SIGNAL_H
+#include <signal.h>
+#else
+#error need signal.h
+#endif
+
 
 #include "Util.h"
 #include "Exception.h"
@@ -243,7 +249,8 @@ TcpSocket :: canRead (      unsigned int    sec,
                             unsigned int    usec )      throw ( Exception )
 {
     fd_set              fdset;
-    struct timeval      tv;
+    struct timespec     timespec;
+    sigset_t            sigset;
     int                 ret;
 
     if ( !isOpen() ) {
@@ -252,11 +259,16 @@ TcpSocket :: canRead (      unsigned int    sec,
 
     FD_ZERO( &fdset);
     FD_SET( sockfd, &fdset);
-    tv.tv_sec  = sec;
-    tv.tv_usec = usec;
 
-    ret = select( sockfd + 1, &fdset, NULL, NULL, &tv);
-    
+    timespec.tv_sec  = sec;
+    timespec.tv_nsec = usec * 1000L;
+
+    // mask out SIGUSR1, as we're expecting that signal for other reasons
+    sigemptyset(&sigset);
+    sigaddset(&sigset, SIGUSR1);
+
+    ret = pselect( sockfd + 1, &fdset, NULL, NULL, &timespec, &sigset);
+
     if ( ret == -1 ) {
         throw Exception( __FILE__, __LINE__, "select error");
     }
@@ -305,7 +317,8 @@ TcpSocket :: canWrite (    unsigned int    sec,
                            unsigned int    usec )      throw ( Exception )
 {
     fd_set              fdset;
-    struct timeval      tv;
+    struct timespec     timespec;
+    sigset_t            sigset;
     int                 ret;
 
     if ( !isOpen() ) {
@@ -314,10 +327,15 @@ TcpSocket :: canWrite (    unsigned int    sec,
 
     FD_ZERO( &fdset);
     FD_SET( sockfd, &fdset);
-    tv.tv_sec  = sec;
-    tv.tv_usec = usec;
 
-    ret = select( sockfd + 1, NULL, &fdset, NULL, &tv);
+    timespec.tv_sec  = sec;
+    timespec.tv_nsec = usec * 1000L;
+
+    // mask out SIGUSR1, as we're expecting that signal for other reasons
+    sigemptyset(&sigset);
+    sigaddset(&sigset, SIGUSR1);
+
+    ret = pselect( sockfd + 1, NULL, &fdset, NULL, &timespec, &sigset);
     
     if ( ret == -1 ) {
         throw Exception( __FILE__, __LINE__, "select error");

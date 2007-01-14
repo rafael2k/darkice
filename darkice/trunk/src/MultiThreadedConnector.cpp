@@ -293,6 +293,11 @@ MultiThreadedConnector :: sinkThread( int       ixSink )
             break;
         }
 
+        if ( threadData->cut) {
+            sink->cut();
+            threadData->cut = false;
+        }
+
         if ( threadData->accepting ) {
             if ( sink->canWrite( 0, 0) ) {
                 try {
@@ -334,6 +339,22 @@ MultiThreadedConnector :: sinkThread( int       ixSink )
             }
         }
     }
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Signal to each sink to cut what they've done so far, and start anew.
+ *----------------------------------------------------------------------------*/
+void
+MultiThreadedConnector :: cut ( void )                      throw ()
+{
+    for ( unsigned int i = 0; i < numSinks; ++i ) {
+        threads[i].cut = true;
+    }
+
+    // TODO: it might be more appropriate to signal all the threads here
+    //       but, they'll get signaled on new data anyway, and it might be
+    //       enough for them to cut at that time
 }
 
 

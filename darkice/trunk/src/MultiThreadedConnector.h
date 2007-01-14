@@ -108,6 +108,12 @@ class MultiThreadedConnector : public virtual Connector
                 bool                        isDone;
 
                 /**
+                 *  A flag to show that the sink should be made to cut in the
+                 *  next iteration.
+                 */
+                bool                    cut;
+
+                /**
                  *  Default constructor.
                  */
                 inline
@@ -118,6 +124,7 @@ class MultiThreadedConnector : public virtual Connector
                     this->thread    = 0;
                     this->accepting = false;
                     this->isDone    = false;
+                    this->cut       = false;
                 }
 
                 /**
@@ -314,6 +321,15 @@ class MultiThreadedConnector : public virtual Connector
                     unsigned int        usec )          throw ( Exception );
 
         /**
+         *  Signal to each sink we have that they need to cut what they are
+         *  doing, and start again. For FileSinks, this usually means to
+         *  save the archive file recorded so far, and start a new archive
+         *  file.
+         */
+        virtual void
+        cut ( void )                                throw ();
+
+        /**
          *  Close the Connector. The Source and all Sinks are closed.
          *
          *  @exception Exception
@@ -322,7 +338,7 @@ class MultiThreadedConnector : public virtual Connector
         close ( void )                                  throw ( Exception );
 
         /**
-         *  This is the function for each thread.
+         *  This is the worker function for each thread.
          *  This function has to return fast
          *
          *  @param ixSink the index of the sink this thread works on.

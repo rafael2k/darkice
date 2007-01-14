@@ -80,6 +80,12 @@
 #error need sys/ioctl.h
 #endif
 
+#ifdef HAVE_SIGNAL_H
+#include <signal.h>
+#else
+#error need signal.h
+#endif
+
 #ifdef HAVE_SYS_SOUNDCARD_H
 #include <sys/soundcard.h>
 #else
@@ -230,7 +236,8 @@ OssDspSource :: canRead ( unsigned int    sec,
                           unsigned int    usec )    throw ( Exception )
 {
     fd_set              fdset;
-    struct timeval      tv;
+    struct timespec     timespec;
+    sigset_t            sigset;
     int                 ret;
 
     if ( !isOpen() ) {
@@ -247,10 +254,15 @@ OssDspSource :: canRead ( unsigned int    sec,
     
     FD_ZERO( &fdset);
     FD_SET( fileDescriptor, &fdset);
-    tv.tv_sec  = sec;
-    tv.tv_usec = usec;
 
-    ret = select( fileDescriptor + 1, &fdset, NULL, NULL, &tv);
+    timespec.tv_sec  = sec;
+    timespec.tv_nsec = usec * 1000L;
+
+    // mask out SIGUSR1, as we're expecting that signal for other reasons
+    sigemptyset(&sigset);
+    sigaddset(&sigset, SIGUSR1);
+
+    ret = pselect( fileDescriptor + 1, &fdset, NULL, NULL, &timespec, &sigset);
     
     if ( ret == -1 ) {
         throw Exception( __FILE__, __LINE__, "select error");

@@ -326,6 +326,22 @@ Connector :: transfer ( unsigned long       bytes,
 
 
 /*------------------------------------------------------------------------------
+ *  Signal to each sink to cut what they've done so far, and start anew.
+ *----------------------------------------------------------------------------*/
+void
+Connector :: cut ( void )                           throw ()
+{
+    unsigned int        u;
+
+    for ( u = 0; u < numSinks; ++u ) {
+        if ( sinks[u]->isOpen() ) {
+            sinks[u]->cut();
+        }
+    }
+}
+
+
+/*------------------------------------------------------------------------------
  *  Close the source and all the sinks if needed
  *----------------------------------------------------------------------------*/
 void

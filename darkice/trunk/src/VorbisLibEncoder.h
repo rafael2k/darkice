@@ -105,11 +105,6 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
         ogg_stream_state                oggStreamState;
 
         /**
-         *  The Sink to dump encoded data to
-         */
-        Ref<CastSink>                   sink;
-
-        /**
          *  Maximum bitrate of the output in kbits/sec. If 0, don't care.
          */
         unsigned int                    outMaxBitrate;
@@ -127,13 +122,11 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
         /**
          *  Initialize the object.
          *
-         *  @param sink the sink to send encoded output to
          *  @param the maximum bit rate
          *  @exception Exception
          */
         void
-        init ( CastSink       * sink,
-               unsigned int     outMaxBitrate )         throw ( Exception );
+        init ( unsigned int     outMaxBitrate )         throw ( Exception );
 
         /**
          *  De-initialize the object.
@@ -204,7 +197,8 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int    outMaxBitrate = 0 )
                                                         throw ( Exception )
             
-                    : AudioEncoder ( inSampleRate,
+                    : AudioEncoder ( sink,
+                                     inSampleRate,
                                      inBitsPerSample,
                                      inChannel, 
                                      inBigEndian,
@@ -214,7 +208,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
                                      outSampleRate,
                                      outChannel )
         {
-            init( sink, outMaxBitrate);
+            init( outMaxBitrate);
         }
 
         /**
@@ -245,14 +239,15 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int            outMaxBitrate = 0 )
                                                             throw ( Exception )
             
-                    : AudioEncoder ( as,
+                    : AudioEncoder ( sink,
+                                     as,
                                      outBitrateMode,
                                      outBitrate,
                                      outQuality,
                                      outSampleRate,
                                      outChannel )
         {
-            init( sink, outMaxBitrate);
+            init( outMaxBitrate);
         }
 
         /**
@@ -268,7 +263,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
             if( encoder.isOpen() ) {
                 throw Exception(__FILE__, __LINE__, "don't copy open encoders");
             }
-            init( encoder.sink.get(), encoder.getOutMaxBitrate() );
+            init( encoder.getOutMaxBitrate() );
         }
 
         /**
@@ -302,7 +297,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
             if ( this != &encoder ) {
                 strip();
                 AudioEncoder::operator=( encoder);
-                init( encoder.sink.get(), encoder.getOutMaxBitrate() );
+                init( encoder.getOutMaxBitrate() );
             }
 
             return *this;

@@ -157,6 +157,14 @@ class Sink : public virtual Referable
         flush ( void )                                  throw ( Exception ) = 0;
 
         /**
+         *  Cut what the sink has been doing so far, and start anew.
+         *  This usually means separating the data sent to the sink up
+         *  until now, and start saving a new chunk of data.
+         */
+        virtual void
+        cut ( void )                                    throw () = 0;
+
+        /**
          *  Close the Sink.
          *
          *  @exception Exception

@@ -99,14 +99,8 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
         int                             lowpass;
 
         /**
-         *  The Sink to dump mp3 data to
-         */
-        Ref<Sink>                   sink;
-
-        /**
          *  Initialize the object.
          *
-         *  @param sink the sink to send mp3 output to
          *  @param lowpass frequency threshold for the lowpass filter.
          *                 Input above this frequency is cut.
          *                 If 0, faac's default values are used,
@@ -114,11 +108,9 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline void
-        init ( Sink           * sink,
-               int              lowpass)                throw (Exception)
+        init ( int              lowpass)                throw (Exception)
         {
             this->faacOpen        = false;
-            this->sink            = sink;
             this->lowpass         = lowpass;
 
             if ( getInBitsPerSample() != 16 && getInBitsPerSample() != 8 ) {
@@ -205,7 +197,8 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
                         int             lowpass       = 0)
                                                         throw ( Exception )
             
-                    : AudioEncoder ( inSampleRate,
+                    : AudioEncoder ( sink,
+                                     inSampleRate,
                                      inBitsPerSample,
                                      inChannel,
                                      inBigEndian,
@@ -215,7 +208,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
                                      outSampleRate,
                                      outChannel )
         {
-            init( sink, lowpass);
+            init( lowpass);
         }
 
         /**
@@ -248,14 +241,15 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
                         int                     lowpass       = 0)
                                                             throw ( Exception )
             
-                    : AudioEncoder ( as,
+                    : AudioEncoder ( sink,
+                                     as,
                                      outBitrateMode,
                                      outBitrate,
                                      outQuality,
                                      outSampleRate,
                                      outChannel )
         {
-            init( sink, lowpass);
+            init( lowpass);
         }
 
         /**
@@ -268,7 +262,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
                                                             throw ( Exception )
                     : AudioEncoder( encoder )
         {
-            init( encoder.sink.get(), encoder.lowpass);
+            init( encoder.lowpass);
         }
          
 
@@ -299,7 +293,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
             if ( this != &encoder ) {
                 strip();
                 AudioEncoder::operator=( encoder);
-                init( encoder.sink.get(), encoder.lowpass);
+                init( encoder.lowpass);
             }
 
             return *this;

@@ -43,6 +43,12 @@
 #error needs stdlib.h
 #endif
 
+#ifdef HAVE_SIGNAL_H
+#include <signal.h>
+#else
+#error needs signal.h
+#endif
+
 #include <iostream>
 #include <fstream>
 
@@ -53,6 +59,11 @@
 
 
 /* ===================================================  local data structures */
+
+/*------------------------------------------------------------------------------
+ *  The DarkIce object we're running
+ *----------------------------------------------------------------------------*/
+static Ref<DarkIce>     darkice;
 
 
 /* ================================================  local constants & macros */
@@ -75,6 +86,12 @@ static const char *DEFAULT_CONFIG_FILE = "/etc/darkice.cfg";
  *----------------------------------------------------------------------------*/
 static void
 showUsage (     std::ostream  & os );
+
+/*------------------------------------------------------------------------------
+ *  Handler for the SIGUSR1 signal
+ *----------------------------------------------------------------------------*/
+static void
+sigusr1Handler(int  value);
 
 
 /* =============================================================  module code */
@@ -126,9 +143,12 @@ main (
         Reporter::setReportVerbosity( verbosity );
         Reporter::setReportOutputStream( std::cout );
         Config              config( configFile);
-        Ref<DarkIce>        di = new DarkIce( config);
 
-        res = di->run();
+        darkice = new DarkIce( config);
+
+        signal(SIGUSR1, sigusr1Handler);
+
+        res = darkice->run();
 
     } catch ( Exception   & e ) {
         std::cout << "DarkIce: " << e << std::endl << std::flush;
@@ -159,6 +179,16 @@ showUsage (     std::ostream      & os )
     << "   -h                 print this message and exit"
     << std::endl
     << std::endl;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Handle the SIGUSR1 signal here
+ *----------------------------------------------------------------------------*/
+static void
+sigusr1Handler(int    value)
+{
+    darkice->cut();
 }
 
 

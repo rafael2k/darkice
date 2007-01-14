@@ -1138,6 +1138,20 @@ DarkIce :: run ( void )                             throw ( Exception )
 
 
 /*------------------------------------------------------------------------------
+ *  Tell each sink to cut what they are doing, and start again.
+ *----------------------------------------------------------------------------*/
+void
+DarkIce :: cut ( void )                             throw ()
+{
+    reportEvent( 5, "cutting");
+
+    encConnector->cut();
+
+    reportEvent( 5, "cutting ends");
+}
+
+
+/*------------------------------------------------------------------------------
  
   $Source$
 

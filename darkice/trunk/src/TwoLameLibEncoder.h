@@ -79,18 +79,13 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
         twolame_options             * twolame_opts;
 
         /**
-         *  The Sink to dump mp2 data to
-         */
-        Ref<Sink>                       sink;
-
-        /**
          *  Initialize the object.
          *
          *  @param sink the sink to send mp2 output to
          *  @exception Exception
          */
         void
-        init ( Sink           * sink )                  throw ( Exception );
+        init ( void )                               throw ( Exception );
 
         /**
          *  De-initialize the object.
@@ -147,7 +142,8 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int    outChannel    = 0 )
                                                         throw ( Exception )
             
-                    : AudioEncoder ( inSampleRate,
+                    : AudioEncoder ( sink,
+                                     inSampleRate,
                                      inBitsPerSample,
                                      inChannel,
                                      inBigEndian,
@@ -157,7 +153,7 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
                                      outSampleRate,
                                      outChannel )
         {
-            init( sink );
+            init();
         }
 
         /**
@@ -183,14 +179,15 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int            outChannel    = 0 )
                                                             throw ( Exception )
             
-                    : AudioEncoder ( as,
+                    : AudioEncoder ( sink,
+                                     as,
                                      outBitrateMode,
                                      outBitrate,
                                      0.0f,  // outQuality
                                      outSampleRate,
                                      outChannel )
         {
-            init( sink );
+            init();
         }
 
         /**
@@ -203,7 +200,7 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
                                                             throw ( Exception )
                     : AudioEncoder( encoder )
         {
-            init( encoder.sink.get() );
+            init();
         }
          
 
@@ -234,7 +231,7 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
             if ( this != &encoder ) {
                 strip();
                 AudioEncoder::operator=( encoder);
-                init( encoder.sink.get() );
+                init();
             }
 
             return *this;

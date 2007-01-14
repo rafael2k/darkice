@@ -81,6 +81,17 @@
 #error need string.h
 #endif
 
+#ifdef HAVE_SIGNAL_H
+#include <signal.h>
+#else
+#error need signal.h
+#endif
+
+
+#include <iostream>
+#include <sstream>
+#include <fstream>
+
 
 #include "Util.h"
 #include "Exception.h"
@@ -242,7 +253,8 @@ FileSink :: canWrite (     unsigned int    sec,
                            unsigned int    usec )   throw ( Exception )
 {
     fd_set              fdset;
-    struct timeval      tv;
+    struct timespec     timespec;
+    sigset_t            sigset;
     int                 ret;
 
     if ( !isOpen() ) {
@@ -251,10 +263,15 @@ FileSink :: canWrite (     unsigned int    sec,
 
     FD_ZERO( &fdset);
     FD_SET( fileDescriptor, &fdset);
-    tv.tv_sec  = sec;
-    tv.tv_usec = usec;
 
-    ret = select( fileDescriptor + 1, NULL, &fdset, NULL, &tv);
+    timespec.tv_sec  = sec;
+    timespec.tv_nsec = usec * 1000L;
+
+    // mask out SIGUSR1, as we're expecting that signal for other reasons
+    sigemptyset(&sigset);
+    sigaddset(&sigset, SIGUSR1);
+
+    ret = pselect( fileDescriptor + 1, NULL, &fdset, NULL, &timespec, &sigset);
     
     if ( ret == -1 ) {
         throw Exception( __FILE__, __LINE__, "select error");
@@ -288,6 +305,58 @@ FileSink :: write (    const void    * buf,
     }
 
     return ret;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Get the file name to where to move the data saved so far.
+ *  The trick is to read the file name from a file named
+ *  /tmp/darkice.$PID , where $PID is the current process id
+ *----------------------------------------------------------------------------*/
+std::string
+FileSink :: getArchiveFileName ( void )             throw ( Exception )
+{
+    pid_t               pid = getpid();
+    std::stringstream   metaFileName;
+
+    metaFileName << "/tmp/darkice." << pid;
+
+    std::ifstream   ifs(metaFileName.str().c_str());
+    if (!ifs.good()) {
+        throw Exception(__FILE__, __LINE__, 
+                        "can't find file ", metaFileName.str().c_str(), 0);
+    }
+
+    std::string     archiveFileName;
+    ifs >> archiveFileName;
+    ifs.close();
+
+    return archiveFileName;
+}
+
+/*------------------------------------------------------------------------------
+ *  Cut what we've done so far, and start anew.
+ *----------------------------------------------------------------------------*/
+void
+FileSink :: cut ( void )                            throw ()
+{
+    flush();
+    close();
+
+    try {
+        std::string     archiveFileName = getArchiveFileName();
+
+        if (::rename(fileName, archiveFileName.c_str()) != 0) {
+            reportEvent(2, "couldn't move file", fileName,
+                           "to", archiveFileName);
+        }
+
+    } catch ( Exception &e ) {
+        reportEvent(2, "error during archive cut", e);
+    }
+
+    create();
+    open();
 }
 
 

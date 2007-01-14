@@ -363,6 +363,19 @@ class CastSink : public Sink, public virtual Reporter
         }
 
         /**
+         *  Cut what the sink has been doing so far, and start anew.
+         *  This usually means separating the data sent to the sink up
+         *  until now, and start saving a new chunk of data.
+         */
+        inline virtual void
+        cut ( void )                                    throw ()
+        {
+            if ( streamDump != 0 ) {
+                streamDump->cut();
+            }
+        }
+
+        /**
          *  Close the CastSink.
          *
          *  @exception Exception

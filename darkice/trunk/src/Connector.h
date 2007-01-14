@@ -235,6 +235,15 @@ class Connector : public virtual Referable, public virtual Reporter
                     unsigned int        usec )          throw ( Exception );
 
         /**
+         *  Signal to each sink we have that they need to cut what they are
+         *  doing, and start again. For FileSinks, this usually means to
+         *  save the archive file recorded so far, and start a new archive
+         *  file.
+         */
+        virtual void
+        cut ( void )                                throw ();
+
+        /**
          *  Close the Connector. The Source and all Sinks are closed.
          *
          *  @exception Exception
