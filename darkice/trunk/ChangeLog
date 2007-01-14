@@ -1,5 +1,7 @@
 DarkIce next release
 
+    o added default configuration file handling - if no configuration file
+	  is specified, /etc/darkice.cfg is used
 	o fix to enable compiling on 64 bit platforms
 	  thanks to Alexander Vlasov <zulu@galaradio.com> and
       Mariusz Mazur <mmazur@kernel.pl>

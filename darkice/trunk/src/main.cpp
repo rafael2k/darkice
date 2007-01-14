@@ -62,6 +62,11 @@
  *----------------------------------------------------------------------------*/
 static const char fileid[] = "$Id$";
 
+/*------------------------------------------------------------------------------
+ *  Default config file name
+ *----------------------------------------------------------------------------*/
+static const char *DEFAULT_CONFIG_FILE = "/etc/darkice.cfg";
+
 
 /* ===============================================  local function prototypes */
 
@@ -91,7 +96,7 @@ main (
          << std::endl << std::endl;
 
     try {
-        const char    * configFileName = 0;
+        const char    * configFileName = DEFAULT_CONFIG_FILE;
         unsigned int    verbosity      = 1;
         int             i;
         const char      opts[] = "hc:v:";
@@ -113,12 +118,6 @@ main (
                     showUsage( std::cout);
                     return 1;
             }
-        }
-
-        if ( !configFileName ) {
-            showUsage( std::cout);
-            throw Exception( __FILE__, __LINE__,
-                             "no configuration file specified");
         }
 
         std::cout << "Using config file: " << configFileName << std::endl;
@@ -152,6 +151,8 @@ showUsage (     std::ostream      & os )
     << "options:"
     << std::endl
     << "   -c config.file     use configuration file config.file"
+    << std::endl
+    << "                      if not specified, /etc/darkice.cfg is used"
     << std::endl
     << "   -v n               verbosity level (0 = silent, 10 = loud)"
     << std::endl
