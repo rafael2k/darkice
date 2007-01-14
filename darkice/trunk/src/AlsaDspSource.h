@@ -1,5 +1,7 @@
 /*------------------------------------------------------------------------------
 
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
+
    Copyright (c) 2004 
    LS Informationstechnik (LIKE)
    University of Erlangen Nuremberg
@@ -10,7 +12,7 @@
    File     : AlsaDspSource.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -294,19 +296,4 @@ class AlsaDspSource : public AudioSource, public virtual Reporter
 
 
 #endif  /* ALSA_SOURCE_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.2  2005/04/14 11:53:17  darkeye
-  fixed API documentation issues
-
-  Revision 1.1  2004/02/15 12:06:29  darkeye
-  added ALSA support, thanks to Christian Forster
-
-  
-------------------------------------------------------------------------------*/
 

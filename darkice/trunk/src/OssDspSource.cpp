@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : OssDspSource.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -312,54 +312,4 @@ OssDspSource :: close ( void )                  throw ( Exception )
 }
 
 #endif // SUPPORT_OSS_DSP
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.13  2003/02/12 15:48:22  darkeye
-  added proper guessing for natural endiannes of 16 bit recording
-
-  Revision 1.12  2002/12/20 10:40:40  darkeye
-  added support for big endian OSS devices (like Linux PowerPC)
-
-  Revision 1.11  2002/05/28 12:35:41  darkeye
-  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
-
-  Revision 1.10  2001/09/26 16:55:30  darkeye
-  BSD port
-
-  Revision 1.9  2001/09/11 15:05:21  darkeye
-  added Solaris support
-
-  Revision 1.8  2001/09/02 14:08:40  darkeye
-  setting the sound card recording sample rate is now more relaxed
-  there is no error reported if the sample rate is not exactly the same
-
-  Revision 1.7  2001/08/30 17:25:56  darkeye
-  renamed configure.h to config.h
-
-  Revision 1.6  2000/12/01 15:03:28  darkeye
-  bug fix in error reporting
-
-  Revision 1.5  2000/11/17 15:50:48  darkeye
-  added -Wall flag to compiler and eleminated new warnings
-
-  Revision 1.4  2000/11/13 20:05:07  darkeye
-  changed to workaround to start recording so that it reads one sample
-  per channel, as opposed to only one sample (which misalignes the channels)
-
-  Revision 1.3  2000/11/12 13:31:40  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.2  2000/11/05 14:08:28  darkeye
-  changed builting to an automake / autoconf environment
-
-  Revision 1.1.1.1  2000/11/05 10:05:53  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

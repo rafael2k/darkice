@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2004 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : AudioSource.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -110,23 +110,4 @@ AudioSource :: createDspSource( const char    * deviceName,
 #endif
     }
 }
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.3  2005/04/04 08:36:16  darkeye
-  commited changes to enable Jack support
-  thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk
-
-  Revision 1.2  2004/02/15 22:26:16  darkeye
-  fixed typo, minimal cosmetic change
-
-  Revision 1.1  2004/02/15 12:06:29  darkeye
-  added ALSA support, thanks to Christian Forster
-
-
-------------------------------------------------------------------------------*/
 

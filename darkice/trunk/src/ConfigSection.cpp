@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell ConfigSection
 
    File     : ConfigSection.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -170,47 +170,4 @@ ConfigSection :: addLine (  const char    * line )          throw ( Exception )
     /* now add the new key / value pair */
     return add( key.c_str(), value.c_str());
 }
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.8  2002/05/28 12:35:41  darkeye
-  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
-
-  Revision 1.7  2001/10/19 09:20:09  darkeye
-  config file now may contain tabs also as white space
-
-  Revision 1.6  2001/09/09 11:26:43  darkeye
-  full line comments skipped earlier: commens allowed before the first secion
-
-  Revision 1.5  2001/09/05 20:11:15  darkeye
-  removed dependency on locally stored SGI STL header files
-  now compiler-supplied C++ library STL header files are used
-  compiles under GNU C++ 3
-  hash_map (an SGI extension to STL) replaced with map
-  std:: namespace prefix added to all STL class references
-
-  Revision 1.4  2001/08/30 17:25:56  darkeye
-  renamed configure.h to config.h
-
-  Revision 1.3  2000/11/13 18:46:50  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.2  2000/11/09 22:08:17  darkeye
-  added function getForSure
-
-  Revision 1.1  2000/11/08 17:29:50  darkeye
-  added configuration file reader
-
-  Revision 1.2  2000/11/05 14:08:27  darkeye
-  changed builting to an automake / autoconf environment
-
-  Revision 1.1.1.1  2000/11/05 10:05:49  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : MultiThreadedConnector.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -356,31 +356,4 @@ class MultiThreadedConnector : public virtual Connector
 
 
 #endif  /* MULTI_THREADED_CONNECTOR_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.5  2005/04/11 19:27:43  darkeye
-  added option to turn off automatic reconnect feature
-
-  Revision 1.4  2004/02/23 19:12:52  darkeye
-  ported to NetBSD
-
-  Revision 1.3  2002/11/26 21:41:20  darkeye
-  bugfix: MultiThreadedConnector::sinkThread() was private, now public
-
-  Revision 1.2  2002/10/19 13:35:21  darkeye
-  when a connection is dropped, DarkIce tries to reconnect, indefinitely
-  removed extreme event reporting for thread-related events
-
-  Revision 1.1  2002/10/19 12:25:47  darkeye
-  changed internals so that now each encoding/server connection is
-  a separate thread
-
-
-  
-------------------------------------------------------------------------------*/
 

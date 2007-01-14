@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : ShoutCast.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -228,31 +228,4 @@ ShoutCast :: sendLogin ( void )                           throw ( Exception )
     return true;
 }
 
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.5  2006/07/16 16:46:40  darkeye
-  changed the order of shoutcast metadata
-
-  Revision 1.4  2006/07/16 16:24:46  darkeye
-  moved shoutcast server response checking right after passing password
-  to the server. this should solve connection issues for recent
-  shoutcast servers
-
-  Revision 1.3  2002/05/28 12:35:41  darkeye
-  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
-
-  Revision 1.2  2001/11/20 09:06:18  darkeye
-  fixed public stream reporting
-
-  Revision 1.1  2001/09/09 11:27:31  darkeye
-  added support for ShoutCast servers
-
-
-  
-------------------------------------------------------------------------------*/
 

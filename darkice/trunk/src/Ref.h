@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : Ref.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -293,28 +293,4 @@ class Ref
 
 
 #endif  /* REF_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.5  2002/08/20 20:07:36  darkeye
-  minor fixes
-
-  Revision 1.4  2002/02/20 11:51:27  darkeye
-  added equality operators to compare with pointers
-
-  Revision 1.3  2000/11/11 14:55:31  darkeye
-  minor bugfix
-
-  Revision 1.2  2000/11/11 12:33:13  darkeye
-  added kdoc-style documentation
-
-  Revision 1.1.1.1  2000/11/05 10:05:54  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

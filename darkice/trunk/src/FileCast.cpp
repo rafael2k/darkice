@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : FileCast.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -86,18 +86,4 @@ FileCast :: open ( void )                       throw ( Exception )
     return true;
 }
 
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.1  2002/02/28 09:49:25  darkeye
-  added possibility to save the encoded stream to a local file only
-  (no streaming server needed)
-
-
-  
-------------------------------------------------------------------------------*/
 

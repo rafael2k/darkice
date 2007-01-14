@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : Util.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -315,46 +315,4 @@ class Util
 
 
 #endif  /* UTIL_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.11  2005/04/14 11:53:17  darkeye
-  fixed API documentation issues
-
-  Revision 1.10  2004/02/15 12:06:30  darkeye
-  added ALSA support, thanks to Christian Forster
-
-  Revision 1.9  2003/02/09 12:57:36  darkeye
-  cosmetic changes to the fileAddDate option
-
-  Revision 1.8  2002/11/20 16:52:08  wandereq
-  added fileAddDate function
-
-  Revision 1.7  2002/08/20 18:39:14  darkeye
-  added HTTP Basic authentication for icecast2 logins
-
-  Revision 1.6  2002/07/21 08:47:06  darkeye
-  some exception cleanup (throw clauses in function declarations)
-
-  Revision 1.5  2002/03/28 16:45:46  darkeye
-  added functions strToD(), conv8(), conv16() and conv()
-
-  Revision 1.4  2000/11/12 13:31:40  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.3  2000/11/09 22:04:33  darkeye
-  added functions strLen strCpy and strCat
-
-  Revision 1.2  2000/11/09 06:44:21  darkeye
-  added strEq and strToL functions
-
-  Revision 1.1.1.1  2000/11/05 10:05:55  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

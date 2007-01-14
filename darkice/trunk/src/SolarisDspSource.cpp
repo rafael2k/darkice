@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : SolarisDspSource.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -274,20 +274,4 @@ SolarisDspSource :: close ( void )                  throw ( Exception )
 }
 
 #endif // SUPPORT_SOLARIS_DSP
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.2  2004/02/18 21:08:11  darkeye
-  ported to OpenBSD (real-time scheduling not yet supported)
-
-  Revision 1.1  2001/09/11 15:05:21  darkeye
-  added Solaris support
-
-
-  
-------------------------------------------------------------------------------*/
 

@@ -1,5 +1,7 @@
 /*------------------------------------------------------------------------------
 
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
+
    Copyright (c) 2004
    LS Informationstechnik (LIKE)
    University of Erlangen Nuremberg
@@ -10,7 +12,7 @@
    File     : AlsaDspSource.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -285,26 +287,4 @@ AlsaDspSource :: close ( void )                  throw ( Exception )
 }
 
 #endif // HAVE_ALSA_LIB
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.4  2005/04/04 08:36:16  darkeye
-  commited changes to enable Jack support
-  thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk
-
-  Revision 1.3  2005/04/03 05:00:14  jbebel
-  Fixing code documentation of buffer overruns
-
-  Revision 1.2  2004/02/15 22:36:57  darkeye
-  proper checking to see if ALSA support is present / needed
-
-  Revision 1.1  2004/02/15 12:06:29  darkeye
-  added ALSA support, thanks to Christian Forster
-
-
-------------------------------------------------------------------------------*/
 

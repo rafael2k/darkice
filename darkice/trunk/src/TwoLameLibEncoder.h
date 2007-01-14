@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2005 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : TwoLameLibEncoder.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -364,19 +364,4 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
 
 
 #endif  /* TWOLAME_LIB_ENCODER_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.1  2006/01/25 22:49:59  darkeye
-  added mpeg2 support thanks to Nicholas J Humfrey
-
-
-  Revision 1.1  2005/05/02 23:05:02  nhumfrey
-  initial version - based on LameLibEncoder 1.19
-  
-------------------------------------------------------------------------------*/
 

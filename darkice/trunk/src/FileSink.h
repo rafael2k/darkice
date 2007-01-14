@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : FileSink.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -263,25 +263,4 @@ class FileSink : public Sink, public virtual Reporter
 
 
 #endif  /* FILE_SINK_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.5  2002/02/20 11:54:11  darkeye
-  added local dump file possibility
-
-  Revision 1.3  2000/11/11 12:33:13  darkeye
-  added kdoc-style documentation
-
-  Revision 1.2  2000/11/05 17:37:24  darkeye
-  removed clone() functions
-
-  Revision 1.1.1.1  2000/11/05 10:05:51  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

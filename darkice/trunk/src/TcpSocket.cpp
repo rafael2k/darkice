@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : TcpSocket.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -391,46 +391,4 @@ TcpSocket :: close ( void )                          throw ( Exception )
     sockfd = 0;
 }
 
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.11  2006/05/19 12:39:19  darkeye
-  added reconnection capability if the TCP connection is reset by the peer
-
-  Revision 1.10  2005/04/11 19:34:23  darkeye
-  added IPv6 support, thanks to <jochen2@users.sourceforge.net>
-
-  Revision 1.9  2002/10/19 12:22:27  darkeye
-  cosmetic change
-
-  Revision 1.8  2002/08/28 18:24:46  darkeye
-  ported to FreeBSD (removed reference to MSG_NOSIGNAL in TcpSocket.cpp)
-
-  Revision 1.7  2002/07/20 16:37:06  darkeye
-  added fault tolerance in case a server connection is dropped
-
-  Revision 1.6  2001/09/18 16:44:10  darkeye
-  TcpSocket did not report closed state when could not connect()
-
-  Revision 1.5  2001/08/30 17:25:56  darkeye
-  renamed configure.h to config.h
-
-  Revision 1.4  2000/11/17 15:50:48  darkeye
-  added -Wall flag to compiler and eleminated new warnings
-
-  Revision 1.3  2000/11/12 14:54:50  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.2  2000/11/05 14:08:28  darkeye
-  changed builting to an automake / autoconf environment
-
-  Revision 1.1.1.1  2000/11/05 10:05:55  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

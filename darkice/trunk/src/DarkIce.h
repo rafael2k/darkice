@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : DarkIce.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -316,68 +316,4 @@ class DarkIce : public virtual Referable, public virtual Reporter
 
 
 #endif  /* DARK_ICE_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.16  2006/01/25 22:47:15  darkeye
-  added mpeg2 support, thanks to Nicholas J Humfrey
-
-  Revision 1.15  2005/04/04 08:36:17  darkeye
-  commited changes to enable Jack support
-  thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk
-
-  Revision 1.14  2002/05/28 12:35:41  darkeye
-  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
-
-  Revision 1.13  2002/02/28 09:49:25  darkeye
-  added possibility to save the encoded stream to a local file only
-  (no streaming server needed)
-
-  Revision 1.12  2001/09/14 19:31:06  darkeye
-  added IceCast2 / vorbis support
-
-  Revision 1.11  2001/09/11 15:05:21  darkeye
-  added Solaris support
-
-  Revision 1.10  2001/09/09 11:27:31  darkeye
-  added support for ShoutCast servers
-
-  Revision 1.9  2001/08/30 17:25:56  darkeye
-  renamed configure.h to config.h
-
-  Revision 1.8  2001/08/26 20:44:30  darkeye
-  removed external command-line encoder support
-  replaced it with a shared-object support for lame with the possibility
-  of static linkage
-
-  Revision 1.7  2000/12/20 12:36:47  darkeye
-  added POSIX real-time scheduling
-
-  Revision 1.6  2000/11/15 18:08:43  darkeye
-  added multiple verbosity-level event reporting and verbosity command
-  line option
-
-  Revision 1.5  2000/11/13 19:38:55  darkeye
-  moved command line parameter parsing from DarkIce.cpp to main.cpp
-
-  Revision 1.4  2000/11/13 18:46:50  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.3  2000/11/10 20:16:21  darkeye
-  first real tests with multiple streaming
-
-  Revision 1.2  2000/11/09 22:09:46  darkeye
-  added multiple outputs
-  added configuration reading
-  added command line processing
-
-  Revision 1.1.1.1  2000/11/05 10:05:50  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

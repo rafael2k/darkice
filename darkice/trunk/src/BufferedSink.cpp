@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : BufferedSink.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
      the buffer is filled like this:
      
@@ -365,31 +365,4 @@ BufferedSink :: close ( void )                      throw ( Exception )
     sink->close();
     inp = outp = buffer;
 }
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.6  2002/10/19 12:21:28  darkeye
-  fixed comment typo
-
-  Revision 1.5  2001/08/30 17:25:56  darkeye
-  renamed configure.h to config.h
-
-  Revision 1.4  2000/11/11 12:33:13  darkeye
-  added kdoc-style documentation
-
-  Revision 1.3  2000/11/10 20:16:21  darkeye
-  first real tests with multiple streaming
-
-  Revision 1.2  2000/11/05 14:08:27  darkeye
-  changed builting to an automake / autoconf environment
-
-  Revision 1.1.1.1  2000/11/05 10:05:48  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

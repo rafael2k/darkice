@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : AudioSource.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -300,41 +300,4 @@ class AudioSource : public Source, public virtual Reporter
 
 
 #endif  /* AUDIO_SOURCE_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.9  2005/04/14 11:53:17  darkeye
-  fixed API documentation issues
-
-  Revision 1.8  2005/04/04 08:36:16  darkeye
-  commited changes to enable Jack support
-  thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk
-
-  Revision 1.7  2004/02/18 21:08:11  darkeye
-  ported to OpenBSD (real-time scheduling not yet supported)
-
-  Revision 1.6  2004/02/15 12:06:29  darkeye
-  added ALSA support, thanks to Christian Forster
-
-  Revision 1.5  2001/09/18 14:57:19  darkeye
-  finalized Solaris port
-
-  Revision 1.4  2001/09/11 15:05:21  darkeye
-  added Solaris support
-
-  Revision 1.3  2000/11/12 13:31:40  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.2  2000/11/05 17:37:24  darkeye
-  removed clone() functions
-
-  Revision 1.1.1.1  2000/11/05 10:05:47  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

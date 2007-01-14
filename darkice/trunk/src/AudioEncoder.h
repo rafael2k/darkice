@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : AudioEncoder.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -490,40 +490,4 @@ class AudioEncoder : public Sink, public virtual Referable
 
 
 #endif  /* AUDIO_ENCODER_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.9  2005/04/13 18:03:43  jbebel
-  Allow quality settings down to -0.1 for ogg
-
-  Revision 1.8  2002/08/20 19:35:37  darkeye
-  added possibility to specify maximum bitrate for Ogg Vorbis streams
-
-  Revision 1.7  2002/04/13 11:26:00  darkeye
-  added cbr, abr and vbr setting feature with encoding quality
-
-  Revision 1.6  2002/03/28 16:39:32  darkeye
-  added interface for variable bitrate encoding
-
-  Revision 1.5  2002/02/19 15:23:59  darkeye
-  fixed typo
-
-  Revision 1.4  2001/09/18 14:57:19  darkeye
-  finalized Solaris port
-
-  Revision 1.3  2001/09/14 19:31:06  darkeye
-  added IceCast2 / vorbis support
-
-  Revision 1.2  2000/11/12 14:54:50  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.1.1.1  2000/11/05 10:05:47  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

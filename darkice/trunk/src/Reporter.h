@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell Reporter
 
    File     : Reporter.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -302,49 +302,4 @@ class Reporter
 
 
 #endif  /* REPORTER_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.9  2005/04/04 08:36:17  darkeye
-  commited changes to enable Jack support
-  thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk
-
-  Revision 1.8  2005/04/03 05:14:07  jbebel
-  Changed timestamp on reported events to include date in addition to time.
-
-  Revision 1.7  2004/02/15 12:06:30  darkeye
-  added ALSA support, thanks to Christian Forster
-
-  Revision 1.6  2002/05/28 12:35:41  darkeye
-  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
-
-  Revision 1.5  2001/09/05 20:11:15  darkeye
-  removed dependency on locally stored SGI STL header files
-  now compiler-supplied C++ library STL header files are used
-  compiles under GNU C++ 3
-  hash_map (an SGI extension to STL) replaced with map
-  std:: namespace prefix added to all STL class references
-
-  Revision 1.4  2001/08/30 17:25:56  darkeye
-  renamed configure.h to config.h
-
-  Revision 1.3  2000/12/20 12:47:40  darkeye
-  added prefixVerbosity value. in a low verbosity setting no time-stamp
-  prefix is displayed
-
-  Revision 1.2  2000/11/18 11:12:01  darkeye
-  added timestamp display, removed process id display in reports
-  changed reportEvent functions to template functions
-
-  Revision 1.1  2000/11/16 08:48:43  darkeye
-  added multiple verbosity-level event reporting and verbosity command
-  line option
-
-
-  
-------------------------------------------------------------------------------*/
 

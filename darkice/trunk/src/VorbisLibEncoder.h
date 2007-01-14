@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : VorbisLibEncoder.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -432,43 +432,4 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
 
 
 #endif  /* VORBIS_LIB_ENCODER_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.9  2003/02/09 13:15:57  darkeye
-  added feature for setting the TITLE comment field for vorbis streams
-
-  Revision 1.8  2002/08/20 20:07:36  darkeye
-  minor fixes
-
-  Revision 1.7  2002/08/20 19:35:37  darkeye
-  added possibility to specify maximum bitrate for Ogg Vorbis streams
-
-  Revision 1.6  2002/07/20 16:37:06  darkeye
-  added fault tolerance in case a server connection is dropped
-
-  Revision 1.5  2002/04/13 11:26:00  darkeye
-  added cbr, abr and vbr setting feature with encoding quality
-
-  Revision 1.4  2002/03/28 16:47:38  darkeye
-  moved functions conv8() and conv16() to class Util (as conv())
-  added resampling functionality
-  added support for variable bitrates
-
-  Revision 1.3  2001/10/19 12:39:42  darkeye
-  created configure options to compile with or without lame / Ogg Vorbis
-
-  Revision 1.2  2001/09/15 11:36:22  darkeye
-  added function vorbisBlocksOut(), finalized vorbis support
-
-  Revision 1.1  2001/09/14 19:31:06  darkeye
-  added IceCast2 / vorbis support
-
-
-
-------------------------------------------------------------------------------*/
 

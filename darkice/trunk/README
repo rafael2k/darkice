@@ -1,5 +1,5 @@
-DarkIce live audio streamer, http://darkice.sourceforge.net
-Copyright (c) 2000-2006, Tyrell Hungary, http://tyrell.hu
+DarkIce live audio streamer, http://darkice.tyrell.hu/
+Copyright (c) 2000-2007, Tyrell Hungary, http://tyrell.hu/
 
 
 Contents
@@ -18,7 +18,7 @@ takes audio input from a sound card, encodes it into mp3 and/or Ogg Vorbis,
 and sends the mp3 stream to one or more IceCast and/or ShoutCast servers,
 the Ogg Vorbis stream to one or more IceCast2 servers.
 
-DarkIce is hosted on SourceForge, at http://darkice.sourceforge.net/
+DarkIce is hosted by Tyrell Corporation, at http://darkice.tyrell.hu/
 
 
 2. Compiling and installing
@@ -45,7 +45,8 @@ man darkice
 --------------------
 
 When DarkIce core dumps, please send the backtrace along with your error
-report to the darkice mailing list: darkice-list@lists.sourceforge.net
+report to the darkice mailing list: darkice-list@lists.tyrell.hu.
+Alternatively you could file a bug report at http://darkice.tyrell.hu/trac
 To get the backtrace information, you need gdb, the GNU debugger:
 
 1. configure and compile using the --with-debug option:

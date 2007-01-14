@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : TcpSocket.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -288,22 +288,4 @@ class TcpSocket : public Source, public Sink
 
 
 #endif  /* TCP_SOCKET_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.3  2000/11/12 14:54:50  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.2  2000/11/05 17:37:24  darkeye
-  removed clone() functions
-
-  Revision 1.1.1.1  2000/11/05 10:05:55  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

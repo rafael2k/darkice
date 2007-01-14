@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : IceCast.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -212,43 +212,4 @@ IceCast :: sendLogin ( void )                           throw ( Exception )
     return true;
 }
 
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.10  2002/05/28 12:35:41  darkeye
-  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
-
-  Revision 1.9  2001/11/20 09:06:18  darkeye
-  fixed public stream reporting
-
-  Revision 1.8  2001/09/14 19:31:06  darkeye
-  added IceCast2 / vorbis support
-
-  Revision 1.7  2001/09/09 11:27:31  darkeye
-  added support for ShoutCast servers
-
-  Revision 1.6  2001/08/30 17:25:56  darkeye
-  renamed configure.h to config.h
-
-  Revision 1.5  2001/08/29 21:08:30  darkeye
-  made some description options in the darkice config file optional
-
-  Revision 1.4  2000/11/12 14:54:50  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.3  2000/11/10 20:14:11  darkeye
-  added support for remote dump file
-
-  Revision 1.2  2000/11/05 14:08:28  darkeye
-  changed builting to an automake / autoconf environment
-
-  Revision 1.1.1.1  2000/11/05 10:05:52  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

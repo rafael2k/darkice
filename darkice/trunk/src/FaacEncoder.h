@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2005 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : FaacEncoder.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -430,23 +430,4 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
 
 
 #endif  /* AAC_ENCODER_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.3  2006/01/27 08:51:23  darkeye
-  fixed issue of double colons at the end of the declaration
-
-  Revision 1.2  2005/04/16 22:19:20  darkeye
-  changed remaining typos
-
-  Revision 1.1  2005/04/16 21:57:34  darkeye
-  added AAC support through the faac codec, http://www.audiocoding.com/
-
-
-  
-------------------------------------------------------------------------------*/
 

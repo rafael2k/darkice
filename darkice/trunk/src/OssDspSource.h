@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : OssDspSource.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -252,35 +252,4 @@ class OssDspSource : public AudioSource, public virtual Reporter
 
 
 #endif  /* OSS_DSP_SOURCE_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.7  2005/04/14 11:53:17  darkeye
-  fixed API documentation issues
-
-  Revision 1.6  2002/12/20 10:40:40  darkeye
-  added support for big endian OSS devices (like Linux PowerPC)
-
-  Revision 1.5  2001/09/18 14:57:19  darkeye
-  finalized Solaris port
-
-  Revision 1.4  2001/09/02 14:08:40  darkeye
-  setting the sound card recording sample rate is now more relaxed
-  there is no error reported if the sample rate is not exactly the same
-
-  Revision 1.3  2000/11/12 13:31:40  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.2  2000/11/05 17:37:24  darkeye
-  removed clone() functions
-
-  Revision 1.1.1.1  2000/11/05 10:05:53  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

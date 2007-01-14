@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : Referable.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -167,19 +167,4 @@ class Referable
 
 
 #endif  /* REFERABLE_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.2  2000/11/11 12:33:13  darkeye
-  added kdoc-style documentation
-
-  Revision 1.1.1.1  2000/11/05 10:05:54  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

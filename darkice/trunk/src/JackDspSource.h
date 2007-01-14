@@ -1,5 +1,7 @@
 /*------------------------------------------------------------------------------
 
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
+
    Copyright (c) 2005 Nicholas Humfrey. All rights reserved.
 
    Tyrell DarkIce
@@ -7,7 +9,7 @@
    File     : JackDspSource.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -273,20 +275,4 @@ class JackDspSource : public AudioSource, public virtual Reporter
 
 
 #endif  /* JACK_DSP_SOURCE_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.2  2005/04/14 11:53:17  darkeye
-  fixed API documentation issues
-
-  Revision 1.1  2005/04/04 08:36:17  darkeye
-  commited changes to enable Jack support
-  thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk
-
-  
-------------------------------------------------------------------------------*/
 

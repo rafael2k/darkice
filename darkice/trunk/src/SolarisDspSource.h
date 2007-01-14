@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : SolarisDspSource.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -254,28 +254,4 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
 
 
 #endif  /* SOLARIS_DSP_SOURCE_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.5  2005/04/14 11:53:17  darkeye
-  fixed API documentation issues
-
-  Revision 1.4  2004/02/19 06:47:06  darkeye
-  finalized OpenBSD port
-
-  Revision 1.3  2004/02/18 21:08:11  darkeye
-  ported to OpenBSD (real-time scheduling not yet supported)
-
-  Revision 1.2  2001/09/18 14:57:19  darkeye
-  finalized Solaris port
-
-  Revision 1.1  2001/09/11 15:05:21  darkeye
-  added Solaris support
-
-  
-------------------------------------------------------------------------------*/
 

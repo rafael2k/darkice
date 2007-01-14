@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : IceCast2.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -266,32 +266,4 @@ class IceCast2 : public CastSink
 
 
 #endif  /* ICE_CAST2_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.6  2006/01/25 22:47:15  darkeye
-  added mpeg2 support, thanks to Nicholas J Humfrey
-
-  Revision 1.5  2005/04/16 21:57:34  darkeye
-  added AAC support through the faac codec, http://www.audiocoding.com/
-
-  Revision 1.4  2005/04/14 11:53:17  darkeye
-  fixed API documentation issues
-
-  Revision 1.3  2002/02/20 11:54:11  darkeye
-  added local dump file possibility
-
-  Revision 1.2  2002/02/20 10:35:35  darkeye
-  updated to work with Ogg Vorbis libs rc3 and current IceCast2 cvs
-
-  Revision 1.1  2001/09/14 19:31:06  darkeye
-  added IceCast2 / vorbis support
-
-
-  
-------------------------------------------------------------------------------*/
 

@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : IceCast2.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -186,7 +186,7 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     }
 
     // send user agent info
-    str = "\nUser-Agent: DarkIce/" VERSION " (http://darkice.sourceforge.net/)";
+    str = "\nUser-Agent: DarkIce/" VERSION " (http://darkice.tyrell.hu/)";
     sink->write( str, strlen( str));
 
     // send the ice- headers
@@ -253,54 +253,4 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     return true;
 }
 
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.13  2006/01/25 22:47:15  darkeye
-  added mpeg2 support, thanks to Nicholas J Humfrey
-
-  Revision 1.12  2005/04/16 21:57:34  darkeye
-  added AAC support through the faac codec, http://www.audiocoding.com/
-
-  Revision 1.11  2005/04/11 18:32:32  darkeye
-  changed MIME type to application/ogg, which is now official
-
-  Revision 1.10  2002/11/29 08:14:47  darkeye
-  fixed minor bug in IcecCast2.cpp, which could have lead to a buffer
-  overflow
-
-  Revision 1.9  2002/10/20 21:09:35  darkeye
-  added processing of server response
-
-  Revision 1.8  2002/08/20 20:16:59  darkeye
-  added User-Agent header to HTTP login
-
-  Revision 1.7  2002/08/20 19:34:43  darkeye
-  minor fix
-
-  Revision 1.6  2002/08/20 18:39:13  darkeye
-  added HTTP Basic authentication for icecast2 logins
-
-  Revision 1.5  2002/05/28 12:35:41  darkeye
-  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
-
-  Revision 1.4  2002/02/20 10:35:35  darkeye
-  updated to work with Ogg Vorbis libs rc3 and current IceCast2 cvs
-
-  Revision 1.3  2002/02/19 15:24:26  darkeye
-  send Content-type header when logging in to icecast2 servers
-
-  Revision 1.2  2001/11/20 09:06:18  darkeye
-  fixed public stream reporting
-
-  Revision 1.1  2001/09/14 19:31:06  darkeye
-  added IceCast2 / vorbis support
-
-
-  
-------------------------------------------------------------------------------*/
 

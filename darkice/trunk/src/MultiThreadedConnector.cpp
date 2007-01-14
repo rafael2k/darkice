@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : MultiThreadedConnector.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -425,40 +425,4 @@ MultiThreadedConnector :: ThreadData :: threadFunction( void  * param )
 
     return 0;
 }
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.8  2006/05/18 07:13:00  darkeye
-  cosmetic changes
-
-  Revision 1.7  2006/05/16 09:00:08  darkeye
-  added yield calls to the connector, when trying to reconnect...
-
-  Revision 1.6  2005/04/13 22:03:32  jbebel
-  Set priority explicitly for encoding threads.  This needs more testing.
-
-  Revision 1.5  2005/04/11 19:27:43  darkeye
-  added option to turn off automatic reconnect feature
-
-  Revision 1.4  2004/01/07 13:18:17  darkeye
-  commited patch sent by John Hay, fixing FreeBSD problems
-
-  Revision 1.3  2002/10/20 20:43:17  darkeye
-  more graceful reconnect
-
-  Revision 1.2  2002/10/19 13:35:21  darkeye
-  when a connection is dropped, DarkIce tries to reconnect, indefinitely
-  removed extreme event reporting for thread-related events
-
-  Revision 1.1  2002/10/19 12:25:47  darkeye
-  changed internals so that now each encoding/server connection is
-  a separate thread
-
-
-  
-------------------------------------------------------------------------------*/
 

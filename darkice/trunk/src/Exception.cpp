@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : Exception.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -198,31 +198,4 @@ Exception :: strip ( void )                         throw ()
 }
 
 
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.6  2002/05/28 12:35:41  darkeye
-  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
-
-  Revision 1.5  2001/08/30 17:25:56  darkeye
-  renamed configure.h to config.h
-
-  Revision 1.4  2000/11/11 12:33:13  darkeye
-  added kdoc-style documentation
-
-  Revision 1.3  2000/11/09 22:05:44  darkeye
-  added multiple-string constructors
-
-  Revision 1.2  2000/11/05 14:08:27  darkeye
-  changed builting to an automake / autoconf environment
-
-  Revision 1.1.1.1  2000/11/05 10:05:50  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

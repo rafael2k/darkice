@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : CastSink.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -477,37 +477,4 @@ class CastSink : public Sink, public virtual Reporter
 
 
 #endif  /* CAST_SINK_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.8  2004/01/05 12:00:00  darkeye
-  fixed possible null pointer problem when destroying the object
-
-  Revision 1.7  2002/02/20 11:54:11  darkeye
-  added local dump file possibility
-
-  Revision 1.6  2001/09/09 11:27:31  darkeye
-  added support for ShoutCast servers
-
-  Revision 1.5  2001/08/29 21:08:30  darkeye
-  made some description options in the darkice config file optional
-
-  Revision 1.4  2000/11/12 14:54:50  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.3  2000/11/10 20:14:11  darkeye
-  added support for remote dump file
-
-  Revision 1.2  2000/11/05 17:37:24  darkeye
-  removed clone() functions
-
-  Revision 1.1.1.1  2000/11/05 10:05:48  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

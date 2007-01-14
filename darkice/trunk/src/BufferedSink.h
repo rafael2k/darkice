@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : BufferedSink.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -396,38 +396,4 @@ class BufferedSink : public Sink, public virtual Reporter
 
 
 #endif  /* BUFFERED_SINK_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.8  2005/04/03 05:01:46  jbebel
-  Fix peak reporting to report new peak rather than previous
-
-  Revision 1.7  2002/07/21 08:47:06  darkeye
-  some exception cleanup (throw clauses in function declarations)
-
-  Revision 1.6  2002/05/28 12:35:41  darkeye
-  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
-
-  Revision 1.5  2000/11/15 18:08:42  darkeye
-  added multiple verbosity-level event reporting and verbosity command
-  line option
-
-  Revision 1.4  2000/11/11 12:33:13  darkeye
-  added kdoc-style documentation
-
-  Revision 1.3  2000/11/10 20:16:21  darkeye
-  first real tests with multiple streaming
-
-  Revision 1.2  2000/11/05 17:37:24  darkeye
-  removed clone() functions
-
-  Revision 1.1.1.1  2000/11/05 10:05:48  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

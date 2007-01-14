@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : ShoutCast.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -254,23 +254,4 @@ class ShoutCast : public CastSink
 
 
 #endif  /* SHOUT_CAST_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.3  2005/04/14 11:53:17  darkeye
-  fixed API documentation issues
-
-  Revision 1.2  2002/02/20 11:54:11  darkeye
-  added local dump file possibility
-
-  Revision 1.1  2001/09/09 11:27:31  darkeye
-  added support for ShoutCast servers
-
-
-  
-------------------------------------------------------------------------------*/
 

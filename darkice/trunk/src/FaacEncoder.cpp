@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2005 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : FaacEncoder.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -188,20 +188,4 @@ FaacEncoder :: close ( void )                           throw ( Exception )
 
 
 #endif // HAVE_FAAC_LIB
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.2  2005/04/16 22:19:20  darkeye
-  changed remaining typos
-
-  Revision 1.1  2005/04/16 21:57:34  darkeye
-  added AAC support through the faac codec, http://www.audiocoding.com/
-
-
-  
-------------------------------------------------------------------------------*/
 

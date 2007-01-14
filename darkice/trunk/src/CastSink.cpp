@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : CastSink.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -138,42 +138,4 @@ CastSink :: open ( void )                       throw ( Exception )
     return true;
 }
 
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.9  2002/04/09 13:10:43  darkeye
-  resolved memory leak issue introduced in 0.9
-
-  Revision 1.8  2002/03/28 16:40:55  darkeye
-  slight changes to allow for variable bitrate streams
-  (where the value of bitrate is 0)
-
-  Revision 1.7  2002/02/28 09:49:25  darkeye
-  added possibility to save the encoded stream to a local file only
-  (no streaming server needed)
-
-  Revision 1.6  2002/02/20 11:54:11  darkeye
-  added local dump file possibility
-
-  Revision 1.5  2001/09/09 11:27:31  darkeye
-  added support for ShoutCast servers
-
-  Revision 1.4  2001/08/29 21:08:30  darkeye
-  made some description options in the darkice config file optional
-
-  Revision 1.3  2000/11/12 14:54:50  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.2  2000/11/10 20:14:11  darkeye
-  added support for remote dump file
-
-  Revision 1.1.1.1  2000/11/05 10:05:48  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

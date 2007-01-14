@@ -1,5 +1,7 @@
 /*------------------------------------------------------------------------------
 
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
+
    Copyright (c) 2005 Nicholas Humfrey. All rights reserved.
 
    Tyrell DarkIce
@@ -7,7 +9,7 @@
    File     : JackDspSource.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -438,17 +440,4 @@ JackDspSource :: shutdown_callback( void *arg )
 
 
 #endif // SUPPORT_JACK_DSP
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.1  2005/04/04 08:36:17  darkeye
-  commited changes to enable Jack support
-  thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk
-
-  
-------------------------------------------------------------------------------*/
 

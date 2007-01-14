@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : FileSource.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -267,30 +267,4 @@ FileSource :: close ( void )                            throw ( Exception )
     ::close( fileDescriptor);
     fileDescriptor = 0;
 }
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.5  2001/09/11 15:05:21  darkeye
-  added Solaris support
-
-  Revision 1.4  2001/08/26 20:44:30  darkeye
-  removed external command-line encoder support
-  replaced it with a shared-object support for lame with the possibility
-  of static linkage
-
-  Revision 1.3  2000/11/12 13:31:40  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.2  2000/11/05 14:08:27  darkeye
-  changed builting to an automake / autoconf environment
-
-  Revision 1.1.1.1  2000/11/05 10:05:51  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

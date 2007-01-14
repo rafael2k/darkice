@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : Connector.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -355,50 +355,4 @@ Connector :: close ( void )                         throw ( Exception )
     }
 }
 
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.11  2002/10/20 20:42:56  darkeye
-  cosmetic changes
-
-  Revision 1.10  2002/10/19 12:24:55  darkeye
-  anged internals so that now each encoding/server connection is
-  a separate thread
-
-  Revision 1.9  2002/08/02 17:59:17  darkeye
-  bug fix: when the last server dropped connection, darkice crashed
-
-  Revision 1.8  2002/07/20 16:37:06  darkeye
-  added fault tolerance in case a server connection is dropped
-
-  Revision 1.7  2002/05/28 12:35:41  darkeye
-  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
-
-  Revision 1.6  2001/08/26 20:44:30  darkeye
-  removed external command-line encoder support
-  replaced it with a shared-object support for lame with the possibility
-  of static linkage
-
-  Revision 1.5  2001/08/26 08:43:13  darkeye
-  added support for unlimited time encoding
-
-  Revision 1.4  2000/11/15 18:37:37  darkeye
-  changed the transferable number of bytes to unsigned long
-
-  Revision 1.3  2000/11/15 18:08:43  darkeye
-  added multiple verbosity-level event reporting and verbosity command
-  line option
-
-  Revision 1.2  2000/11/13 18:46:50  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.1.1.1  2000/11/05 10:05:49  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell Config
 
    File     : DarkIceConfig.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -206,42 +206,4 @@ class Config : public virtual Referable
 
 
 #endif  /* CONFIG_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.2  2005/04/14 11:53:17  darkeye
-  fixed API documentation issues
-
-  Revision 1.1  2005/04/04 08:36:17  darkeye
-  commited changes to enable Jack support
-  thanks to Nicholas J. Humfrey, njh@ecs.soton.ac.uk
-
-  Revision 1.5  2002/05/28 12:35:41  darkeye
-  code cleanup: compiles under gcc-c++ 3.1, using -pedantic option
-
-  Revision 1.4  2001/09/05 20:11:15  darkeye
-  removed dependency on locally stored SGI STL header files
-  now compiler-supplied C++ library STL header files are used
-  compiles under GNU C++ 3
-  hash_map (an SGI extension to STL) replaced with map
-  std:: namespace prefix added to all STL class references
-
-  Revision 1.3  2000/11/13 18:46:50  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.2  2000/11/09 22:07:19  darkeye
-  added constructor with istream
-
-  Revision 1.1  2000/11/08 17:29:50  darkeye
-  added configuration file reader
-
-  Revision 1.1.1.1  2000/11/05 10:05:50  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 

@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2000 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2000-2007 Tyrell Corporation. All rights reserved.
 
    Tyrell DarkIce
 
    File     : Source.h
    Version  : $Revision$
    Author   : $Author$
-   Location : $Source$
+   Location : $HeadURL$
    
    Copyright notice:
 
@@ -168,19 +168,4 @@ class Source : public virtual Referable
 
 
 #endif  /* SOURCE_H */
-
-
-/*------------------------------------------------------------------------------
- 
-  $Source$
-
-  $Log$
-  Revision 1.2  2000/11/12 13:31:40  darkeye
-  added kdoc-style documentation comments
-
-  Revision 1.1.1.1  2000/11/05 10:05:54  darkeye
-  initial version
-
-  
-------------------------------------------------------------------------------*/
 
