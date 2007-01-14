@@ -3,6 +3,8 @@ DarkIce next release
 	o fix to enable compiling on 64 bit platforms
 	  thanks to Alexander Vlasov <zulu@galaradio.com> and
       Mariusz Mazur <mmazur@kernel.pl>
+	o fix to enable file dump feature using ogg vorbis.
+	  thanks to <derrick@csociety.org>
 
 
 19-05-2006 DarkIce 0.17.1 released

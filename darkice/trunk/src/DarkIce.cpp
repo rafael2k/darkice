@@ -964,6 +964,7 @@ DarkIce :: configFileCast (  const Config      & config )
                                                     dsp.get(),
                                                     bitrateMode,
                                                     bitrate,
+                                                    quality,
                                                     dsp->getSampleRate(),
                                                     dsp->getChannel() );
 #endif // HAVE_VORBIS_LIB
