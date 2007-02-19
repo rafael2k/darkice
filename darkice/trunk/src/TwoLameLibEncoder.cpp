@@ -116,7 +116,7 @@ TwoLameLibEncoder :: open ( void )
     if ( !twolame_opts  ) {
         throw Exception( __FILE__, __LINE__,
                          "TwoLAME lib init error",
-                         (int) twolame_opts);
+                         (long int) twolame_opts);
     }
 
     if ( 0 > twolame_set_num_channels( twolame_opts, getInChannel()) ) {

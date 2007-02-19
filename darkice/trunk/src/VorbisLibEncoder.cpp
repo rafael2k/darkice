@@ -274,12 +274,14 @@ VorbisLibEncoder :: write ( const void    * buf,
             if ( bitsPerSample == 8 ) {
                 char          * buf8 = (char *) buf;
                 unsigned int    ix   = sampleSize * i;
-                buf8[i] = (buf8[ix] + buf8[++ix]) / 2;
+		unsigned int    iix  = ix;
+                buf8[i] = (buf8[ix] + buf8[++iix]) / 2;
             }
             if ( bitsPerSample == 16 ) {
                 short         * buf16 = (short *) buf;
                 unsigned int    ix    = (bitsPerSample >> 3) * i;
-                buf16[i] = (buf16[ix] + buf16[++ix]) / 2;
+		unsigned int    iix   = ix;
+                buf16[i] = (buf16[ix] + buf16[++iix]) / 2;
             }
         }
         len      >>= 1;
