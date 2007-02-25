@@ -308,6 +308,7 @@ TcpSocket :: read (     void          * buf,
             case ECONNRESET:
                 // re-open the socket if it has been reset by the peer
                 close();
+                Util::sleep(1L, 0L);
                 open();
                 break;
 

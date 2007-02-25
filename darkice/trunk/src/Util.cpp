@@ -63,6 +63,24 @@
 #error need time.h
 #endif
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#else
+#error need unistd.h
+#endif
+
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>
+#else
+#error need sys/time.h
+#endif
+
+#ifdef HAVE_SIGNAL_H
+#include <signal.h>
+#else
+#error need signal.h
+#endif
+
 
 #include "Util.h"
 
@@ -490,3 +508,22 @@ Util :: conv16 (    unsigned char     * pcmBuffer,
 }
 
 
+/*------------------------------------------------------------------------------
+ *  Make a thread sleep for a specified amount of time.
+ *----------------------------------------------------------------------------*/
+void
+Util :: sleep   (   long            sec,
+                    long            nsec)
+{
+    struct timespec     timespec;
+    sigset_t            sigset;
+
+    timespec.tv_sec  = sec;
+    timespec.tv_nsec = nsec;
+
+    // mask out SIGUSR1, as we're expecting that signal for other reasons
+    sigemptyset(&sigset);
+    sigaddset(&sigset, SIGUSR1);
+
+    pselect( 0, NULL, NULL, NULL, &timespec, &sigset);
+}

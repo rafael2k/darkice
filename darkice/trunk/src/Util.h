@@ -216,7 +216,8 @@ class Util
          */
         static char *
         fileAddDate ( const char * str,
-                      const char * format = "[%m-%d-%Y-%H-%M-%S]" ) throw ( Exception );
+                      const char * format = "[%m-%d-%Y-%H-%M-%S]" )
+                                                        throw ( Exception );
 
         /**
          *  Convert a string into base64 encoding.
@@ -305,6 +306,18 @@ class Util
                     unsigned int        channels,
                     bool                isBigEndian )       throw ( Exception );
 
+        /**
+         *  Make a thread sleep for specified amount of time.
+         *  Only the thread which this is called in will sleep.
+         *  The SIGUSR1 signal will be blocked during the sleep.
+         *
+         *  @param sec the number of seconds to sleep.
+         *  @param nsec the number of nano-seconds to sleep.
+         */
+        static void
+        sleep(  long    sec,
+                long    nsec);
+                
 };
 
 

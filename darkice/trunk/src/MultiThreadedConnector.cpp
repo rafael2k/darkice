@@ -42,6 +42,7 @@
 
 #include "Exception.h"
 #include "MultiThreadedConnector.h"
+#include "Util.h"
 
 
 /* ===================================================  local data structures */
@@ -326,7 +327,7 @@ MultiThreadedConnector :: sinkThread( int       ixSink )
                 // if we're not accepting, try to reopen the sink
                 try {
                     sink->close();
-                    sched_yield();
+                    Util::sleep(1L, 0L);
                     sink->open();
                     sched_yield();
                     threadData->accepting = sink->isOpen();
