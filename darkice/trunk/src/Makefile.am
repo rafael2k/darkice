@@ -46,6 +46,8 @@ darkice_SOURCES =   AudioEncoder.h\
                     aflibConverterSmallFilter.h\
                     OssDspSource.cpp\
                     OssDspSource.h\
+                    SerialUlaw.cpp\
+                    SerialUlaw.h\
                     SolarisDspSource.cpp\
                     SolarisDspSource.h\
                     Ref.h\

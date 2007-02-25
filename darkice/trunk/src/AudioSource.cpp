@@ -66,7 +66,20 @@ AudioSource :: createDspSource( const char    * deviceName,
                                                             throw ( Exception )
 {
     
-    if ( Util::strEq( deviceName, "/dev", 4) ) {
+    if ( Util::strEq( deviceName, "/dev/tty", 8) ) {
+#if defined( SUPPORT_SERIAL_ULAW )
+        Reporter::reportEvent( 1, "Using Serial Ulaw input device:",
+                                  deviceName);
+        return new SerialUlaw( deviceName,
+                                 sampleRate,
+                                 bitsPerSample,
+                                 channel);
+#else
+        throw Exception( __FILE__, __LINE__,
+                             "trying to open Serial ULaw device "
+                             "without support compiled", deviceName);
+#endif
+	} else if ( Util::strEq( deviceName, "/dev", 4) ) {
 #if defined( SUPPORT_OSS_DSP )
         Reporter::reportEvent( 1, "Using OSS DSP input device:", deviceName);
         return new OssDspSource( deviceName,

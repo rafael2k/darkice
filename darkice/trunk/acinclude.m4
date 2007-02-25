@@ -12,7 +12,7 @@ dnl  contain the full pathname or the empty string
 dnl  PATH is space-separated list of directories.
 dnl  by Florian Bomers
 dnl-----------------------------------------------------------------------------
-AC_DEFUN(LA_SEARCH_FILE,[
+AC_DEFUN([LA_SEARCH_FILE],[
   $1=
   dnl hack: eliminate line feeds in $2
   for FILE in $2; do
@@ -41,7 +41,7 @@ dnl  TODO: assert function call to verify lib
 dnl 
 dnl  by Florian Bomers
 dnl-----------------------------------------------------------------------------
-AC_DEFUN(LA_SEARCH_LIB,[
+AC_DEFUN([LA_SEARCH_LIB],[
   dnl look for lib
   LA_SEARCH_FILE($1, $3, $5 $5/lib64 $5/lib )
   dnl look for header.

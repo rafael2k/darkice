@@ -13,7 +13,7 @@ dnl AC_STDC_HEADERS
 AC_HAVE_HEADERS(errno.h fcntl.h stdio.h stdlib.h string.h unistd.h limits.h)
 AC_HAVE_HEADERS(signal.h time.h sys/time.h sys/types.h sys/wait.h math.h)
 AC_HAVE_HEADERS(netdb.h netinet/in.h sys/ioctl.h sys/socket.h sys/stat.h)
-AC_HAVE_HEADERS(sched.h pthread.h)
+AC_HAVE_HEADERS(sched.h pthread.h termios.h)
 AC_HAVE_HEADERS(sys/soundcard.h sys/audio.h sys/audioio.h)
 AC_HEADER_SYS_WAIT()
 
@@ -55,7 +55,7 @@ AC_ARG_WITH(lame-prefix,
 
 if test "x${USE_LAME}" = "xyes" ; then
     AC_MSG_CHECKING( [for lame library at ${CONFIG_LAME_PREFIX}] )
-    LA_SEARCH_LIB( LAME_LIB_LOC, LAME_INC_LOC, libmp3lame.a, lame/lame.h,
+    LA_SEARCH_LIB( LAME_LIB_LOC, LAME_INC_LOC, libmp3lame.a libmp3lame.so, lame/lame.h,
                    ${CONFIG_LAME_PREFIX})
     if test "x${LAME_LIB_LOC}" != "x" ; then
         AC_DEFINE( HAVE_LAME_LIB, 1, [build with lame library] )
@@ -132,7 +132,7 @@ AC_ARG_WITH(faac-prefix,
 
 if test "x${USE_FAAC}" = "xyes" ; then
     AC_MSG_CHECKING( [for faac library at ${CONFIG_FAAC_PREFIX}] )
-    LA_SEARCH_LIB( FAAC_LIB_LOC, FAAC_INC_LOC, libfaac.a, faac.h,
+    LA_SEARCH_LIB( FAAC_LIB_LOC, FAAC_INC_LOC, libfaac.a libfaac.so, faac.h,
                    ${CONFIG_FAAC_PREFIX})
     if test "x${FAAC_LIB_LOC}" != "x" ; then
         AC_DEFINE( HAVE_FAAC_LIB, 1, [build with faac library] )
@@ -166,7 +166,7 @@ AC_ARG_WITH(twolame-prefix,
 
 if test "x${USE_TWOLAME}" = "xyes" ; then
     AC_MSG_CHECKING( [for twolame library at ${CONFIG_TWOLAME_PREFIX}] )
-    LA_SEARCH_LIB( TWOLAME_LIB_LOC, TWOLAME_INC_LOC, libtwolame.a, twolame.h,
+    LA_SEARCH_LIB( TWOLAME_LIB_LOC, TWOLAME_INC_LOC, libtwolame.a libtwolame.so, twolame.h,
                    ${CONFIG_TWOLAME_PREFIX})
     if test "x${TWOLAME_LIB_LOC}" != "x" ; then
         AC_DEFINE( HAVE_TWOLAME_LIB, 1, [build with twolame library] )

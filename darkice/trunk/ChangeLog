@@ -1,5 +1,7 @@
 DarkIce next release
 
+    o added serial ulaw input device support, thanks to
+      Clyde Stubbs <clyde@htsoft.com>
     o improvements on reconnecting:
       added TCP connection keep-alive to TCP sockets
       added graceful sleep when trying to reconnect
