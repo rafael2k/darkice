@@ -192,6 +192,8 @@ TcpSocket :: operator= (  const TcpSocket &    ss )   throw ( Exception )
 bool
 TcpSocket :: open ( void )                       throw ( Exception )
 {
+    int                     optval;
+    socklen_t               optlen;
 #ifdef HAVE_ADDRINFO
     struct addrinfo         hints
     struct addrinfo       * ptr;
@@ -213,7 +215,7 @@ TcpSocket :: open ( void )                       throw ( Exception )
     snprintf(portstr, sizeof(portstr), "%d", port);
 
     if (getaddrinfo(host , portstr, &hints, &ptr)) {
-	    throw Exception( __FILE__, __LINE__, "getaddrinfo error", errno);
+        throw Exception( __FILE__, __LINE__, "getaddrinfo error", errno);
     }
     memcpy ( addr, ptr->ai_addr, ptr->ai_addrlen);
     freeaddrinfo(ptr);
@@ -222,15 +224,24 @@ TcpSocket :: open ( void )                       throw ( Exception )
         throw Exception( __FILE__, __LINE__, "gethostbyname error", errno);
     }
     
-    if ( (sockfd = socket( AF_INET, SOCK_STREAM,  IPPROTO_TCP)) == -1 ) {
-        throw Exception( __FILE__, __LINE__, "socket error", errno);
-    }
-
     memset( &addr, 0, sizeof(addr));
     addr.sin_family      = AF_INET;
     addr.sin_port        = htons(port);
     addr.sin_addr.s_addr = *((long*) pHostEntry->h_addr_list[0]);
 #endif
+
+    if ( (sockfd = socket( AF_INET, SOCK_STREAM,  IPPROTO_TCP)) == -1 ) {
+        throw Exception( __FILE__, __LINE__, "socket error", errno);
+    }
+
+    // set TCP keep-alive
+    optval = 1;
+    optlen = sizeof(optval);
+    if (setsockopt(sockfd, SOL_SOCKET, SO_KEEPALIVE, &optval, optlen) == -1) {  
+        reportEvent(5, "can't set TCP socket keep-alive mode", errno);
+    }
+
+    // connect
     if ( connect( sockfd, (struct sockaddr*)&addr, sizeof(addr)) == -1 ) {
         ::close( sockfd);
         sockfd = 0;

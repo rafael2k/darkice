@@ -1,5 +1,7 @@
 DarkIce next release
 
+    o improvements on reconnecting:
+      added TCP connection keep-alive to TCP sockets
     o added user-defined date formatting for the fileAddDate options,
       thanks to dsk <derrick@csociety.org>
     o added logging facility - [file-X] targets will cut the saved file

@@ -38,6 +38,7 @@
 
 #include "Source.h"
 #include "Sink.h"
+#include "Reporter.h"
 
 
 /* ================================================================ constants */
@@ -54,7 +55,7 @@
  *  @author  $Author$
  *  @version $Revision$
  */
-class TcpSocket : public Source, public Sink
+class TcpSocket : public Source, public Sink, public virtual Reporter
 {
     private:
 
