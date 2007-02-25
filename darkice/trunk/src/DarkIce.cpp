@@ -317,7 +317,7 @@ DarkIce :: configIceCast (  const Config      & config,
                 localDumpName = Util::fileAddDate(localDumpName);
             }
 
-            localDumpFile = new FileSink( localDumpName);
+            localDumpFile = new FileSink( stream, localDumpName);
             if ( !localDumpFile->exists() ) {
                 if ( !localDumpFile->create() ) {
                     reportEvent( 1, "can't create local dump file",
@@ -519,7 +519,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
                 localDumpName = Util::fileAddDate(localDumpName);
             }
 
-            localDumpFile = new FileSink( localDumpName);
+            localDumpFile = new FileSink( stream, localDumpName);
             if ( !localDumpFile->exists() ) {
                 if ( !localDumpFile->create() ) {
                     reportEvent( 1, "can't create local dump file",
@@ -762,7 +762,7 @@ DarkIce :: configShoutCast (    const Config      & config,
                 localDumpName = Util::fileAddDate(localDumpName);
             }
 
-            localDumpFile = new FileSink( localDumpName);
+            localDumpFile = new FileSink( stream, localDumpName);
             if ( !localDumpFile->exists() ) {
                 if ( !localDumpFile->create() ) {
                     reportEvent( 1, "can't create local dump file",
@@ -907,7 +907,7 @@ DarkIce :: configFileCast (  const Config      & config )
         // go on and create the things
 
         // the underlying file
-        FileSink  * targetFile = new FileSink( targetFileName);
+        FileSink  * targetFile = new FileSink( stream, targetFileName);
         if ( !targetFile->exists() ) {
             if ( !targetFile->create() ) {
                 throw Exception( __FILE__, __LINE__,

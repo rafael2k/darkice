@@ -118,10 +118,12 @@ static const char fileid[] = "$Id$";
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-FileSink :: init (  const char    * name )          throw ( Exception )
+FileSink :: init (  const char    * configName,
+                    const char    * name )          throw ( Exception )
 {
-    fileName = Util::strDup( name);
-    fileDescriptor = 0;
+    this->configName  = Util::strDup(configName);
+    fileName          = Util::strDup(name);
+    fileDescriptor    = 0;
 }
 
 
@@ -147,7 +149,7 @@ FileSink :: FileSink (  const FileSink &    fs )    throw ( Exception )
 {
     int     fd;
     
-    init( fs.fileName);
+    init( fs.configName, fs.fileName);
     
     if ( (fd = fs.fileDescriptor ? dup( fs.fileDescriptor) : 0) == -1 ) {
         strip();
@@ -174,7 +176,7 @@ FileSink :: operator= (  const FileSink &    fs )   throw ( Exception )
         /* then build up */
         Sink::operator=( fs );
         
-        init( fs.fileName);
+        init( fs.configName, fs.fileName);
         
         if ( (fd = fs.fileDescriptor ? dup( fs.fileDescriptor) : 0) == -1 ) {
             strip();
@@ -311,7 +313,9 @@ FileSink :: write (    const void    * buf,
 /*------------------------------------------------------------------------------
  *  Get the file name to where to move the data saved so far.
  *  The trick is to read the file name from a file named
- *  /tmp/darkice.$PID , where $PID is the current process id
+ *  /tmp/darkice.$configName.$PID , where:
+ *   - $configName is the name of the configuration section for this file sink
+ *   - $PID is the current process id
  *----------------------------------------------------------------------------*/
 std::string
 FileSink :: getArchiveFileName ( void )             throw ( Exception )
@@ -319,7 +323,7 @@ FileSink :: getArchiveFileName ( void )             throw ( Exception )
     pid_t               pid = getpid();
     std::stringstream   metaFileName;
 
-    metaFileName << "/tmp/darkice." << pid;
+    metaFileName << "/tmp/darkice." << configName << "." << pid;
 
     std::ifstream   ifs(metaFileName.str().c_str());
     if (!ifs.good()) {

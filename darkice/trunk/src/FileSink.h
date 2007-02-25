@@ -59,6 +59,12 @@ class FileSink : public Sink, public virtual Reporter
     private:
 
         /**
+         *  The name of the configuration related to
+         *  this file sink. something like "file-0" or "file-2".
+         */
+        char      * configName;
+
+        /**
          *  Name of the file represented by the FileSink.
          */
         char      * fileName;
@@ -66,11 +72,14 @@ class FileSink : public Sink, public virtual Reporter
         /**
          *  Initialize the object.
          *  
+         *  @param configName the name of the configuration related to
+         *         this file sink. something like "file-0" or "file-2".
          *  @param name name of the file to be represented by the object.
          *  @exception Exception
          */
         void
-        init (  const char    * name )              throw ( Exception );
+        init (  const char    * configName,
+                const char    * name )              throw ( Exception );
 
         /**
          *  De-initialize the object.
@@ -115,13 +124,16 @@ class FileSink : public Sink, public virtual Reporter
         /**
          *  Constructor by a file name.
          *
+         *  @param configName the name of the configuration related to
+         *         this file sink. something like "file-0" or "file-2".
          *  @param name name of the file to be represented by the object.
          *  @exception Exception
          */
         inline
-        FileSink(   const char        * name )      throw ( Exception )
+        FileSink(   const char        * configName,
+                    const char        * name )      throw ( Exception )
         {
-            init( name);
+            init( configName, name);
         }
 
         /**
