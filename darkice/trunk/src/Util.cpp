@@ -267,25 +267,27 @@ Util :: strToD( const char    * str )                   throw ( Exception )
     return val;
 }
 
+
 /*------------------------------------------------------------------------------
  *  add current date to a file name, before the file extension (if any)
  *----------------------------------------------------------------------------*/
-char * 
-Util :: fileAddDate ( const char * str )                    throw ( Exception )
+char *
+Util :: fileAddDate ( const char * str,
+                      const char * format )             throw ( Exception )
 {
     unsigned int    size;
     char          * s;
     char          * strdate;
     char          * last;
     time_t          now;
-    
+
     if ( !str ) {
         throw Exception( __FILE__, __LINE__, "no str");
     }
 
     strdate = new char[128];
     now     = time(NULL);    
-    strftime( strdate, 128, "[%m-%d-%Y-%H-%M-%S]", localtime (&now));
+    strftime( strdate, 128, format, localtime (&now));
 
     // search for the part before the extension of the file name
     if ( !(last = strrchr( str, '.')) ) {

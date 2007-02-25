@@ -1,4 +1,4 @@
-.TH darkice.cfg 5 "January 14, 2007" "DarkIce" "DarkIce live audio streamer"
+.TH darkice.cfg 5 "February 25, 2007" "DarkIce" "DarkIce live audio streamer"
 .SH NAME
 darkice.cfg \- configuration file for darkice
 .SH DESCRIPTION
@@ -181,6 +181,12 @@ server to this local file.
 the localDumpFile name before its extension or at the end of file name if
 no extension present
 .TP
+.I fileDateFormat
+The date format to use for appending the date to the dump file name.
+Defaults to "[%m-%d-%Y-%H-%M-%S]". All format strings acceptable by strftime()
+can be used, see the strftime man page for details. Only applicable is
+fileAddDate is "true".
+.TP
 .I lowpass
 Lowpass filter setting for the lame encoder, in Hz. Frequencies above
 the specified value will be cut.
@@ -295,6 +301,12 @@ server to this local file.
 the localDumpFile name before its extension or at the end of file name if
 no extension present
 .TP
+.I fileDateFormat
+The date format to use for appending the date to the dump file name.
+Defaults to "[%m-%d-%Y-%H-%M-%S]". All format strings acceptable by strftime()
+can be used, see the strftime man page for details. Only applicable is
+fileAddDate is "true".
+.TP
 .I lowpass
 Lowpass filter setting for the lame encoder, in Hz. Frequencies above
 the specified value will be cut.
@@ -406,6 +418,12 @@ server to this local file.
 "yes" or "no" if you want to automaticaly insert a date string in 
 the localDumpFile name before its extension or at the end of file name if
 no extension present
+.TP
+.I fileDateFormat
+The date format to use for appending the date to the dump file name.
+Defaults to "[%m-%d-%Y-%H-%M-%S]". All format strings acceptable by strftime()
+can be used, see the strftime man page for details. Only applicable is
+fileAddDate is "true".
 .PP
 .B [file-x]
 

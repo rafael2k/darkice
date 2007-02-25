@@ -215,7 +215,8 @@ class Util
          *  @exception Exception
          */
         static char *
-        fileAddDate ( const char * str )            throw ( Exception );
+        fileAddDate ( const char * str,
+                      const char * format = "[%m-%d-%Y-%H-%M-%S]" ) throw ( Exception );
 
         /**
          *  Convert a string into base64 encoding.

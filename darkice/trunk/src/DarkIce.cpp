@@ -240,6 +240,7 @@ DarkIce :: configIceCast (  const Config      & config,
         const char                * localDumpName   = 0;
         FileSink                  * localDumpFile   = 0;
         bool                        fileAddDate     = false;
+        const char                * fileDateFormat  = 0;
 
         str         = cs->get( "sampleRate");
         sampleRate  = str ? Util::strToL( str) : dsp->getSampleRate();
@@ -306,6 +307,7 @@ DarkIce :: configIceCast (  const Config      & config,
         highpass    = str ? Util::strToL( str) : 0;
         str         = cs->get("fileAddDate");
         fileAddDate = str ? (Util::strEq( str, "yes") ? true : false) : false;
+        fileDateFormat = cs->get("fileDateFormat");
 
         localDumpName = cs->get( "localDumpFile");
 
@@ -314,7 +316,13 @@ DarkIce :: configIceCast (  const Config      & config,
         // check for and create the local dump file if needed
         if ( localDumpName != 0 ) {
             if ( fileAddDate ) {
-                localDumpName = Util::fileAddDate(localDumpName);
+                if (fileDateFormat == 0) {
+                    localDumpName = Util::fileAddDate(localDumpName);
+                }
+                else {
+                    localDumpName = Util::fileAddDate(  localDumpName,
+                                                        fileDateFormat );
+                }
             }
 
             localDumpFile = new FileSink( stream, localDumpName);
@@ -432,6 +440,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
         const char                * localDumpName   = 0;
         FileSink                  * localDumpFile   = 0;
         bool                        fileAddDate     = false;
+        const char                * fileDateFormat  = 0;
 
         str         = cs->getForSure( "format", " missing in section ", stream);
         if ( Util::strEq( str, "vorbis") ) {
@@ -508,6 +517,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
         highpass    = str ? Util::strToL( str) : 0;
         str         = cs->get( "fileAddDate");
         fileAddDate = str ? (Util::strEq( str, "yes") ? true : false) : false;
+        fileDateFormat = cs->get( "fileDateFormat");
         
         localDumpName = cs->get( "localDumpFile");
 
@@ -516,7 +526,13 @@ DarkIce :: configIceCast2 (  const Config      & config,
         // check for and create the local dump file if needed
         if ( localDumpName != 0 ) {
             if ( fileAddDate ) {
-                localDumpName = Util::fileAddDate(localDumpName);
+                if (fileDateFormat == 0) {
+                    localDumpName = Util::fileAddDate(localDumpName);
+                }
+                else {
+                    localDumpName = Util::fileAddDate(  localDumpName,
+                                                        fileDateFormat );
+                }
             }
 
             localDumpFile = new FileSink( stream, localDumpName);
@@ -689,6 +705,7 @@ DarkIce :: configShoutCast (    const Config      & config,
         const char                * localDumpName   = 0;
         FileSink                  * localDumpFile   = 0;
         bool                        fileAddDate     = false;
+        const char                * fileDateFormat  = 0;
 
         str         = cs->get( "sampleRate");
         sampleRate  = str ? Util::strToL( str) : dsp->getSampleRate();
@@ -751,6 +768,7 @@ DarkIce :: configShoutCast (    const Config      & config,
         icq         = cs->get( "icq");
         str         = cs->get("fileAddDate");
         fileAddDate = str ? (Util::strEq( str, "yes") ? true : false) : false;
+        fileDateFormat = cs->get( "fileDateFormat");
 
         localDumpName = cs->get( "localDumpFile");
 
@@ -759,7 +777,13 @@ DarkIce :: configShoutCast (    const Config      & config,
         // check for and create the local dump file if needed
         if ( localDumpName != 0 ) {
             if ( fileAddDate ) {
-                localDumpName = Util::fileAddDate(localDumpName);
+                if (fileDateFormat == 0) {
+                    localDumpName = Util::fileAddDate(localDumpName);
+                }
+                else {
+                    localDumpName = Util::fileAddDate(  localDumpName,
+                                                        fileDateFormat );
+                }
             }
 
             localDumpFile = new FileSink( stream, localDumpName);
@@ -841,6 +865,8 @@ DarkIce :: configFileCast (  const Config      & config )
         unsigned int                sampleRate      = 0;
         int                         lowpass         = 0;
         int                         highpass        = 0;
+        bool                        fileAddDate     = false;
+        const char                * fileDateFormat  = 0;
 
         format      = cs->getForSure( "format", " missing in section ", stream);
         if ( !Util::strEq( format, "vorbis")
@@ -856,6 +882,11 @@ DarkIce :: configFileCast (  const Config      & config )
         targetFileName    = cs->getForSure( "fileName",
                                             " missing in section ",
                                             stream);
+
+        str         = cs->get( "fileAddDate");
+        fileAddDate = str ? (Util::strEq( str, "yes") ? true : false) : false;
+        fileDateFormat = cs->get( "fileDateFormat");
+
         str         = cs->get( "sampleRate");
         sampleRate  = str ? Util::strToL( str) : dsp->getSampleRate();
 
@@ -907,6 +938,16 @@ DarkIce :: configFileCast (  const Config      & config )
         // go on and create the things
 
         // the underlying file
+        if ( fileAddDate ) {
+            if (fileDateFormat == 0) {
+                targetFileName = Util::fileAddDate( targetFileName);
+            }
+            else {
+                targetFileName = Util::fileAddDate( targetFileName,
+                                                    fileDateFormat );
+            }
+        }
+
         FileSink  * targetFile = new FileSink( stream, targetFileName);
         if ( !targetFile->exists() ) {
             if ( !targetFile->create() ) {
