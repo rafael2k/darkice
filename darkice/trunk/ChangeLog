@@ -1,4 +1,4 @@
-DarkIce next release
+05-03-2007 DarkIce 0.18 released
 
     o added serial ulaw input device support, thanks to
       Clyde Stubbs <clyde@htsoft.com>
@@ -17,7 +17,6 @@ DarkIce next release
     o fix to enable file dump feature using ogg vorbis.
       thanks to dsk <derrick@csociety.org>
     o fix to enable compiling with jack installed at arbitrary locations
-
 
 19-05-2006 DarkIce 0.17.1 released
 
