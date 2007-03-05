@@ -234,17 +234,33 @@ dnl-----------------------------------------------------------------------------
 dnl link JACK sound server if requested 
 dnl-----------------------------------------------------------------------------
 AC_SUBST(JACK_CFLAGS)
-AC_SUBST(JACK_LIBS)
+AC_SUBST(JACK_LDFLAGS)
 
-AC_ARG_WITH( jack,
-[  --with-jack             use JACK audio server [yes] ],
+AC_ARG_WITH(jack,
+[  --with-jack             use JACK sound system [yes] ],
     USE_JACK=${withval}, USE_JACK="yes" )
+AC_ARG_WITH(jack-prefix,
+[  --with-jack-prefix=DIR      alternate location for JACK [/usr]
+                              look for libraries in JACK-PREFIX/lib,
+                              for headers in JACK-PREFIX/include],
+    CONFIG_JACK_PREFIX="${withval}", CONFIG_JACK_PREFIX="/usr")
 
 if test "x${USE_JACK}" = "xyes" ; then
-	PKG_CHECK_MODULES(JACK, jack,
-		[ AC_DEFINE( HAVE_JACK_LIB, 1, [build with JACK audio server support] ) ],
-		[ HAVE_JACK_LIB=0 ]
-	)
+    AC_MSG_CHECKING( [for jack libraries at ${CONFIG_JACK_PREFIX}] )
+    LA_SEARCH_LIB( JACK_LIB_LOC, JACK_INC_LOC, libjack.so, jack/jack.h,
+                   ${CONFIG_JACK_PREFIX})
+
+    if test "x${JACK_LIB_LOC}" != "x" ; then
+
+        AC_DEFINE( HAVE_JACK_LIB, 1, [build with JACK audio server support] )
+        if test "x${JACK_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
+            JACK_INCFLAGS="-I${JACK_INC_LOC}"
+        fi
+        JACK_LDFLAGS="-L${JACK_LIB_LOC} -ljack"
+        AC_MSG_RESULT( [found at ${CONFIG_JACK_PREFIX}] )
+    else
+        AC_MSG_WARN( [not found, building without JACK support])
+    fi
 else
     AC_MSG_RESULT( [building without JACK support] )
 fi
