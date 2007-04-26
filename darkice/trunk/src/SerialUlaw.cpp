@@ -82,12 +82,6 @@
 #error need sys/ioctl.h
 #endif
 
-#ifdef HAVE_SYS_SOUNDCARD_H
-#include <sys/soundcard.h>
-#else
-#error need sys/soundcard.h
-#endif
-
 #ifdef HAVE_TERMIOS_H
 #include <termios.h>
 #else
