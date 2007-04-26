@@ -1,3 +1,12 @@
+26-04-2007 DarkIce 0.18.1 released
+
+    o enable real-time scheduling for non-super-users, if they have
+      the proper operating system permissions,
+      thanks to Jens Maurer <Jens.Maurer@gmx.net>
+    o fix to enable compliation of the Serial ULAW code on MacOS X,
+      thanks to Elod Horvath, <elod@itfais.com>
+    o fix to solve Shoutcast login failures, introduced in 0.18
+
 05-03-2007 DarkIce 0.18 released
 
     o added serial ulaw input device support, thanks to
