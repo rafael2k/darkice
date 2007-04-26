@@ -7,7 +7,7 @@
    File     : ShoutCast.cpp
    Version  : $Revision$
    Author   : $Author$
-   Location : $HeadURL$
+   Location : $Source$
    
    Copyright notice:
 
@@ -162,31 +162,17 @@ ShoutCast :: sendLogin ( void )                           throw ( Exception )
         sink->write( str, strlen( str));
     }
 
-    if ( getGenre() ) {
-        str = "\nicy-genre:";
-        sink->write( str, strlen( str));
-        str = getGenre();
-        sink->write( str, strlen( str));
-    }
-
-    str = "\nicy-pub:";
-    sink->write( str, strlen( str));
-    str = getIsPublic() ? "1" : "0";
-    sink->write( str, strlen( str));
-
-    str = "\nicy-br:";
-    sink->write( str, strlen( str));
-    if ( log10(getBitRate()) >= (STRBUF_SIZE-2) ) {
-        throw Exception( __FILE__, __LINE__,
-                         "bitrate does not fit string buffer", getBitRate());
-    }
-    sprintf( resp, "%d", getBitRate());
-    sink->write( resp, strlen( resp));
-
     if ( getUrl() ) {
         str = "\nicy-url:";
         sink->write( str, strlen( str));
         str = getUrl();
+        sink->write( str, strlen( str));
+    }
+
+    if ( getGenre() ) {
+        str = "\nicy-genre:";
+        sink->write( str, strlen( str));
+        str = getGenre();
         sink->write( str, strlen( str));
     }
 
@@ -197,13 +183,6 @@ ShoutCast :: sendLogin ( void )                           throw ( Exception )
         sink->write( str, strlen( str));
     }
 
-    if ( getIcq() ) {
-        str = "\nicy-icq:";
-        sink->write( str, strlen( str));
-        str = getIcq();
-        sink->write( str, strlen( str));
-    }
-
     if ( getAim() ) {
         str = "\nicy-aim:";
         sink->write( str, strlen( str));
@@ -211,19 +190,30 @@ ShoutCast :: sendLogin ( void )                           throw ( Exception )
         sink->write( str, strlen( str));
     }
 
+    if ( getIcq() ) {
+        str = "\nicy-icq:";
+        sink->write( str, strlen( str));
+        str = getIcq();
+        sink->write( str, strlen( str));
+    }
+
+    str = "\nicy-br:";
+    sink->write( str, strlen( str));
+    if ( log10(getBitRate()) >= (STRBUF_SIZE-2) ) {
+        throw Exception( __FILE__, __LINE__,
+                         "bitrate does not fit string buffer", getBitRate());
+    }
+    sprintf( resp, "%d", getBitRate());
+    sink->write( resp, strlen( resp));
+
+    str = "\nicy-pub:";
+    sink->write( str, strlen( str));
+    str = getIsPublic() ? "1" : "0";
+    sink->write( str, strlen( str));
+
     str = "\n\n";
     sink->write( str, strlen( str));
     sink->flush();
-
-    /* suck anything that the other side has to say */
-    len = source->read( resp, STRBUF_SIZE);
-    reportEvent(8, "server response length: ", len);
-    reportEvent(8, "server response: ", resp);
-
-    while ( source->canRead( 0, 0) && 
-           (len = source->read( resp, STRBUF_SIZE)) ) {
-        ;
-    }
 
     return true;
 }
