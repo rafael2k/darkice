@@ -1038,43 +1038,40 @@ DarkIce :: configFileCast (  const Config      & config )
 
 
 /*------------------------------------------------------------------------------
- *  Set POSIX real-time scheduling, if super-user
+ *  Set POSIX real-time scheduling
  *----------------------------------------------------------------------------*/
 void
 DarkIce :: setRealTimeScheduling ( void )               throw ( Exception )
 {
 // Only if the OS has the POSIX real-time scheduling functions implemented.
 #if defined( HAVE_SCHED_GETSCHEDULER ) && defined( HAVE_SCHED_GETPARAM )
-    uid_t   euid;
+    int                 high_priority;
+    struct sched_param  param;
 
-    euid = geteuid();
+    /* store the old scheduling parameters */
+    if ( (origSchedPolicy = sched_getscheduler(0)) == -1 ) {
+        throw Exception( __FILE__, __LINE__, "sched_getscheduler", errno);
+    }
 
-    if ( euid == 0 ) {
-        int                 high_priority;
-        struct sched_param  param;
+    if ( sched_getparam( 0, &param) == -1 ) {
+        throw Exception( __FILE__, __LINE__, "sched_getparam", errno);
+    }
+    origSchedPriority = param.sched_priority;
+    
+    /* set SCHED_FIFO with max - 1 priority */
+    if ( (high_priority = sched_get_priority_max(SCHED_FIFO)) == -1 ) {
+        throw Exception(__FILE__,__LINE__,"sched_get_priority_max",errno);
+    }
+    reportEvent( 8, "scheduler high priority", high_priority);
 
-        /* store the old scheduling parameters */
-        if ( (origSchedPolicy = sched_getscheduler(0)) == -1 ) {
-            throw Exception( __FILE__, __LINE__, "sched_getscheduler", errno);
-        }
+    param.sched_priority = high_priority - 1;
 
-        if ( sched_getparam( 0, &param) == -1 ) {
-            throw Exception( __FILE__, __LINE__, "sched_getparam", errno);
-        }
-        origSchedPriority = param.sched_priority;
-        
-        /* set SCHED_FIFO with max - 1 priority */
-        if ( (high_priority = sched_get_priority_max(SCHED_FIFO)) == -1 ) {
-            throw Exception(__FILE__,__LINE__,"sched_get_priority_max",errno);
-        }
-        reportEvent( 8, "scheduler high priority", high_priority);
-
-        param.sched_priority = high_priority - 1;
-
-        if ( sched_setscheduler( 0, SCHED_FIFO, &param) == -1 ) {
-            throw Exception( __FILE__, __LINE__, "sched_setscheduler", errno);
-        }
-
+    if ( sched_setscheduler( 0, SCHED_FIFO, &param) == -1 ) {
+        reportEvent( 1,
+                     "Could not set POSIX real-time scheduling, "
+                     "this may cause recording skips.\n"
+                     "Try to run darkice as the super-user.");
+    } else {
         /* ask the new priortiy and report it */
         if ( sched_getparam( 0, &param) == -1 ) {
             throw Exception( __FILE__, __LINE__, "sched_getparam", errno);
@@ -1083,11 +1080,6 @@ DarkIce :: setRealTimeScheduling ( void )               throw ( Exception )
         reportEvent( 1,
                      "Using POSIX real-time scheduling, priority",
                      param.sched_priority );
-    } else {
-        reportEvent( 1,
-        "Not running as super-user, unable to use POSIX real-time scheduling" );
-        reportEvent( 1,
-        "It is recommended that you run this program as super-user");
     }
 #else
     reportEvent( 1, "POSIX scheduling not supported on this system, "
