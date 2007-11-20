@@ -51,6 +51,8 @@
 #error need math.h
 #endif
 
+#include <sstream>
+
 
 #include "Exception.h"
 #include "Source.h"
@@ -87,12 +89,14 @@ static const char fileid[] = "$Id$";
 void
 ShoutCast :: init ( const char            * irc,
                     const char            * aim,
-                    const char            * icq )
+                    const char            * icq,
+                    const char            * mountPoint )
                                                         throw ( Exception )
 {
     this->irc    = irc   ? Util::strDup( irc) : 0;
     this->aim    = aim   ? Util::strDup( aim) : 0;
     this->icq    = icq   ? Util::strDup( icq) : 0;
+    this->mountPoint = mountPoint ? Util::strDup( mountPoint ) : 0;
 }
 
 
@@ -111,6 +115,9 @@ ShoutCast :: strip ( void )                             throw ( Exception )
     if ( icq ) {
         delete[] icq;
     }
+    if (mountPoint ){
+        delete[] mountPoint;
+    }
 }
 
 
@@ -125,6 +132,9 @@ ShoutCast :: sendLogin ( void )                           throw ( Exception )
     const char    * str;
     char            resp[STRBUF_SIZE];
     unsigned int    len;
+    bool            needsMountPoint = false;
+    const char    * mountPoint      = getMountPoint();
+
 
     if ( !source->isOpen() ) {
         return false;
@@ -133,10 +143,38 @@ ShoutCast :: sendLogin ( void )                           throw ( Exception )
         return false;
     }
 
+    // We will add SOURCE only if really needed: if the mountPoint is not null
+    // and is different of "/". This is to keep maximum compatibility with
+    // NullSoft Shoutcast server.
+    if (mountPoint != 0L
+     && strlen(mountPoint) > 0 && 0 != strcmp("/", mountPoint)) {
+        needsMountPoint = true;
+    }
+
+    std::ostringstream os;
+
+    if (needsMountPoint) {
+        os << "SOURCE ";
+    }
+
     /* first line is the password in itself */
-    str = getPassword();
-    sink->write( str, strlen( str));
-    str = "\n";
+    os << getPassword();
+    os << "\n";
+ 
+    // send the mount point 
+    if (needsMountPoint) {
+        os << " ";
+        if (strncmp("/", mountPoint, 1) != 0) {
+            os << "/";
+        }
+        os << mountPoint;
+        os << "\n";
+    }
+
+    str = os.str().c_str();
+
+    // Ok, now we send login which will be different of classical Shoutcast
+    // if mountPoint is not null and is different from "/" ...
     sink->write( str, strlen( str));
     sink->flush();
 

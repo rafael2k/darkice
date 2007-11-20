@@ -1,3 +1,8 @@
+Darkice 0.19 to be released
+
+    o added mount point option for Darwin Streaming Server
+      thanks to Pierre Souchay <pierre@souchay.net>
+
 26-04-2007 DarkIce 0.18.1 released
 
     o enable real-time scheduling for non-super-users, if they have

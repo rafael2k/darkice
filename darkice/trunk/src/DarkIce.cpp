@@ -362,26 +362,26 @@ DarkIce :: configIceCast (  const Config      & config,
 
 #ifdef HAVE_LAME_LIB
         if ( Util::strEq( str, "mp3") ) {
-			audioOuts[u].encoder = new LameLibEncoder( audioOuts[u].server.get(),
-													   dsp.get(),
-													   bitrateMode,
-													   bitrate,
-													   quality,
-													   sampleRate,
-													   channel,
-													   lowpass,
-													   highpass );
+            audioOuts[u].encoder = new LameLibEncoder( audioOuts[u].server.get(),
+                                                       dsp.get(),
+                                                       bitrateMode,
+                                                       bitrate,
+                                                       quality,
+                                                       sampleRate,
+                                                       channel,
+                                                       lowpass,
+                                                       highpass );
         }
 #endif
 #ifdef HAVE_TWOLAME_LIB
         if ( Util::strEq( str, "mp2") ) {
-			audioOuts[u].encoder = new TwoLameLibEncoder(
+            audioOuts[u].encoder = new TwoLameLibEncoder(
                                                       audioOuts[u].server.get(),
-													  dsp.get(),
-													  bitrateMode,
-													  bitrate,
-													  sampleRate,
-													  channel );
+                                                      dsp.get(),
+                                                      bitrateMode,
+                                                      bitrate,
+                                                      sampleRate,
+                                                      channel );
         }
 #endif
 
@@ -697,6 +697,7 @@ DarkIce :: configShoutCast (    const Config      & config,
         const char                * url             = 0;
         const char                * genre           = 0;
         bool                        isPublic        = false;
+        const char                * mountPoint      = 0;
         int                         lowpass         = 0;
         int                         highpass        = 0;
         const char                * irc             = 0;
@@ -755,6 +756,7 @@ DarkIce :: configShoutCast (    const Config      & config,
         port        = Util::strToL( str);
         password    = cs->getForSure("password"," missing in section ",stream);
         name        = cs->get( "name");
+        mountPoint  = cs->get( "mountPoint" );
         url         = cs->get( "url");
         genre       = cs->get( "genre");
         str         = cs->get( "public");
@@ -803,6 +805,7 @@ DarkIce :: configShoutCast (    const Config      & config,
         audioOuts[u].socket = new TcpSocket( server, port);
         audioOuts[u].server = new ShoutCast( audioOuts[u].socket.get(),
                                              password,
+                                             mountPoint,
                                              bitrate,
                                              name,
                                              url,

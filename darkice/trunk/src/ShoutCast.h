@@ -76,17 +76,24 @@ class ShoutCast : public CastSink
         char              * icq;
 
         /**
+         * The optional mountPoint
+         */
+        char              * mountPoint;
+
+        /**
          *  Initalize the object.
          *
          *  @param irc IRC info string for the stream.
          *  @param aim AIM info string for the stream.
          *  @param icq ICQ info string for the stream.
+         *  @param mountPoint Optional mount point information
          *  @exception Exception
          */
         void
         init (  const char            * irc,
                 const char            * aim,
-                const char            * icq )
+                const char            * icq,
+                const char            * mountPoint )
                                                     throw ( Exception );
 
         /**
@@ -128,6 +135,7 @@ class ShoutCast : public CastSink
          *
          *  @param socket socket connection to the server.
          *  @param password password to the server.
+         *  @param mountPoint Optional mount point for DSS.
          *  @param name name of the stream.
          *  @param url URL associated with the stream.
          *  @param genre genre of the stream.
@@ -145,6 +153,7 @@ class ShoutCast : public CastSink
         inline
         ShoutCast ( TcpSocket         * socket,
                     const char        * password,
+                    const char        * mountPoint,
                     unsigned int        bitRate,
                     const char        * name           = 0,
                     const char        * url            = 0,
@@ -166,7 +175,7 @@ class ShoutCast : public CastSink
                           streamDump,
                           bufferDuration )
         {
-            init( irc, aim, icq);
+            init( irc, aim, icq, mountPoint );
         }
 
         /**
@@ -178,7 +187,7 @@ class ShoutCast : public CastSink
         ShoutCast(   const ShoutCast &    cs )        throw ( Exception )
                 : CastSink( cs )
         {
-            init( cs.getIrc(), cs.getAim(), cs.getIcq());
+            init( cs.getIrc(), cs.getAim(), cs.getIcq(), cs.getMountPoint());
         }
 
         /**
@@ -205,9 +214,24 @@ class ShoutCast : public CastSink
             if ( this != &cs ) {
                 strip();
                 CastSink::operator=( cs );
-                init( cs.getIrc(), cs.getAim(), cs.getIcq());
+                init( cs.getIrc(), cs.getAim(), cs.getIcq(), getMountPoint());
             }
             return *this;
+        }
+
+       /**
+         *  Get the mount point of the stream on the server.
+         *  The mount point can be null if it has not been set
+         *  (typical Shoutcast server) or not null (for instance
+         *  with Darwin Streaming Server). In that case, the
+         *  authentication process will be slightly different.
+         *
+         *  @return the mount point of the stream on the server.
+         */
+        inline const char *
+        getMountPoint ( void ) const                throw ()
+        {
+            return mountPoint;
         }
 
         /**
