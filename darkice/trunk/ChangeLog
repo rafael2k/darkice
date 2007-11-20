@@ -2,6 +2,8 @@ Darkice 0.19 to be released
 
     o added mount point option for Darwin Streaming Server
       thanks to Pierre Souchay <pierre@souchay.net>
+    o fix for some reliablity issues when using a Jack source
+      thanks to Pierre Souchay <pierre@souchay.net>
 
 26-04-2007 DarkIce 0.18.1 released
 

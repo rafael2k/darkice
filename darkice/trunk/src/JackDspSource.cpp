@@ -277,26 +277,39 @@ bool
 JackDspSource :: canRead ( unsigned int   sec,
                            unsigned int   usec )    throw ( Exception )
 {
-    size_t available=0;
-    
+    const unsigned int max_wait_time  = sec * 1000000;
+    const unsigned int wait_increment = 10000;
+    unsigned int       cur_wait       = 0;
+
     if ( !isOpen() ) {
         return false;
     }
-    
-    // How many bytes available in ring buffer ?
-    available = jack_ringbuffer_read_space( rb[0] );
-    if (available)    return true;
-    
-    // Sleep and check again
-    // FIXME: should we really sleep the full duration ?
-    usleep( (sec*1000000) + usec );
-    
-    available = jack_ringbuffer_read_space( rb[0] );
-    if (available) {
-        return true;
-    } else {
-        return false;
+
+    while (max_wait_time > cur_wait) {
+        bool canRead = true;
+
+        for (unsigned int c = 0 ; c < getChannel() ; c++) {
+            if (jack_ringbuffer_read_space(rb[c]) <= 0) {
+                canRead = false;
+            }
+        }
+
+        if (canRead) {
+            return true;
+        }
+
+        cur_wait += wait_increment;
+        usleep ( wait_increment );
     }
+
+    usleep( usec );
+    for (unsigned int c = 0 ; c < getChannel() ; c++) {
+        if (jack_ringbuffer_read_space(rb[c]) <= 0) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 
@@ -324,14 +337,22 @@ JackDspSource :: read (   void          * buf,
         throw Exception( __FILE__, __LINE__, "realloc on tmp_buffer failed");
     }
 
+    // We must be sure to fetch as many data on both channels
+    int minBytesAvailable = samples * sizeof( jack_default_audio_sample_t );
 
-    for (c=0; c<getChannel(); c++)
-    {    
+    for (c=0; c<getChannel(); c++) {
+        int readable = jack_ringbuffer_read_space(rb[1]);
+        if (readable < minBytesAvailable) {
+            minBytesAvailable = readable;
+        }
+    }
+
+    for (c=0; c<getChannel(); c++) {    
         // Copy frames from ring buffer to temporary buffer
         // and then convert samples to output buffer
         int bytes_read = jack_ringbuffer_read(rb[c],
                                              (char*)tmp_buffer,
-                              samples * sizeof( jack_default_audio_sample_t ));
+                              minBytesAvailable);
         samples_read[c] = bytes_read / sizeof( jack_default_audio_sample_t );
         
 
