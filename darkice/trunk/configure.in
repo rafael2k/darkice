@@ -247,7 +247,7 @@ AC_ARG_WITH(jack-prefix,
 
 if test "x${USE_JACK}" = "xyes" ; then
     AC_MSG_CHECKING( [for jack libraries at ${CONFIG_JACK_PREFIX}] )
-    LA_SEARCH_LIB( JACK_LIB_LOC, JACK_INC_LOC, libjack.la libjack.so, jack/jack.h,
+    LA_SEARCH_LIB( JACK_LIB_LOC, JACK_INC_LOC, libjack.la libjack.so libjack.dylib, jack/jack.h,
                    ${CONFIG_JACK_PREFIX})
 
     if test "x${JACK_LIB_LOC}" != "x" ; then
