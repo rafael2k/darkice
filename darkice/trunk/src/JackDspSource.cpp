@@ -346,7 +346,7 @@ JackDspSource :: read (   void          * buf,
     int minBytesAvailable = samples * sizeof( jack_default_audio_sample_t );
 
     for (c=0; c<getChannel(); c++) {
-        int readable = jack_ringbuffer_read_space(rb[1]);
+        int readable = jack_ringbuffer_read_space(rb[c]);
         if (readable < minBytesAvailable) {
             minBytesAvailable = readable;
         }
