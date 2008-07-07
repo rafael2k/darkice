@@ -60,6 +60,7 @@ static const char fileid[] = "$Id$";
  *----------------------------------------------------------------------------*/
 AudioSource *
 AudioSource :: createDspSource( const char    * deviceName,
+                                const char    * jackClientName,
                                 int             sampleRate,
                                 int             bitsPerSample,
                                 int             channel)
@@ -101,6 +102,7 @@ AudioSource :: createDspSource( const char    * deviceName,
 #if defined( SUPPORT_JACK_DSP )
         Reporter::reportEvent( 1, "Using JACK audio server as input device.");
         return new JackDspSource( deviceName,
+                                  jackClientName,
                                   sampleRate,
                                   bitsPerSample,
                                   channel);

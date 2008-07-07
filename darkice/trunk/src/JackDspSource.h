@@ -67,6 +67,10 @@
 class JackDspSource : public AudioSource, public virtual Reporter
 {
     private:
+        /**
+         *  The jack client name.
+         */
+        const char                   * jack_client_name;
 
         /**
          *  The jack port
@@ -156,6 +160,7 @@ class JackDspSource : public AudioSource, public virtual Reporter
          */
         inline
         JackDspSource ( const char    * name,
+                        const char    * jackClientName,
                         int             sampleRate    = 44100,
                         int             bitsPerSample = 16,
                         int             channels      = 2 )
@@ -163,6 +168,7 @@ class JackDspSource : public AudioSource, public virtual Reporter
 
                     : AudioSource( sampleRate, bitsPerSample, channels )
         {
+            jack_client_name = jackClientName;
             init( name );
         }
 

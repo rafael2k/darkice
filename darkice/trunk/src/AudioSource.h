@@ -272,6 +272,7 @@ class AudioSource : public Source, public virtual Reporter
          */
         static AudioSource *
         createDspSource( const char    * deviceName,
+                         const char    * jackClientName,
                          int             sampleRate    = 44100,
                          int             bitsPerSample = 16,
                          int             channel       = 2) throw ( Exception );

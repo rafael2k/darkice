@@ -6,6 +6,8 @@ Darkice 0.19 to be released
       thanks to Pierre Souchay <pierre@souchay.net>
     o enable easier finding of jack libraries on MacOS X,
       thanks to Daniel Hazelbaker <daniel@highdesertchurch.com>
+    o added ability to specify name of jack device created by darkice,
+      thanks to Alessandro Beretta <alessandro.baretta@radiomaria.org>
 
 26-04-2007 DarkIce 0.18.1 released
 

@@ -188,7 +188,12 @@ JackDspSource :: open ( void )                       throw ( Exception )
     }
 
     // Register client with Jack
-    snprintf(client_name, 255, "darkice-%d", getpid());
+    if ( jack_client_name != NULL ) {
+      snprintf(client_name, 255, "%s", jack_client_name);
+    } else {
+      snprintf(client_name, 255, "darkice-%d", getpid());
+    }
+
     if ((client = jack_client_new(client_name)) == NULL) {
         throw Exception( __FILE__, __LINE__, "JACK server not running?");
     }

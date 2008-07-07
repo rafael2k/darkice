@@ -139,6 +139,7 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
     unsigned int             channel;
     bool                     reconnect;
     const char             * device;
+    const char             * jackClientName;
 
     // the [general] section
     if ( !(cs = config.get( "general")) ) {
@@ -172,8 +173,10 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
     str           = cs->getForSure( "channel", " missing in section [input]");
     channel       = Util::strToL( str);
     device        = cs->getForSure( "device", " missing in section [input]");
+    jackClientName = cs->get ( "jackClientName");
 
     dsp             = AudioSource::createDspSource( device,
+                                                    jackClientName,
                                                     sampleRate,
                                                     bitsPerSample,
                                                     channel );
