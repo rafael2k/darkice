@@ -1,3 +1,8 @@
+DarkIce next release
+
+    o bugfix: the configure script recognizes Ogg Vorbis shared objects
+	  now, not just static libraries. Thanks to omroepvenray.
+
 07-07-2008 Darkice 0.19 released
 
     o added mount point option for Darwin Streaming Server

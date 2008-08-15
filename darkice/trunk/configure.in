@@ -89,12 +89,12 @@ AC_ARG_WITH(vorbis-prefix,
 
 if test "x${USE_VORBIS}" = "xyes" ; then
     AC_MSG_CHECKING( [for vorbis libraries at ${CONFIG_VORBIS_PREFIX}] )
-    LA_SEARCH_LIB( OGG_LIB_LOC, OGG_INC_LOC, libogg.a, ogg/ogg.h,
+    LA_SEARCH_LIB( OGG_LIB_LOC, OGG_INC_LOC, libogg.a libogg.so, ogg/ogg.h,
                    ${CONFIG_VORBIS_PREFIX})
-    LA_SEARCH_LIB( VORBIS_LIB_LOC, VORBIS_INC_LOC, libvorbis.a, vorbis/codec.h,
+    LA_SEARCH_LIB( VORBIS_LIB_LOC, VORBIS_INC_LOC, libvorbis.a libvorbis.so, vorbis/codec.h,
                    ${CONFIG_VORBIS_PREFIX})
     LA_SEARCH_LIB( VORBISENC_LIB_LOC, VORBISENC_INC_LOC,
-                   libvorbisenc.a, vorbis/vorbisenc.h,
+                   libvorbisenc.a libvorbisenc.so, vorbis/vorbisenc.h,
                    ${CONFIG_VORBIS_PREFIX})
 
     if test "x${OGG_LIB_LOC}" != "x" -a \
