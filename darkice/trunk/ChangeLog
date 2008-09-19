@@ -2,6 +2,8 @@ DarkIce next release
 
     o bugfix: the configure script recognizes Ogg Vorbis shared objects
 	  now, not just static libraries. Thanks to omroepvenray.
+    o bugfix: enabling jack source compilation on Debian Lenny,
+	  thanks to Alessandro Beretta <alessandro.baretta@radiomaria.org>
 
 07-07-2008 Darkice 0.19 released
 

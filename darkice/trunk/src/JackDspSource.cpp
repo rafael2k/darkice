@@ -31,6 +31,7 @@
 
 /* ============================================================ include files */
 
+#include <limits.h>
 #include "AudioSource.h"
 
 #ifdef SUPPORT_JACK_DSP
