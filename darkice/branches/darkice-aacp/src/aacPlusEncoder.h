@@ -78,8 +78,8 @@ extern "C" {
 /**
  *  A class representing aacplus AAC+ encoder.
  *
- *  @author  $Author: tipok $
- *  @version $Revision: 1 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 
 #define CORE_DELAY   (1600)

@@ -77,31 +77,30 @@ aacPlusEncoder :: open ( void )
     }
 
     reportEvent(1, "Using aacplus codec version", "720 3gpp");
-
+    
     
     /* set up basic parameters for aacPlus codec */
     AacInitDefaultConfig(&config);
     nChannelsAAC = nChannelsSBR = getOutChannel();
     
     if ( (getInChannel() == 2) && (bitrate >= 16000) && (bitrate < 44001) ) {
-	useParametricStereo = 1;
-	nChannelsAAC = 1;
-	nChannelsSBR = 2;
-	
-	reportEvent(10, "use Parametric Stereo");
-	
-	envReadOffset = (MAX_DS_FILTER_DELAY + INPUT_DELAY)*MAX_CHANNELS;
-	coreWriteOffset = CORE_INPUT_OFFSET_PS;
-	writeOffset = envReadOffset;
+        useParametricStereo = 1;
+        nChannelsAAC = 1;
+        nChannelsSBR = 2;
+        
+        reportEvent(10, "use Parametric Stereo");
+        
+        envReadOffset = (MAX_DS_FILTER_DELAY + INPUT_DELAY)*MAX_CHANNELS;
+        coreWriteOffset = CORE_INPUT_OFFSET_PS;
+        writeOffset = envReadOffset;
     } else {
-	/* set up 2:1 downsampling */
-	InitIIR21_Resampler(&(IIR21_reSampler[0]));
-	InitIIR21_Resampler(&(IIR21_reSampler[1]));
-	
-	if(IIR21_reSampler[0].delay > MAX_DS_FILTER_DELAY){
-	    throw Exception(__FILE__, __LINE__, "IIR21 resampler delay is bigger then MAX_DS_FILTER_DELAY");
-	}
-	writeOffset += IIR21_reSampler[0].delay*MAX_CHANNELS;
+    	/* set up 2:1 downsampling */
+    	InitIIR21_Resampler(&(IIR21_reSampler[0]));
+    	InitIIR21_Resampler(&(IIR21_reSampler[1]));
+    	
+    	if(IIR21_reSampler[0].delay > MAX_DS_FILTER_DELAY)
+    		throw Exception(__FILE__, __LINE__, "IIR21 resampler delay is bigger then MAX_DS_FILTER_DELAY");
+        writeOffset += IIR21_reSampler[0].delay*MAX_CHANNELS;
     }
     
     sampleRateAAC = getInSampleRate();
@@ -110,31 +109,30 @@ aacPlusEncoder :: open ( void )
     config.nChannelsOut=nChannelsAAC;
     config.bandWidth=bandwidth;
     
-    /* set up SBR configuration	*/
-    if(!IsSbrSettingAvail (bitrate, nChannelsAAC, sampleRateAAC, &sampleRateAAC)) {
-	throw Exception(__FILE__, __LINE__, "No valid SBR configuration found");
-    }
+    /* set up SBR configuration    */
+    if(!IsSbrSettingAvail(bitrate, nChannelsAAC, sampleRateAAC, &sampleRateAAC))
+        throw Exception(__FILE__, __LINE__, "No valid SBR configuration found");
     
     InitializeSbrDefaults (&sbrConfig);
     sbrConfig.usePs = useParametricStereo;
     
-    AdjustSbrSettings(	&sbrConfig,
-			bitrate,
-			nChannelsAAC,
-			sampleRateAAC,
-			AACENC_TRANS_FAC,
-			24000);
+    AdjustSbrSettings( &sbrConfig,
+                       bitrate,
+                       nChannelsAAC,
+                       sampleRateAAC,
+                       AACENC_TRANS_FAC,
+                       24000);
     
-    EnvOpen(	&hEnvEnc,
-		inBuf + coreWriteOffset,
-		&sbrConfig,
-		&config.bandWidth);
-    
+    EnvOpen( &hEnvEnc,
+             inBuf + coreWriteOffset,
+             &sbrConfig,
+             &config.bandWidth);
+        
     /* set up AAC encoder, now that samling rate is known */
     config.sampleRate = sampleRateAAC;
     if (AacEncOpen(&aacEnc, config) != 0){
-	AacEncClose(aacEnc);
-	throw Exception(__FILE__, __LINE__, "Initialisation of AAC failed !");
+        AacEncClose(aacEnc);
+        throw Exception(__FILE__, __LINE__, "Initialisation of AAC failed !");
     }
     
     init_plans();
@@ -182,73 +180,76 @@ aacPlusEncoder :: write (  const void    * buf,
 
     reportEvent(10, "converting short to float");
     short *TimeDataPcm = (short *) buf;
+    
     for (i=0; i<samples; i++)
-	inBuf[i+writeOffset+writtenSamples] = (float) TimeDataPcm[i];
-	writtenSamples+=samples;
-	reportEvent(10, "writtenSamples", writtenSamples);
+        inBuf[i+writeOffset+writtenSamples] = (float) TimeDataPcm[i];
+    writtenSamples+=samples;
+    reportEvent(10, "writtenSamples", writtenSamples);
+    
     if (writtenSamples < inSamples)
-    	return samples;
+        return samples;
     
     /* encode one SBR frame */
     reportEvent(10, "encode one SBR frame");
-    EnvEncodeFrame(	hEnvEnc,
-			inBuf + envReadOffset,
-			inBuf + coreWriteOffset,
-			MAX_CHANNELS,
-			&numAncDataBytes,
-			ancDataBytes);
+    EnvEncodeFrame( hEnvEnc,
+                    inBuf + envReadOffset,
+                    inBuf + coreWriteOffset,
+                    MAX_CHANNELS,
+                    &numAncDataBytes,
+                    ancDataBytes);
     
     reportEvent(10, "numAncDataBytes=", numAncDataBytes);
     
     /* 2:1 downsampling for AAC core */
-    if (!useParametricStereo){
-	reportEvent(10, "2:1 downsampling for AAC core");
-	for( ch=0; ch<nChannelsAAC; ch++ )
-	    IIR21_Downsample(	&(IIR21_reSampler[ch]),
-				inBuf+writeOffset+ch,
-				writtenSamples/getInChannel(),
-				MAX_CHANNELS,
-				inBuf+ch,
-				&outSamples,
-				MAX_CHANNELS);
-	reportEvent(10, "outSamples=", outSamples);
+    if (!useParametricStereo) {
+        reportEvent(10, "2:1 downsampling for AAC core");
+        for( ch=0; ch<nChannelsAAC; ch++ )
+            IIR21_Downsample( &(IIR21_reSampler[ch]),
+                              inBuf + writeOffset+ch,
+                              writtenSamples/getInChannel(),
+                              MAX_CHANNELS,
+                              inBuf+ch,
+                              &outSamples,
+                              MAX_CHANNELS);
+        
+        reportEvent(10, "outSamples=", outSamples);
     }
-    
+        
     /* encode one AAC frame */
     if (hEnvEnc && useParametricStereo) {
-	reportEvent(10, "Parametric Stereo encode one AAC frame");
-	AacEncEncode(	aacEnc,
-			inBuf,
-			1, /* stride (step) */
-			ancDataBytes,
-			&numAncDataBytes,
-			(unsigned *) (outBuf+ADTS_HEADER_SIZE),
-			&numOutBytes);
-	
-	if(hEnvEnc)
-	    memcpy( inBuf,inBuf+AACENC_BLOCKSIZE,CORE_INPUT_OFFSET_PS*sizeof(float));
+        reportEvent(10, "Parametric Stereo encode one AAC frame");
+        AacEncEncode( aacEnc,
+                      inBuf,
+                      1, /* stride (step) */
+                      ancDataBytes,
+                      &numAncDataBytes,
+                      (unsigned *) (outBuf+ADTS_HEADER_SIZE),
+                      &numOutBytes);
+        if(hEnvEnc)
+            memcpy( inBuf,inBuf+AACENC_BLOCKSIZE,CORE_INPUT_OFFSET_PS*sizeof(float));
     
     } else {
-	reportEvent(10, "encode one AAC frame");
-	AacEncEncode(	aacEnc,
-			inBuf+coreReadOffset,
-			MAX_CHANNELS,
-			ancDataBytes,
-			&numAncDataBytes,
-			(unsigned *) (outBuf+ADTS_HEADER_SIZE),
-			&numOutBytes);
-	
-	reportEvent(10, "done AAC=", numOutBytes);
-	if(hEnvEnc)
-	    memmove( inBuf,inBuf+AACENC_BLOCKSIZE*2*MAX_CHANNELS,writeOffset*sizeof(float));
+        reportEvent(10, "encode one AAC frame");
+        AacEncEncode( aacEnc,
+                      inBuf + coreReadOffset,
+                      MAX_CHANNELS,
+                      ancDataBytes,
+                      &numAncDataBytes,
+                      (unsigned *) (outBuf+ADTS_HEADER_SIZE),
+                      &numOutBytes);
+        
+        reportEvent(10, "done AAC=", numOutBytes);
+        if(hEnvEnc)
+            memmove( inBuf,inBuf+AACENC_BLOCKSIZE*2*MAX_CHANNELS,writeOffset*sizeof(float));
     }
     
     /* Write one frame of encoded audio */
     if (numOutBytes) {
-	reportEvent(10, "Write one frame of encoded audio:", numOutBytes+ADTS_HEADER_SIZE);
-	adts_hdr_up(outBuf, numOutBytes);
-	sink->write(outBuf, numOutBytes+ADTS_HEADER_SIZE);
+    	reportEvent(10, "Write one frame of encoded audio:", numOutBytes+ADTS_HEADER_SIZE);
+    	adts_hdr_up(outBuf, numOutBytes);
+    	sink->write(outBuf, numOutBytes+ADTS_HEADER_SIZE);
     }
+    
     writtenSamples=0;
     
     return samples;
@@ -278,16 +279,16 @@ aacPlusEncoder :: close ( void )                           throw ( Exception )
 {
     if ( isOpen() ) {
         flush();
-	
-	destroy_plans();
-	AacEncClose(aacEnc);
-	if (hEnvEnc) {
-	    EnvClose(hEnvEnc);
-	}
-	
-	aacplusOpen = false;
-	
-	sink->close();
+    
+        destroy_plans();
+        AacEncClose(aacEnc);
+        if (hEnvEnc) {
+            EnvClose(hEnvEnc);
+        }
+    
+        aacplusOpen = false;
+    
+        sink->close();
     }
 }
 
