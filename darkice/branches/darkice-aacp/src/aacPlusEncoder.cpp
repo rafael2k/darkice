@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : aacPlusEncoder.cpp
-   Version  : $Revision: 0.2 $
-   Author   : $Author: tipok $
-   Location : $Source: /darkice-aacplus/src/aacPlusEncoder.cpp,v $
+   Version  : $Revision$
+   Author   : $Author$
+   Location : $HeadURL$
 
    Copyright notice:
 
@@ -51,7 +51,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id: aacPlusEncoder.cpp,v 0.2 2005/04/16 22:19:20 klaus Exp $";
+static const char fileid[] = "$Id$";
 
 
 /* ===============================================  local function prototypes */
@@ -132,7 +132,7 @@ aacPlusEncoder :: open ( void )
     
     /* set up AAC encoder, now that samling rate is known */
     config.sampleRate = sampleRateAAC;
-    if ((error = AacEncOpen(&aacEnc, config)) != 0){
+    if (AacEncOpen(&aacEnc, config) != 0){
 	AacEncClose(aacEnc);
 	throw Exception(__FILE__, __LINE__, "Initialisation of AAC failed !");
     }
@@ -171,12 +171,12 @@ aacPlusEncoder :: write (  const void    * buf,
     unsigned int    sampleSize       = (bitsPerSample / 8) * channels;
     unsigned int    processed        = len - (len % sampleSize);
     unsigned int    nSamples         = processed / sampleSize;
-    int             samples          = (int) nSamples * channels;
+    unsigned int    samples          = (unsigned int) nSamples * channels;
     
     
     
     
-    int i; 
+    unsigned int i; 
     int ch, outSamples, numOutBytes;
 
 
@@ -293,17 +293,3 @@ aacPlusEncoder :: close ( void )                           throw ( Exception )
 
 
 #endif // HAVE_AACPLUS_LIB
-
-
-/*------------------------------------------------------------------------------
-
-  $Source: /cvsroot/darkice/darkice/src/aacPlusEncoder.cpp,v $
-
-  $Log: aacPlusEncoder.cpp,v $
-  Revision 0.1  2005/04/16 21:57:34  klaus
-  added AAC support through the aacplus codec, http://www.audiocoding.com/
-
-
-
-------------------------------------------------------------------------------*/
-

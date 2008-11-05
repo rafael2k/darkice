@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : aacPlusEncoder.h
-   Version  : $Revision: 0.2 $
-   Author   : $Author: tipok $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -107,17 +107,16 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
 
 		AACENC_CONFIG     config;
 		
-		int  error;
 		int nChannelsAAC, nChannelsSBR;
 		unsigned int sampleRateAAC;
+
 		int bitrate;
 		int bandwidth;
 		
 		unsigned int numAncDataBytes;
 		unsigned char ancDataBytes[MAX_PAYLOAD_SIZE];
 		
-		int numSamplesRead;
-		int useParametricStereo;
+		bool useParametricStereo;
 		int coreWriteOffset;
 		int coreReadOffset;
 		int envReadOffset;
