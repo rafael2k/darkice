@@ -161,6 +161,10 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
             str = "audio/aac";
             break;
 
+        case aacp:
+            str = "audio/aacp";
+            break;
+
         default:
             throw Exception( __FILE__, __LINE__,
                              "unsupported stream format", format);

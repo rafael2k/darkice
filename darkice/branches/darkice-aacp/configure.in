@@ -150,6 +150,42 @@ fi
 
 
 dnl-----------------------------------------------------------------------------
+dnl link the aacplus library if requested
+dnl-----------------------------------------------------------------------------
+AC_SUBST(AACPLUS_INCFLAGS)
+AC_SUBST(AACPLUS_LDFLAGS)
+
+AC_ARG_WITH(aacplus,
+[  --with-aacplus             use aacplus for encoding AAC HEv2 streams [yes] ],
+    USE_AACPLUS=${withval}, USE_AACPLUS="yes" )
+AC_ARG_WITH(aacplus-prefix,
+[  --with-aacplus-prefix=DIR  alternate location for aacplus [/usr]
+                              look for libraries in AACPLUS-PREFIX/lib,
+                              for headers in AACPLUS-PREFIX/include],
+    CONFIG_AACPLUS_PREFIX="${withval}", CONFIG_AACPLUS_PREFIX="/usr")
+
+if test "x${USE_AACPLUS}" = "xyes" ; then
+    AC_MSG_CHECKING( [for aacplus library at ${CONFIG_AACPLUS_PREFIX}] )
+    LA_SEARCH_LIB( AACPLUS_LIB_LOC, AACPLUS_INC_LOC, libaacplus.a libaacplus.so, sbr_main.h,
+                   ${CONFIG_AACPLUS_PREFIX})
+    if test "x${AACPLUS_LIB_LOC}" != "x" ; then
+        AC_DEFINE( HAVE_AACPLUS_LIB, 1, [build with aacplus library] )
+        if test "x${AACPLUS_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
+            AACPLUS_INCFLAGS="-I${AACPLUS_INC_LOC}"
+        fi
+        AACPLUS_LDFLAGS="-L${AACPLUS_LIB_LOC} -laacplus"
+        # TODO: we have to define _FFTW3 only if libaacplus builded with fftw3f
+        AC_DEFINE( _FFTW3, 1, [libaacplus have to be builded with fftw3f library] )
+        AC_MSG_RESULT( [found at ${CONFIG_AACPLUS_PREFIX}] )
+    else
+        AC_MSG_WARN( [not found, building without aacplus])
+    fi
+else
+    AC_MSG_RESULT( [building without aacplus] )
+fi
+
+
+dnl-----------------------------------------------------------------------------
 dnl link the twolame library if requested
 dnl-----------------------------------------------------------------------------
 AC_SUBST(TWOLAME_INCFLAGS)
@@ -189,8 +225,9 @@ dnl-----------------------------------------------------------------------------
 if test "x${LAME_LDFLAGS}" = "x" \
      -a "x${VORBIS_LDFLAGS}" = "x" \
      -a "x${FAAC_LDFLAGS}" = "x" \
+     -a "x${AACPLUS_LDFLAGS}" = "x" \
      -a "x${TWOLAME_LDFLAGS}" = "x"; then
-    AC_MSG_ERROR([neither lame, Ogg Vorbis, faac nor twolame configured])
+    AC_MSG_ERROR([neither lame, Ogg Vorbis, faac, aac+ nor twolame configured])
 fi
 
 
