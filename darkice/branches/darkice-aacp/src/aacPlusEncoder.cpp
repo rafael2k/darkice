@@ -145,8 +145,9 @@ aacPlusEncoder :: open ( void )
     aacplusOpen = true;
     reportEvent(10, "bitrate=", bitrate);
     reportEvent(10, "nChannelsIn", getInChannel());
+    reportEvent(10, "nChannelsOut", getOutChannel());
     reportEvent(10, "nChannelsSBR", nChannelsSBR);
-    reportEvent(10, "nChannelsOut", nChannelsAAC);
+    reportEvent(10, "nChannelsAAC", nChannelsAAC);
     reportEvent(10, "sampleRateAAC", sampleRateAAC);
     reportEvent(10, "inSamples", inSamples);
     return true;
@@ -181,8 +182,15 @@ aacPlusEncoder :: write (  const void    * buf,
     reportEvent(10, "converting short to float");
     short *TimeDataPcm = (short *) buf;
     
-    for (i=0; i<samples; i++)
-        inBuf[i+writeOffset+writtenSamples] = (float) TimeDataPcm[i];
+    if(channels == 2) {
+        for (i=0; i<samples; i++)
+            inBuf[i+writeOffset+writtenSamples] = (float) TimeDataPcm[i];
+    } else {
+        /* using only left channel buffer for mono encoder */
+        for (i=0; i<samples; i++)
+            inBuf[writeOffset+2*writtenSamples+2*i] = (float) TimeDataPcm[i];
+    }
+
     writtenSamples+=samples;
     reportEvent(10, "writtenSamples", writtenSamples);
     
@@ -206,7 +214,7 @@ aacPlusEncoder :: write (  const void    * buf,
         for( ch=0; ch<nChannelsAAC; ch++ )
             IIR21_Downsample( &(IIR21_reSampler[ch]),
                               inBuf + writeOffset+ch,
-                              writtenSamples/getInChannel(),
+                              writtenSamples/channels,
                               MAX_CHANNELS,
                               inBuf+ch,
                               &outSamples,

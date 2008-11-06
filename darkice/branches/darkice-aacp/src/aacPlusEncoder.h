@@ -146,12 +146,12 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
                                  getInBitsPerSample() );
             }
 
-            if ( getInChannel() != 2 ) {
+            if ( getInChannel() > 2 ) {
                 throw Exception( __FILE__, __LINE__,
                          "unsupported number of input channels for the encoder",
                                  getInChannel() );
             }
-            if ( getOutChannel() != 2 ) {
+            if ( getOutChannel() > 2 ) {
                 throw Exception( __FILE__, __LINE__,
                         "unsupported number of output channels for the encoder",
                                  getOutChannel() );
