@@ -165,9 +165,6 @@ AC_ARG_WITH(aacplus-prefix,
     CONFIG_AACPLUS_PREFIX="${withval}", CONFIG_AACPLUS_PREFIX="/usr")
 
 if test "x${USE_AACPLUS}" = "xyes" ; then
-    if test "x${FAAC_LIB_LOC}" != "x" ; then
-	AC_MSG_ERROR( [compliling with faac and aacplus is not supported yet, please disable faac by "--without-faac"] )
-    fi
     AC_MSG_CHECKING( [for aacplus library at ${CONFIG_AACPLUS_PREFIX}] )
     LA_SEARCH_LIB( AACPLUS_LIB_LOC, AACPLUS_INC_LOC, libaacplus.a libaacplus.so, sbr_main.h,
                    ${CONFIG_AACPLUS_PREFIX})
