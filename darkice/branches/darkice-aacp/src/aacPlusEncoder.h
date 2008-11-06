@@ -118,7 +118,6 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
 		
 		bool useParametricStereo;
 		int coreWriteOffset;
-		int coreReadOffset;
 		int envReadOffset;
 		int writeOffset;
 		struct AAC_ENCODER *aacEnc;
@@ -168,7 +167,6 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
             useParametricStereo = 0;
             numAncDataBytes=0;
             coreWriteOffset = 0;
-            coreReadOffset = 0;
             envReadOffset = 0;
             writeOffset = INPUT_DELAY*MAX_CHANNELS;
             writtenSamples = 0;

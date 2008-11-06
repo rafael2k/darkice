@@ -216,31 +216,18 @@ aacPlusEncoder :: write (  const void    * buf,
     }
         
     /* encode one AAC frame */
-    if (hEnvEnc && useParametricStereo) {
-        reportEvent(10, "Parametric Stereo encode one AAC frame");
-        AacEncEncode( aacEnc,
-                      inBuf,
-                      1, /* stride (step) */
-                      ancDataBytes,
-                      &numAncDataBytes,
-                      (unsigned *) (outBuf+ADTS_HEADER_SIZE),
-                      &numOutBytes);
-        if(hEnvEnc)
-            memcpy( inBuf,inBuf+AACENC_BLOCKSIZE,CORE_INPUT_OFFSET_PS*sizeof(float));
-    
+    reportEvent(10, "encode one AAC frame");
+    AacEncEncode( aacEnc,
+                  inBuf,
+                  useParametricStereo ? 1 : MAX_CHANNELS, /* stride (step) */
+                  ancDataBytes,
+                  &numAncDataBytes,
+                  (unsigned *) (outBuf+ADTS_HEADER_SIZE),
+                  &numOutBytes);
+    if (useParametricStereo) {
+        memcpy( inBuf,inBuf+AACENC_BLOCKSIZE,CORE_INPUT_OFFSET_PS*sizeof(float));
     } else {
-        reportEvent(10, "encode one AAC frame");
-        AacEncEncode( aacEnc,
-                      inBuf + coreReadOffset,
-                      MAX_CHANNELS,
-                      ancDataBytes,
-                      &numAncDataBytes,
-                      (unsigned *) (outBuf+ADTS_HEADER_SIZE),
-                      &numOutBytes);
-        
-        reportEvent(10, "done AAC=", numOutBytes);
-        if(hEnvEnc)
-            memmove( inBuf,inBuf+AACENC_BLOCKSIZE*2*MAX_CHANNELS,writeOffset*sizeof(float));
+        memmove( inBuf,inBuf+AACENC_BLOCKSIZE*2*MAX_CHANNELS,writeOffset*sizeof(float));
     }
     
     /* Write one frame of encoded audio */
