@@ -663,7 +663,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                                 bitrate,
                                                 quality,
                                                 sampleRate,
-                                                dsp->getChannel());
+                                                channel );
 #endif // HAVE_AACPLUS_LIB
                 break;
 
