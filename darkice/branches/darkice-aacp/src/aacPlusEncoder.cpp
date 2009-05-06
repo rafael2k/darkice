@@ -78,7 +78,17 @@ aacPlusEncoder :: open ( void )
 
     reportEvent(1, "Using aacplus codec version", "720 3gpp");
     
-    
+    bitrate = getOutBitrate() * 1000;
+    bandwidth = 0;
+    useParametricStereo = 0;
+    numAncDataBytes=0;
+    coreWriteOffset = 0;
+    envReadOffset = 0;
+    writeOffset = INPUT_DELAY*MAX_CHANNELS;
+    writtenSamples = 0;
+    aacEnc = NULL;
+    hEnvEnc=NULL;
+
     /* set up basic parameters for aacPlus codec */
     AacInitDefaultConfig(&config);
     nChannelsAAC = nChannelsSBR = getOutChannel();
