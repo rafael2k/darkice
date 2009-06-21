@@ -96,6 +96,10 @@
 #include "FaacEncoder.h"
 #endif
 
+#ifdef HAVE_AACPLUS_LIB
+#include "aacPlusEncoder.h"
+#endif
+
 
 /* ===================================================  local data structures */
 
@@ -454,6 +458,8 @@ DarkIce :: configIceCast2 (  const Config      & config,
             format = IceCast2::mp2;
         } else if ( Util::strEq( str, "aac") ) {
             format = IceCast2::aac;
+        } else if ( Util::strEq( str, "aacp") ) {
+            format = IceCast2::aacp;
         } else {
             throw Exception( __FILE__, __LINE__,
                              "unsupported stream format: ", str);
@@ -641,6 +647,24 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                                 sampleRate,
                                                 dsp->getChannel());
 #endif // HAVE_FAAC_LIB
+                break;
+
+            case IceCast2::aacp:
+#ifndef HAVE_AACPLUS_LIB
+                throw Exception( __FILE__, __LINE__,
+                                "DarkIce not compiled with AAC+ support, "
+                                "thus can't aacp stream: ",
+                                stream);
+#else
+                audioOuts[u].encoder = new aacPlusEncoder(
+                                                audioOuts[u].server.get(),
+                                                dsp.get(),
+                                                bitrateMode,
+                                                bitrate,
+                                                quality,
+                                                sampleRate,
+                                                channel );
+#endif // HAVE_AACPLUS_LIB
                 break;
 
             default:
@@ -878,7 +902,8 @@ DarkIce :: configFileCast (  const Config      & config )
         if ( !Util::strEq( format, "vorbis")
           && !Util::strEq( format, "mp3")
           && !Util::strEq( format, "mp2")
-          && !Util::strEq( format, "aac") ) {
+          && !Util::strEq( format, "aac")
+          && !Util::strEq( format, "aacp") ) {
             throw Exception( __FILE__, __LINE__,
                              "unsupported stream format: ", format);
         }
@@ -934,6 +959,12 @@ DarkIce :: configFileCast (  const Config      & config )
             throw Exception(__FILE__, __LINE__,
                             "currently the AAC format only supports "
                             "average bitrate mode");
+        }
+
+        if (Util::strEq(format, "aacp") && bitrateMode != AudioEncoder::cbr) {
+            throw Exception(__FILE__, __LINE__,
+                            "currently the AAC+ format only supports "
+                            "constant bitrate mode");
         }
 
         str         = cs->get( "lowpass");
@@ -1031,6 +1062,22 @@ DarkIce :: configFileCast (  const Config      & config )
                                                 sampleRate,
                                                 dsp->getChannel());
 #endif // HAVE_FAAC_LIB
+        } else if ( Util::strEq( format, "aacp") ) {
+#ifndef HAVE_AACPLUS_LIB
+                throw Exception( __FILE__, __LINE__,
+                                "DarkIce not compiled with AAC+ support, "
+                                "thus can't aacplus stream: ",
+                                stream);
+#else
+                audioOuts[u].encoder = new aacPlusEncoder(
+                                                audioOuts[u].server.get(),
+                                                dsp.get(),
+                                                bitrateMode,
+                                                bitrate,
+                                                quality,
+                                                sampleRate,
+                                                dsp->getChannel());
+#endif // HAVE_AACPLUS_LIB
         } else {
                 throw Exception( __FILE__, __LINE__,
                                 "Illegal stream format: ", format);

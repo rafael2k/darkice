@@ -215,12 +215,14 @@ TcpSocket :: open ( void )                       throw ( Exception )
     snprintf(portstr, sizeof(portstr), "%d", port);
 
     if (getaddrinfo(host , portstr, &hints, &ptr)) {
+        sockfd = 0;
         throw Exception( __FILE__, __LINE__, "getaddrinfo error", errno);
     }
     memcpy ( addr, ptr->ai_addr, ptr->ai_addrlen);
     freeaddrinfo(ptr);
 #else
     if ( !(pHostEntry = gethostbyname( host)) ) {
+        sockfd = 0;
         throw Exception( __FILE__, __LINE__, "gethostbyname error", errno);
     }
     
@@ -231,6 +233,7 @@ TcpSocket :: open ( void )                       throw ( Exception )
 #endif
 
     if ( (sockfd = socket( AF_INET, SOCK_STREAM,  IPPROTO_TCP)) == -1 ) {
+        sockfd = 0;
         throw Exception( __FILE__, __LINE__, "socket error", errno);
     }
 
@@ -281,6 +284,8 @@ TcpSocket :: canRead (      unsigned int    sec,
     ret = pselect( sockfd + 1, &fdset, NULL, NULL, &timespec, &sigset);
 
     if ( ret == -1 ) {
+        ::close( sockfd);
+        sockfd = 0;
         throw Exception( __FILE__, __LINE__, "select error");
     }
 
@@ -313,7 +318,9 @@ TcpSocket :: read (     void          * buf,
                 break;
 
             default:
-                throw Exception( __FILE__, __LINE__, "recv error", errno);
+		::close( sockfd);
+		sockfd = 0;
+		throw Exception( __FILE__, __LINE__, "recv error", errno);
         }
     }
 
@@ -350,6 +357,8 @@ TcpSocket :: canWrite (    unsigned int    sec,
     ret = pselect( sockfd + 1, NULL, &fdset, NULL, &timespec, &sigset);
     
     if ( ret == -1 ) {
+	::close( sockfd);
+	sockfd = 0;
         throw Exception( __FILE__, __LINE__, "select error");
     }
 
@@ -380,6 +389,8 @@ TcpSocket :: write (    const void    * buf,
         if ( errno == EAGAIN ) {
             ret = 0;
         } else {
+	    ::close( sockfd);
+	    sockfd = 0;
             throw Exception( __FILE__, __LINE__, "send error", errno);
         }
     }

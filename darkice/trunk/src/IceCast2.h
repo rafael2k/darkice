@@ -63,7 +63,7 @@ class IceCast2 : public CastSink
         /**
          *  Type for specifying the format of the stream.
          */
-       enum StreamFormat { mp3, mp2, oggVorbis, aac };
+       enum StreamFormat { mp3, mp2, oggVorbis, aac, aacp };
 
 
     private:

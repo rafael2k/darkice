@@ -1,5 +1,8 @@
 DarkIce next release
-
+	
+    o added AAC HEv2 encoding support (branch darkice-aacp merged) through 
+	  libaacplus, http://tipok.org.ua/ru/node/17
+	  thanks to tipok <piratfm@gmail.com> and others for the contribution.
     o bugfix: the configure script recognizes Ogg Vorbis shared objects
 	  now, not just static libraries. Thanks to omroepvenray.
     o bugfix: enabling jack source compilation on Debian Lenny,
