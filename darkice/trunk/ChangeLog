@@ -1,5 +1,6 @@
-DarkIce next release
-	
+05-11-2009 Darkice 0.20 released
+
+    o new maintainer: Rafael Diniz <rafael@riseup.net>	
     o added AAC HEv2 encoding support (branch darkice-aacp merged) through 
 	  libaacplus, http://tipok.org.ua/ru/node/17
 	  thanks to tipok <piratfm@gmail.com> and others for the contribution.
