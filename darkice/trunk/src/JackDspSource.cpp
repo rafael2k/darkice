@@ -31,7 +31,6 @@
 
 /* ============================================================ include files */
 
-#include <limits.h>
 #include "AudioSource.h"
 
 #ifdef SUPPORT_JACK_DSP
@@ -63,6 +62,18 @@
 #include <math.h>
 #else
 #error need math.h
+#endif
+
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#else
+#error needs stdlib.h
+#endif
+
+#ifdef HAVE_LIMITS_H
+#include <limits.h>
+#else
+#error need limits.h
 #endif
 
 #include "Util.h"
