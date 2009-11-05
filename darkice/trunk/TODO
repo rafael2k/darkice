@@ -1,3 +1,5 @@
+o Add samplerate conversion for samplerate audio output different from audio source
+o Add Coreaudio support
 o change Ref to follow inheritance
 o make a master config file, and a small one ?
 o add support for multiple servers for one stream ?
