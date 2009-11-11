@@ -294,9 +294,9 @@ Util :: fileAddDate ( const char * str,
                       const char * format )             throw ( Exception )
 {
     unsigned int    size;
+    const char          * last; 
     char          * s;
     char          * strdate;
-    char          * last;
     time_t          now;
 
     if ( !str ) {
