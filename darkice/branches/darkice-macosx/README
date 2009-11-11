@@ -1,0 +1,75 @@
+DarkIce live audio streamer, http://code.google.com/p/darkice/
+Copyright (c) 2000-2007, Tyrell Hungary, http://tyrell.hu/
+Copyright (c) 2008, Ákos Maróy, akos@maroy.hu
+Copyright (c) 2009, Rafael Diniz, rafael@riseup.net
+
+
+Contents
+--------
+
+1. What is DarkIce?
+2. Compiling and installing
+3. Reporting crashes
+
+
+1. What is DarkIce?
+-------------------
+
+DarkIce is an IceCast, IceCast2 and ShoutCast live audio streamer. It
+takes audio input from a sound card, encodes it into mp3 and/or Ogg Vorbis,
+and sends the mp3 stream to one or more IceCast and/or ShoutCast servers,
+the Ogg Vorbis stream to one or more IceCast2 servers.
+
+DarkIce website: http://code.google.com/p/darkice/
+
+
+2. Compiling and installing
+---------------------------
+
+On how to compile and install, please read the file INSTALL. If you're
+impatient, try:
+
+./configure
+make
+
+The executable built is src/darkice.
+To install, try as root:
+
+make install
+
+
+For documentation, try:
+
+man darkice
+
+
+3. Reporting crashes
+--------------------
+
+When DarkIce core dumps, please send the backtrace along with your error
+report to the darkice mailing list: http://www.freelists.org/list/darkice
+Alternatively you could file a bug report at http://code.google.com/p/darkice/issues/list
+To get the backtrace information, you need gdb, the GNU debugger:
+
+1. configure and compile using the --with-debug option:
+
+./configure --with-debug=yes
+make clean all
+
+2. run darkice from within gdb:
+
+gdb src/darkice
+
+3. set parameters within gdb:
+
+(gdb) set args -c darkice.cfg
+
+4. run:
+
+(gdb) run
+
+5. after coredump, print the backtrace:
+
+(gdb) bt
+
+
