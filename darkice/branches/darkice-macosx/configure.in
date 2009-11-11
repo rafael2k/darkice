@@ -302,6 +302,20 @@ fi
 
 
 dnl-----------------------------------------------------------------------------
+dnl link CoreAudio framework
+dnl-----------------------------------------------------------------------------
+AC_SUBST(COREAUDIO_LDFLAGS)
+
+# Look for Core flag
+AC_ARG_WITH(core, [  --with-core = choose CoreAudio API support (mac only)], [
+  AC_MSG_RESULT(using CoreAudio)
+  AC_CHECK_HEADER(CoreAudio/CoreAudio.h, [], [AC_MSG_ERROR(CoreAudio header files not found!)] )
+  COREAUDIO_LDFLAGS="-framework CoreAudio -framework CoreFoundation"
+  AC_DEFINE( HAVE_COREAUDIO_LIB, 1, [build with CoreAudio support] ) ], )
+
+
+
+dnl-----------------------------------------------------------------------------
 dnl check for MSG_NOSIGNAL for the send() function in libsocket
 dnl-----------------------------------------------------------------------------
 AC_MSG_CHECKING(for MSG_NOSIGNAL)

@@ -118,6 +118,12 @@ AudioSource :: createDspSource( const char    * deviceName,
                                   sampleRate,
                                   bitsPerSample,
                                   channel);
+#elif defined( SUPPORT_COREAUDIO_DSP )
+        Reporter::reportEvent( 1, "Using CoreAudio as input device.");
+        return new CoreAudioDspSource( deviceName,
+                                       sampleRate,
+                                       bitsPerSample,
+                                       channel);
 #else
         throw Exception( __FILE__, __LINE__,
                              "trying to open ALSA DSP device without "

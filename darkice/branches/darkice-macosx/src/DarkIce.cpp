@@ -1191,7 +1191,7 @@ DarkIce :: encode ( void )                          throw ( Exception )
             (dsp->getBitsPerSample() / 8UL) *
             dsp->getChannel() *
             duration;
-                                                
+
     len = encConnector->transfer( bytes, 4096, 1, 0 );
 
     reportEvent( 1, len, "bytes transfered to the encoders");

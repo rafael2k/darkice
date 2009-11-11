@@ -71,6 +71,11 @@
 #define SUPPORT_JACK_DSP 1
 #endif
 
+#if defined( HAVE_COREAUDIO_LIB )
+// we have CoreAudio framework
+#define SUPPORT_COREAUDIO_DSP 1
+#endif
+
 #if defined ( HAVE_TERMIOS_H )
 #define SUPPORT_SERIAL_ULAW 1
 #endif
@@ -78,6 +83,7 @@
 #if !defined( SUPPORT_ALSA_DSP ) \
     && !defined( SUPPORT_OSS_DSP ) \
     && !defined( SUPPORT_JACK_DSP ) \
+    && !defined( SUPPORT_COREAUDIO_DSP ) \
     && !defined( SUPPORT_SOLARIS_DSP ) \
     && !defined( SUPPORT_SERIAL_ULAW)
 // there was no DSP audio system found
@@ -299,6 +305,10 @@ class AudioSource : public Source, public virtual Reporter
 
 #if defined( SUPPORT_JACK_DSP )
 #include "JackDspSource.h"
+#endif
+
+#if defined( SUPPORT_COREAUDIO_DSP )
+#include "CoreAudioDspSource.h"
 #endif
 
 #if defined ( SUPPORT_SERIAL_ULAW )

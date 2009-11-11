@@ -3,7 +3,7 @@ AM_CXXFLAGS = -O2 -pedantic -Wall @DEBUG_CXXFLAGS@ @PTHREAD_CFLAGS@
 			  @JACK_CFLAGS@ 
 INCLUDES = @LAME_INCFLAGS@ @VORBIS_INCFLAGS@ @FAAC_INCFLAGS@ @AACPLUS_INCFLAGS@ @TWOLAME_INCFLAGS@ @ALSA_INCFLAGS@
 LDADD = @PTHREAD_LIBS@ @LAME_LDFLAGS@ @VORBIS_LDFLAGS@ @FAAC_LDFLAGS@ @AACPLUS_LDFLAGS@ @TWOLAME_LDFLAGS@ \
-		@ALSA_LDFLAGS@ @JACK_LDFLAGS@
+		@ALSA_LDFLAGS@ @JACK_LDFLAGS@ @COREAUDIO_LDFLAGS@
 
 darkice_SOURCES =   AudioEncoder.h\
                     AudioSource.h\
@@ -70,5 +70,7 @@ darkice_SOURCES =   AudioEncoder.h\
                     AlsaDspSource.cpp\
 					JackDspSource.h\
 					JackDspSource.cpp\
+					CoreAudioDspSource.h\
+					CoreAudioDspSource.cpp\
                     main.cpp
 
