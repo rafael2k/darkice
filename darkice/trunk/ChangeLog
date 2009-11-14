@@ -1,3 +1,8 @@
+14-11-2009 Darkice 0.20.1 released
+    o added rc.darkice init script
+	  thanks to Niels Dettenbach <nd@syndicat.com>
+    o bugfix: fix for gcc 4.4
+	
 05-11-2009 Darkice 0.20 released
 
     o new maintainer: Rafael Diniz <rafael@riseup.net>	
