@@ -6,7 +6,7 @@ SUBDIRS = src man
 
 sysconf_DATA = darkice.cfg
 
-EXTRA_DIST = $(DOC_DIR) darkice.cfg INSTALL.lame INSTALL.vorbis FAQ
+EXTRA_DIST = $(DOC_DIR) darkice.cfg INSTALL.lame INSTALL.vorbis FAQ rc.darkice
 
 .PHONY: doc
 
