@@ -107,9 +107,11 @@ main (
     int     res = -1;
 
     std::cout << "DarkIce " << VERSION
-         << " live audio streamer, http://darkice.tyrell.hu/"
+         << " live audio streamer, http://code.google.com/p/darkice/"
          << std::endl
          << "Copyright (c) 2000-2007, Tyrell Hungary, http://tyrell.hu/"
+         << std::endl
+         << "Copyright (c) 2008-2009, Akos Maroy and Rafael Diniz" 
          << std::endl << std::endl;
 
     try {

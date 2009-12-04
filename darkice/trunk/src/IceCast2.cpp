@@ -190,7 +190,7 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     }
 
     // send user agent info
-    str = "\nUser-Agent: DarkIce/" VERSION " (http://darkice.tyrell.hu/)";
+    str = "\nUser-Agent: DarkIce/" VERSION " (http://code.google.com/p/darkice/)";
     sink->write( str, strlen( str));
 
     // send the ice- headers
