@@ -1,3 +1,9 @@
+Next release
+    o implemented samplerate conversion for all codecs using libsamplerate, 
+	  and keeping internal aflibConverter as fallback,
+          thanks to Sergiy <piratfm@gmail.com>
+    o bugfix: fix for alsa driver - closes ticked #8
+          thanks to Clemens Ladisch <clemens@ladisch.de> 
 14-11-2009 Darkice 0.20.1 released
     o added rc.darkice init script
 	  thanks to Niels Dettenbach <nd@syndicat.com>
