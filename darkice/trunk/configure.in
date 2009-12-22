@@ -270,6 +270,7 @@ dnl link JACK sound server if requested
 dnl-----------------------------------------------------------------------------
 AC_SUBST(JACK_CFLAGS)
 AC_SUBST(JACK_LDFLAGS)
+AC_SUBST(JACK_INCFLAGS)
 
 AC_ARG_WITH(jack,
 [  --with-jack             use JACK sound system [yes] ],
@@ -301,6 +302,43 @@ else
 fi
 
 
+dnl-----------------------------------------------------------------------------
+dnl link Secret Rabbit Code (aka libsamplerate) if requested 
+dnl-----------------------------------------------------------------------------
+AC_SUBST(SRC_CFLAGS)
+AC_SUBST(SRC_LDFLAGS)
+AC_SUBST(SRC_INCFLAGS)
+
+AC_ARG_WITH(samplerate,
+[  --with-samplerate             use Secret Rabbit Code (aka libsamplerate) for samplerate conversion [yes] ],
+    USE_SRC=${withval}, USE_SRC="yes" )
+AC_ARG_WITH(samplerate-prefix,
+[  --with-samplerate-prefix=DIR      alternate location for samplerate [/usr]
+                              look for libraries in SRC-PREFIX/lib,
+                              for headers in SRC-PREFIX/include],
+    CONFIG_SRC_PREFIX="${withval}", CONFIG_SRC_PREFIX="/usr")
+
+if test "x${USE_SRC}" = "xyes" ; then
+    AC_MSG_CHECKING( [for samplerate libraries at ${CONFIG_SRC_PREFIX}] )
+    LA_SEARCH_LIB( SRC_LIB_LOC, SRC_INC_LOC, libsamplerate.la libsamplerate.so libsamplerate.dylib, samplerate.h,
+                   ${CONFIG_SRC_PREFIX})
+
+    if test "x${SRC_LIB_LOC}" != "x" ; then
+
+        AC_DEFINE( HAVE_SRC_LIB, 1, [build with samplerate conversion through libsamplerate] )
+        if test "x${SRC_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
+            SRC_INCFLAGS="-I${SRC_INC_LOC}"
+        fi
+        SRC_LDFLAGS="-L${SRC_LIB_LOC} -lsamplerate"
+        AC_MSG_RESULT( [found at ${CONFIG_SRC_PREFIX}] )
+    else
+        AC_MSG_WARN( [not found, building libsamplerate support])
+    fi
+else
+    AC_MSG_RESULT( [building without libsamplerate support] )
+fi
+
+AM_CONDITIONAL(HAVE_SRC_LIB, test "x${SRC_LIB_LOC}" != "x")
 dnl-----------------------------------------------------------------------------
 dnl check for MSG_NOSIGNAL for the send() function in libsocket
 dnl-----------------------------------------------------------------------------

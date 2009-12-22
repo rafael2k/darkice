@@ -1,9 +1,21 @@
 bin_PROGRAMS = darkice
 AM_CXXFLAGS = -O2 -pedantic -Wall @DEBUG_CXXFLAGS@ @PTHREAD_CFLAGS@
 			  @JACK_CFLAGS@ 
-INCLUDES = @LAME_INCFLAGS@ @VORBIS_INCFLAGS@ @FAAC_INCFLAGS@ @AACPLUS_INCFLAGS@ @TWOLAME_INCFLAGS@ @ALSA_INCFLAGS@
+INCLUDES = @LAME_INCFLAGS@ @VORBIS_INCFLAGS@ @FAAC_INCFLAGS@ @AACPLUS_INCFLAGS@ @TWOLAME_INCFLAGS@ \
+		@ALSA_INCFLAGS@ @JACK_INCFLAGS@ @SRC_INCFLAGS@
 LDADD = @PTHREAD_LIBS@ @LAME_LDFLAGS@ @VORBIS_LDFLAGS@ @FAAC_LDFLAGS@ @AACPLUS_LDFLAGS@ @TWOLAME_LDFLAGS@ \
-		@ALSA_LDFLAGS@ @JACK_LDFLAGS@
+		@ALSA_LDFLAGS@ @JACK_LDFLAGS@ @SRC_LDFLAGS@
+
+if HAVE_SRC_LIB
+AFLIB_SOURCE = 
+else
+AFLIB_SOURCE = aflibDebug.h\
+                aflibDebug.cc\
+                aflibConverter.h\
+                aflibConverter.cc\
+                aflibConverterLargeFilter.h\
+                aflibConverterSmallFilter.h
+endif
 
 darkice_SOURCES =   AudioEncoder.h\
                     AudioSource.h\
@@ -40,12 +52,6 @@ darkice_SOURCES =   AudioEncoder.h\
                     FaacEncoder.h\
                     aacPlusEncoder.cpp\
                     aacPlusEncoder.h\
-                    aflibDebug.h\
-                    aflibDebug.cc\
-                    aflibConverter.h\
-                    aflibConverter.cc\
-                    aflibConverterLargeFilter.h\
-                    aflibConverterSmallFilter.h\
                     OssDspSource.cpp\
                     OssDspSource.h\
                     SerialUlaw.cpp\
@@ -68,7 +74,14 @@ darkice_SOURCES =   AudioEncoder.h\
                     Reporter.cpp\
                     AlsaDspSource.h\
                     AlsaDspSource.cpp\
-					JackDspSource.h\
-					JackDspSource.cpp\
-                    main.cpp
+                    JackDspSource.h\
+                    JackDspSource.cpp\
+                    main.cpp \
+                    $(AFLIB_SOURCE)
 
+EXTRA_darkice_SOURCES = aflibDebug.h\
+                        aflibDebug.cc\
+                        aflibConverter.h\
+                        aflibConverter.cc\
+                        aflibConverterLargeFilter.h\
+                        aflibConverterSmallFilter.h

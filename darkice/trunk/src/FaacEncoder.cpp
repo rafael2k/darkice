@@ -81,7 +81,7 @@ FaacEncoder :: open ( void )
     faacEncGetVersion(&faacVersion, &faacCopyright);
     reportEvent(1, "Using faac codec version", faacVersion);
 
-    encoderHandle = faacEncOpen(getInSampleRate(),
+    encoderHandle = faacEncOpen(getOutSampleRate(),
                                 getInChannel(),
                                 &inputSamples,
                                 &maxOutputBytes);
@@ -105,6 +105,31 @@ FaacEncoder :: open ( void )
     if (!faacEncSetConfiguration(encoderHandle, faacConfig)) {
         throw Exception(__FILE__, __LINE__,
                         "error configuring faac library");
+    }
+
+    // initialize the resampling coverter if needed
+    if ( converter ) {
+
+#ifdef HAVE_SRC_LIB
+        converterData.input_frames   = 4096/((getInBitsPerSample() / 8) * getInChannel());
+        converterData.data_in        = new float[converterData.input_frames*getInChannel()];
+        converterData.output_frames  = (int) (converterData.input_frames * resampleRatio + 1);
+        if ((int) inputSamples >  getInChannel() * converterData.output_frames) {
+            resampledOffset       = new float[2 * inputSamples];
+        } else {
+            resampledOffset       = new float[2 * getInChannel() * converterData.input_frames];
+        }
+        converterData.src_ratio      = resampleRatio;
+        converterData.end_of_input   = 0;
+#else
+        converter->initialize( resampleRatio, getInChannel());
+        //needed 2x(converted input samples) to handle offsets
+	int         outCount = 2 * getInChannel() * (inputSamples + 1);
+        if (resampleRatio > 1)
+	    outCount = (int) (outCount * resampleRatio);        
+        resampledOffset = new short int[outCount];
+#endif
+        resampledOffsetSize = 0;
     }
 
     faacOpen = true;
@@ -134,25 +159,89 @@ FaacEncoder :: write (  const void    * buf,
     int             samples          = (int) nSamples * channels;
     int             processedSamples = 0;
 
-    while (processedSamples < samples) {
-        int     outputBytes;
-        int     inSamples = samples - processedSamples < (int) inputSamples
-                          ? samples - processedSamples
-                          : inputSamples;
 
-        outputBytes = faacEncEncode(encoderHandle,
-                                   (int32_t*) (b + processedSamples/sampleSize),
-                                    inSamples,
-                                    faacBuf,
-                                    maxOutputBytes);
-        getSink()->write(faacBuf, outputBytes);
 
-        processedSamples += inSamples;
+    if ( converter ) {
+        unsigned int         converted;
+#ifdef HAVE_SRC_LIB
+        src_short_to_float_array ((short *) b, converterData.data_in, samples);
+        converterData.input_frames   = nSamples;
+        converterData.data_out = resampledOffset + (resampledOffsetSize * channels);
+        int srcError = src_process (converter, &converterData);
+        if (srcError)
+             throw Exception (__FILE__, __LINE__, "libsamplerate error: ", src_strerror (srcError));
+        converted = converterData.output_frames_gen;
+#else
+        int         inCount  = nSamples;
+        short int     * shortBuffer  = new short int[samples];
+        int         outCount = (int) (inCount * resampleRatio);
+        Util::conv( bitsPerSample, b, processed, shortBuffer, isInBigEndian());
+        converted = converter->resample( inCount,
+                                         outCount+1,
+                                         shortBuffer,
+                                         &resampledOffset[resampledOffsetSize*channels]);
+        delete[] shortBuffer;
+#endif
+        resampledOffsetSize += converted;
+
+        // encode samples (if enough)
+        while(resampledOffsetSize - processedSamples >= inputSamples/channels) {
+            int outputBytes;
+#ifdef HAVE_SRC_LIB
+            short *shortData = new short[inputSamples];
+            src_float_to_short_array(resampledOffset + (processedSamples * channels),
+                                     shortData, inputSamples) ;
+            outputBytes = faacEncEncode(encoderHandle,
+                                       (int32_t*) shortData,
+                                        inputSamples,
+                                        faacBuf,
+                                        maxOutputBytes);
+            delete [] shortData;
+#else
+            outputBytes = faacEncEncode(encoderHandle,
+                                       (int32_t*) &resampledOffset[processedSamples*channels],
+                                        inputSamples,
+                                        faacBuf,
+                                        maxOutputBytes);
+#endif
+            getSink()->write(faacBuf, outputBytes);
+            processedSamples+=inputSamples/channels;
+        }
+
+        if (processedSamples && (int) resampledOffsetSize >= processedSamples) {
+            resampledOffsetSize -= processedSamples;
+            //move least part of resampled data to beginning
+            if(resampledOffsetSize)
+#ifdef HAVE_SRC_LIB
+                resampledOffset = (float *) memmove(resampledOffset, &resampledOffset[processedSamples*channels],
+                                                    resampledOffsetSize*channels*sizeof(float));
+#else
+                resampledOffset = (short *) memmove(resampledOffset, &resampledOffset[processedSamples*channels],
+                                                    resampledOffsetSize*sampleSize);
+#endif
+        }
+    } else {
+        while (processedSamples < samples) {
+            int     outputBytes;
+            int     inSamples = samples - processedSamples < (int) inputSamples
+                              ? samples - processedSamples
+                              : inputSamples;
+
+            outputBytes = faacEncEncode(encoderHandle,
+                                       (int32_t*) (b + processedSamples/sampleSize),
+                                        inSamples,
+                                        faacBuf,
+                                        maxOutputBytes);
+            getSink()->write(faacBuf, outputBytes);
+
+            processedSamples += inSamples;
+        }
     }
 
     delete[] faacBuf;
 
-    return processedSamples;
+//    return processedSamples;
+    return samples;
 }
 
 
