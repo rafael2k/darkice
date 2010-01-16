@@ -190,6 +190,7 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
     configIceCast( config, bufferSecs);
     configIceCast2( config, bufferSecs);
     configShoutCast( config, bufferSecs);
+    configRtpCast( config, bufferSecs);
     configFileCast( config);
 }
 
@@ -569,6 +570,268 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                             url,
                                             genre,
                                             isPublic,
+                                            localDumpFile,
+                                            bufferSecs );
+
+        switch ( format ) {
+            case IceCast2::mp3:
+#ifndef HAVE_LAME_LIB
+                throw Exception( __FILE__, __LINE__,
+                                 "DarkIce not compiled with lame support, "
+                                 "thus can't create mp3 stream: ",
+                                 stream);
+#else
+                audioOuts[u].encoder = new LameLibEncoder(
+                                                    audioOuts[u].server.get(),
+                                                    dsp.get(),
+                                                    bitrateMode,
+                                                    bitrate,
+                                                    quality,
+                                                    sampleRate,
+                                                    channel,
+                                                    lowpass,
+                                                    highpass );
+#endif // HAVE_LAME_LIB
+                break;
+
+
+            case IceCast2::oggVorbis:
+#ifndef HAVE_VORBIS_LIB
+                throw Exception( __FILE__, __LINE__,
+                                "DarkIce not compiled with Ogg Vorbis support, "
+                                "thus can't Ogg Vorbis stream: ",
+                                stream);
+#else
+                audioOuts[u].encoder = new VorbisLibEncoder(
+                                                audioOuts[u].server.get(),
+                                                dsp.get(),
+                                                bitrateMode,
+                                                bitrate,
+                                                quality,
+                                                sampleRate,
+                                                dsp->getChannel(),
+                                                maxBitrate);
+#endif // HAVE_VORBIS_LIB
+                break;
+
+            case IceCast2::mp2:
+#ifndef HAVE_TWOLAME_LIB
+                throw Exception( __FILE__, __LINE__,
+                                 "DarkIce not compiled with TwoLame support, "
+                                 "thus can't create mp2 stream: ",
+                                 stream);
+#else
+                audioOuts[u].encoder = new TwoLameLibEncoder(
+                                                    audioOuts[u].server.get(),
+                                                    dsp.get(),
+                                                    bitrateMode,
+                                                    bitrate,
+                                                    sampleRate,
+                                                    channel );
+#endif // HAVE_TWOLAME_LIB
+                break;
+
+
+            case IceCast2::aac:
+#ifndef HAVE_FAAC_LIB
+                throw Exception( __FILE__, __LINE__,
+                                "DarkIce not compiled with AAC support, "
+                                "thus can't aac stream: ",
+                                stream);
+#else
+                audioOuts[u].encoder = new FaacEncoder(
+                                                audioOuts[u].server.get(),
+                                                dsp.get(),
+                                                bitrateMode,
+                                                bitrate,
+                                                quality,
+                                                sampleRate,
+                                                dsp->getChannel());
+#endif // HAVE_FAAC_LIB
+                break;
+
+            case IceCast2::aacp:
+#ifndef HAVE_AACPLUS_LIB
+                throw Exception( __FILE__, __LINE__,
+                                "DarkIce not compiled with AAC+ support, "
+                                "thus can't aacp stream: ",
+                                stream);
+#else
+                audioOuts[u].encoder = new aacPlusEncoder(
+                                                audioOuts[u].server.get(),
+                                                dsp.get(),
+                                                bitrateMode,
+                                                bitrate,
+                                                quality,
+                                                sampleRate,
+                                                channel );
+#endif // HAVE_AACPLUS_LIB
+                break;
+
+            default:
+                throw Exception( __FILE__, __LINE__,
+                                "Illegal stream format: ", format);
+        }
+
+        encConnector->attach( audioOuts[u].encoder.get());
+    }
+
+    noAudioOuts += u;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Look for the RtpCast stream outputs in the config file
+ *----------------------------------------------------------------------------*/
+void
+DarkIce :: configRtpCast (  const Config      & config,
+                             unsigned int        bufferSecs  )
+                                                        throw ( Exception )
+{
+    // look for RtpCast encoder output streams,
+    // sections [rtpcast-0], [rtpcast-1], ...
+    char            stream[]        = "rtp- ";
+    size_t          streamLen       = Util::strLen( stream);
+    unsigned int    u;
+
+    for ( u = noAudioOuts; u < maxOutput; ++u ) {
+        const ConfigSection    * cs;
+
+        // ugly hack to change the section name to "stream0", "stream1", etc.
+        stream[streamLen-1] = '0' + (u - noAudioOuts);
+
+        if ( !(cs = config.get( stream)) ) {
+            break;
+        }
+
+        const char                * str;
+
+        IceCast2::StreamFormat      format;
+        unsigned int                sampleRate      = 0;
+        unsigned int                channel         = 0;
+        AudioEncoder::BitrateMode   bitrateMode;
+        unsigned int                bitrate         = 0;
+        unsigned int                maxBitrate      = 0;
+        double                      quality         = 0.0;
+        const char                * dstip           = 0;
+        unsigned int                port            = 0;
+        bool                        isRaw           = false;
+
+        int                         lowpass         = 0;
+        int                         highpass        = 0;
+        const char                * localDumpName   = 0;
+        FileSink                  * localDumpFile   = 0;
+        bool                        fileAddDate     = false;
+        const char                * fileDateFormat  = 0;
+
+        str         = cs->getForSure( "format", " missing in section ", stream);
+        if ( Util::strEq( str, "vorbis") ) {
+            format = IceCast2::oggVorbis;
+        } else if ( Util::strEq( str, "mp3") ) {
+            format = IceCast2::mp3;
+        } else if ( Util::strEq( str, "mp2") ) {
+            format = IceCast2::mp2;
+        } else if ( Util::strEq( str, "aac") ) {
+            format = IceCast2::aac;
+        } else if ( Util::strEq( str, "aacp") ) {
+            format = IceCast2::aacp;
+        } else {
+            throw Exception( __FILE__, __LINE__,
+                             "unsupported stream format: ", str);
+        }
+
+
+        str         = cs->get( "sampleRate");
+        sampleRate  = str ? Util::strToL( str) : dsp->getSampleRate();
+        str         = cs->get( "channel");
+        channel     = str ? Util::strToL( str) : dsp->getChannel();
+
+        // determine fixed bitrate or variable bitrate quality
+        str         = cs->get( "bitrate");
+        bitrate     = str ? Util::strToL( str) : 0;
+        str         = cs->get( "maxBitrate");
+        maxBitrate  = str ? Util::strToL( str) : 0;
+        str         = cs->get( "quality");
+        quality     = str ? Util::strToD( str) : 0.0;
+
+        str         = cs->getForSure( "bitrateMode",
+                                      " not specified in section ",
+                                      stream);
+        if ( Util::strEq( str, "cbr") ) {
+            bitrateMode = AudioEncoder::cbr;
+
+            if ( bitrate == 0 ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "bitrate not specified for CBR encoding");
+            }
+        } else if ( Util::strEq( str, "abr") ) {
+            bitrateMode = AudioEncoder::abr;
+
+            if ( bitrate == 0 ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "bitrate not specified for ABR encoding");
+            }
+        } else if ( Util::strEq( str, "vbr") ) {
+            bitrateMode = AudioEncoder::vbr;
+
+            if ( cs->get( "quality" ) == 0 ) {
+                throw Exception( __FILE__, __LINE__,
+                                 "quality not specified for VBR encoding");
+            }
+        } else {
+            throw Exception( __FILE__, __LINE__,
+                             "invalid bitrate mode: ", str);
+        }
+
+        dstip      = cs->getForSure( "dstip", " missing in section ", stream);
+        str         = cs->getForSure( "port", " missing in section ", stream);
+        str         = cs->get( "isRaw");
+        isRaw       = str ? (Util::strEq( str, "yes") ? true : false) : false;
+        str         = cs->get( "lowpass");
+        lowpass     = str ? Util::strToL( str) : 0;
+        str         = cs->get( "highpass");
+        highpass    = str ? Util::strToL( str) : 0;
+        str         = cs->get( "fileAddDate");
+        fileAddDate = str ? (Util::strEq( str, "yes") ? true : false) : false;
+        fileDateFormat = cs->get( "fileDateFormat");
+
+        localDumpName = cs->get( "localDumpFile");
+
+        // go on and create the things
+
+        // check for and create the local dump file if needed
+        if ( localDumpName != 0 ) {
+            if ( fileAddDate ) {
+                if (fileDateFormat == 0) {
+                    localDumpName = Util::fileAddDate(localDumpName);
+                }
+                else {
+                    localDumpName = Util::fileAddDate(  localDumpName,
+                                                        fileDateFormat );
+                }
+            }
+
+            localDumpFile = new FileSink( stream, localDumpName);
+            if ( !localDumpFile->exists() ) {
+                if ( !localDumpFile->create() ) {
+                    reportEvent( 1, "can't create local dump file",
+                                    localDumpName);
+                    localDumpFile = 0;
+                }
+            }
+            if ( fileAddDate ) {
+                delete[] localDumpName;
+            }
+        }
+
+        // streaming related stuff
+        audioOuts[u].socket = new NetSocket( server, port);
+        audioOuts[u].server = new RtpCast( audioOuts[u].socket.get(),
+                                            format,
+                                            bitrate,
+                                            sampleRate,
+                                            channel,
+                                            isRaw,
                                             localDumpFile,
                                             bufferSecs );
 

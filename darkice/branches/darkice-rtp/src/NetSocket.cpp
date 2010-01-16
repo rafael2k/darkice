@@ -114,10 +114,12 @@ static const char fileid[] = "$Id$";
  *----------------------------------------------------------------------------*/
 void
 NetSocket :: init (   const char    * host,
-                      unsigned short  port )          throw ( Exception )
+                      unsigned short  port,
+                      bool            isUdp )          throw ( Exception )
 {
     this->host   = Util::strDup( host);
     this->port   = port;
+    this->isUdp   = isUdp;
     this->sockfd = 0;
 }
 
@@ -144,7 +146,7 @@ NetSocket :: NetSocket (  const NetSocket &    ss )    throw ( Exception )
 {
     int     fd;
     
-    init( ss.host, ss.port);
+    init( ss.host, ss.port, ss.isUdp );
 
     if ( (fd = ss.sockfd ? dup( ss.sockfd) : 0) == -1 ) {
         strip();
@@ -172,7 +174,7 @@ NetSocket :: operator= (  const NetSocket &    ss )   throw ( Exception )
         Sink::operator=( ss );
         Source::operator=( ss );
 
-        init( ss.host, ss.port);
+        init( ss.host, ss.port, ss.isUdp );
         
         if ( (fd = ss.sockfd ? dup( ss.sockfd) : 0) == -1 ) {
             strip();
@@ -197,11 +199,12 @@ NetSocket :: open ( void )                       throw ( Exception )
 #ifdef HAVE_ADDRINFO
     struct addrinfo         hints
     struct addrinfo       * ptr;
-    struct sockaddr_storage addr;
+    struct sockaddr_storage addr, laddr;
     char                    portstr[6];
 #else
-    struct sockaddr_in      addr;
+    struct sockaddr_in      addr, laddr;
     struct hostent        * pHostEntry;
+    struct ip_mreq          mreq;
 #endif
  
     if ( isOpen() ) {
@@ -210,11 +213,11 @@ NetSocket :: open ( void )                       throw ( Exception )
 
 #ifdef HAVE_ADDRINFO
     memset(&hints, 0, sizeof(hints));
-    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_socktype = isUdp ? SOCK_DGRAM : SOCK_STREAM;
     hints.ai_family = AF_ANY;
     snprintf(portstr, sizeof(portstr), "%d", port);
 
-    if (getaddrinfo(host , portstr, &hints, &ptr)) {
+    if (getaddrinfo(isUdp ? "0.0.0.0" : host , portstr, &hints, &ptr)) {
         sockfd = 0;
         throw Exception( __FILE__, __LINE__, "getaddrinfo error", errno);
     }
@@ -229,19 +232,63 @@ NetSocket :: open ( void )                       throw ( Exception )
     memset( &addr, 0, sizeof(addr));
     addr.sin_family      = AF_INET;
     addr.sin_port        = htons(port);
-    addr.sin_addr.s_addr = *((long*) pHostEntry->h_addr_list[0]);
+    addr.sin_addr.s_addr = isUdp ? INADDR_ANY : *((long*) pHostEntry->h_addr_list[0]);
 #endif
 
-    if ( (sockfd = socket( AF_INET, SOCK_STREAM,  IPPROTO_TCP)) == -1 ) {
+    if ( (sockfd = socket( AF_INET, isUdp ? SOCK_DGRAM : SOCK_STREAM, isUdp ? IPPROTO_UDP : IPPROTO_TCP)) == -1 ) {
         sockfd = 0;
         throw Exception( __FILE__, __LINE__, "socket error", errno);
     }
 
-    // set TCP keep-alive
+    // set TCP keep-alive / UDP reuse address
     optval = 1;
     optlen = sizeof(optval);
-    if (setsockopt(sockfd, SOL_SOCKET, SO_KEEPALIVE, &optval, optlen) == -1) {  
-        reportEvent(5, "can't set TCP socket keep-alive mode", errno);
+    if (isUdp) {
+        if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, optlen) == -1) {
+            reportEvent(5, "can't set UDP reuse address", errno);
+        }
+    } else {
+        if(setsockopt(sockfd, SOL_SOCKET, SO_KEEPALIVE, &optval, optlen) == -1) {
+            reportEvent(5, "can't set TCP socket keep-alive mode", errno);
+        }
+    }
+
+    if (isUdp) {
+#ifdef HAVE_ADDRINFO
+        //todo: implement when ADDRINFO used
+        memset(&hints, 0, sizeof(hints));
+        hints.ai_socktype = SOCK_DGRAM;
+        hints.ai_family = AF_ANY;
+        snprintf(portstr, sizeof(portstr), "%d", port);
+
+        if (getaddrinfo(host , portstr, &hints, &ptr)) {
+            sockfd = 0;
+            throw Exception( __FILE__, __LINE__, "getaddrinfo error", errno);
+        }
+        memcpy ( laddr, ptr->ai_addr, ptr->ai_addrlen);
+        freeaddrinfo(ptr);
+#else
+        memset(&mreq, 0, sizeof(struct ip_mreq));
+        mreq.imr_multiaddr = *((long*) pHostEntry->h_addr_list[0]);
+
+        if (IN_MULTICAST(ntohl(mreq.imr_multiaddr.s_addr))) {
+            mreq.imr_interface.s_addr=INADDR_ANY;
+            if(setsockopt(sockfd, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) == -1) {
+                ::close( sockfd);
+                sockfd = 0;
+                throw Exception( __FILE__, __LINE__, "can't join multicast address", errno);
+            }
+        }
+        memset( &laddr, 0, sizeof(addr));
+        laddr.sin_family      = AF_INET;
+        laddr.sin_port        = htons(port);
+        laddr.sin_addr.s_addr = INADDR_ANY;
+#endif
+        if (bind(sockfd, (struct sockaddr*)&laddr, sizeof(laddr))) {
+            ::close( sockfd);
+            sockfd = 0;
+            throw Exception( __FILE__, __LINE__, "can't bind UDP socket", errno);
+        }
     }
 
     // connect
@@ -267,7 +314,7 @@ NetSocket :: canRead (      unsigned int    sec,
     sigset_t            sigset;
     int                 ret;
 
-    if ( !isOpen() ) {
+    if ( !isOpen() || isUdp ) {
         return false;
     }
 
@@ -302,7 +349,7 @@ NetSocket :: read (     void          * buf,
 {
     int         ret;
 
-    if ( !isOpen() ) {
+    if ( !isOpen() || isUdp ) {
         return 0;
     }
 
@@ -342,6 +389,8 @@ NetSocket :: canWrite (    unsigned int    sec,
 
     if ( !isOpen() ) {
         return false;
+    } else if ( isUdp ) {
+        return true;
     }
 
     FD_ZERO( &fdset);
@@ -382,7 +431,7 @@ NetSocket :: write (    const void    * buf,
 #ifdef HAVE_MSG_NOSIGNAL
     ret = send( sockfd, buf, len, MSG_NOSIGNAL);
 #else
-    ret = send( sockfd, buf, len, 0);
+    ret = send( sockfd, buf, len, isUdp ? MSG_DONTWAIT : 0);
 #endif
 
     if ( ret == -1 ) {

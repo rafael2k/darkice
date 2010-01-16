@@ -75,6 +75,11 @@ class NetSocket : public Source, public Sink, public virtual Reporter
         int                 sockfd;
         
         /**
+         *  Type of socket.
+         */
+        bool                isUdp;
+
+        /**
          *  Initialize the object.
          *
          *  @param host name of the host this socket connects to.
@@ -83,7 +88,8 @@ class NetSocket : public Source, public Sink, public virtual Reporter
          */
         void
         init (  const char        * host,
-                unsigned short      port )              throw ( Exception );
+                unsigned short      port,
+                bool                isUdp )              throw ( Exception );
 
         /**
          *  De-initialize the object.
@@ -119,9 +125,10 @@ class NetSocket : public Source, public Sink, public virtual Reporter
          */
         inline
         NetSocket(   const char        * host,
-                     unsigned short      port )         throw ( Exception )
+                     unsigned short      port,
+                     bool                isUdp )         throw ( Exception )
         {
-            init( host, port);
+            init( host, port, isUdp );
         }
 
         /**
