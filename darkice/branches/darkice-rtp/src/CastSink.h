@@ -39,7 +39,7 @@
 #include "Ref.h"
 #include "Reporter.h"
 #include "Sink.h"
-#include "TcpSocket.h"
+#include "NetSocket.h"
 #include "BufferedSink.h"
 
 
@@ -66,7 +66,7 @@ class CastSink : public Sink, public virtual Reporter
         /**
          *  The socket connection to the server.
          */
-        Ref<TcpSocket>      socket;
+        Ref<NetSocket>      socket;
 
         /**
          *  The BufferedSink encapsulating the socket connection to the server.
@@ -128,7 +128,7 @@ class CastSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         void
-        init (  TcpSocket             * socket,
+        init (  NetSocket             * socket,
                 Sink                  * streamDump,
                 const char            * password,
                 unsigned int            bitRate,
@@ -182,11 +182,11 @@ class CastSink : public Sink, public virtual Reporter
         }
 
         /**
-         *  Get the TcpSocket underneath this CastSink.
+         *  Get the NetSocket underneath this CastSink.
          *
-         *  @return pointer to the TcpSocket underneath this CastSink.
+         *  @return pointer to the NetSocket underneath this CastSink.
          */
-        inline TcpSocket *
+        inline NetSocket *
         getSocket ( void ) const                    throw ()
         {
             return socket.get();
@@ -211,7 +211,7 @@ class CastSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline
-        CastSink (  TcpSocket         * socket,
+        CastSink (  NetSocket         * socket,
                     const char        * password,
                     unsigned int        bitRate,
                     const char        * name           = 0,

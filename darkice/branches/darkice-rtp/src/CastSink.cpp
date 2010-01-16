@@ -54,7 +54,7 @@ static const char fileid[] = "$Id$";
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-CastSink :: init (  TcpSocket             * socket,
+CastSink :: init (  NetSocket             * socket,
                     Sink                  * streamDump,
                     const char            * password,
                     unsigned int            bitRate,

@@ -37,7 +37,7 @@
 /* ============================================================ include files */
 
 #include "Sink.h"
-#include "TcpSocket.h"
+#include "NetSocket.h"
 #include "CastSink.h"
 
 
@@ -151,7 +151,7 @@ class ShoutCast : public CastSink
          *  @exception Exception
          */
         inline
-        ShoutCast ( TcpSocket         * socket,
+        ShoutCast ( NetSocket         * socket,
                     const char        * password,
                     const char        * mountPoint,
                     unsigned int        bitRate,

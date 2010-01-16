@@ -37,7 +37,7 @@
 /* ============================================================ include files */
 
 #include "Sink.h"
-#include "TcpSocket.h"
+#include "NetSocket.h"
 #include "CastSink.h"
 
 
@@ -143,7 +143,7 @@ class IceCast : public CastSink
          *  @exception Exception
          */
         inline
-        IceCast (   TcpSocket         * socket,
+        IceCast (   NetSocket         * socket,
                     const char        * password,
                     const char        * mountPoint,
                     unsigned int        bitRate,

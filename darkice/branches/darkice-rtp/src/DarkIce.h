@@ -56,7 +56,7 @@
 #include "BufferedSink.h"
 #include "Connector.h"
 #include "AudioEncoder.h"
-#include "TcpSocket.h"
+#include "NetSocket.h"
 #include "CastSink.h"
 #include "DarkIceConfig.h"
 
@@ -90,7 +90,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
          */
         typedef struct {
             Ref<AudioEncoder>       encoder;
-            Ref<TcpSocket>          socket;
+            Ref<NetSocket>          socket;
             Ref<CastSink>           server;
         } Output;
 

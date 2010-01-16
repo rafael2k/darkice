@@ -4,7 +4,7 @@
 
    Tyrell DarkIce
 
-   File     : TcpSocket.h
+   File     : NetSocket.h
    Version  : $Revision$
    Author   : $Author$
    Location : $HeadURL$
@@ -55,7 +55,7 @@
  *  @author  $Author$
  *  @version $Revision$
  */
-class TcpSocket : public Source, public Sink, public virtual Reporter
+class NetSocket : public Source, public Sink, public virtual Reporter
 {
     private:
 
@@ -102,7 +102,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline
-        TcpSocket ( void )                             throw ( Exception )
+        NetSocket ( void )                             throw ( Exception )
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -118,7 +118,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline
-        TcpSocket(   const char        * host,
+        NetSocket(   const char        * host,
                      unsigned short      port )         throw ( Exception )
         {
             init( host, port);
@@ -127,10 +127,10 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
         /**
          *  Copy constructor.
          *
-         *  @param ss the TcpSocket to copy.
+         *  @param ss the NetSocket to copy.
          *  @exception Exception
          */
-        TcpSocket(   const TcpSocket &    ss )        throw ( Exception );
+        NetSocket(   const NetSocket &    ss )        throw ( Exception );
 
         /**
          *  Destructor.
@@ -138,7 +138,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~TcpSocket( void )                           throw ( Exception )
+        ~NetSocket( void )                           throw ( Exception )
         {
             strip();
         }
@@ -146,12 +146,12 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
         /**
          *  Assignment operator.
          *
-         *  @param ss the TcpSocket to assign this to.
-         *  @return a reference to this TcpSocket.
+         *  @param ss the NetSocket to assign this to.
+         *  @return a reference to this NetSocket.
          *  @exception Exception
          */
-        inline virtual TcpSocket &
-        operator= ( const TcpSocket &    ss )        throw ( Exception );
+        inline virtual NetSocket &
+        operator= ( const NetSocket &    ss )        throw ( Exception );
 
         /**
          *  Get the host this socket connects to.
@@ -176,7 +176,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
         }
 
         /**
-         *  Open the TcpSocket.
+         *  Open the NetSocket.
          *
          *  @return true if opening was successfull, false otherwise.
          *  @exception Exception
@@ -185,9 +185,9 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
         open ( void )                               throw ( Exception );
 
         /**
-         *  Check if the TcpSocket is open.
+         *  Check if the NetSocket is open.
          *
-         *  @return true if the TcpSocket is open, false otherwise.
+         *  @return true if the NetSocket is open, false otherwise.
          */
         inline virtual bool
         isOpen ( void ) const                       throw ()
@@ -201,7 +201,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          *
          *  @param sec the maximum seconds to block.
          *  @param usec micro seconds to block after the full seconds.
-         *  @return true if the TcpSocket is ready to be read from,
+         *  @return true if the NetSocket is ready to be read from,
          *          false otherwise.
          *  @exception Exception
          */
@@ -210,7 +210,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
                        unsigned int    usec )       throw ( Exception );
 
         /**
-         *  Read from the TcpSocket.
+         *  Read from the NetSocket.
          *
          *  @param buf the buffer to read into.
          *  @param len the number of bytes to read into buf
@@ -223,12 +223,12 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
 
 
         /**
-         *  Check if the TcpSocket is ready to accept data.
+         *  Check if the NetSocket is ready to accept data.
          *  Blocks until the specified time for data to be available.
          *
          *  @param sec the maximum seconds to block.
          *  @param usec micro seconds to block after the full seconds.
-         *  @return true if the TcpSocket is ready to accept data,
+         *  @return true if the NetSocket is ready to accept data,
          *          false otherwise.
          *  @exception Exception
          */
@@ -237,7 +237,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
                        unsigned int    usec )       throw ( Exception );
 
         /**
-         *  Write data to the TcpSocket.
+         *  Write data to the NetSocket.
          *
          *  @param buf the data to write.
          *  @param len number of bytes to write from buf.
@@ -249,7 +249,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
                        unsigned int    len )        throw ( Exception );
 
         /**
-         *  Flush all data that was written to the TcpSocket to the underlying
+         *  Flush all data that was written to the NetSocket to the underlying
          *  connection.
          *
          *  @exception Exception
@@ -264,7 +264,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          *  This usually means separating the data sent to the sink up
          *  until now, and start saving a new chunk of data.
          *
-         *  For TcpSocket, this is a no-op.
+         *  For NetSocket, this is a no-op.
          */
         inline virtual void
         cut ( void )                                    throw ()
@@ -272,7 +272,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
         }
 
         /**
-         *  Close the TcpSocket.
+         *  Close the NetSocket.
          *
          *  @exception Exception
          */

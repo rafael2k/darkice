@@ -345,7 +345,7 @@ DarkIce :: configIceCast (  const Config      & config,
             }
         }
         // streaming related stuff
-        audioOuts[u].socket = new TcpSocket( server, port);
+        audioOuts[u].socket = new NetSocket( server, port);
         audioOuts[u].server = new IceCast( audioOuts[u].socket.get(),
                                            password,
                                            mountPoint,
@@ -558,7 +558,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
         }
 
         // streaming related stuff
-        audioOuts[u].socket = new TcpSocket( server, port);
+        audioOuts[u].socket = new NetSocket( server, port);
         audioOuts[u].server = new IceCast2( audioOuts[u].socket.get(),
                                             password,
                                             mountPoint,
@@ -829,7 +829,7 @@ DarkIce :: configShoutCast (    const Config      & config,
         }
 
         // streaming related stuff
-        audioOuts[u].socket = new TcpSocket( server, port);
+        audioOuts[u].socket = new NetSocket( server, port);
         audioOuts[u].server = new ShoutCast( audioOuts[u].socket.get(),
                                              password,
                                              mountPoint,

@@ -4,7 +4,7 @@
 
    Tyrell DarkIce
 
-   File     : TcpSocket.cpp
+   File     : NetSocket.cpp
    Version  : $Revision$
    Author   : $Author$
    Location : $HeadURL$
@@ -90,7 +90,7 @@
 
 #include "Util.h"
 #include "Exception.h"
-#include "TcpSocket.h"
+#include "NetSocket.h"
 
 
 /* ===================================================  local data structures */
@@ -113,7 +113,7 @@ static const char fileid[] = "$Id$";
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-TcpSocket :: init (   const char    * host,
+NetSocket :: init (   const char    * host,
                       unsigned short  port )          throw ( Exception )
 {
     this->host   = Util::strDup( host);
@@ -126,7 +126,7 @@ TcpSocket :: init (   const char    * host,
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-TcpSocket :: strip ( void)                           throw ( Exception )
+NetSocket :: strip ( void)                           throw ( Exception )
 {
     if ( isOpen() ) {
         close();
@@ -139,7 +139,7 @@ TcpSocket :: strip ( void)                           throw ( Exception )
 /*------------------------------------------------------------------------------
  *  Copy Constructor
  *----------------------------------------------------------------------------*/
-TcpSocket :: TcpSocket (  const TcpSocket &    ss )    throw ( Exception )
+NetSocket :: NetSocket (  const NetSocket &    ss )    throw ( Exception )
                 : Source( ss), Sink( ss )
 {
     int     fd;
@@ -158,8 +158,8 @@ TcpSocket :: TcpSocket (  const TcpSocket &    ss )    throw ( Exception )
 /*------------------------------------------------------------------------------
  *  Assignment operator
  *----------------------------------------------------------------------------*/
-TcpSocket &
-TcpSocket :: operator= (  const TcpSocket &    ss )   throw ( Exception )
+NetSocket &
+NetSocket :: operator= (  const NetSocket &    ss )   throw ( Exception )
 {
     if ( this != &ss ) {
         int     fd;
@@ -190,7 +190,7 @@ TcpSocket :: operator= (  const TcpSocket &    ss )   throw ( Exception )
  *  Open the file
  *----------------------------------------------------------------------------*/
 bool
-TcpSocket :: open ( void )                       throw ( Exception )
+NetSocket :: open ( void )                       throw ( Exception )
 {
     int                     optval;
     socklen_t               optlen;
@@ -259,7 +259,7 @@ TcpSocket :: open ( void )                       throw ( Exception )
  *  Check wether read() would return anything
  *----------------------------------------------------------------------------*/
 bool
-TcpSocket :: canRead (      unsigned int    sec,
+NetSocket :: canRead (      unsigned int    sec,
                             unsigned int    usec )      throw ( Exception )
 {
     fd_set              fdset;
@@ -297,7 +297,7 @@ TcpSocket :: canRead (      unsigned int    sec,
  *  Read from the socket
  *----------------------------------------------------------------------------*/
 unsigned int
-TcpSocket :: read (     void          * buf,
+NetSocket :: read (     void          * buf,
                         unsigned int    len )       throw ( Exception )
 {
     int         ret;
@@ -332,7 +332,7 @@ TcpSocket :: read (     void          * buf,
  *  Check wether read() would return anything
  *----------------------------------------------------------------------------*/
 bool
-TcpSocket :: canWrite (    unsigned int    sec,
+NetSocket :: canWrite (    unsigned int    sec,
                            unsigned int    usec )      throw ( Exception )
 {
     fd_set              fdset;
@@ -370,7 +370,7 @@ TcpSocket :: canWrite (    unsigned int    sec,
  *  Write to the socket
  *----------------------------------------------------------------------------*/
 unsigned int
-TcpSocket :: write (    const void    * buf,
+NetSocket :: write (    const void    * buf,
                         unsigned int    len )       throw ( Exception )
 {
     int         ret;
@@ -403,7 +403,7 @@ TcpSocket :: write (    const void    * buf,
  *  Close the socket
  *----------------------------------------------------------------------------*/
 void
-TcpSocket :: close ( void )                          throw ( Exception )
+NetSocket :: close ( void )                          throw ( Exception )
 {
     if ( !isOpen() ) {
         return;

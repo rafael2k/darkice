@@ -62,8 +62,8 @@ darkice_SOURCES =   AudioEncoder.h\
                     Referable.h\
                     Sink.h\
                     Source.h\
-                    TcpSocket.cpp\
-                    TcpSocket.h\
+                    NetSocket.cpp\
+                    NetSocket.h\
                     Util.cpp\
                     Util.h\
                     ConfigSection.h\
