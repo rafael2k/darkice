@@ -115,7 +115,7 @@ main (
          << std::endl
          << "This is free software, and you are welcome to redistribute it "
          << std::endl
-	 << "under the terms of the The GNU General Public License version 3 or"
+	 << "under the terms of The GNU General Public License version 3 or"
          << std::endl
 	 << "any later version."
          << std::endl << std::endl;
