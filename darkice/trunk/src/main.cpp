@@ -17,7 +17,7 @@
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License  
-    as published by the Free Software Foundation; either version 2
+    as published by the Free Software Foundation; either version 3
     of the License, or (at your option) any later version.
    
     This program is distributed in the hope that it will be useful,
@@ -111,7 +111,13 @@ main (
          << std::endl
          << "Copyright (c) 2000-2007, Tyrell Hungary, http://tyrell.hu/"
          << std::endl
-         << "Copyright (c) 2008-2009, Akos Maroy and Rafael Diniz" 
+         << "Copyright (c) 2008-2010, Akos Maroy and Rafael Diniz" 
+         << std::endl
+         << "This is free software, and you are welcome to redistribute it "
+         << std::endl
+	 << "under the terms of the The GNU General Public License version 3 or"
+         << std::endl
+	 << "any later version."
          << std::endl << std::endl;
 
     try {
