@@ -1,4 +1,4 @@
-09-05-2010 Darkice 0.9 released
+09-05-2010 Darkice 1.0 released
     o fixed a bug in BufferedSink.cpp that leads to some buffers 
 	  being written twice, causing corruption of datastream,
 	  closes ticked #20
