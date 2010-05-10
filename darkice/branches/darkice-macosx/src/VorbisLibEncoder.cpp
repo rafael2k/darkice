@@ -117,7 +117,15 @@ VorbisLibEncoder :: init ( unsigned int     outMaxBitrate )
         // - high quality
         // - linear or quadratic (non-linear) based on algorithm
         // - not filter interpolation
+#ifdef HAVE_SRC_LIB
+        int srcError = 0;
+        converter = src_new(useLinear == true ? SRC_LINEAR : SRC_SINC_FASTEST,
+                            getInChannel(), &srcError);
+        if(srcError)
+            throw Exception (__FILE__, __LINE__, "libsamplerate error: ", src_strerror (srcError));
+#else
         converter = new aflibConverter( true, useLinear, false);
+#endif
     }
 
     encoderOpen = false;
@@ -243,7 +251,16 @@ VorbisLibEncoder :: open ( void )
 
     // initialize the resampling coverter if needed
     if ( converter ) {
+#ifdef HAVE_SRC_LIB
+        converterData.input_frames   = 4096/((getInBitsPerSample() / 8) * getInChannel());
+        converterData.data_in        = new float[converterData.input_frames*getInChannel()];
+        converterData.output_frames  = (int) (converterData.input_frames * resampleRatio + 1);
+        converterData.data_out       = new float[getInChannel() * converterData.output_frames];
+        converterData.src_ratio      = resampleRatio;
+        converterData.end_of_input   = 0;
+#else
         converter->initialize( resampleRatio, getInChannel());
+#endif
     }
 
     encoderOpen = true;
@@ -307,13 +324,24 @@ VorbisLibEncoder :: write ( const void    * buf,
         // resample if needed
         int         inCount  = nSamples;
         int         outCount = (int) (inCount * resampleRatio);
-        short int * resampledBuffer = new short int[outCount * channels];
+        short int * resampledBuffer = new short int[(outCount+1)* channels];
         int         converted;
+#ifdef HAVE_SRC_LIB
+        converterData.input_frames   = nSamples;
+        src_short_to_float_array (shortBuffer, converterData.data_in, totalSamples);
+        int srcError = src_process (converter, &converterData);
+        if (srcError)
+             throw Exception (__FILE__, __LINE__, "libsamplerate error: ", src_strerror (srcError));
+        converted = converterData.output_frames_gen;
 
+        src_float_to_short_array(converterData.data_out, resampledBuffer, converted*channels);
+
+#else
         converted = converter->resample( inCount,
                                          outCount,
                                          shortBuffer,
                                          resampledBuffer );
+#endif
 
         vorbisBuffer = vorbis_analysis_buffer( &vorbisDspState,
                                                converted);

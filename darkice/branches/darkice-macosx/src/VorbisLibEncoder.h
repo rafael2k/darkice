@@ -52,7 +52,11 @@
 #include "Reporter.h"
 #include "AudioEncoder.h"
 #include "CastSink.h"
+#ifdef HAVE_SRC_LIB
+#include <samplerate.h>
+#else
 #include "aflibConverter.h"
+#endif
 
 
 /* ================================================================ constants */
@@ -115,9 +119,14 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
         double                          resampleRatio;
 
         /**
-         *  aflibConverter object for possible resampling
+         *  sample rate converter object for possible resampling
          */
+#ifdef HAVE_SRC_LIB
+        SRC_STATE                     * converter;
+        SRC_DATA                      converterData;
+#else
         aflibConverter                * converter;
+#endif
 
         /**
          *  Initialize the object.
@@ -137,7 +146,13 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
         strip ( void )                                  throw ( Exception )
         {
             if ( converter ) {
+#ifdef HAVE_SRC_LIB
+                delete [] converterData.data_in;
+                delete [] converterData.data_out;
+                src_delete (converter);
+#else
                 delete converter;
+#endif
             }
         }
 

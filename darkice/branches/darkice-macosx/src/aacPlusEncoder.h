@@ -65,6 +65,11 @@ extern "C" {
 #include "Reporter.h"
 #include "AudioEncoder.h"
 #include "Sink.h"
+#ifdef HAVE_SRC_LIB
+#include <samplerate.h>
+#else
+#include "aflibConverter.h"
+#endif
 
 
 /* ================================================================ constants */
@@ -95,7 +100,25 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
          *  A flag to indicate if the encoding session is open.
          */
         bool                        aacplusOpen;
-        
+
+        /**
+         *  Resample ratio
+         */
+        double                      resampleRatio;
+
+        /**
+         *  sample rate converter object for possible resampling
+         */
+#ifdef HAVE_SRC_LIB
+        SRC_STATE                   *converter;
+        SRC_DATA                    converterData;
+        float                       *resampledOffset;
+#else
+        aflibConverter              *converter;
+        short                       *resampledOffset;
+#endif
+        unsigned int                resampledOffsetSize;
+
         /**
          *  The Sink to dump aac+ data to
          */
@@ -161,7 +184,60 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
                 throw Exception( __FILE__, __LINE__,
                              "input channels and output channels do not match");
             }
-			
+
+            if ( getOutSampleRate() == getInSampleRate() ) {
+                resampleRatio = 1;
+                converter     = 0;
+            } else if (getInBitsPerSample() == 16) {
+                resampleRatio = ( (double) getOutSampleRate() /
+                                  (double) getInSampleRate() );
+
+                // Determine if we can use linear interpolation.
+                // The inverse of the ratio must be a power of two for linear mode to
+                // be of sufficient quality.
+
+                bool    useLinear = true;
+                double  inverse   = 1 / resampleRatio;
+                int     integer   = (int) inverse;
+
+                // Check that the inverse of the ratio is an integer
+                if( integer == inverse ) {
+                    while( useLinear && integer ) { // Loop through the bits
+                        // If the lowest order bit is not the only one set
+                        if( integer & 1 && integer != 1 ) {
+                            // Not a power of two; cannot use linear
+                            useLinear = false;
+                        } else {
+                            // Shift all the bits over and try again
+                            integer >>= 1;
+                        }
+                    }
+                } else {
+                   useLinear = false;
+                }
+
+                // If we get here and useLinear is still true, then we have
+                // a power of two.
+
+                // open the aflibConverter in
+                // - high quality
+                // - linear or quadratic (non-linear) based on algorithm
+                // - not filter interpolation
+#ifdef HAVE_SRC_LIB
+                int srcError = 0;
+                converter = src_new(useLinear == true ? SRC_LINEAR : SRC_SINC_FASTEST,
+                                    getInChannel(), &srcError);
+                if(srcError)
+                    throw Exception (__FILE__, __LINE__, "libsamplerate error: ", src_strerror (srcError));
+#else
+                converter = new aflibConverter( true, useLinear, false);
+#endif
+            } else {
+                throw Exception( __FILE__, __LINE__,
+                                 "specified bits per sample with samplerate conversion not supported",
+                                 getInBitsPerSample() );
+            }
+
             bitrate = getOutBitrate() * 1000;
             bandwidth = 0;
             useParametricStereo = 0;
@@ -171,8 +247,7 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
             writeOffset = INPUT_DELAY*MAX_CHANNELS;
             writtenSamples = 0;
             aacEnc = NULL;
-	    hEnvEnc=NULL;
-          	
+            hEnvEnc=NULL;
         }
 
         /**
@@ -183,8 +258,20 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
         inline void
         strip ( void )                                  throw ( Exception )
         {
+            if ( converter ) {
+#ifdef HAVE_SRC_LIB
+                delete [] converterData.data_in;
+                src_delete (converter);
+#else
+                delete converter;
+#endif
+                delete [] resampledOffset;
+            }
         }
 
+        void
+        encodeAacSamples (short *TimeDataPcm, unsigned int samples, int channels)
+                                                        throw ( Exception );
 
     protected:
 

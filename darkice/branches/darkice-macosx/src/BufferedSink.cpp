@@ -330,10 +330,15 @@ BufferedSink :: write (    const void    * buf,
 
     // the internal buffer is empty, try to write the fresh data
     soFar = 0;
-    if ( inp != outp ) {
+    if ( inp == outp ) { 
         while ( soFar < len && sink->canWrite( 0, 0) ) {
-            soFar += sink->write( b + soFar, len - soFar);
-        }
+	    try {
+	        soFar += sink->write( b + soFar, len - soFar);
+	    } catch (Exception &e) {
+	        reportEvent(3,"Exception caught in BufferedSink :: write3\n");
+		throw; /* up a level */
+	    }
+	}
     }
     length = soFar;
 

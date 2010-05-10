@@ -113,7 +113,7 @@ aacPlusEncoder :: open ( void )
         writeOffset += IIR21_reSampler[0].delay*MAX_CHANNELS;
     }
     
-    sampleRateAAC = getInSampleRate();
+    sampleRateAAC = getOutSampleRate();
     config.bitRate = bitrate;
     config.nChannelsIn=getInChannel();
     config.nChannelsOut=nChannelsAAC;
@@ -152,6 +152,31 @@ aacPlusEncoder :: open ( void )
     
     inSamples = AACENC_BLOCKSIZE * getInChannel() * 2;
     
+
+    // initialize the resampling coverter if needed
+    if ( converter ) {
+#ifdef HAVE_SRC_LIB
+        converterData.input_frames   = 4096/((getInBitsPerSample() / 8) * getInChannel());
+        converterData.data_in        = new float[converterData.input_frames*getInChannel()];
+        converterData.output_frames  = (int) (converterData.input_frames * resampleRatio + 1);
+        if ((int) inSamples >  getInChannel() * converterData.output_frames) {
+            resampledOffset       = new float[2 * inSamples];
+        } else {
+            resampledOffset       = new float[2 * getInChannel() * converterData.input_frames];
+        }
+        converterData.src_ratio      = resampleRatio;
+        converterData.end_of_input   = 0;
+#else
+        converter->initialize( resampleRatio, getInChannel());
+        //needed 2x(converted input samples) to handle offsets
+    int         outCount = 2 * getInChannel() * (inSamples + 1);
+        if (resampleRatio > 1)
+        outCount = (int) (outCount * resampleRatio);
+        resampledOffset = new short int[outCount];
+#endif
+        resampledOffsetSize = 0;
+    }
+
     aacplusOpen = true;
     reportEvent(10, "bitrate=", bitrate);
     reportEvent(10, "nChannelsIn", getInChannel());
@@ -181,34 +206,84 @@ aacPlusEncoder :: write (  const void    * buf,
     unsigned int    processed        = len - (len % sampleSize);
     unsigned int    nSamples         = processed / sampleSize;
     unsigned int    samples          = (unsigned int) nSamples * channels;
+    int processedSamples = 0;
     
     
-    
-    
-    unsigned int i; 
-    int ch, outSamples, numOutBytes;
 
+    if ( converter ) {
+        unsigned int         converted;
+#ifdef HAVE_SRC_LIB
+        src_short_to_float_array ((short *) buf, converterData.data_in, samples);
+        converterData.input_frames   = nSamples;
+        converterData.data_out = resampledOffset + (resampledOffsetSize * channels);
+        int srcError = src_process (converter, &converterData);
+        if (srcError)
+             throw Exception (__FILE__, __LINE__, "libsamplerate error: ", src_strerror (srcError));
+        converted = converterData.output_frames_gen;
+#else
+        int         inCount  = nSamples;
+        short int     * shortBuffer  = new short int[samples];
+        int         outCount = (int) (inCount * resampleRatio);
+        unsigned char * b = (unsigned char*) buf;
+        Util::conv( bitsPerSample, b, processed, shortBuffer, isInBigEndian());
+        converted = converter->resample( inCount,
+                                         outCount+1,
+                                         shortBuffer,
+                                         &resampledOffset[resampledOffsetSize*channels]);
+        delete[] shortBuffer;
+#endif
+        resampledOffsetSize += converted;
 
-    reportEvent(10, "converting short to float");
-    short *TimeDataPcm = (short *) buf;
-    
-    if(channels == 2) {
-        for (i=0; i<samples; i++)
-            inBuf[i+writeOffset+writtenSamples] = (float) TimeDataPcm[i];
+        // encode samples (if enough)
+        while(resampledOffsetSize - processedSamples >= inSamples/channels) {
+#ifdef HAVE_SRC_LIB
+            short *shortData = new short[inSamples];
+            src_float_to_short_array(resampledOffset + (processedSamples * channels),
+                                     shortData, inSamples) ;
+
+            encodeAacSamples (shortData, inSamples, channels);
+            delete [] shortData;
+#else
+            encodeAacSamples (&resampledOffset[processedSamples*channels], inSamples, channels);
+#endif
+            processedSamples+=inSamples/channels;
+        }
+
+        if (processedSamples && (int) resampledOffsetSize >= processedSamples) {
+            resampledOffsetSize -= processedSamples;
+            //move least part of resampled data to beginning
+            if(resampledOffsetSize)
+#ifdef HAVE_SRC_LIB
+                resampledOffset = (float *) memmove(resampledOffset, &resampledOffset[processedSamples*channels],
+                                                    resampledOffsetSize*channels*sizeof(float));
+#else
+                resampledOffset = (short *) memmove(resampledOffset, &resampledOffset[processedSamples*channels],
+                                                    resampledOffsetSize*sampleSize);
+#endif
+        }
     } else {
-        /* using only left channel buffer for mono encoder */
-        for (i=0; i<samples; i++)
-            inBuf[writeOffset+2*writtenSamples+2*i] = (float) TimeDataPcm[i];
+        encodeAacSamples ((short *) buf, samples, channels);
     }
 
+    return samples;
+}
+
+void
+aacPlusEncoder :: encodeAacSamples (short *TimeDataPcm, unsigned int samples, int channels)
+                                                                               throw ( Exception )
+{
+    unsigned int i;
+    int ch, outSamples, numOutBytes;
+
+    for (i=0; i<samples; i++)
+        inBuf[(2/channels)*i+writeOffset+writtenSamples] = (float) TimeDataPcm[i];
+
     writtenSamples+=samples;
-    reportEvent(10, "writtenSamples", writtenSamples);
-    
+
     if (writtenSamples < inSamples)
-        return samples;
+        return;
     
     /* encode one SBR frame */
-    reportEvent(10, "encode one SBR frame");
     EnvEncodeFrame( hEnvEnc,
                     inBuf + envReadOffset,
                     inBuf + coreWriteOffset,
@@ -216,11 +291,8 @@ aacPlusEncoder :: write (  const void    * buf,
                     &numAncDataBytes,
                     ancDataBytes);
     
-    reportEvent(10, "numAncDataBytes=", numAncDataBytes);
-    
     /* 2:1 downsampling for AAC core */
     if (!useParametricStereo) {
-        reportEvent(10, "2:1 downsampling for AAC core");
         for( ch=0; ch<nChannelsAAC; ch++ )
             IIR21_Downsample( &(IIR21_reSampler[ch]),
                               inBuf + writeOffset+ch,
@@ -229,12 +301,9 @@ aacPlusEncoder :: write (  const void    * buf,
                               inBuf+ch,
                               &outSamples,
                               MAX_CHANNELS);
-        
-        reportEvent(10, "outSamples=", outSamples);
     }
         
     /* encode one AAC frame */
-    reportEvent(10, "encode one AAC frame");
     AacEncEncode( aacEnc,
                   inBuf,
                   useParametricStereo ? 1 : MAX_CHANNELS, /* stride (step) */
@@ -250,16 +319,14 @@ aacPlusEncoder :: write (  const void    * buf,
     
     /* Write one frame of encoded audio */
     if (numOutBytes) {
-    	reportEvent(10, "Write one frame of encoded audio:", numOutBytes+ADTS_HEADER_SIZE);
-    	adts_hdr_up(outBuf, numOutBytes);
-    	sink->write(outBuf, numOutBytes+ADTS_HEADER_SIZE);
+        adts_hdr_up(outBuf, numOutBytes);
+        sink->write(outBuf, numOutBytes+ADTS_HEADER_SIZE);
     }
     
     writtenSamples=0;
-    
-    return samples;
-}
 
+    return;
+}
 
 /*------------------------------------------------------------------------------
  *  Flush the data from the encoder

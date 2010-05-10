@@ -173,8 +173,8 @@ AlsaDspSource :: open ( void )                       throw ( Exception )
         throw Exception( __FILE__, __LINE__, "can't set channels", u);
     }
 
-    u = getBufferTime() / 4;
-    if (snd_pcm_hw_params_set_period_time_near(captureHandle, hwParams, &u, 0)
+    u = 4;
+    if (snd_pcm_hw_params_set_periods_near(captureHandle, hwParams, &u, 0)
                                                                           < 0) {
         snd_pcm_hw_params_free(hwParams);
         close();
