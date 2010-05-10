@@ -1,6 +1,7 @@
-Next release
+09-05-2010 Darkice 0.9 released
     o fixed a bug in BufferedSink.cpp that leads to some buffers 
 	  being written twice, causing corruption of datastream,
+	  closes ticked #20
 	  thanks to Edwin van den Oetelaar <oetelaar.automatisering@gmail.com>
     o implemented samplerate conversion for all codecs using libsamplerate, 
 	  and keeping internal aflibConverter as fallback,
