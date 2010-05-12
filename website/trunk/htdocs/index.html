@@ -31,17 +31,19 @@ DarkIce can record from:
     <li>Solaris audio interface</li>
     <li><a href="http://jackit.sourceforge.net/">Jack</a> sources</li>
     <li>uLaw audio input through a serial interface</li>
+    <li>CoreAudio (branch darkice-macosx)</li>
 </ul>
 <br>
 DarkIce can encode in the following formats:
 <ul>
-    <li>mp3 - using the <a href="http://www.mp3dev.org/mp3">lame</a>
+    <li>MP3 - using the <a href="http://www.mp3dev.org/mp3">lame</a>
         library</li>
-    <li>mp2 - using the <a href="http://www.twolame.org/">twolame</a>
+    <li>MP2 - using the <a href="http://www.twolame.org/">twolame</a>
         library</li>
     <li><a href="http://www.xiph.org/ogg/vorbis/">Ogg Vorbis</a></li>
-    <li>aac - using the <a href="http://www.audiocoding.com/">faac</a>
+    <li>AAC - using the <a href="http://www.audiocoding.com/">faac</a>
         library</li>
+    <li>AAC HEv2 - using <a href="http://tipok.org.ua/node/17">libaacplus</a> library </li>
 </ul>
 <br>
 DarkIce can send the encoded stream to the following streaming servers:
@@ -62,46 +64,43 @@ Darkice runs on the following operating systems:
     <li>SUN Solaris</li>
 </ul>
 <br>
-DarkIce is being written by
+DarkIce initial author is 
 <a href="mailto:darkeye@users.sourceforge.net">&Aacute;kos Mar&oacute;y</a>
-
-<h2>2. Status</h2>
-DarkIce is under development. While still considered beta, it has
-been used since fall 2000 in <a href="http://tilos.hu/">production</a>
-24 hours per day.
 <br>
-The latest version is <b>0.19</b>, check out the
+DarkIce current author and maintainer is <a href="mailto:rafael@riseup.net">Rafael Diniz. </a>
+<br>
+<h2>2. Status</h2>
+DarkIce is considered stable, it has been used since fall 2000 in production 24 hours per day.
+<br>
+The latest version is <b>1.0</b>, check out the
 <a href="ChangeLog">ChangeLog</a>.
 <br>
-There is a GTK fronte-end made by Rafael Diniz, called DarkSnow.
+There is a GTK frontend made by Rafael Diniz, called DarkSnow.
 <a href="http://darksnow.radiolivre.org/index.en.html">DarkSnow</a>.
 
 <h2>3. Discussion</h2>
 For questions &amp; feedback on DarkIce, please join the
-<a href="https://tyrell.hu/mailman/listinfo/darkice-list">darkice-list</a>
+<a href="http://www.freelists.org/list/darkice">darkice-list</a>
 mailing list.
 <p>
 Should you find any issues with DarkIce, please submit a bug or feature
-request at our <a href="http://darkice.tyrell.hu/trac/">Trac</a> system.
+request at our <a href="http://code.google.com/p/darkice/issues/list">Trac</a> system.
 
 <h2>4. Support</h2>
-If you feel that DarkIce is having a good effect on your online streaming radio, feel free to <a href="https://sourceforge.net/donate/index.php?group_id=14111">donate some money</a> to allow further development. <b>Thank you!</b>
+If you feel that DarkIce is having a good effect on your online streaming radio, feel free to donate some money to allow further development. 
+<b>Thank you!</b>
 
 <h2>5. Download</h2>
 DarkIce is
-&copy; Copyright <a href="http://tyrell.hu">Tyrell Hungary</a>
+&copy; Copyright <a href="http://tyrell.hu">Tyrell Hungary</a> and Rafael Diniz and &Aacute;kos Mar&oacute;y
  under the
-<a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public Licence</a>,
-and is hosted
-<a href="http://darkice.tyrell.hu/">here</a>.
+<a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public Licence version 3</a>.
 <br>
 You can download DarkIce releases from the project's
-<a href="http://darkice.tyrell.hu/dist/">download page</a>.
-I also provided lame packages, which are needed by DarkIce, but you can
-use your own lame libs if you like.
+<a href="http://code.google.com/p/darkice/">download page</a>.
 <p>
 Download the source tarball
-    <a href="http://darkice.tyrell.hu/dist/0.19/darkice-0.19.tar.gz">darkice-0.19.tar.gz</a>
+    <a href="http://darkice.googlecode.com/files/darkice-1.0.tar.gz">darkice-1.0.tar.gz</a>
     and compile it. You will also need
     <a href="http://lame.sourceforge.net/download/download.html">lame</a>
     (version 3.89 or above),
@@ -120,9 +119,8 @@ Download the source tarball
     </ul>
 <p>
 If you like to live on the edge, you can check the
-<a href="http://subversion.tigris.org/">subversion</a> repository by getting
-module <b>darkice</b> from the following URL:
-http://svn.tyrell.hu/darkice/darkice/
+<a href="http://subversion.tigris.org/">subversion</a> repository: 
+svn checkout http://darkice.googlecode.com/svn/darkice/trunk/ darkice
 <p>
 This page last updated: $Date$.
 </td>
