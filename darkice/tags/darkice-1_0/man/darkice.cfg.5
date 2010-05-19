@@ -1,0 +1,674 @@
+.TH darkice.cfg 5 "February 25, 2007" "DarkIce" "DarkIce live audio streamer"
+.SH NAME
+darkice.cfg \- configuration file for darkice
+.SH DESCRIPTION
+.PP
+The configuration file consists of sections, with key = value pairs
+separated with spaces and/or tabs inside each secion:
+
+.nf
+[section1]
+# this is a whole line comment
+key = value
+an ugly key name = long value    # this end is a comment too
+
+[section2]
+# this is a whole line comment in section 2
+key = value
+an ugly key name = long value    # this end is a comment too
+.fi
+
+A proper
+.B DarkIce
+configuration file contains the following sections:
+.nf
+[general]
+[input]
+[icecast-0] ... [icecast-7]
+[icecast2-0] ... [icecast2-7]
+[shoutcast-0] ... [shoutcast-7]
+[file-0] ... [file-7]
+.fi
+
+The order of the sections is not important. Sections [general] and [input]
+are required, and at least one of [icecast-x], [icecast2-x], [shoutcast-x] 
+or [file-x] is needed.
+
+In particular, the following sections and values are recognized:
+.PP
+.B [general]
+
+This section describes general operational parameters (required).
+
+Required values:
+
+.TP
+.I duration
+Time for DarkIce to run, in seconds.  If 0, run forever.
+.TP
+.I bufferSecs
+Data read from the sound card is buffered before sent to
+the encoder. Each buffer will be able to hold this
+many seconds of samples.
+
+.PP
+Optional values:
+
+.TP
+.I reconnect
+Try to reconnect to the server(s) if the connection is broken during
+streaming, "yes" or "no". (optional parameter, defaults to "yes")
+.TP
+.I realtime
+Use POSIX realtime scheduling, "yes" or "no".
+(optional parameter, defaults to "yes")
+
+
+.PP
+.B [input]
+
+This section describes the input (required).
+
+Required values:
+
+.TP
+.I device
+Specify the device to record from, which can be an OSS DSP device,
+an ALSA source or you can use Jack audio.
+- OSS DSP audio device to record from (e.g. /dev/dsp)
+- ALSA DSP device name (e.g. hwplug:0,0)
+- the string 'jack', to have an unconnected Jack port, or
+  'jack_auto' to automatically make Jack connect to the first source.
+.TP
+.I sampleRate
+The sample rate to record with, samples per second
+(e.g. 44100 for 44.1kHz CD-quality audio, 22050 for 22kHz or 11025
+for 11kHz)
+.TP
+.I bitsPerSample
+Number of bits to use for each sample (e.g. 8 bits or 16 bits)
+.TP
+.I channel
+Number of channels to record (e.g. 1 for mono, 2 for stereo)
+.TP
+.I jackClientName
+The name of the jack input channel created by darkice if device=jack
+is specified.
+
+.PP
+.B [icecast-x]
+
+This section describes an output to an
+.B IceCast 1.3.x
+server or
+.B Darwin Streaming Server
+, while encoding
+with a lame encoder. There may be at most 8 outputs, numbered from 0 ... 7.
+The number is included in the section name (e.g. [icecast-0] ... [icecast-7]).
+The stream will be reachable at
+.I http://<server>:<port>/<mountPoint>
+
+Required values:
+
+.TP
+.I bitrateMode
+The bit rate mode of the encoding, either "cbr", "abr" or "vbr",
+standing for constant bit rate, average bit rate and variable bit
+respectively. Use the bitrate and/or quality values to specify details
+of the appropriate bit rate mode.
+.TP
+.I bitrate
+Bit rate to encode to in kBits / sec (e.g. 96). Only used when cbr or
+abr bit rate modes are specified.
+.TP
+.I quality
+The quality of encoding a value between 0.0 .. 1.0 (e.g. 0.8), with 1.0 being
+the highest quality. Use a value greater than 0.0. Only used when cbr or vbr
+bit rate modes are specified.
+.TP
+.I server
+The
+.B IceCast
+server's name (e.g. yp.yourserver.com)
+.TP
+.I port
+The port to connect to the IceCast server (e.g. 8000)
+.TP
+.I password
+The password to use to connect to the
+.B IceCast
+server
+.TP
+.I mountPoint
+Mount point for the stream on the server
+
+.PP
+Optional values:
+
+.TP
+.I sampleRate
+The sample rate of the encoded mp3 output. If not specified, defaults
+to the value of the input sample rate.
+.TP
+.I channel
+Number of channels for the mp3 output (e.g. 1 for mono, 2 for stereo).
+If not specified, defaults to the value of the input sample rate.
+.TP
+.I name
+Name of the stream
+.TP
+.I description
+Description of the stream
+.TP
+.I url
+Url related to the stream
+.TP
+.I genre
+Genre of the stream
+.TP
+.I public
+"yes" or "no", wether the stream is public
+.TP
+.I remoteDumpFile 
+The file the
+.B IceCast
+server should dump the contents of
+this stream on its side.
+.TP
+.I localDumpFile
+Dump the same mp3 data sent to the
+.B IceCast
+server to this local file.
+.TP
+.I fileAddDate
+"yes" or "no" if you want to automaticaly insert a date string in 
+the localDumpFile name before its extension or at the end of file name if
+no extension present
+.TP
+.I fileDateFormat
+The date format to use for appending the date to the dump file name.
+Defaults to "[%m-%d-%Y-%H-%M-%S]". All format strings acceptable by strftime()
+can be used, see the strftime man page for details. Only applicable is
+fileAddDate is "true".
+.TP
+.I lowpass
+Lowpass filter setting for the lame encoder, in Hz. Frequencies above
+the specified value will be cut.
+If not set or set to 0, the encoder's default behaviour is used.
+If set to -1, the filter is disabled.
+.TP
+.I highpass
+Highpass filter setting for the lame encoder, in Hz. Frequencies below
+the specified value will be cut.
+If not set or set to 0, the encoder's default behaviour is used.
+If set to -1, the filter is disabled.
+
+.PP
+.B [icecast2-x]
+
+This section describes an output to an
+.B IceCast2
+server, while encoding with the ogg vobis encoder.
+There may be at most 8 outputs, numbered from 0 ... 7.
+The number is included in the section name (e.g. [icecast2-0] ... [icecast2-7]).
+The stream will be reachable at
+.I http://<server>:<port>/<mountPoint>
+.P
+.B DarkIce
+supports both fixed bitrate and variable bitrate vorbis streams. When
+using fixed bitrate, specify the bitrate using the
+.I bitrate
+field. When using variable bitrate, specify the quality of the stream by the
+.I quality
+field, which is a value between 0.0 and 1.0.
+
+Required values:
+
+.TP
+.I format
+Format of the stream sent to the
+.B IceCast2
+server. Supported formats are 'vorbis', 'mp3', 'mp2', 'aac' and 'aacp'.
+.TP
+.I bitrateMode
+The bit rate mode of the encoding, either "cbr", "abr" or "vbr",
+standing for constant bit rate, average bit rate and variable bit
+respectively. Use the bitrate and/or quality values to specify details
+of the appropriate bit rate mode.
+.TP
+.I bitrate
+Bit rate to encode to in kBits / sec (e.g. 96). Only used when cbr or
+abr bit rate modes are specified.
+.TP
+.I quality
+The quality of encoding a value between 0.0 .. 1.0 (e.g. 0.8), with 1.0 being
+the highest quality. Use a value greater than 0.0. Only used when vbr
+bit rate mode is specified for Ogg Vorbis format, or in vbr and abr
+modes for mp3 and mp2 format.
+.TP
+.I server
+The
+.B IceCast2
+server's name (e.g. yp.yourserver.com)
+.TP
+.I port
+The port to connect to the IceCast server (e.g. 8000)
+.TP
+.I password
+The password to use to connect to the
+.B IceCast2
+server
+.TP
+.I mountPoint
+Mount point for the stream on the server
+
+.PP
+Optional values:
+
+.TP
+.I sampleRate
+The sample rate of the encoded output. If not specified, defaults
+to the value of the input sample rate.
+.TP
+.I channel
+Number of channels for the output (e.g. 1 for mono, 2 for stereo).
+If not specified, defaults to the value of the input sample rate.
+Different channels for input and output are only supported for mp3,
+but not for Ogg Vorbis.
+.TP
+.I maxBitrate
+The maximum bitrate of the stream. Only used when in cbr mode and in
+Ogg Vorbis format.
+.TP
+.I name
+Name of the stream
+.TP
+.I description
+Description of the stream
+.TP
+.I url
+Url related to the stream
+.TP
+.I genre
+Genre of the stream
+.TP
+.I public
+"yes" or "no", wether the stream is public
+.TP
+.I localDumpFile
+Dump the same Ogg Vorbis data sent to the
+.B IceCast2
+server to this local file.
+.TP
+.I fileAddDate
+"yes" or "no" if you want to automaticaly insert a date string in 
+the localDumpFile name before its extension or at the end of file name if
+no extension present
+.TP
+.I fileDateFormat
+The date format to use for appending the date to the dump file name.
+Defaults to "[%m-%d-%Y-%H-%M-%S]". All format strings acceptable by strftime()
+can be used, see the strftime man page for details. Only applicable is
+fileAddDate is "true".
+.TP
+.I lowpass
+Lowpass filter setting for the lame encoder, in Hz. Frequencies above
+the specified value will be cut.
+If not set or set to 0, the encoder's default behaviour is used.
+If set to -1, the filter is disabled.
+Only has effect if the mp3 or mp2 format is used.
+.TP
+.I highpass
+Highpass filter setting for the lame encoder, in Hz. Frequencies below
+the specified value will be cut.
+If not set or set to 0, the encoder's default behaviour is used.
+If set to -1, the filter is disabled.
+Only has effect if the mp3 or mp2 format is used.
+
+.PP
+.B [shoutcast-x]
+
+This section describes an output to a
+.B ShoutCast
+server, while encoding
+with a lame encoder. There may be at most 8 outputs, numbered from 0 ... 7.
+The number is included in the section name
+(e.g. [shoutcast-0] ... [shoutcast-7]).
+The stream will be reachable at
+.I http://<server>:<port-1>/
+
+Required values:
+
+.TP
+.I bitrateMode
+The bit rate mode of the encoding, either "cbr", "abr" or "vbr",
+standing for constant bit rate, average bit rate and variable bit
+respectively. Use the bitrate and/or quality values to specify details
+of the appropriate bit rate mode.
+.TP
+.I bitrate
+Bit rate to encode to in kBits / sec (e.g. 96). Only used when cbr or
+abr bit rate modes are specified.
+.TP
+.I quality
+The quality of encoding a value between 0.0 .. 1.0 (e.g. 0.8), with 1.0 being
+the highest quality. Use a value greater than 0.0. Only used when cbr or vbr
+bit rate modes are specified.
+.TP
+.I server
+The
+.B ShoutCast
+server's name (e.g. yp.yourserver.com)
+.TP
+.I port
+The source port to connect to the ShoutCast server (e.g. 8001)
+.TP
+.I password
+The password to use to connect to the
+.B ShoutCast
+server
+
+.PP
+Optional values:
+
+.TP
+.I mountPoint
+Mount point for the stream on the server. Only works on Darwin Streaming
+Server, the original Shoutcast server does not support mount points
+.TP
+.I sampleRate
+The sample rate of the encoded mp3 output. If not specified, defaults
+to the value of the input sample rate.
+.TP
+.I channel
+Number of channels for the mp3 output (e.g. 1 for mono, 2 for stereo).
+If not specified, defaults to the value of the input sample rate.
+.TP
+.I name
+Name of the stream
+.TP
+.I url
+Url related to the stream
+.TP
+.I genre
+Genre of the stream
+.TP
+.I public
+"yes" or "no", wether the stream is public
+.TP
+.I irc
+IRC information related to the stream
+.TP
+.I aim
+AIM information related to the stream
+.TP
+.I icq
+ICQ information related to the stream
+.TP
+.I lowpass
+Lowpass filter setting for the lame encoder, in Hz. Frequencies above
+the specified value will be cut.
+If not set or set to 0, the encoder's default behaviour is used.
+If set to -1, the filter is disabled.
+.TP
+.I highpass
+Highpass filter setting for the lame encoder, in Hz. Frequencies below
+the specified value will be cut.
+If not set or set to 0, the encoder's default behaviour is used.
+If set to -1, the filter is disabled.
+.TP
+.I localDumpFile
+Dump the same mp3 data sent to the
+.B ShoutCast
+server to this local file.
+.TP
+.I fileAddDate
+"yes" or "no" if you want to automaticaly insert a date string in 
+the localDumpFile name before its extension or at the end of file name if
+no extension present
+.TP
+.I fileDateFormat
+The date format to use for appending the date to the dump file name.
+Defaults to "[%m-%d-%Y-%H-%M-%S]". All format strings acceptable by strftime()
+can be used, see the strftime man page for details. Only applicable is
+fileAddDate is "true".
+.PP
+.B [file-x]
+
+This section describes an output to a local file in either Ogg Vorbis or
+mp3 format.
+There may be at most 8 outputs, numbered from 0 ... 7.
+The number is included in the section name (e.g. [file-0] ... [file-7]).
+
+Required values:
+
+.TP
+.I format
+Format to encode in. Must be either 'mp3', 'mp2', 'vorbis', 'aac' or 'aacp'.
+.TP
+.I bitrateMode
+The bit rate mode of the encoding, either "cbr", "abr" or "vbr",
+standing for constant bit rate, average bit rate and variable bit
+respectively. Use the bitrate and/or quality values to specify details
+of the appropriate bit rate mode.
+.TP
+.I bitrate
+Bit rate to encode to in kBits / sec (e.g. 96). Only used when cbr or
+abr bit rate modes are specified.
+.TP
+.I quality
+The quality of encoding a value between 0.0 .. 1.0 (e.g. 0.8), with 1.0 being
+the highest quality. Use a value greater than 0.0. Only used when cbr or vbr
+bit rate modes are specified.
+.TP
+.I fileName
+The name of the local file to save the encoded data into.
+
+.PP
+Optional values:
+
+.TP
+.I sampleRate
+The sample rate of the encoded mp3 output. If not specified, defaults
+to the value of the input sample rate.
+Only used if the output format is mp3.
+.TP
+.I lowpass
+Lowpass filter setting for the lame encoder, in Hz. Frequencies above
+the specified value will be cut.
+If not set or set to 0, the encoder's default behaviour is used.
+If set to -1, the filter is disabled.
+Only used if the output format is mp3.
+.TP
+.I highpass
+Highpass filter setting for the lame encoder, in Hz. Frequencies below
+the specified value will be cut.
+If not set or set to 0, the encoder's default behaviour is used.
+If set to -1, the filter is disabled.
+Only used if the output format is mp3.
+
+.PP
+A sample configuration file follows. This file makes
+.B DarkIce
+stream for 1 minute (60 seconds) from the audio device
+.I /dev/dsp
+at 22.05kHz, 16 bit stereo.
+It will build up a connection to the
+.B IceCast
+server yp.yourserver.com on port 8000 with the password "hackme".
+The stream will be encoded to 96 kb/s mp3 with quality 0.8, and will be
+reachable at
+.I http://yp.yourserver.com:8000/live96
+to mp3 players.
+The encoding session will be stored by
+.B IceCast
+in the file
+.I /tmp/server-dump.mp3
+on the server side, and also by
+.B DarkIce
+in the file
+.I /tmp/encoder-dump.mp3
+on the encoder side.
+
+.nf
+[general]
+duration        = 60
+bufferSecs      = 5
+
+[input]
+device          = /dev/dsp
+sampleRate      = 22050
+bitsPerSample   = 16
+channel         = 2
+
+[icecast-0]
+bitrateMode     = cbr
+bitrate         = 96
+quality         = 0.8
+server          = yp.yourserver.com
+port            = 8000
+password        = hackme
+mountPoint      = live96
+name            = DarkIce trial
+description     = This is only a trial
+url             = http://www.yourserver.com
+genre           = live
+public          = no
+remoteDumpFile  = /tmp/server-dump.mp3
+localDumpFile   = /tmp/encoder-dump.mp3
+fileAddDate     = no
+.fi
+
+
+.PP
+The following sample configuration file simply encodes the 16 bit stereo
+44.1 kHz sound card input into Ogg Vorbis at average bit rate 96 kb/s for 60
+seconds, and saves it in the local file at /tmp/save.ogg.
+
+.nf
+[general]
+duration        = 60
+bufferSecs      = 5
+
+[input]
+device          = /dev/dsp
+sampleRate      = 44100
+bitsPerSample   = 16
+channel         = 2
+
+[file-0]
+format          = vorbis
+bitrateMode     = abr
+bitrate         = 96
+fileName        = /tmp/save.ogg
+.fi
+
+
+.PP
+A bit more complicated sample follows. This one makes
+.B DarkIce
+stream for 1 hour (3600 seconds) from the audio device
+.I /dev/dsp
+at 44.1kHz, 16 bit stereo.
+
+It will build up a connection to an
+.B IceCast
+server yp.your-ice-server.com on port 8000 with the password "ice-hackme".
+The sound for this stream will be cut at 10500 Hz from above.
+The stream will be encoded to average bit rate 96 kb/s mp3 and resampled to
+22.05kHz and 1 channel (mono).
+The stream will be reachable at
+.I http://yp.your-ice-server.com:8000/live96
+to mp3 players.
+The encoding session will be stored by
+.B IceCast
+in the file
+.I /tmp/live96.mp3
+on the server side.
+
+It will also connect to a
+.I ShoutCast
+server at yp.your-shout-server.com on port 8001 with the password "shout-hackme"
+This stream will be encoded to constant bit rate 128 kb/s mp3 with quality
+0.8, and will be reachable at
+.I http://yp.your-shout-server.com:8000
+to mp3 players.
+
+.nf
+[general]
+duration        = 3600
+bufferSecs      = 5
+
+[input]
+device          = /dev/dsp
+sampleRate      = 22050
+bitsPerSample   = 16
+channel         = 2
+
+[icecast-0]
+sampleRate      = 22050
+channel         = 1
+bitrateMode     = abr
+bitrate         = 96
+lowpass         = 10500
+server          = yp.your-ice-server.com
+port            = 8000
+password        = ice-hackme
+mountPoint      = live96
+name            = DarkIce trial
+description     = This is only a trial
+url             = http://www.yourserver.com
+genre           = live
+public          = yes
+remoteDumpFile  = /tmp/live96.mp3
+
+[shoutcast-0]
+bitrateMode     = cbr
+bitrate         = 128
+quality         = 0.8
+server          = yp.your-shout-server.com
+port            = 8001
+password        = shout-hackme
+name            = DarkIce trial
+url             = http://www.yourserver.com
+genre           = live
+public          = yes
+irc             = irc.yourserver.com
+aim             = aim here
+icq             = I see you too
+.fi
+
+
+.SH BUGS
+.PP
+Lots of bugs.
+
+
+.SH "SEE ALSO"
+darkice(1)
+
+
+.SH AUTHOR
+Akos Maroy
+.I <darkeye@tyrell.hu>
+
+
+.SH LINKS
+Project homepage:
+.I http://code.google.com/p/darkice/
+
+.B IceCast
+homepage:
+.I http://www.icecast.org/
+
+.B ShoutCast
+homepage:
+.I http://www.shoutcast.com/
+
+.B Lame
+homepage:
+.I http://www.mp3dev.org/mp3/
+
+.B Ogg Vorbis
+homepage:
+.I http://www.xiph.org/ogg/vorbis/

@@ -1,0 +1,258 @@
+09-05-2010 Darkice 1.0 released
+    o fixed a bug in BufferedSink.cpp that leads to some buffers 
+	  being written twice, causing corruption of datastream,
+	  closes ticked #20
+	  thanks to Edwin van den Oetelaar <oetelaar.automatisering@gmail.com>
+    o implemented samplerate conversion for all codecs using libsamplerate, 
+	  and keeping internal aflibConverter as fallback,
+          thanks to Sergiy <piratfm@gmail.com>
+    o bugfix: fix for alsa driver - closes ticked #8
+          thanks to Clemens Ladisch <clemens@ladisch.de> 
+
+14-11-2009 Darkice 0.20.1 released
+    o added rc.darkice init script
+	  thanks to Niels Dettenbach <nd@syndicat.com>
+    o bugfix: fix for gcc 4.4
+
+05-11-2009 Darkice 0.20 released
+
+    o new maintainer: Rafael Diniz <rafael@riseup.net>	
+    o added AAC HEv2 encoding support (branch darkice-aacp merged) through 
+	  libaacplus, http://tipok.org.ua/ru/node/17
+	  thanks to tipok <piratfm@gmail.com> and others for the contribution.
+    o bugfix: the configure script recognizes Ogg Vorbis shared objects
+	  now, not just static libraries. Thanks to omroepvenray.
+    o bugfix: enabling jack source compilation on Debian Lenny,
+	  thanks to Alessandro Beretta <alessandro.baretta@radiomaria.org>
+
+07-07-2008 Darkice 0.19 released
+
+    o added mount point option for Darwin Streaming Server
+      thanks to Pierre Souchay <pierre@souchay.net>
+    o fix for some reliablity issues when using a Jack source
+      thanks to Pierre Souchay <pierre@souchay.net>
+    o enable easier finding of jack libraries on MacOS X,
+      thanks to Daniel Hazelbaker <daniel@highdesertchurch.com>
+    o added ability to specify name of jack device created by darkice,
+      thanks to Alessandro Beretta <alessandro.baretta@radiomaria.org>
+
+26-04-2007 DarkIce 0.18.1 released
+
+    o enable real-time scheduling for non-super-users, if they have
+      the proper operating system permissions,
+      thanks to Jens Maurer <Jens.Maurer@gmx.net>
+    o fix to enable compliation of the Serial ULAW code on MacOS X,
+      thanks to Elod Horvath <elod@itfais.com>
+    o fix to solve Shoutcast login failures, introduced in 0.18
+
+05-03-2007 DarkIce 0.18 released
+
+    o added serial ulaw input device support, thanks to
+      Clyde Stubbs <clyde@htsoft.com>
+    o improvements on reconnecting:
+      added TCP connection keep-alive to TCP sockets
+      added graceful sleep when trying to reconnect
+    o added user-defined date formatting for the fileAddDate options,
+      thanks to dsk <derrick@csociety.org>
+    o added logging facility - [file-X] targets will cut the saved file
+      and rename it as needed when darkice recieves the SIGUSR1 signal
+    o added default configuration file handling - if no configuration file
+      is specified, /etc/darkice.cfg is used
+    o fix to enable compiling on 64 bit platforms
+      thanks to Alexander Vlasov <zulu@galaradio.com> and
+      Mariusz Mazur <mmazur@kernel.pl>
+    o fix to enable file dump feature using ogg vorbis.
+      thanks to dsk <derrick@csociety.org>
+    o fix to enable compiling with jack installed at arbitrary locations
+
+19-05-2006 DarkIce 0.17.1 released
+
+    o bugfix: automatic reconnect works more reliably
+
+26-01-2006 DarkIce 0.17 released
+
+    o added check for bufferSecs set to 0
+      thanks to Toph <fangiotophia@gmail.com>
+    o added realtime parameter to the general section
+    o added MPEG2 support through the TwoLame library.
+      thanks to Nicholas J Humfrey <njh@ecs.soton.ac.uk>
+
+22-10-2005 DarkIce 0.16 released
+
+    o added AAC support through the faac codec, http://www.audiocoding.com
+    o bug fix: icecast2 sections didn't honor lowpass or highpass filters
+      when using the mp3 format
+
+14-04-2005 DarkIce 0.15 released
+
+    o ported to OpenBSD and NetBSD, though real-time scheduling not supported,
+      since it is not implemented in OpenBSD / NetBSD
+    o added possibility to downsample from stereo to mono when encoding
+      to Ogg Vorbis, thanks to Deti Fliegl, <deti@fliegl.de>
+    o added support for Jack inputs, enabling a lot of interesting usage,
+      including support for MacOS X.
+      Thanks to Nicholas J. Humfrey <njh@ecs.soton.ac.uk>
+    o various improvements by Joel Ebel <jbebel@ncsu.edu>
+    o added option to turn off automatic reconnect feature
+    o added IPv6 support, thanks to <jochen2@users.sourceforge.net>
+
+15-02-2004: DarkIce 0.14 released
+
+    o added ALSA support, thanks to Christian Forster
+      <forster@like.e-technik.uni-erlangen.de>
+    o added fix to enable downsampling from stereo to mono of mp3 streams
+      when streaming to an icecast2 server. thanks to John Deeny
+      <taqueso@dilapidated.org>
+    o removed _X and _Y symbols from aflibConverter files, which caused
+      a naming collision on Solaris. thanks to Robert Lunnon,
+      <bobl@optushome.com.au>
+    o bug fix: ogg vorbis recording to only a file caused a segfault.
+      now fixed, thanks to Enrico Ardizzoni <craken@users.sourceforge.net>
+
+07-01-2004: DarkIce 0.13.2 released
+
+    o bug fix: two bugs fixed that caused core dump when encoding into
+      mp3 of FreeBSD. thanks to John Hay <jhay@icomtek.csir.co.za>
+    o added configure option --with-debug to enable compilation for debug mode
+
+12-02-2003: Darkice 0.13.1 released
+
+    o added cross-platform pthread detection, thanks to
+      Steven G. Johnson <stevenj@alum.mit.edu> and
+      Alejandro Forero Cuervo <bachue@bachue.com>
+      see http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html
+    o added proper detection of netural endiannes for 16 bit recording
+    o basically these changes allow compilation on FreeBSD
+
+09-02-2003: DarkIce 0.13 released
+
+    o added feature for setting the TITLE comment field for vorbis
+      streams. thanks to Ricardo Galli <gallir@uib.es>
+    o bugfix: fixed minor bug in IcecCast2.cpp, which could have lead to
+      a buffer overflow. thanks to Atsuhiko Yamanaka <ymnk@jcraft.com>
+    o bugfix: MultiThreadedConnector::sinkThread() was private, now public
+    o added fileAddDate configuration option
+      thanks to Nicu Pavel <npavel@ituner.com>
+    o added support for big endian OSS devices (like Linux PowerPC)
+
+20-10-2002: DarkIce 0.12 released
+
+    o ported to FreeBSD (removed reference to MSG_NOSIGNAL in TcpSocket.cpp)
+    o bug fix: maximum bitrate setting fixed for Ogg Vorbis streams
+    o changed internals so that now each encoding/server connection is
+      a separate thread
+    o when a connection is dropped, DarkIce tries to reconnect, indefinitely
+
+20-08-2002: DarkIce 0.11 released
+
+    o added possibility to specify maximum bitrate for Ogg Vorbis streams
+    o added HTTP Basic authentication for icecast2 logins
+    o added mp3 streaming for icecast2
+    o added possibility to stream in mono even when recording in stereo,
+      thus enabling mono and stereo streams with the same darkice instance.
+      only for mp3 streams at the moment
+      thanks to Kai Krakow <kai@kaishome.de>
+    o bug fix: resampling audio for vorbis streams bugs fixed
+
+02-08-2002: DarkIce 0.10.1 released
+
+    o bug fix: when the last server dropped connection, darkice crashed
+      thanks to Nicu Pavel <npavel@ituner.com>
+    o bug fix for LameLibEncoder: the mp3 encoding buffer was deleted too
+      early, resulting in mp3 data corruption.
+      thanks to Nicu Pavel <npavel@ituner.com>
+
+20-07-2002: DarkIce 0.10 released
+
+    o added possibility to select constant, average and variable bit rate
+      encoding modes with specifying encoding quality as well.
+      thanks to Nicu Pavel <npavel@ituner.com>
+    o added support for Ogg Vorbis 1.0 final, removed support for rc2
+    o added fault tolerance: if one of several server connection drops,
+      DarkIce carries on with the rest of the servers still connected
+
+09-04-2002: DarkIce 0.9.1 released
+
+    o bugfix: a memory leak was introduced in 0.9, which is fixed thanks to
+      Kristjan G. Bjarnason <kgb@gangverk.is> and Nicu Pavel <npavel@ituner.com>
+    o minor documentation fix
+
+28-03-2002: DarkIce 0.9 released
+
+    o added possibility to simply read from the soundcard, encode, and
+      save the encoded data into a local file (no streaming server needed)
+    o added variable bitrate support for vorbis streams
+    o support for both rc2 and rc3 versions of vorbis libraries
+    o added support for resampling when encoding to vorbis
+      thanks to the OSALP project for the resampling class,
+      http://osalp.sourceforge.net/ and
+      Julius O. Smith, <jos@ccrma.stanford.edu> for the original code
+
+20-02-2002: DarkIce 0.8 released
+
+    o added possibility to disable lowpass and highpass filtering for lame
+    o fixed incorrect vorbis bitrate setting
+    o fix: DarkIce now reports public streams correctly
+      thanks to Tom Gray, <tomg@future-i.com>
+    o made up-to-date with Ogg Vorbis rc3 libs
+      thanks to Michael Smith, <msmith@labyrinth.net.au>
+    o made up-to-date with current IceCast2 cvs version
+    o added local stream dump possibility
+
+19-10-2001: DarkIce 0.7 released
+
+    o added support for FreeBSD
+      thanks to Robin P. Blanchard, <Robin_Blanchard@gactr.uga.edu>
+    o added support for resampling mp3 streams
+    o DarkIce config file now may contain spaces and tabs as white space
+    o configure script enables build with or without lame / Ogg Vorbis
+      also possibility to specify alternate locations for these
+
+18-09-2001: DarkIce 0.6 released
+
+    o added support for IceCast2 server with Ogg Vorbis streaming
+      Ogg Vorbis support thanks to aNa|0Gue <analogue@glop.org>
+    o added support for SUN Solaris
+    o removed long command line options (as these are extensions to UNIX)
+    o removed configure option to specify location of lame library
+    o removed configure option to compile static executable
+
+09-09-2001: DarkIce 0.5 released
+
+    o added support for ShoutCast servers
+    o removed local copy of SGI STL, uses STL of the C++ compiler
+    o compiles with gcc3-c++
+    o added man page darkice.cfg.5
+    o bugfix: config files can have comments before the first section
+
+02-09-2001: DarkIce 0.4 released
+
+    o support for external command line encoder removed, replaced
+      with using lame as a shared object or statically linked library
+    o added darkice man page
+    o created RPM packages
+    o DarkIce no longer reports an error if the sound card recording
+      sample rate could not be set to the exact specified amount
+      (e.g. the sound card reports 44101 Hz instead of 44100 Hz)
+
+
+26-08-2001: DarkIce 0.3.1 released
+
+    o support for unlimited time encoding
+      thanks to Jim Crilly, <JCrilly@MSA.com>
+
+
+20-12-2000: DarkIce 0.3 released
+
+    o added POSIX real-time scheduling
+
+
+18-11-2000: DarkIce 0.2 released
+
+    o code cleanup
+    o first real tests made
+    o added verbosity command line option
+
+
+13-11-2000: DarkIce 0.1 released
+
