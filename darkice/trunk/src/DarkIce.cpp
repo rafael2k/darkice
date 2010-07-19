@@ -164,6 +164,13 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
     str = cs->get( "realtime" );
     enableRealTime = str ? (Util::strEq( str, "yes") ? true : false) : true;
 
+    // get realtime scheduling priority. If unspecified, set it to 4.
+    // Why 4? jackd's default priority is 10, jackd client threads run
+    // at 5, so make the encoder thread use 4. jackd automatically sets
+    // the process callback priority to the right value, so all we have
+    // to care about is the encoder priority.
+    str = cs->get( "rtprio" );
+    realTimeSchedPriority = (str != NULL) ? Util::strToL( str ) : 4;
 
     // the [input] section
     if ( !(cs = config.get( "input")) ) {
@@ -1111,13 +1118,17 @@ DarkIce :: setRealTimeScheduling ( void )               throw ( Exception )
     }
     origSchedPriority = param.sched_priority;
     
-    /* set SCHED_FIFO with max - 1 priority */
+    /* set SCHED_FIFO with max - 1 priority or user configured value */
     if ( (high_priority = sched_get_priority_max(SCHED_FIFO)) == -1 ) {
         throw Exception(__FILE__,__LINE__,"sched_get_priority_max",errno);
     }
     reportEvent( 8, "scheduler high priority", high_priority);
 
-    param.sched_priority = high_priority - 1;
+    if (realTimeSchedPriority > high_priority) {
+        param.sched_priority = high_priority - 1;
+    } else {
+        param.sched_priority = realTimeSchedPriority;
+    }
 
     if ( sched_setscheduler( 0, SCHED_FIFO, &param) == -1 ) {
         reportEvent( 1,

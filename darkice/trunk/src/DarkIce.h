@@ -125,6 +125,11 @@ class DarkIce : public virtual Referable, public virtual Reporter
         int                     enableRealTime;
 
         /**
+         *  Scheduling priority for the realtime threads
+         */
+        int                     realTimeSchedPriority;
+
+        /**
          *  Original scheduling policy
          */
         int                     origSchedPolicy;
