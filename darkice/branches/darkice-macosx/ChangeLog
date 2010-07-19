@@ -1,13 +1,22 @@
-Next release
-    o fixed a bug in BufferedSink.cpp that leads to some buffers 
- 	  being written twice, causing corruption of datastream,
- 	  thanks to Edwin van den Oetelaar <oetelaar.automatisering@gmail.com>
-    o implemented samplerate conversion for all codecs using libsamplerate, 
- 	  and keeping internal aflibConverter as fallback,
-           thanks to Sergiy <piratfm@gmail.com>
-    o bugfix: fix for alsa driver - closes ticked #8
-           thanks to Clemens Ladisch <clemens@ladisch.de> 
+Darkice next release
+    o Added rtprio parameter and revisited realtime priority
+	  closes ticket #21
+          thanks to Cheerio <adi@drcomp.erfurt.thur.de>
+    o Fixed a call to a deprecated jack call
+	  closes ticket #22
+	  thanks to Cheerio again.
     o Implemented CoreAudio driver for MacOS X
+
+09-05-2010 Darkice 1.0 released
+    o fixed a bug in BufferedSink.cpp that leads to some buffers 
+	  being written twice, causing corruption of datastream,
+	  closes ticked #20
+	  thanks to Edwin van den Oetelaar <oetelaar.automatisering@gmail.com>
+    o implemented samplerate conversion for all codecs using libsamplerate, 
+	  and keeping internal aflibConverter as fallback,
+          thanks to Sergiy <piratfm@gmail.com>
+    o bugfix: fix for alsa driver - closes ticked #8
+          thanks to Clemens Ladisch <clemens@ladisch.de> 
 
 14-11-2009 Darkice 0.20.1 released
     o added rc.darkice init script

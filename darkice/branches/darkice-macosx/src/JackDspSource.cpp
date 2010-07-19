@@ -206,7 +206,7 @@ JackDspSource :: open ( void )                       throw ( Exception )
       snprintf(client_name, 255, "darkice-%d", getpid());
     }
 
-    if ((client = jack_client_new(client_name)) == NULL) {
+    if ((client = jack_client_open(client_name, (jack_options_t)0, NULL)) == NULL) {
         throw Exception( __FILE__, __LINE__, "JACK server not running?");
     }
     Reporter::reportEvent( 1, "Registering as JACK client", client_name);
