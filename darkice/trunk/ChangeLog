@@ -1,3 +1,11 @@
+Darkice next release
+    o Added rtprio parameter and revisited realtime priority
+	  closes ticket #21
+          thanks to Cheerio <adi@drcomp.erfurt.thur.de>
+    o Fixed a call to a deprecated jack call
+	  closes ticket #22
+	  thanks to Cheerio again.
+
 09-05-2010 Darkice 1.0 released
     o fixed a bug in BufferedSink.cpp that leads to some buffers 
 	  being written twice, causing corruption of datastream,
