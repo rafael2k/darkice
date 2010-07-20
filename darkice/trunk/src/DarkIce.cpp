@@ -348,7 +348,7 @@ DarkIce :: configIceCast (  const Config      & config,
                 }
             }
             if ( fileAddDate ) {
-                delete[] localDumpFile;
+                delete[] localDumpName;
             }
         }
         // streaming related stuff
