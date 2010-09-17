@@ -1,4 +1,8 @@
 Darkice next release
+    o Added pulseaudio support
+	  closes ticket #25
+	  thanks to Filipe Roque <flip.roque@gmail.com> and
+	  and Johann Fot <johann.fot@dunkelfuerst.com>
     o Added rtprio parameter and revisited realtime priority
 	  closes ticket #21
           thanks to Adrian Knoth <adi@drcomp.erfurt.thur.de>

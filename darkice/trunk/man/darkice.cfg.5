@@ -78,9 +78,10 @@ Required values:
 .TP
 .I device
 Specify the device to record from, which can be an OSS DSP device,
-an ALSA source or you can use Jack audio.
+an ALSA source, PulseAudio source or you can use Jack audio.
 - OSS DSP audio device to record from (e.g. /dev/dsp)
 - ALSA DSP device name (e.g. hwplug:0,0)
+- for PulseAudio use "pulseaudio"
 - the string 'jack', to have an unconnected Jack port, or
   'jack_auto' to automatically make Jack connect to the first source.
 .TP
@@ -98,6 +99,9 @@ Number of channels to record (e.g. 1 for mono, 2 for stereo)
 .I jackClientName
 The name of the jack input channel created by darkice if device=jack
 is specified.
+.TP
+.I paSourceName
+The name of the PulseAudio source to use. It can be "default", an index or a device string obtained from running "pactl list"
 
 .PP
 .B [icecast-x]

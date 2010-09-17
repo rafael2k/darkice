@@ -266,6 +266,42 @@ fi
 
 
 dnl-----------------------------------------------------------------------------
+dnl link PULSEAUDIO sound system if requested 
+dnl-----------------------------------------------------------------------------
+AC_SUBST(PULSEAUDIO_INCFLAGS)
+AC_SUBST(PULSEAUDIO_LDFLAGS)
+
+AC_ARG_WITH(pulseaudio,
+[  --with-pulseaudio             use PULSEAUDIO sound system [yes] ],
+    USE_PULSEAUDIO=${withval}, USE_PULSEAUDIO="yes" )
+AC_ARG_WITH(pulseaudio-prefix,
+[  --with-pulseaudio-prefix=DIR      alternate location for PULSEAUDIO [/usr]
+                              look for libraries in PULSEAUDIO-PREFIX/lib,
+                              for headers in PULSEAUDIO-PREFIX/include],
+    CONFIG_PULSEAUDIO_PREFIX="${withval}", CONFIG_PULSEAUDIO_PREFIX="/usr")
+
+if test "x${USE_PULSEAUDIO}" = "xyes" ; then
+    AC_MSG_CHECKING( [for pulseaudio libraries at ${CONFIG_PULSEAUDIO_PREFIX}] )
+    LA_SEARCH_LIB( PULSEAUDIO_LIB_LOC, PULSEAUDIO_INC_LOC, pulseaudio/asoundlib.h,
+                   ${CONFIG_PULSEAUDIO_PREFIX})
+
+    if test "x${PULSEAUDIO_LIB_LOC}" != "x" ; then
+
+        AC_DEFINE( HAVE_PULSEAUDIO_LIB, 1, [build with PULSEAUDIO sound system] )
+        if test "x${PULSEAUDIO_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
+            PULSEAUDIO_INCFLAGS="-I${PULSEAUDIO_INC_LOC}"
+        fi
+        PULSEAUDIO_LDFLAGS="-L${PULSEAUDIO_LIB_LOC} -lpulse-simple -L${PULSEAUDIO_LIB_LOC} -lpulse"
+        AC_MSG_RESULT( [found at ${CONFIG_PULSEAUDIO_PREFIX}] )
+    else
+        AC_MSG_WARN( [not found, building without PULSEAUDIO support])
+    fi
+else
+    AC_MSG_RESULT( [building without PULSEAUDIO support] )
+fi
+
+
+dnl-----------------------------------------------------------------------------
 dnl link JACK sound server if requested 
 dnl-----------------------------------------------------------------------------
 AC_SUBST(JACK_CFLAGS)

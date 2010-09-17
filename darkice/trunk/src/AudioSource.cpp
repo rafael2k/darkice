@@ -61,6 +61,7 @@ static const char fileid[] = "$Id$";
 AudioSource *
 AudioSource :: createDspSource( const char    * deviceName,
                                 const char    * jackClientName,
+                                const char    * paSourceName,
                                 int             sampleRate,
                                 int             bitsPerSample,
                                 int             channel)
@@ -109,6 +110,18 @@ AudioSource :: createDspSource( const char    * deviceName,
 #else
         throw Exception( __FILE__, __LINE__,
                              "trying to open JACK device without "
+                             "support compiled", deviceName);
+#endif
+	} else if ( Util::strEq( deviceName, "pulseaudio", 10) ) {
+#if defined( SUPPORT_PULSEAUDIO_DSP )
+        Reporter::reportEvent( 1, "Using PulseAudio audio server as input device.");
+        return new PulseAudioDspSource( paSourceName,
+                                        sampleRate,
+                                        bitsPerSample,
+                                        channel);
+#else
+        throw Exception( __FILE__, __LINE__,
+                             "trying to open PulseAudio device without "
                              "support compiled", deviceName);
 #endif
     } else {

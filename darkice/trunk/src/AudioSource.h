@@ -56,6 +56,11 @@
 #define SUPPORT_ALSA_DSP 1
 #endif
 
+#if defined( HAVE_PULSEAUDIO_LIB )
+// we have an PULSEAUDIO sound system available
+#define SUPPORT_PULSEAUDIO_DSP 1
+#endif
+
 #if defined( HAVE_SYS_SOUNDCARD_H )
 // we have an OSS DSP sound source device available
 #define SUPPORT_OSS_DSP 1
@@ -76,6 +81,7 @@
 #endif
 
 #if !defined( SUPPORT_ALSA_DSP ) \
+    && !defined( SUPPORT_PULSEAUDIO_DSP ) \
     && !defined( SUPPORT_OSS_DSP ) \
     && !defined( SUPPORT_JACK_DSP ) \
     && !defined( SUPPORT_SOLARIS_DSP ) \
@@ -264,6 +270,8 @@ class AudioSource : public Source, public virtual Reporter
          *  the supplied DSP name parameter.
          *
          *  @param deviceName the audio device (/dev/dspX, hwplug:0,0, etc)
+         *  @param jackClientName the source name for jack server
+         *  @param paSourceName the pulse audio source
          *  @param sampleRate samples per second (e.g. 44100 for 44.1kHz).
          *  @param bitsPerSample bits per sample (e.g. 16 bits).
          *  @param channel number of channels of the audio source
@@ -273,6 +281,7 @@ class AudioSource : public Source, public virtual Reporter
         static AudioSource *
         createDspSource( const char    * deviceName,
                          const char    * jackClientName,
+                         const char    * paSourceName,
                          int             sampleRate    = 44100,
                          int             bitsPerSample = 16,
                          int             channel       = 2) throw ( Exception );
@@ -287,6 +296,10 @@ class AudioSource : public Source, public virtual Reporter
  *----------------------------------------------------------------------------*/
 #if defined( SUPPORT_ALSA_DSP )
 #include "AlsaDspSource.h"
+#endif
+
+#if defined( SUPPORT_PULSEAUDIO_DSP )
+#include "PulseAudioDspSource.h"
 #endif
 
 #if defined( SUPPORT_OSS_DSP )

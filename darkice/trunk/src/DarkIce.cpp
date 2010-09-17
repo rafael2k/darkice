@@ -144,6 +144,7 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
     bool                     reconnect;
     const char             * device;
     const char             * jackClientName;
+    const char             * paSourceName;
 
     // the [general] section
     if ( !(cs = config.get( "general")) ) {
@@ -185,9 +186,11 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
     channel       = Util::strToL( str);
     device        = cs->getForSure( "device", " missing in section [input]");
     jackClientName = cs->get ( "jackClientName");
+    paSourceName = cs->get ( "paSourceName");
 
     dsp             = AudioSource::createDspSource( device,
                                                     jackClientName,
+                                                    paSourceName,
                                                     sampleRate,
                                                     bitsPerSample,
                                                     channel );
@@ -1202,7 +1205,7 @@ DarkIce :: encode ( void )                          throw ( Exception )
             (dsp->getBitsPerSample() / 8UL) *
             dsp->getChannel() *
             duration;
-                                                
+                                 
     len = encConnector->transfer( bytes, 4096, 1, 0 );
 
     reportEvent( 1, len, "bytes transfered to the encoders");
