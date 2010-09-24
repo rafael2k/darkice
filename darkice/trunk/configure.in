@@ -282,7 +282,7 @@ AC_ARG_WITH(pulseaudio-prefix,
 
 if test "x${USE_PULSEAUDIO}" = "xyes" ; then
     AC_MSG_CHECKING( [for pulseaudio libraries at ${CONFIG_PULSEAUDIO_PREFIX}] )
-    LA_SEARCH_LIB( PULSEAUDIO_LIB_LOC, PULSEAUDIO_INC_LOC, pulseaudio/asoundlib.h,
+    LA_SEARCH_LIB( PULSEAUDIO_LIB_LOC, PULSEAUDIO_INC_LOC, libpulse.so, pulse/pulseaudio.h,
                    ${CONFIG_PULSEAUDIO_PREFIX})
 
     if test "x${PULSEAUDIO_LIB_LOC}" != "x" ; then
