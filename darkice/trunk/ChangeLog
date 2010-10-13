@@ -1,4 +1,6 @@
 Darkice next release
+    o Updated aac+ encoding to use libaacplus-2.0.0 api.
+	  thanks to Sergiy <piratfm@gmail.com>
     o Added pulseaudio support
 	  closes ticket #25
 	  thanks to Filipe Roque <flip.roque@gmail.com> and
