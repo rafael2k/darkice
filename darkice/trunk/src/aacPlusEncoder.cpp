@@ -114,7 +114,7 @@ aacPlusEncoder :: open ( void )
 #else
         converter->initialize( resampleRatio, getInChannel());
         //needed 2x(converted input samples) to handle offsets
-    int         outCount = 2 * getInChannel() * (inSamples + 1);
+	int outCount                 = 2 * getInChannel() * (inputSamples + 1);
         if (resampleRatio > 1)
         outCount = (int) (outCount * resampleRatio);
         resampledOffset = new short int[outCount];
