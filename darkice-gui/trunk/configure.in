@@ -7,7 +7,7 @@ AC_PROG_CC
 dnl tests C compiler
 AC_LANG_C
 
-VERSION="0.6.1"
+VERSION="0.6.2"
 AC_SUBST(VERSION)
 
 AC_CHECK_FUNC(mmap,,AC_MSG_ERROR(Sorry, you need mmap. If you are reading this, email-me and report this problem and your system description - rafael@riseup.net))
