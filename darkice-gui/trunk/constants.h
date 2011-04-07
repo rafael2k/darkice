@@ -20,6 +20,6 @@
 #define __CONSTANTS_H__
 
 /* the size of main window */
-#define SIZE_X 450
-#define SIZE_Y 465
+#define SIZE_X 480
+#define SIZE_Y 505
 

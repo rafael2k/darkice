@@ -76,7 +76,7 @@ void dark_start( GtkWidget *widget, gpointer data) {
   strcat(command, darkice_verbosity);
   strcat(command," -c ");
   strcat(command, darkice_cfg);
-  strcat(command," &> ");
+  strcat(command," > ");
   strcat(command, darksnow_temp);
 
 

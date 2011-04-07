@@ -182,7 +182,7 @@ int main( int  argc, char *argv[], char *envp[]) {
   
   /* sets up the about dialog */
  
-  sprintf(bar, gettext("DarkSnow version: %s\nSoftware written by Rafael Diniz\nLicense: GNU Public License v2"),VERSION);
+  sprintf(bar, gettext("DarkSnow version: %s\nSoftware written by Rafael Diniz\nLicense: GNU Public License v3"),VERSION);
   dialog_about = gtk_dialog_new ();
   label_about = gtk_label_new ( bar );
   button_about = gtk_button_new_with_label ( gettext("Close"));
@@ -282,6 +282,7 @@ int main( int  argc, char *argv[], char *envp[]) {
   glist_format = g_list_append (glist_format, gettext("ogg/vorbis"));
   glist_format = g_list_append (glist_format, gettext("aac"));
   glist_format = g_list_append (glist_format, gettext("mp2"));
+  glist_format = g_list_append (glist_format, gettext("aacp"));
   gtk_combo_set_popdown_strings (GTK_COMBO (combo_format), glist_format);
 
 

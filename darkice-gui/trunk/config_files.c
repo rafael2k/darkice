@@ -277,6 +277,8 @@ gboolean darksnow2darkice_cfg() {
       fprintf(f_darkice_cfg, "aac");
     else if (!strcmp( gettext("mp2"), format))
       fprintf(f_darkice_cfg, "mp2");
+    else if (!strcmp( gettext("aacp"), format))
+      fprintf(f_darkice_cfg, "aacp");
   }
   
   fprintf(f_darkice_cfg, "\nbitrate = ");
