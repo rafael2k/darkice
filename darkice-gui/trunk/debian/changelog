@@ -1,0 +1,36 @@
+darksnow (0.6-0ubuntu2) dapper; urgency=low
+
+  * debian/compat:
+    + Set compat to 5.
+  * debian/rules:
+    + use dh_iconcache .
+
+ -- Zak B. Elep <zakame@ubuntu.com>  Tue, 11 Apr 2006 05:13:19 -0400
+
+darksnow (0.6-0ubuntu1) dapper; urgency=low
+
+  * New upstream release
+  * updated the address of FSF at debian/copyright
+  * updated debian/rules and patches to the new version
+
+ -- Rodrigo Belem <rclbelem@gmail.com>  Fri,  4 Nov 2005 15:01:09 +0000
+
+darksnow (0.5.3-0ubuntu1) breezy; urgency=low
+
+  * New upstream release
+  * updated debian/rules and patches to the new version
+  * man page now part of the upstream release
+
+ -- Rodrigo Belem <rclbelem@gmail.com>  Fri, 18 Oct 2005 00:26:46 -0400
+
+darksnow (0.5.2-0ubuntu1) breezy; urgency=low
+
+  * added Homepage to package description
+  * removed unnecessary cdbs rules tarball.mk, autotools-vars.mk 
+  * removed unnecessary Build-Depends: build-essential, autotools-dev
+  * created a manpage
+  * created a patch to fix Makefile.in to Debian way
+  * Initial Release.
+
+ -- Rodrigo Belem <rclbelem@gmail.com>  Fri, 19 Aug 2005 18:20:24 -0400
+

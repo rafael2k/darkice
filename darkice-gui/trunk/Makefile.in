@@ -1,0 +1,92 @@
+# Darksnow - A gui for darkice
+#
+#  Copyright (C) 2004-2005 Rafael Diniz <rafael@riseup.net>
+# 
+#  This source code is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU Public License as published 
+#  by the Free Software Foundation; either version 2 of the License,
+#  or (at your option) any later version.
+#
+#  This source code is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  Please refer to the GNU Public License for more details.
+#
+# You should have received a copy of the GNU Public License along with
+# this source code; if not, write to:
+# Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+
+# darksnow Makefile 
+PREFIX=@prefix@
+INTLPREFIX=@prefix@
+CC=@CC@
+VERSION=@VERSION@
+CFLAGS+=-Wall 
+INSTALL=install
+ARCH=`uname -m`
+
+#set debugging symbols:
+#CFLAGS+= -g 
+
+#set funny messages
+#CFLAGS+= -DFUNNY 
+
+# use tooltips
+CFLAGS+= -DUSE_TOOLTIP
+
+all: darksnow
+
+darksnow: darksnow.o interface.o config_files.o tooltips.o man_gzip
+	$(CC) $(CFLAGS) @GTK_LIBS@ @GTK_CFLAGS@ -DVERSION="\"$(VERSION)\"" darksnow.o interface.o config_files.o tooltips.o -o darksnow 
+
+darksnow.o: darksnow.c
+	$(CC) $(FUNNY) @GTK_CFLAGS@ -DINTLPREFIX="\"$(INTLPREFIX)\"" -DVERSION="\"$(VERSION)\"" -c darksnow.c -o darksnow.o
+
+interface.o: interface.c
+	$(CC) $(CFLAGS) $(FUNNY) @GTK_CFLAGS@ -DINTLPREFIX="\"$(INTLPREFIX)\"" -DVERSION="\"$(VERSION)\"" -c interface.c -o interface.o
+
+config_files.o: config_files.c
+	$(CC) $(CFLAGS) $(FUNNY) @GTK_CFLAGS@ -DINTLPREFIX="\"$(INTLPREFIX)\"" -DVERSION="\"$(VERSION)\"" -c config_files.c -o config_files.o
+
+tooltips.o: tooltips.c
+	$(CC) $(CFLAGS) $(FUNNY) @GTK_CFLAGS@ -DINTLPREFIX="\"$(INTLPREFIX)\"" -DVERSION="\"$(VERSION)\"" -c tooltips.c -o tooltips.o
+
+man_gzip:
+	gzip -c man/darksnow.1 > man/darksnow.1.gz 
+
+clean:
+	rm -f *.o *~ darksnow man/darksnow.1.gz
+	rm -rf slack darksnow.tgz
+
+install: darksnow
+	$(INSTALL) -D --mode=0755 darksnow $(PREFIX)/bin/darksnow
+	$(INSTALL) -D --mode=0644 documentation/CHANGES $(PREFIX)/share/darksnow/changelog
+	$(INSTALL) -D --mode=0644 po/pt_BR.mo $(PREFIX)/share/locale/pt_BR/LC_MESSAGES/darksnow.mo
+	$(INSTALL) -D --mode=0644 icon/darksnow_icon.png $(PREFIX)/share/icons/hicolor/32x32/apps/darksnow.png
+	$(INSTALL) -D --mode=0644 man/darksnow.1.gz $(PREFIX)/share/man/man1/darksnow.1.gz
+
+make_pkg: darksnow
+	echo "Remember to run this option as root!"
+	rm -rf slack
+	$(INSTALL) -D --mode=0755 darksnow slack$(PREFIX)/bin/darksnow
+	$(INSTALL) -D --mode=0644 icon/darksnow_icon.png slack$(PREFIX)/share/icons/darksnow.png
+	$(INSTALL) -D --mode=0644 po/pt_BR.mo slack$(PREFIX)/share/locale/pt_BR/LC_MESSAGES/darksnow.mo
+	$(INSTALL) -D --mode=0644 documentation/CHANGES slack$(PREFIX)/doc/darksnow/CHANGES
+	$(INSTALL) -D --mode=0644 documentation/LICENSE slack$(PREFIX)/doc/darksnow/LICENSE
+	$(INSTALL) -D --mode=0644 documentation/README.en slack$(PREFIX)/doc/darksnow/README.en
+	$(INSTALL) -D --mode=0644 documentation/README.pt_BR slack$(PREFIX)/doc/darksnow/README.pt_BR	
+	$(INSTALL) -D --mode=0644 documentation/CHANGES slack$(PREFIX)/doc/darksnow/CHANGES
+	$(INSTALL) -D --mode=0644 documentation/slack-desc slack/install/slack-desc
+	cd slack; makepkg -c y -l n  ../darksnow-$(VERSION)-$(ARCH)-1rd.tgz
+	echo "Remember to run this option as root!"
+
+install_pkg: make_pkg
+	/sbin/installpkg darksnow-*-1rd.tgz
+
+upgrade_pkg: make_pkg
+	/sbin/upgradepkg darksnow-*-1rd.tgz
+
+dist-clean: clean
+	rm aclocal.m4 config.status config.log man/darksnow.1.gz Makefile
+	rm -r autom4te.cache

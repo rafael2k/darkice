@@ -1,0 +1,16 @@
+Source: darksnow
+Section: sound
+Priority: optional
+Maintainer: Rodrigo Belem <rclbelem@gmail.com>
+Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 4.1.0), patchutils (>= 0.2.25), libgtk2.0-dev
+Standards-Version: 3.6.2
+
+Package: darksnow
+Architecture: any
+Depends: ${shlibs:Depends}, darkice
+Description: simple graphical user interface to darkice
+ DarkSnow is a graphical interface written in GTK+2 for the darkice
+ live streamer.
+ .
+ Homepage: http://darksnow.radiolivre.org/
+

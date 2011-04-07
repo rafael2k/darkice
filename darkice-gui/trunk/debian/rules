@@ -1,0 +1,23 @@
+#!/usr/bin/make -f
+
+#DEB_AUTO_UPDATE_DEBIAN_CONTROL := yes
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/rules/simple-patchsys.mk
+include /usr/share/cdbs/1/class/autotools.mk
+
+# Use dh_iconcache
+install/darksnow::
+	dh_iconcache -pdarksnow
+
+binary-post-install/darksnow::
+	rm -f $(CURDIR)/debian/darksnow/usr/share/doc/darksnow/README
+
+clean::
+	rm -f config.guess.cdbs-orig
+	rm -f config.sub.cdbs-orig
+	rm -f config.status 
+	rm -f config.log 
+	rm -f Makefile
+	rm -f *.o *~ darksnow  
+			    

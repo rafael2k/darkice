@@ -1,0 +1,387 @@
+# translation of darksnow to Brazilian portuguese.
+# This file is distributed under the GNU GPLv2.
+# Copyright (C) 2005, Rafael Diniz
+# Rafael Diniz <rafael@riseup.net>, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Darksnow 0.6\n"
+"Report-Msgid-Bugs-To: Rafael Diniz <rafael@riseup.net>\n"
+"POT-Creation-Date: 2004-02-05 00:52-0300\n"
+"PO-Revision-Date: 2005-11-03 22:42+0000\n"
+"Last-Translator: Rafael Diniz <rafael@riseup.net>\n"
+"Language-Team: Rafael Diniz <rafael@riseup.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: config_files.c:259 darksnow.c:290
+msgid "Constant"
+msgstr "Constante"
+
+#: config_files.c:262 darksnow.c:291
+msgid "Average"
+msgstr "Media"
+
+#: config_files.c:265 darksnow.c:292
+msgid "Variable"
+msgstr "Variavel"
+
+#: config_files.c:272 darksnow.c:281
+msgid "mp3"
+msgstr "mp3"
+
+#: config_files.c:274 darksnow.c:282
+msgid "ogg/vorbis"
+msgstr "ogg/vorbis"
+
+#: config_files.c:276 darksnow.c:283
+msgid "aac"
+msgstr "aac"
+
+#: config_files.c:301 darksnow.c:425
+msgid "yes"
+msgstr "sim"
+
+#: darksnow.c:142
+msgid "Start Streaming"
+msgstr "Iniciar Transmissao"
+
+#: darksnow.c:143
+msgid "Stop Streaming"
+msgstr "Parar Transmissao"
+
+#: darksnow.c:144 interface.c:384
+msgid "Show Details"
+msgstr "Mostrar Detalhes"
+
+#: darksnow.c:146 interface.c:262
+msgid "Streaming Status: Stopped"
+msgstr "Estado da Transmissao: Parada"
+
+#: darksnow.c:161
+msgid "File"
+msgstr "Arquivo"
+
+#: darksnow.c:162
+msgid "Open Configuration"
+msgstr "Abrir Configuracao"
+
+#: darksnow.c:163
+msgid "Save Configuration"
+msgstr "Salvar Configuracao"
+
+#: darksnow.c:164
+msgid "Quit and don't stop darkice"
+msgstr "Sair sem desligar o darkice"
+
+#: darksnow.c:165
+msgid "Quit"
+msgstr "Sair"
+
+#: darksnow.c:174
+msgid "Help"
+msgstr "Ajuda"
+
+#: darksnow.c:175
+msgid "About"
+msgstr "Sobre"
+
+#: darksnow.c:185
+#, c-format
+msgid ""
+"DarkSnow version: %s\n"
+"Software written by Rafael Diniz\n"
+"License: GNU Public License v2"
+msgstr ""
+"Versao do DarkSnow: %s\n"
+"Programa escrito por Rafael Diniz\n"
+"Licenca: GNU GPL v2"
+
+#: darksnow.c:188 interface.c:364
+msgid "Close"
+msgstr "Fechar"
+
+#: darksnow.c:189
+msgid "About DarkSnow"
+msgstr "Sobre o DarkSnow"
+
+#: darksnow.c:196
+msgid ""
+"Darkice is running.\n"
+"Do you want to kill darkice?\n"
+msgstr ""
+"O Darkice esta sendo executado.\n"
+"Voce quer que o darkice seja desligado?\n"
+
+#: darksnow.c:197
+msgid "Yes"
+msgstr "Sim"
+
+#: darksnow.c:198
+msgid "No"
+msgstr "Nao"
+
+#: darksnow.c:200
+msgid "Darkice is running"
+msgstr "Darkice sendo executado"
+
+#: darksnow.c:211
+msgid "Open File"
+msgstr "Abrir Arquivo"
+
+#: darksnow.c:212
+msgid "Save File"
+msgstr "Salvar Arquivo"
+
+#: darksnow.c:213 darksnow.c:270
+msgid "Local Dump File"
+msgstr "Arquivo de Dump Local"
+
+#: darksnow.c:223
+msgid "Server Options"
+msgstr "Opcoes do Servidor"
+
+#: darksnow.c:224
+msgid "Audio Options"
+msgstr "Opcoes de Audio"
+
+#: darksnow.c:225
+msgid "Streaming Description"
+msgstr "Descricao da Transmissao"
+
+#: darksnow.c:232
+msgid "Streaming Destination: "
+msgstr "Destino da Transmissao: "
+
+#: darksnow.c:241
+msgid "Server: "
+msgstr "Servidor: "
+
+#: darksnow.c:243
+msgid "Port: "
+msgstr "Porta: "
+
+#: darksnow.c:245
+msgid "Mount Point: "
+msgstr "Ponto de Montagem: "
+
+#: darksnow.c:247
+msgid "Password: "
+msgstr "Senha: "
+
+#: darksnow.c:251
+msgid "Verbosity level: "
+msgstr "Nivel de verbosidade: "
+
+#: darksnow.c:267
+msgid "Remote Dump File: "
+msgstr "Arquivo de Dump Remoto: "
+
+#: darksnow.c:273
+msgid "Add date to local dump filename? "
+msgstr "Adicinar a data ao nome do arquivo de dump local? "
+
+#: darksnow.c:278
+msgid "Format: "
+msgstr "Formato: "
+
+#: darksnow.c:287
+msgid "BitRateMode: "
+msgstr "Modo de codificacao: "
+
+#: darksnow.c:295
+msgid "BitRate: "
+msgstr "Razao de bits: "
+
+#: darksnow.c:320
+msgid "SampleRate: "
+msgstr "Taxa de Amostragem: "
+
+#: darksnow.c:333
+msgid "Quality: "
+msgstr "Qualidade: "
+
+#: darksnow.c:348
+msgid "Bits per Sample: "
+msgstr "Bits por Amostra: "
+
+#: darksnow.c:355
+msgid "Number of channels: "
+msgstr "Numero de canais: "
+
+#: darksnow.c:363
+msgid "Buffer Size: "
+msgstr "Tamanho do Buffer: "
+
+#: darksnow.c:389
+msgid "Device Input: "
+msgstr "Dispositivo de Entrada: "
+
+#: darksnow.c:410
+msgid "Radio Name: "
+msgstr "Nome da Radio: "
+
+#: darksnow.c:412
+msgid "URL: "
+msgstr "URL: "
+
+#: darksnow.c:414
+msgid "Description: "
+msgstr "Descricao: "
+
+#: darksnow.c:416
+msgid "Genre: "
+msgstr "Genero: "
+
+#: darksnow.c:422
+msgid "Public: "
+msgstr "Publica: "
+
+#: darksnow.c:426
+msgid "no"
+msgstr "nao"
+
+#: darksnow.c:435
+msgid ""
+"DarkSnow - A graphical user interface for darkice\n"
+"The Revolution will be streamed!"
+msgstr ""
+"DarkSnow - Uma interface grafica para o darkice\n"
+"A Revolucao sera transmitida pela Internet!"
+
+#: interface.c:97
+msgid "-->    Command     <--\n"
+msgstr "-->    Comando     <--\n"
+
+
+#: interface.c:99
+msgid ""
+"\n"
+"--> Darkice output <--\n"
+msgstr ""
+"\n"
+"--> Saida do Darkice <--\n"
+
+
+#: interface.c:113
+msgid "Darkice off"
+msgstr "Darkice desligado"
+
+#: interface.c:269
+msgid "Streaming Status: Started"
+msgstr "Estado da Transmissao: Iniciada"
+
+#: interface.c:358
+#, c-format
+msgid ""
+"Darkice not found!\n"
+"Download darkice at http://darkice.sf.net/"
+msgstr ""
+"Darkice nao encontrado!\n"
+"Baixe o darkice de http://darkice.sf.net/"
+
+#: interface.c:360
+#, c-format
+msgid ""
+"Don't you know you should have the fucking\n"
+"darkice to run this shit!!\n"
+"Get it at http://darkice.sf.net/\n"
+msgstr ""
+"Puta vida, caraio, se num tah ligado que\n"
+" vc tem que ter o darkice pra rodar essa merda??\n"
+" baixa logo daquela merda de \n"
+"http://darkice.sf.net/\n"
+"manu!!!\n"
+
+#: interface.c:365
+msgid "Error"
+msgstr "Erro"
+
+#: interface.c:391
+msgid "Hide Details"
+msgstr "Esconder Detalhes"
+
+#: tooltips.c:42
+msgid ""
+"Field that indicates the name of the server.\n"
+"Eg: orelha2.radiolivre.org"
+msgstr ""
+"Campo que indica o nome do servidor.\n"
+"Ex: orelha2.radiolivre.org"
+
+#: tooltips.c:43
+msgid ""
+"Field that indicates the server port that you'll connect.\n"
+"Eg: 8000"
+msgstr ""
+"Campo que indica a porta do servidor na qual voce ira se conectar.\n"
+"Ex: 8000"
+
+#: tooltips.c:44
+msgid ""
+"Field that indicates the mount point for the stream.\n"
+"Eg: radio_x.ogg\n"
+" Remember to put a \".ogg\" at the end of the mountpoint if you want to use "
+"ogg/vorbis!"
+msgstr ""
+"Campo que indica o ponto de montagem para o stream.\n"
+"Ex: radio_x.ogg\n"
+" Lembre-se de colocar um \".ogg\" no final do ponto de montagem caso voce queira "
+"usar ogg/vorbis!"
+
+#: tooltips.c:45
+msgid ""
+"Field that indicates the password for the stream, provided by the server "
+"administrator."
+msgstr ""
+"Campo que indica a senha do stream, fornecida pelo administrador do servidor."
+
+#: tooltips.c:46
+msgid ""
+"Field that indicates the file the IceCast server should dump the contents of "
+"this stream on its side (server side).\n"
+"Eg: remote_file_name.mp3"
+msgstr ""
+"Campo que indica o arquivo no qual o servidor IceCast ira depositar o conteudo "
+"deste stream, no seu lado (server side).\n "
+"Ex: arquivo_remoto.mp3"
+
+#: tooltips.c:48
+msgid ""
+"Field that indicates the file where the same data sent to the stream will be "
+"dumped.\n"
+"Eg: local_file_name.mp3"
+msgstr ""
+"Campo que indica o arquivo no qual sera depositado os mesmos dados enviados "
+"ao stream.\n"
+"Ex: arquivo_local.mp3"
+
+#: tooltips.c:50
+msgid ""
+"If you want to automatically insert a date string in the localDumpFile name, "
+"check this option."
+msgstr ""
+"Se voce quer que seja inserida a data no nome do arquivo de dump local, marque "
+"essa opcao."
+
+#: tooltips.c:54
+msgid ""
+"Field that indicates the verbosity level of darkice.\n"
+"Use a value greater than 0 if you want more information in 'Details Window'."
+msgstr ""
+"Campo que indica o nivel de verbosidade do darkice.\n"
+"Use um valor maior que 0 caso voce queira maior quantidade de informacao na janela de detalhes."
+
+#: tooltips.c:55
+msgid ""
+"For OSS DSP audio device to record from, use /dev/dsp_ (eg. /dev/dsp), for "
+"ALSA, use hw:_,_ (eg. hw:0,0), and to create an unconnected input port in "
+"jack, use 'jack', or use 'jack_auto' to automatically make Jack connect to "
+"the first source. (if you choose jack you must set the samplerate to the "
+"same jack samplerate!)"
+msgstr ""
+"Para usar como dispositivo de captura um dispositivo OSS, usar /dev/dsp_ (ex: /dev/dsp), para "
+"usar um dispositivo ALSA, usar hw:_,_ (ex: hw:0,0), e para criar uma porta de entrada desconectada no jack, "
+"usar 'jack', ou use 'jack_auto' para automaticamente fazer o jack conectar ao primeiro dispositivo fonte. "
+"(Se voce escolheu o jack, lembre-se de utilizar a mesma taxa de amostragem utilizada pelo jack!"

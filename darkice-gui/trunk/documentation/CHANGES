@@ -1,0 +1,55 @@
+0.6.1
+  Added MP2 format option.
+  Other small changes.
+0.6
+  Added AAC format option.
+  Changed the way that darksnow gets the darkice output (now it uses fifo)
+  Fixed a memory leak and some minor improvements done. 
+0.5.3
+  Added some copyright notes, some minor changes and a debian directory, for package creation.
+0.5.2
+  Added remote and local dump file options.
+  Some bug fixes.
+0.5.1
+  Added jack support. (needs darkice 0.15 or greater)
+0.5
+  a little bug fix and now automatic slackware package creation works ok.
+0.4.9
+  fixed two bugs, one of them very serious that prevented darksnow running in ppc and probably other
+  big endian archs.
+0.4.8
+  fixed a wrong behaviour of the darkice output window
+0.4.7
+  lots of bug fixes
+  description window now works correctly
+0.4.6
+  show/hide darkice output window
+  initial tooltips support
+  limited autoconf support
+0.4.5
+  darkice verbosity level option included - this breaks compatibily with older config_files.
+0.4.4
+  now is possible to exit darksnow without killing darkice
+0.4.3
+  fixed "<defunct>" bug
+  mountpoint string can start with slash
+  some minor enhancements and bug fixes
+0.4.2
+  brazilian portuguese translation fix
+0.4.1:
+  streaming status now works in most cases.
+  some minor interface adjustments
+  small bugs fixed
+0.4:
+  load and save configuration from file added.
+0.3.1:
+  small bug fix
+0.3:
+  notebooks added
+  better widgets arrangement
+  first useable version
+0.2.1:
+0.2:
+0.1:
+0.0:
+  Initial version

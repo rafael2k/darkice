@@ -1,0 +1,47 @@
+# darksnow - uma interface grafica em gtk2 para o darkice
+# Copyright (C) 2004  Rafael Diniz
+# 
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+Este eh o darksnow, uma interface grafica para o darkice (darkice.sf.net) desenvolvida por Rafael Diniz.
+
+Pre-requisitos:
+- darkice 0.14 (darkice 0.15 para suporte ao jack),
+- gtk2,
+- killall, (mata processos por nome),
+- linux 2.4 ou superior e provavelmente qualquer sistema BSD recente (incluindo OpenBSD, NetBSD, FreeBSD,
+Solaris e MacOS X).
+
+Para compilar o programa, digite:
+$ ./configure --prefix=/usr
+$ make
+e para instalar, como root:
+# make install
+ou, se voce usa Slackware, crie um pacote (como root):
+# make make_pkg
+e instale ou atualize usando
+# make install_pkg
+ou
+# make upgrade_pkg
+
+
+Para executar o programa, digite:
+$ darksnow
+
+Qualquer problema, mande um email para:
+rafael@riseup.net
+
+_A Revolução será transmitida pela Internet_
+Saia da Internet, vejo você nas ruas!
