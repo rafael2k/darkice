@@ -341,7 +341,8 @@ gboolean main_quit (GtkWidget *widget, GdkEvent  *event, gpointer data) {
     gtk_widget_show (dialog_darkkill);
   }
   else
-    delete_event_nd(NULL, NULL, NULL);
+    exit(0);
+  //delete_event_nd(NULL, NULL, NULL);
   
   return FALSE;
       
