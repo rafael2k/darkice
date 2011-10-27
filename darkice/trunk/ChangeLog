@@ -1,4 +1,4 @@
-Darkice next release
+27-10-2011 Darkice 1.1 released
     o Updated aac+ encoding to use libaacplus-2.0.0 api.
 	  thanks to Sergiy <piratfm@gmail.com>
     o Added pulseaudio support
