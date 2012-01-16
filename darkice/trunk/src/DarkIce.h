@@ -89,7 +89,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
          *  Type describing each lame library output.
          */
         typedef struct {
-            Ref<AudioEncoder>       encoder;
+            Ref<Sink>               encoder;
             Ref<TcpSocket>          socket;
             Ref<CastSink>           server;
         } Output;

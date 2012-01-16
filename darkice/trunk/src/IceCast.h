@@ -153,8 +153,7 @@ class IceCast : public CastSink
                     const char        * genre          = 0,
                     bool                isPublic       = false,
                     const char        * remoteDumpFile = 0,
-                    Sink              * streamDump     = 0,
-                    unsigned int        bufferDuration = 10 )
+                    Sink              * streamDump     = 0 )
                                                         throw ( Exception )
               : CastSink( socket,
                           password,
@@ -163,8 +162,7 @@ class IceCast : public CastSink
                           url,
                           genre,
                           isPublic,
-                          streamDump,
-                          bufferDuration )
+                          streamDump )
         {
             init( mountPoint, description, remoteDumpFile);
         }

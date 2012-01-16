@@ -402,7 +402,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
                 return false;
             }
 
-            return true;
+            return getSink()->canWrite(sec, usec);
         }
 
         /**

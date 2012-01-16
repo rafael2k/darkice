@@ -69,19 +69,9 @@ class CastSink : public Sink, public virtual Reporter
         Ref<TcpSocket>      socket;
 
         /**
-         *  The BufferedSink encapsulating the socket connection to the server.
-         */
-        Ref<BufferedSink>   bufferedSink;
-
-        /**
          *  An optional Sink to enable stream dumps.
          */
         Ref<Sink>           streamDump;
-
-        /**
-         *  Duration of the BufferedSink buffer in seconds.
-         */
-        unsigned int        bufferDuration;
 
         /**
          *  Password to the server.
@@ -123,8 +113,6 @@ class CastSink : public Sink, public virtual Reporter
          *  @param genre genre of the stream.
          *  @param bitRate bitrate of the stream (e.g. mp3 bitrate).
          *  @param isPublic is the stream public?
-         *  @param bufferDuration duration of the BufferedSink buffer
-         *                        in seconds.
          *  @exception Exception
          */
         void
@@ -135,8 +123,7 @@ class CastSink : public Sink, public virtual Reporter
                 const char            * name,
                 const char            * url,
                 const char            * genre,
-                bool                    isPublic,
-                unsigned int            bufferDuration )
+                bool                    isPublic)
                                                     throw ( Exception );
 
         /**
@@ -178,7 +165,7 @@ class CastSink : public Sink, public virtual Reporter
         inline Sink *
         getSink ( void ) const                      throw ()
         {
-            return bufferedSink.get();
+            return getSocket();
         }
 
         /**
@@ -206,8 +193,7 @@ class CastSink : public Sink, public virtual Reporter
          *  @param bitRate bitrate of the stream (e.g. mp3 bitrate).
          *  @param isPublic is the stream public?
          *  @param streamDump a Sink to dump the streamed binary data to
-         *  @param bufferDuration duration of the BufferedSink buffer
-         *                        in seconds.
+         *
          *  @exception Exception
          */
         inline
@@ -218,8 +204,7 @@ class CastSink : public Sink, public virtual Reporter
                     const char        * url            = 0,
                     const char        * genre          = 0,
                     bool                isPublic       = false,
-                    Sink              * streamDump     = 0,
-                    unsigned int        bufferDuration = 10 )
+                    Sink              * streamDump     = 0)
                                                         throw ( Exception )
         {
             init( socket,
@@ -229,8 +214,7 @@ class CastSink : public Sink, public virtual Reporter
                   name,
                   url,
                   genre,
-                  isPublic,
-                  bufferDuration );
+                  isPublic );
         }
 
         /**
@@ -249,8 +233,7 @@ class CastSink : public Sink, public virtual Reporter
                   cs.name,
                   cs.url,
                   cs.genre,
-                  cs.isPublic,
-                  cs.bufferDuration );
+                  cs.isPublic );
         }
 
         /**
@@ -284,8 +267,7 @@ class CastSink : public Sink, public virtual Reporter
                       cs.name,
                       cs.url,
                       cs.genre,
-                      cs.isPublic,
-                      cs.bufferDuration );
+                      cs.isPublic );
             }
             return *this;
         }
@@ -308,7 +290,7 @@ class CastSink : public Sink, public virtual Reporter
         inline virtual bool
         isOpen ( void ) const                       throw ()
         {
-            return bufferedSink != NULL ? bufferedSink->isOpen() : false;
+          return getSink()->isOpen();
         }
 
         /**
@@ -454,17 +436,6 @@ class CastSink : public Sink, public virtual Reporter
         getIsPublic ( void ) const                  throw ()
         {
             return isPublic;
-        }
-
-        /**
-         *  Get the duration of the BufferedSink buffer in seconds.
-         *
-         *  @return the the duration of the BufferedSink buffer in seconds.
-         */
-        inline unsigned int
-        getBufferDuration ( void ) const            throw ()
-        {
-            return bufferDuration;
         }
 };
 

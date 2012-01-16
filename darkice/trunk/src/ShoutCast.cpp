@@ -182,6 +182,12 @@ ShoutCast :: sendLogin ( void )                           throw ( Exception )
     len = source->read( resp, STRBUF_SIZE);
     reportEvent(8, "server response length: ", len);
     reportEvent(8, "server response: ", resp);
+
+    if ( Util::strEq( resp, "invalid password",16) ) {
+	throw Exception( __FILE__, __LINE__,
+                         "ShoutCast - wrong password");
+    }
+
     if ( len < 2 || resp[0] != 'O' || resp[1] != 'K' ) {
         return false;
     }

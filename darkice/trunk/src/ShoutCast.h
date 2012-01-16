@@ -162,8 +162,7 @@ class ShoutCast : public CastSink
                     const char        * irc            = 0,
                     const char        * aim            = 0,
                     const char        * icq            = 0,
-                    Sink              * streamDump     = 0,
-                    unsigned int        bufferDuration = 10 )
+                    Sink              * streamDump     = 0 )
                                                         throw ( Exception )
               : CastSink( socket,
                           password,
@@ -172,8 +171,7 @@ class ShoutCast : public CastSink
                           url,
                           genre,
                           isPublic,
-                          streamDump,
-                          bufferDuration )
+                          streamDump )
         {
             init( irc, aim, icq, mountPoint );
         }

@@ -1,3 +1,9 @@
+next version
+    o Issue #56: Wrong icecast2 password isn't properly reported, fixed.
+	  thanks to Filipe Roque <flip.roque@gmail.com>
+    o Issue #57: BufferedSink makes streams invalid, fixed.
+	  thanks to Alban Peignier <alban.peignier@gmail.com>
+	
 27-10-2011 Darkice 1.1 released
     o Updated aac+ encoding to use libaacplus-2.0.0 api.
 	  thanks to Sergiy <piratfm@gmail.com>

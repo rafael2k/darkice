@@ -198,6 +198,11 @@ IceCast :: sendLogin ( void )                           throw ( Exception )
 
     /* read the anticipated response: "OK" */
     len = source->read( resp, STRBUF_SIZE);
+
+    if ( Util::strEq( resp, "ERROR - Bad Password",20) ) {
+	throw Exception( __FILE__, __LINE__,
+                         "Icecast - wrong password");
+    }
     if ( len < 2 || resp[0] != 'O' || resp[1] != 'K' ) {
         return false;
     }
