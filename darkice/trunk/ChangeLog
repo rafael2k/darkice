@@ -3,6 +3,8 @@ next version
 	  thanks to Filipe Roque <flip.roque@gmail.com>
     o Issue #57: BufferedSink makes streams invalid, fixed.
 	  thanks to Alban Peignier <alban.peignier@gmail.com>
+    o Issue #30: Segmentation Fault when creating file with fileAddDate, fixed
+	  thanks to Filipe Roque <flip.roque@gmail.com>
 	
 27-10-2011 Darkice 1.1 released
     o Updated aac+ encoding to use libaacplus-2.0.0 api.

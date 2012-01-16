@@ -860,7 +860,7 @@ DarkIce :: configShoutCast (    const Config      & config,
                 }
             }
             if ( fileAddDate ) {
-                delete[] localDumpFile;
+                delete[] localDumpName;
             }
         }
 
