@@ -81,6 +81,7 @@ static const char fileid[] = "$Id$";
  *----------------------------------------------------------------------------*/
 static const char responseOK[] = "HTTP/1.0 200";
 static const char responseWrongPasswd[] = "HTTP/1.0 401";
+static const char responseForbidden[] = "HTTP/1.0 403";
 
 /* ===============================================  local function prototypes */
 
@@ -247,9 +248,16 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     }
     resp[lenExpected] = 0;
 
+    reportEvent(5,resp);
+
     if ( Util::strEq( resp, responseWrongPasswd) ) {
 	throw Exception( __FILE__, __LINE__,
                          "Icecast2 - wrong password");
+    }
+
+    if ( Util::strEq( resp, responseForbidden) ) {
+	throw Exception( __FILE__, __LINE__,
+                         "Icecast2 - forbidden. Is the mountpoint occupied, or maximum sources reached?");
     }
 
     if ( !Util::strEq( resp, responseOK) ) {
