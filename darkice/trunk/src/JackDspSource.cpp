@@ -40,6 +40,12 @@
 #include "config.h"
 #endif
 
+#ifdef HAVE_STDIO_H
+#include <stdio.h>
+#else
+#error need stdio.h
+#endif
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #else
