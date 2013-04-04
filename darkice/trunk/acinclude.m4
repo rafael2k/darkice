@@ -43,7 +43,7 @@ dnl  by Florian Bomers
 dnl-----------------------------------------------------------------------------
 AC_DEFUN([LA_SEARCH_LIB],[
   dnl look for lib
-  LA_SEARCH_FILE($1, $3, $5 $5/lib64 $5/lib )
+  LA_SEARCH_FILE($1, $3, $5 $5/lib64 $5/lib $5/lib/x86_64-linux-gnu )
   dnl look for header.
   LA_SEARCH_FILE($2, $4, $5 $5/include )
   if test ".$1" = "." || test ".$2" = "."; then
