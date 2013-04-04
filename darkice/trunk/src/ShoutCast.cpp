@@ -76,7 +76,7 @@ static const char fileid[] = "$Id$";
  *  Size of string conversion buffer
  *----------------------------------------------------------------------------*/
 #define STRBUF_SIZE         32
-
+#define HEADERLINE_LENGTH     50
 
 /* ===============================================  local function prototypes */
 
@@ -134,7 +134,7 @@ ShoutCast :: sendLogin ( void )                           throw ( Exception )
     unsigned int    len;
     bool            needsMountPoint = false;
     const char    * mountPoint      = getMountPoint();
-
+    char            header_line[HEADERLINE_LENGTH+2]; // ... + \n + \0
 
     if ( !source->isOpen() ) {
         return false;
@@ -200,62 +200,50 @@ ShoutCast :: sendLogin ( void )                           throw ( Exception )
 
     /* send the icy headers */
     if ( getName() ) {
-        str = "icy-name:";
-        sink->write( str, strlen( str));
-        str = getName();
-        sink->write( str, strlen( str));
+      snprintf(header_line, HEADERLINE_LENGTH, "icy-name:%s", getName());
+      strcat(header_line, "\n");
+      sink->write( header_line, strlen( header_line));
     }
 
     if ( getUrl() ) {
-        str = "\nicy-url:";
-        sink->write( str, strlen( str));
-        str = getUrl();
-        sink->write( str, strlen( str));
+      snprintf(header_line, HEADERLINE_LENGTH, "icy-url:%s", getUrl());
+      strcat(header_line, "\n");
+      sink->write( header_line, strlen( header_line));
     }
 
     if ( getGenre() ) {
-        str = "\nicy-genre:";
-        sink->write( str, strlen( str));
-        str = getGenre();
-        sink->write( str, strlen( str));
+      snprintf(header_line, HEADERLINE_LENGTH, "icy-genre:%s", getGenre());
+      strcat(header_line, "\n");
+      sink->write( header_line, strlen( header_line));
     }
 
     if ( getIrc() ) {
-        str = "\nicy-irc:";
-        sink->write( str, strlen( str));
-        str = getIrc();
-        sink->write( str, strlen( str));
+      snprintf(header_line, HEADERLINE_LENGTH, "icy-irc:%s", getIrc());
+      strcat(header_line, "\n");
+      sink->write( header_line, strlen( header_line));
     }
 
     if ( getAim() ) {
-        str = "\nicy-aim:";
-        sink->write( str, strlen( str));
-        str = getAim();
-        sink->write( str, strlen( str));
+      snprintf(header_line, HEADERLINE_LENGTH, "icy-aim:%s", getAim());
+      strcat(header_line, "\n");
+      sink->write( header_line, strlen( header_line));
     }
 
     if ( getIcq() ) {
-        str = "\nicy-icq:";
-        sink->write( str, strlen( str));
-        str = getIcq();
-        sink->write( str, strlen( str));
+      snprintf(header_line, HEADERLINE_LENGTH, "icy-icq:%s", getIcq());
+      strcat(header_line, "\n");
+      sink->write( header_line, strlen( header_line));
     }
 
-    str = "\nicy-br:";
-    sink->write( str, strlen( str));
-    if ( log10(getBitRate()) >= (STRBUF_SIZE-2) ) {
-        throw Exception( __FILE__, __LINE__,
-                         "bitrate does not fit string buffer", getBitRate());
-    }
-    sprintf( resp, "%d", getBitRate());
-    sink->write( resp, strlen( resp));
+    snprintf(header_line, HEADERLINE_LENGTH, "icy-br:%d", getBitRate());
+    strcat(header_line, "\n");
+    sink->write( header_line, strlen( header_line));
 
-    str = "\nicy-pub:";
-    sink->write( str, strlen( str));
-    str = getIsPublic() ? "1" : "0";
-    sink->write( str, strlen( str));
+    snprintf(header_line, HEADERLINE_LENGTH, "icy-pub:%s", getIsPublic() ? "1" : "0");
+    strcat(header_line, "\n");
+    sink->write( header_line, strlen( header_line));
 
-    str = "\n\n";
+    str = "\n";
     sink->write( str, strlen( str));
     sink->flush();
 
