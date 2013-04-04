@@ -233,7 +233,7 @@ aacPlusEncoder :: write (  const void    * buf,
     delete[] aacplusBuf;
 
 //    return processedSamples;
-    return samples;
+    return samples * sampleSize;
 }
 
 /*------------------------------------------------------------------------------

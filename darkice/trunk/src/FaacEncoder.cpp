@@ -240,8 +240,7 @@ FaacEncoder :: write (  const void    * buf,
 
     delete[] faacBuf;
 
-//    return processedSamples;
-    return samples;
+    return samples * sampleSize;
 }
 
 
