@@ -226,7 +226,7 @@ aflibConverter::resample(       /* number of output samples returned */
 
 
 int
-aflibConverter::err_ret(char *s)
+aflibConverter::err_ret(const char *s)
 {
     aflib_debug("resample: %s \n\n",s); /* Display error message  */
     return -1;

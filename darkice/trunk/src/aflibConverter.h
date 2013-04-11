@@ -110,7 +110,7 @@ private:
    operator=(const aflibConverter& op);
 
    int
-   err_ret(char *s);
+   err_ret(const char *s);
 
    void
    deleteMemory();

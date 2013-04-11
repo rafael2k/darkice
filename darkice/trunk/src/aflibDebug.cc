@@ -97,7 +97,8 @@ void output_message(::aflibDebug::Level level, const char *msg) {
 	  default:
 		  break; // avoid compile warning
 	}
-	system(buff);
+	int r = system(buff);
+        if (r<0) fprintf(stderr, "aflibDebug, system() failed\n");
 }
 
 /*

@@ -252,7 +252,7 @@ Connector :: open ( void )                          throw ( Exception )
 /*------------------------------------------------------------------------------
  *  Transfer some data from the source to the sink
  *----------------------------------------------------------------------------*/
-unsigned int
+unsigned long
 Connector :: transfer ( unsigned long       bytes,
                         unsigned int        bufSize,
                         unsigned int        sec,
@@ -271,7 +271,7 @@ Connector :: transfer ( unsigned long       bytes,
 
     unsigned char * buf = new unsigned char[bufSize];
 
-    reportEvent( 6, "Connector :: tranfer, bytes", bytes);
+    reportEvent( 6, "Connector :: transfer, bytes", bytes);
     
     for ( b = 0; !bytes || b < bytes; ) {
         unsigned int    d = 0;

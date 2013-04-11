@@ -71,12 +71,6 @@ static const char fileid[] = "$Id$";
 
 
 /*------------------------------------------------------------------------------
- *  Size of string conversion buffer
- *----------------------------------------------------------------------------*/
-#define STRBUF_SIZE         32
-
-
-/*------------------------------------------------------------------------------
  *  Expected positive response from server begins like this.
  *----------------------------------------------------------------------------*/
 static const char responseOK[] = "HTTP/1.0 200";
@@ -125,7 +119,8 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     Sink          * sink   = getSink();
     Source        * source = getSocket();
     const char    * str;
-    char            resp[STRBUF_SIZE];
+    const int       buflen = 1024;  // some small buffer size
+    char            resp[buflen];   // a little buffer
     unsigned int    len;
     unsigned int    lenExpected;
 
@@ -178,7 +173,7 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     sink->write( str, strlen(str));
     {
         // send source:<password> encoded as base64
-        char        * source = "source:";
+        const char  * source = "source:";
         const char  * pwd    = getPassword();
         char        * tmp    = new char[Util::strLen(source) +
                                         Util::strLen(pwd) + 1];
@@ -197,10 +192,7 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     // send the ice- headers
     str = "\nice-bitrate: ";
     sink->write( str, strlen( str));
-    if ( log10(getBitRate()) >= (STRBUF_SIZE-2) ) {
-        throw Exception( __FILE__, __LINE__,
-                         "bitrate does not fit string buffer", getBitRate());
-    }
+    
     sprintf( resp, "%d", getBitRate());
     sink->write( resp, strlen( resp));
 
@@ -243,10 +235,10 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
 
     // read the response, expected response begins with responseOK
     lenExpected = Util::strLen( responseOK);
-    if ( (len = source->read( resp, STRBUF_SIZE-1)) < lenExpected ) {
-        return false;
+    if ( (len = source->read( resp, buflen )) < lenExpected ) {
+        return false; // short read, no need to continue
     }
-    resp[lenExpected] = 0;
+    resp[lenExpected] = '\x00'; // end string, truncate to expected length
 
     reportEvent(5,resp);
 
@@ -261,13 +253,16 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     }
 
     if ( !Util::strEq( resp, responseOK) ) {
-        return false;
+        // some unexpected response from server
+        throw Exception( __FILE__, __LINE__,
+                         "Icecast2 - Unexpected response from server");
     }
     
     // suck anything that the other side has to say
     while ( source->canRead( 0, 0) && 
-           (len = source->read( resp, STRBUF_SIZE-1)) );
-
+           (len = source->read( resp, buflen )));
+    
+    // all is well, we are connected
     return true;
 }
 

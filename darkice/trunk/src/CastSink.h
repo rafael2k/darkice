@@ -290,7 +290,11 @@ class CastSink : public Sink, public virtual Reporter
         inline virtual bool
         isOpen ( void ) const                       throw ()
         {
-          return getSink()->isOpen();
+            Sink *s = getSink();
+            if (s) 
+                return getSink()->isOpen();
+            else 
+                return false;
         }
 
         /**

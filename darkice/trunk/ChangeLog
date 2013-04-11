@@ -1,4 +1,17 @@
 next version
+    o Fix 'Ring Ruffer' reports. 
+      - Increased buffer for jack to 5 seconds
+      - prevent darkice termination by jack, report no fatal problem when we
+        have a ringbuffer overflow, can happen during startup
+        If we can not handle input audio fast enough we just ignore the buffer
+        and skip it, and just report it.
+      - new multithreaded connector code, now handles encoders in parallel
+        and does not spin waiting, cpu load will be very much lower now
+        Codes uses 2 condition variables to report data availability and
+        consumer thread availability
+      - Hopes are that glitching reports will be a thing of the past
+      - minor compiler warnings fixed
+        (Fix by Edwin van den Oetelaar)
     o Issue #56: Wrong icecast2 password isn't properly reported, fixed.
 	  thanks to Filipe Roque <flip.roque@gmail.com>
     o Issue #57: BufferedSink makes streams invalid, fixed.
