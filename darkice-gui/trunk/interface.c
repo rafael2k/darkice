@@ -58,7 +58,7 @@ void dark_start( GtkWidget *widget, gpointer data) {
   char *darkice_verbosity;
   char command[128], foo, dark_output[128];
 
-  /* if the first caracter of shared area is 1, means that the streaming is running and we cannot start another darkice */
+  /* if the first char of shared area is 1, means that the streaming is running and we cannot start another darkice */
   sscanf((char *) shared_area, "%c", &foo);
   if (foo == '1')
     return;
@@ -81,7 +81,7 @@ void dark_start( GtkWidget *widget, gpointer data) {
 
 
   if ((pid = fork()) == -1) {
-    printf("Fork error! God save the queen!\n");
+    printf("Could not start 'darkice' process, Fork error! \n");
     gtk_main_quit();
   }
   
@@ -355,9 +355,9 @@ void darkice_not_found() {
 
   /* sets up the darkice not found dialog */
   if (!FUN)
-    sprintf(bar, gettext("Darkice not found!\nDownload darkice at http://darkice.sf.net/"));
+    sprintf(bar, gettext("Darkice binary 'darkice' not found on path!\nDownload darkice at http://code.google.com/p/darkice/"));
   else
-    sprintf(bar, gettext("Don't you know you should have the fucking\ndarkice to run this shit!!\nGet it at http://darkice.sf.net/\n"));
+    sprintf(bar, gettext("Don't you know you should have the fucking\ndarkice to run this shit!!\nGet it at http://code.google.com/p/darkice/\n"));
   
   dialog_darkdep = gtk_dialog_new ();
   label_darkdep = gtk_label_new ( bar );
