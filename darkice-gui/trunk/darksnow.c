@@ -322,12 +322,15 @@ int main( int  argc, char *argv[], char *envp[]) {
   glist_samplerate = NULL;
   glist_samplerate = g_list_append (glist_samplerate, "8000");
   glist_samplerate = g_list_append (glist_samplerate, "11025");
+  glist_samplerate = g_list_append (glist_samplerate, "16000");
   glist_samplerate = g_list_append (glist_samplerate, "22050");
+  glist_samplerate = g_list_append (glist_samplerate, "24000");
+  glist_samplerate = g_list_append (glist_samplerate, "32000");
   glist_samplerate = g_list_append (glist_samplerate, "44100");
   glist_samplerate = g_list_append (glist_samplerate, "48000");
   glist_samplerate = g_list_append (glist_samplerate, "96000");
   gtk_combo_set_popdown_strings (GTK_COMBO (combo_samplerate), glist_samplerate);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_samplerate)->entry), "22050");
+  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_samplerate)->entry), "44100");
 
 
   label_quality = gtk_label_new ( gettext("Quality: "));
