@@ -256,13 +256,13 @@ gboolean darksnow2darkice_cfg() {
 
   /* write bitratemode */
   fprintf(f_darkice_cfg, "\nbitrateMode = ");
-  if (!strcmp( gettext("Constant"), bitratemode))
+  if (!strcmp("Constant", bitratemode))
     fprintf(f_darkice_cfg, "cbr"); /* Constant bitrate mode */
   else 
-    if (!strcmp( gettext("Average"), bitratemode))
+    if (!strcmp("Average", bitratemode))
       fprintf(f_darkice_cfg, "abr"); /* average bitrate mode */
     else 
-      if (!strcmp( gettext("Variable"), bitratemode)) 
+      if (!strcmp("Variable", bitratemode)) 
       fprintf(f_darkice_cfg, "vbr"); /* variable bitrate mode */
   
 
@@ -273,6 +273,8 @@ gboolean darksnow2darkice_cfg() {
       fprintf(f_darkice_cfg, "mp3"); 
     else if (!strcmp( gettext("ogg/vorbis"), format))
       fprintf(f_darkice_cfg, "vorbis"); 
+    else if (!strcmp( gettext("ogg/opus"), format))
+      fprintf(f_darkice_cfg, "opus"); 
     else if (!strcmp( gettext("aac"), format))
       fprintf(f_darkice_cfg, "aac");
     else if (!strcmp( gettext("mp2"), format))
