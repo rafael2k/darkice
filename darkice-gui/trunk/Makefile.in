@@ -22,7 +22,8 @@ PREFIX=@prefix@
 INTLPREFIX=@prefix@
 CC=@CC@
 VERSION=@VERSION@
-CFLAGS+=-Wall 
+#CFLAGS+=-Wall -DGTK_DISABLE_DEPRECATED=1
+CFLAGS+=-Wall
 INSTALL=install
 ARCH=`uname -m`
 
@@ -38,7 +39,7 @@ CFLAGS+= -DUSE_TOOLTIP
 all: darksnow
 
 darksnow: darksnow.o interface.o config_files.o tooltips.o man_gzip
-	$(CC) $(CFLAGS) @GTK_LIBS@ @GTK_CFLAGS@ -DVERSION="\"$(VERSION)\"" darksnow.o interface.o config_files.o tooltips.o -o darksnow 
+	$(CC) darksnow.o interface.o config_files.o tooltips.o -o darksnow  @GTK_LIBS@ @GTK_CFLAGS@ -DVERSION="\"$(VERSION)\""
 
 darksnow.o: darksnow.c
 	$(CC) $(FUNNY) @GTK_CFLAGS@ -DINTLPREFIX="\"$(INTLPREFIX)\"" -DVERSION="\"$(VERSION)\"" -c darksnow.c -o darksnow.o

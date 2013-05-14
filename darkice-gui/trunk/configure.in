@@ -1,11 +1,12 @@
-AC_INIT(darksnow.c)
+AC_INIT
+AC_CONFIG_SRCDIR([darksnow.c])
 AC_CONFIG_HEADERS([config.h])
 
 dnl set CC
 AC_PROG_CC
 
 dnl tests C compiler
-AC_LANG_C
+AC_LANG([C])
 
 VERSION="0.6.2"
 AC_SUBST(VERSION)
@@ -13,6 +14,8 @@ AC_SUBST(VERSION)
 AC_CHECK_FUNC(mmap,,AC_MSG_ERROR(Sorry, you need mmap. If you are reading this, email-me and report this problem and your system description - rafael@riseup.net))
 AC_CHECK_FUNC(gettext,,AC_MSG_ERROR(Sorry, you need gettext. If you are reading this, email-me and report this problem and your system description - rafael@riseup.net))
 
+#AM_PATH_GTK_3_0(3.0.0)
 AM_PATH_GTK_2_0(2.0.0)
 
-AC_OUTPUT(Makefile)
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT

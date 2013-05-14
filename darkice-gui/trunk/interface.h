@@ -34,16 +34,13 @@ void dark_stop (GtkWidget *widget, gpointer data);
 void dark_load (GtkWidget *widget, gpointer data);
 
 /* Callback for OK button of the "Open File" file selector, displayed by dark_open */
-void dark_put_in_box (GtkWidget *widget, gpointer data);
+void dark_put_in_box (GtkWidget *widget, gint response_id, gpointer data);
 
 /* Callback for OK button of the "Save File" file selector, displayed by dark_save */
-void dark_write_config ( GtkWidget *widget, gpointer data );
-
-/* Callback for About Menu Option */
-void dark_about (GtkWidget *widget, gpointer data);
+void dark_write_config ( GtkWidget *widget, gint response_id, gpointer data );
 
 /* Callback for the local dump file selector 'ok' button */
-void dark_localdump (GtkWidget *widget, gpointer data);
+void dark_localdump (GtkWidget *widget, gint response_id,  gpointer data);
 
 /* Cleans the buffer inside the view box */
 void clean_text_view_memory();

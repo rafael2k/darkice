@@ -84,18 +84,18 @@ gboolean darksnow_config_store(char opt, char *save_path) {
   adddate = (char) (gtk_toggle_button_get_active ( GTK_TOGGLE_BUTTON (checkbutton_adddate) ))? '1': '0';
   
   /* Combo box inputs */
-  icecast = (char *) gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo_icecast));
-  format = (char *) gtk_entry_get_text ( GTK_ENTRY(GTK_COMBO (combo_format)->entry ));
-  bitrate = (char *) gtk_entry_get_text ( GTK_ENTRY(GTK_COMBO(combo_bitrate)->entry));
-  bitratemode = (char *) gtk_entry_get_text ( GTK_ENTRY(GTK_COMBO(combo_bitratemode)->entry));
-  samplerate = (char *) gtk_entry_get_text ( GTK_ENTRY(GTK_COMBO(combo_samplerate)->entry));
-  quality = (char *) gtk_entry_get_text ( GTK_ENTRY(GTK_COMBO(combo_quality)->entry));
-  bitspersample = (char *) gtk_entry_get_text ( GTK_ENTRY(GTK_COMBO(combo_bitspersample)->entry));
-  channel = (char *) gtk_entry_get_text ( GTK_ENTRY(GTK_COMBO(combo_channel)->entry));
-  buffersize = (char *) gtk_entry_get_text ( GTK_ENTRY(GTK_COMBO(combo_buffersize)->entry));
-  device = (char *) gtk_entry_get_text ( GTK_ENTRY(GTK_COMBO(combo_device)->entry));
-  public = (char *) gtk_entry_get_text  ( GTK_ENTRY(GTK_COMBO(combo_public)->entry));
-  verbosity = (char *) gtk_entry_get_text  ( GTK_ENTRY(GTK_COMBO(combo_verbosity)->entry));
+  icecast = gtk_combo_box_text_get_active_text  ( GTK_COMBO_BOX_TEXT(combo_icecast));
+  format = gtk_combo_box_text_get_active_text  ( GTK_COMBO_BOX_TEXT(combo_format));
+  bitrate = gtk_combo_box_text_get_active_text  ( GTK_COMBO_BOX_TEXT(combo_bitrate));
+  bitratemode = gtk_combo_box_text_get_active_text  ( GTK_COMBO_BOX_TEXT(combo_bitratemode));
+  samplerate = gtk_combo_box_text_get_active_text  ( GTK_COMBO_BOX_TEXT(combo_samplerate));
+  quality = gtk_combo_box_text_get_active_text  ( GTK_COMBO_BOX_TEXT(combo_quality));
+  bitspersample = gtk_combo_box_text_get_active_text  ( GTK_COMBO_BOX_TEXT(combo_bitspersample));
+  channel = gtk_combo_box_text_get_active_text  ( GTK_COMBO_BOX_TEXT(combo_channel));
+  buffersize = gtk_combo_box_text_get_active_text  ( GTK_COMBO_BOX_TEXT(combo_buffersize));
+  device = gtk_combo_box_text_get_active_text  ( GTK_COMBO_BOX_TEXT(combo_device));
+  public = gtk_combo_box_text_get_active_text  ( GTK_COMBO_BOX_TEXT(combo_public));
+  verbosity = gtk_combo_box_text_get_active_text  ( GTK_COMBO_BOX_TEXT(combo_verbosity));
   
 
   if (!( f_darksnow_cfg = (opt != 0)? fopen(darksnow_cfg, "w") : fopen(save_path, "w"))) {

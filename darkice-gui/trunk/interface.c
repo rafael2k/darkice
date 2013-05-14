@@ -69,7 +69,7 @@ void dark_start( GtkWidget *widget, gpointer data) {
   /* call the function that translate the darksnow config file to the darkice config file */
   darksnow2darkice_cfg();
 
-  darkice_verbosity =  (char *) gtk_entry_get_text  ( GTK_ENTRY(GTK_COMBO(combo_verbosity)->entry));
+  darkice_verbosity = gtk_combo_box_text_get_active_text  ( GTK_COMBO_BOX_TEXT(combo_verbosity));
 
   strcpy(command,"darkice");
   strcat(command," -v ");
@@ -115,7 +115,7 @@ void dark_stop( GtkWidget *widget, gpointer data ){
 
 }
 
-void dark_put_in_box ( GtkWidget *widget, gpointer data ) {
+void dark_put_in_box ( GtkWidget *widget, gint response_id, gpointer data ) {
   FILE *f_darksnow_cfg;
   char *darksnow_path;
   char foo[256] = {0};
@@ -144,7 +144,12 @@ void dark_put_in_box ( GtkWidget *widget, gpointer data ) {
   char verbosity[8] = {0};
   DIR *directory;
 
-  darksnow_path = (char *) gtk_file_selection_get_filename (GTK_FILE_SELECTION (file_open));
+  if (response_id != GTK_RESPONSE_ACCEPT) {
+    gtk_widget_hide(file_open);
+    return ;
+  }
+
+  darksnow_path = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_open));
   
   if ( (directory = opendir(darksnow_path))) {
     printf("Error: %s is a directory\n", darksnow_path);
@@ -156,7 +161,7 @@ void dark_put_in_box ( GtkWidget *widget, gpointer data ) {
     printf("Error: Cannot open %s\n", darksnow_path);
     return;
   }
-  
+
   fscanf(f_darksnow_cfg, "%[^=]=%[^\n]\n", foo, server);
   fscanf(f_darksnow_cfg, "%[^=]=%[^\n]\n", foo, port);
   fscanf(f_darksnow_cfg, "%[^=]=%[^\n]\n", foo, mountpoint);
@@ -192,23 +197,19 @@ void dark_put_in_box ( GtkWidget *widget, gpointer data ) {
   gtk_entry_set_text ( (GtkEntry *) entry_server, server);
   gtk_entry_set_text ( (GtkEntry *) entry_remotedump, remotedump);
   gtk_entry_set_text ( (GtkEntry *) entry_localdump, localdump);
-  if (strcmp(icecast, "Icecast 1") == 0)
-      gtk_combo_box_set_active ( GTK_COMBO_BOX(combo_icecast), 0);
-  if (strcmp(icecast, "Icecast 2") == 0)
-      gtk_combo_box_set_active ( GTK_COMBO_BOX(combo_icecast), 1);
-  if (strcmp(icecast, "Shoutcast") == 0)
-      gtk_combo_box_set_active ( GTK_COMBO_BOX(combo_icecast), 2);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_format)->entry), format);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_bitrate)->entry), bitrate);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_bitratemode)->entry), bitratemode);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_samplerate)->entry), samplerate);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_quality)->entry), quality);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_bitspersample)->entry), bitspersample);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_channel)->entry), channel);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_buffersize)->entry), buffersize);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_device)->entry), device);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_public)->entry), public);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_verbosity)->entry), verbosity);
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_icecast))), icecast);
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_format))), format);
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_bitrate))), bitrate);
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_bitratemode))), bitratemode);
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_samplerate))), samplerate);
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_quality))), quality);
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_bitspersample))), bitspersample);
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_channel))), channel);
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_buffersize))), buffersize);
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_device))), device);
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_public))), public);
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_verbosity))),verbosity);
+
 
   if (adddate == '1')
     gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON (checkbutton_adddate), TRUE);
@@ -221,23 +222,30 @@ void dark_put_in_box ( GtkWidget *widget, gpointer data ) {
   
 }
 
-void dark_write_config ( GtkWidget *widget, gpointer data ) {
+void dark_write_config ( GtkWidget *widget, gint response_id, gpointer data ) {
   char *darksnow_path;
 
-  darksnow_path = (char *) gtk_file_selection_get_filename (GTK_FILE_SELECTION (file_save));
+  if (response_id != GTK_RESPONSE_ACCEPT) {
+    gtk_widget_hide(file_save);
+    return ;
+  }
+
+  darksnow_path = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_save));
   if (darksnow_config_store (0, darksnow_path))
     gtk_widget_hide(file_save);
   
 }
 
 
-void dark_about ( GtkWidget *widget, gpointer data ) {
-  gtk_widget_show (dialog_about);
-}
 
 
-void dark_localdump (GtkWidget *widget, gpointer data){
-  gtk_entry_set_text ( (GtkEntry *) entry_localdump, (char *) gtk_file_selection_get_filename (GTK_FILE_SELECTION (file_localdump)) );
+void dark_localdump (GtkWidget *widget, gint response_id,  gpointer data){
+  if (response_id != GTK_RESPONSE_ACCEPT) {
+    gtk_widget_hide(file_localdump);
+    return ;
+  }
+
+  gtk_entry_set_text ( (GtkEntry *) entry_localdump, gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_localdump)));
   gtk_widget_hide (file_localdump);
 
 }
@@ -368,10 +376,10 @@ void darkice_not_found() {
   label_darkdep = gtk_label_new ( bar );
   button_darkdep = gtk_button_new_with_label ( gettext("Close"));
   gtk_window_set_title(GTK_WINDOW (dialog_darkdep), gettext("Error"));
-  gtk_widget_set_size_request (GTK_WIDGET (dialog_darkdep), 350, 200); 
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog_darkdep)->action_area), button_darkdep, TRUE, TRUE, 0);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog_darkdep)->vbox), label_darkdep, TRUE, TRUE, 0);
-  
+
+  gtk_box_pack_start (GTK_BOX (gtk_dialog_get_action_area( GTK_DIALOG (dialog_darkdep))), button_darkdep, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area( GTK_DIALOG (dialog_darkdep))), label_darkdep, TRUE, TRUE, 0);
+
   g_signal_connect (G_OBJECT (dialog_darkdep), "delete_event",G_CALLBACK (delete_event), NULL);
   g_signal_connect (G_OBJECT (button_darkdep), "clicked",G_CALLBACK (delete_event), NULL);
   

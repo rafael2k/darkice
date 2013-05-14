@@ -49,8 +49,6 @@ GtkWidget *table;
 
 /* About Dialog box */
 GtkWidget *dialog_about;
-GtkWidget *label_about;
-GtkWidget *button_about;
 
 /* darkice not found dialog box */
 GtkWidget *dialog_darkdep;
@@ -120,41 +118,28 @@ GtkWidget *entry_genre;
 /* darksnow configuration stuff - label + combo box */
 GtkWidget *label_icecast;
 GtkWidget *combo_icecast;
-GList *glist_icecast;
 GtkWidget *label_format;
 GtkWidget *combo_format;
-GList *glist_format;
 GtkWidget *label_bitrate;
 GtkWidget *combo_bitrate;
-GList *glist_bitrate;
 GtkWidget *label_bitratemode;
 GtkWidget *combo_bitratemode;
-GList *glist_bitratemode;
 GtkWidget *label_samplerate;
 GtkWidget *combo_samplerate;
-GList *glist_samplerate;
 GtkWidget *label_quality;
 GtkWidget *combo_quality;
-GList *glist_quality;
 GtkWidget *label_bitspersample;
 GtkWidget *combo_bitspersample;
-GList *glist_bitspersample;
 GtkWidget *label_channel;
 GtkWidget *combo_channel;
-GList *glist_channel;
 GtkWidget *label_buffersize;
 GtkWidget *combo_buffersize;
-GList *glist_buffersize;
 GtkWidget *label_device;
 GtkWidget *combo_device;
-GList *glist_device;
 GtkWidget *label_public;
 GtkWidget *combo_public;
-GList *glist_public;
 GtkWidget *label_verbosity;
 GtkWidget *combo_verbosity;
-GList *glist_verbosity;
-
 
 /* text view stuff */
 GtkWidget *text;
@@ -166,4 +151,4 @@ GtkTextTag *tag;
 GtkWidget *scroll_text;
 
 /* The GTK ToolTips */
-GtkTooltips *tooltip;
+GtkTooltip *tooltip;

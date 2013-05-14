@@ -3,7 +3,7 @@
  *
  * This source code is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Public License as published 
- * by the Free Software Foundation; either version 3 of the License,
+ * by the Free Software Foundation; either version 2 of the License,
  * or (at your option) any later version.
  *
  * This source code is distributed in the hope that it will be useful,
@@ -168,28 +168,26 @@ int main( int  argc, char *argv[], char *envp[]) {
   gtk_menu_shell_append (GTK_MENU_SHELL (menu_file), menu_item_quit_nd);
   gtk_menu_shell_append (GTK_MENU_SHELL (menu_file), menu_item_quit);
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item_file), menu_file);
-  gtk_menu_bar_append ( GTK_MENU_BAR (menu_bar), menu_item_file );
-  
+  gtk_menu_shell_append ( GTK_MENU_SHELL (menu_bar), menu_item_file );
+
   menu_help = gtk_menu_new();
   menu_item_help = gtk_menu_item_new_with_label ( gettext("Help") );
   menu_item_about = gtk_menu_item_new_with_label ( gettext("About") );
   gtk_menu_shell_append (GTK_MENU_SHELL (menu_help), menu_item_about);
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item_help), menu_help);
-  gtk_menu_bar_append ( GTK_MENU_BAR (menu_bar), menu_item_help );
+  gtk_menu_shell_append ( GTK_MENU_SHELL (menu_bar), menu_item_help );
 
   gtk_box_pack_start (GTK_BOX (vbox), menu_bar, FALSE, FALSE, 0);
 
   
   /* sets up the about dialog */
- 
-  sprintf(bar, gettext("DarkSnow version: %s\nSoftware written by Rafael Diniz\nLicense: GNU Public License v3"),VERSION);
-  dialog_about = gtk_dialog_new ();
-  label_about = gtk_label_new ( bar );
-  button_about = gtk_button_new_with_label ( gettext("Close"));
-  gtk_window_set_title(GTK_WINDOW (dialog_about), gettext("About DarkSnow"));
-  gtk_widget_set_size_request (GTK_WIDGET (dialog_about), 350, 200); 
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog_about)->action_area), button_about, TRUE, TRUE, 0);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog_about)->vbox), label_about, TRUE, TRUE, 0);
+  dialog_about = gtk_about_dialog_new ();
+  const gchar *authors[] = {"Rafael Diniz", NULL};
+  gtk_about_dialog_set_program_name( GTK_ABOUT_DIALOG( dialog_about), "DarkSnow");
+  gtk_about_dialog_set_version( GTK_ABOUT_DIALOG( dialog_about), VERSION);
+  gtk_about_dialog_set_authors( GTK_ABOUT_DIALOG(dialog_about), authors);
+/*  gtk_about_dialog_set_license_type( GTK_ABOUT_DIALOG(dialog_about), GTK_LICENSE_GPL_3_0);*/
+  gtk_about_dialog_set_website( GTK_ABOUT_DIALOG(dialog_about), "http://darksnow.radiolivre.org");
 
   /* sets up the exit window */
   dialog_darkkill = gtk_dialog_new ();
@@ -198,19 +196,37 @@ int main( int  argc, char *argv[], char *envp[]) {
   button_no_darkkill = gtk_button_new_with_label (gettext("No"));
 
   gtk_window_set_title(GTK_WINDOW (dialog_darkkill), gettext("Darkice is running"));
-  gtk_widget_set_size_request (GTK_WIDGET (dialog_darkkill), 300, 200); 
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog_darkkill)->action_area), button_yes_darkkill, TRUE, TRUE, 0);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog_darkkill)->action_area), button_no_darkkill, TRUE, TRUE, 0);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog_darkkill)->vbox), label_darkkill, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (gtk_dialog_get_action_area( GTK_DIALOG (dialog_darkkill))), button_yes_darkkill, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (gtk_dialog_get_action_area( GTK_DIALOG (dialog_darkkill))), button_no_darkkill, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area( GTK_DIALOG (dialog_darkkill))), label_darkkill, TRUE, TRUE, 0);
   
   g_signal_connect_swapped (G_OBJECT (dialog_darkkill), "delete_event",G_CALLBACK (gtk_widget_hide), dialog_darkkill);
   g_signal_connect (G_OBJECT (button_yes_darkkill), "clicked",G_CALLBACK (delete_event), NULL);
   g_signal_connect (G_OBJECT (button_no_darkkill), "clicked",G_CALLBACK (delete_event_nd), NULL);
 
   /* sets up the file selectors */
-  file_open = gtk_file_selection_new ( gettext("Open File") );
-  file_save = gtk_file_selection_new ( gettext("Save File") );
-  file_localdump = gtk_file_selection_new ( gettext("Local Dump File") );
+  file_open = gtk_file_chooser_dialog_new ( gettext("Open File"),
+                                          NULL,
+                                          GTK_FILE_CHOOSER_ACTION_OPEN,
+                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                          GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+                                          NULL);
+  file_save = gtk_file_chooser_dialog_new ( gettext("Save File"),
+                                          NULL,
+                                          GTK_FILE_CHOOSER_ACTION_SAVE,
+                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                          GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+                                          NULL);
+  file_localdump = gtk_file_chooser_dialog_new ( gettext("Local Dump File"),
+                                          NULL,
+                                          GTK_FILE_CHOOSER_ACTION_OPEN,
+                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                          GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+                                          NULL);
+
+  gtk_file_chooser_set_local_only ( GTK_FILE_CHOOSER( file_open), FALSE);
+  gtk_file_chooser_set_local_only ( GTK_FILE_CHOOSER( file_save), FALSE);
+  gtk_file_chooser_set_local_only ( GTK_FILE_CHOOSER( file_localdump), FALSE);
 
   /* sets up the notebook stuff */
   notebook = gtk_notebook_new ();
@@ -230,11 +246,11 @@ int main( int  argc, char *argv[], char *envp[]) {
 
   /* Server Options Widgets */
   label_icecast = gtk_label_new ( gettext("Streaming Destination: "));
-  combo_icecast = gtk_combo_box_entry_new_text();
-  gchar *txt[] = {"Icecast 1", "Icecast 2", "Shoutcast", NULL };
-  gchar **p=txt;
-  while (*p) gtk_combo_box_append_text(GTK_COMBO_BOX(combo_icecast), *p++);
-  gtk_combo_box_set_active ( GTK_COMBO_BOX(combo_icecast), 1);
+  combo_icecast = gtk_combo_box_text_new_with_entry ();
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_icecast), "Icecast 1");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_icecast), "Icecast 2");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_icecast), "Shoutcast");
+  gtk_entry_set_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (combo_icecast))),"Icecast 2");
 
   label_server = gtk_label_new ( gettext("Server: "));
   entry_server = gtk_entry_new ();
@@ -247,20 +263,20 @@ int main( int  argc, char *argv[], char *envp[]) {
   gtk_entry_set_visibility (GTK_ENTRY(entry_pass), FALSE);
   
   label_verbosity = gtk_label_new ( gettext ("Verbosity level: "));
-  combo_verbosity = gtk_combo_new ();
-  glist_verbosity = NULL;
-  glist_verbosity = g_list_append (glist_verbosity, "0");
-  glist_verbosity = g_list_append (glist_verbosity, "1");
-  glist_verbosity = g_list_append (glist_verbosity, "2");
-  glist_verbosity = g_list_append (glist_verbosity, "3");
-  glist_verbosity = g_list_append (glist_verbosity, "4");
-  glist_verbosity = g_list_append (glist_verbosity, "5");
-  glist_verbosity = g_list_append (glist_verbosity, "6");
-  glist_verbosity = g_list_append (glist_verbosity, "7");
-  glist_verbosity = g_list_append (glist_verbosity, "8");
-  glist_verbosity = g_list_append (glist_verbosity, "9");
-  glist_verbosity = g_list_append (glist_verbosity, "10");
-  gtk_combo_set_popdown_strings (GTK_COMBO (combo_verbosity), glist_verbosity);
+  combo_verbosity = gtk_combo_box_text_new_with_entry();
+
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_verbosity), "0");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_verbosity), "1");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_verbosity), "2");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_verbosity), "3");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_verbosity), "4");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_verbosity), "5");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_verbosity), "6");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_verbosity), "7");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_verbosity), "8");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_verbosity), "9");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_verbosity), "10");
+  gtk_entry_set_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (combo_verbosity))),"0");
 
   label_remotedump = gtk_label_new ( gettext ("Remote Dump File: ")); 
   entry_remotedump = gtk_entry_new ();
@@ -274,138 +290,124 @@ int main( int  argc, char *argv[], char *envp[]) {
 
   /* Audio Options Widgets */
   label_format = gtk_label_new ( gettext("Format: "));
-  combo_format = gtk_combo_new ();
-  glist_format = NULL;
-  glist_format = g_list_append (glist_format, gettext("mp3"));
-  glist_format = g_list_append (glist_format, gettext("ogg/vorbis"));
-  glist_format = g_list_append (glist_format, gettext("aac"));
-  glist_format = g_list_append (glist_format, gettext("mp2"));
-  glist_format = g_list_append (glist_format, gettext("aacp"));
-  gtk_combo_set_popdown_strings (GTK_COMBO (combo_format), glist_format);
-
+  combo_format = gtk_combo_box_text_new_with_entry ();
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_format), gettext("mp3"));
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_format), gettext("ogg/vorbis"));
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_format), gettext("aac"));
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_format), gettext("mp2"));
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_format), gettext("aacp"));
+  gtk_entry_set_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (combo_format))),"ogg/vorbis");
 
   label_bitratemode = gtk_label_new ( gettext("BitRateMode: "));
-  combo_bitratemode = gtk_combo_new ();
-  glist_bitratemode = NULL;
-  glist_bitratemode = g_list_append (glist_bitratemode, gettext("Constant"));
-  glist_bitratemode = g_list_append (glist_bitratemode, gettext("Average"));
-  glist_bitratemode = g_list_append (glist_bitratemode, gettext("Variable"));
-  gtk_combo_set_popdown_strings (GTK_COMBO (combo_bitratemode), glist_bitratemode);
+  combo_bitratemode = gtk_combo_box_text_new_with_entry ();
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitratemode), gettext("Constant"));
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitratemode), gettext("Average"));
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitratemode), gettext("Variable"));
+  gtk_entry_set_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (combo_bitratemode))),"Constant");
 
   label_bitrate = gtk_label_new ( gettext("BitRate: "));
-  combo_bitrate = gtk_combo_new ();
-  glist_bitrate = NULL;
-  glist_bitrate = g_list_append (glist_bitrate, "16");
-  glist_bitrate = g_list_append (glist_bitrate, "24");
-  glist_bitrate = g_list_append (glist_bitrate, "32");
-  glist_bitrate = g_list_append (glist_bitrate, "40");
-  glist_bitrate = g_list_append (glist_bitrate, "48");
-  glist_bitrate = g_list_append (glist_bitrate, "56");
-  glist_bitrate = g_list_append (glist_bitrate, "64");
-  glist_bitrate = g_list_append (glist_bitrate, "72");
-  glist_bitrate = g_list_append (glist_bitrate, "80");
-  glist_bitrate = g_list_append (glist_bitrate, "88");
-  glist_bitrate = g_list_append (glist_bitrate, "96");
-  glist_bitrate = g_list_append (glist_bitrate, "104");
-  glist_bitrate = g_list_append (glist_bitrate, "112");
-  glist_bitrate = g_list_append (glist_bitrate, "120");
-  glist_bitrate = g_list_append (glist_bitrate, "128");
-  glist_bitrate = g_list_append (glist_bitrate, "160");
-  glist_bitrate = g_list_append (glist_bitrate, "192");
-  glist_bitrate = g_list_append (glist_bitrate, "224");
-  glist_bitrate = g_list_append (glist_bitrate, "256");
-  gtk_combo_set_popdown_strings (GTK_COMBO (combo_bitrate), glist_bitrate);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_bitrate)->entry), "32");
+  combo_bitrate = gtk_combo_box_text_new_with_entry ();
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitrate), "16");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitrate), "24");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitrate), "32");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitrate), "40");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitrate), "48");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitrate), "56");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitrate), "64");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitrate), "72");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitrate), "80");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitrate), "88");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitrate), "96");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitrate), "104");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitrate), "112");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitrate), "120");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitrate), "128");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitrate), "160");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitrate), "192");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitrate), "224");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitrate), "256");
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_bitrate))),"128");
 
   label_samplerate = gtk_label_new ( gettext("SampleRate: "));
-  combo_samplerate = gtk_combo_new ();
-  glist_samplerate = NULL;
-  glist_samplerate = g_list_append (glist_samplerate, "8000");
-  glist_samplerate = g_list_append (glist_samplerate, "11025");
-  glist_samplerate = g_list_append (glist_samplerate, "16000");
-  glist_samplerate = g_list_append (glist_samplerate, "22050");
-  glist_samplerate = g_list_append (glist_samplerate, "24000");
-  glist_samplerate = g_list_append (glist_samplerate, "32000");
-  glist_samplerate = g_list_append (glist_samplerate, "44100");
-  glist_samplerate = g_list_append (glist_samplerate, "48000");
-  glist_samplerate = g_list_append (glist_samplerate, "96000");
-  gtk_combo_set_popdown_strings (GTK_COMBO (combo_samplerate), glist_samplerate);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_samplerate)->entry), "44100");
-
+  combo_samplerate = gtk_combo_box_text_new_with_entry ();
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_samplerate), "8000");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_samplerate), "11025");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_samplerate), "16000");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_samplerate), "22050");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_samplerate), "24000");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_samplerate), "32000");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_samplerate), "44100");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_samplerate), "48000");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_samplerate), "96000");
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_samplerate))),"44100");
 
   label_quality = gtk_label_new ( gettext("Quality: "));
-  combo_quality = gtk_combo_new ();
-  glist_quality = g_list_append (glist_quality, "1.0");
-  glist_quality = g_list_append (glist_quality, "0.9");
-  glist_quality = g_list_append (glist_quality, "0.8");
-  glist_quality = g_list_append (glist_quality, "0.7");
-  glist_quality = g_list_append (glist_quality, "0.6");
-  glist_quality = g_list_append (glist_quality, "0.5");
-  glist_quality = g_list_append (glist_quality, "0.4");
-  glist_quality = g_list_append (glist_quality, "0.3");
-  glist_quality = g_list_append (glist_quality, "0.2");
-  glist_quality = g_list_append (glist_quality, "0.1");
-  gtk_combo_set_popdown_strings (GTK_COMBO (combo_quality), glist_quality);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_quality)->entry), "0.8");
+  combo_quality = gtk_combo_box_text_new_with_entry ();
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_quality),  "1.0");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_quality),  "0.9");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_quality),  "0.8");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_quality),  "0.7");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_quality),  "0.6");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_quality),  "0.5");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_quality),  "0.4");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_quality),  "0.3");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_quality),  "0.2");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_quality),  "0.1");
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_quality))),"0.8");
 
   label_bitspersample = gtk_label_new ( gettext("Bits per Sample: "));
-  combo_bitspersample = gtk_combo_new ();
-  glist_bitspersample = NULL;
-  glist_bitspersample = g_list_append (glist_bitspersample, "16");
-  glist_bitspersample = g_list_append (glist_bitspersample, "8");
-  gtk_combo_set_popdown_strings (GTK_COMBO (combo_bitspersample), glist_bitspersample);
+  combo_bitspersample = gtk_combo_box_text_new_with_entry ();
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitspersample),  "16");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitspersample),  "8");
+  gtk_entry_set_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (combo_bitspersample))),"16");
 
   label_channel = gtk_label_new ( gettext("Number of channels: "));
-  combo_channel = gtk_combo_new ();
-  glist_channel = NULL;
-  glist_channel = g_list_append (glist_channel, "2 - Stereo");
-  glist_channel = g_list_append (glist_channel, "1 - Mono");
-  gtk_combo_set_popdown_strings (GTK_COMBO (combo_channel), glist_channel);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_channel)->entry), "1 - Mono");
+  combo_channel = gtk_combo_box_text_new_with_entry ();
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_channel),  "2 - Stereo");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_channel), "1 - Mono");
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_channel))),"1 - Mono");
 
   label_buffersize = gtk_label_new ( gettext ("Buffer Size: "));
-  combo_buffersize = gtk_combo_new ();
-  glist_buffersize = NULL;
-  glist_buffersize = g_list_append (glist_buffersize, "1");
-  glist_buffersize = g_list_append (glist_buffersize, "2");
-  glist_buffersize = g_list_append (glist_buffersize, "3");
-  glist_buffersize = g_list_append (glist_buffersize, "4");
-  glist_buffersize = g_list_append (glist_buffersize, "5");
-  glist_buffersize = g_list_append (glist_buffersize, "6");
-  glist_buffersize = g_list_append (glist_buffersize, "7");
-  glist_buffersize = g_list_append (glist_buffersize, "8");
-  glist_buffersize = g_list_append (glist_buffersize, "9");
-  glist_buffersize = g_list_append (glist_buffersize, "10");
-  glist_buffersize = g_list_append (glist_buffersize, "11");
-  glist_buffersize = g_list_append (glist_buffersize, "12");
-  glist_buffersize = g_list_append (glist_buffersize, "13");
-  glist_buffersize = g_list_append (glist_buffersize, "14");
-  glist_buffersize = g_list_append (glist_buffersize, "15");
-  glist_buffersize = g_list_append (glist_buffersize, "16");
-  glist_buffersize = g_list_append (glist_buffersize, "17");
-  glist_buffersize = g_list_append (glist_buffersize, "18");
-  glist_buffersize = g_list_append (glist_buffersize, "19");
-  glist_buffersize = g_list_append (glist_buffersize, "20");
-  gtk_combo_set_popdown_strings (GTK_COMBO (combo_buffersize), glist_buffersize);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_buffersize)->entry), "10");
+  combo_buffersize = gtk_combo_box_text_new_with_entry ();
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "1");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "2");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "3");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "4");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "5");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "6");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "7");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "8");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "9");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "10");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "11");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "12");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "13");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "14");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "15");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "16");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "17");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "18");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "19");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_buffersize), "20");
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_buffersize))),"10");
 
   label_device = gtk_label_new ( gettext ("Device Input: "));
-  combo_device = gtk_combo_new ();
-  glist_device = g_list_append (glist_device, "jack");
-  glist_device = g_list_append (glist_device, "jack_auto");
-  glist_device = g_list_append (glist_device, "/dev/dsp");
-  glist_device = g_list_append (glist_device, "/dev/dsp0");
-  glist_device = g_list_append (glist_device, "/dev/dsp1");
-  glist_device = g_list_append (glist_device, "/dev/dsp2");
-  glist_device = g_list_append (glist_device, "/dev/dsp3");
-  glist_device = g_list_append (glist_device, "hw:0,0");
-  glist_device = g_list_append (glist_device, "hw:0,1");
-  glist_device = g_list_append (glist_device, "hw:0,2");
-  glist_device = g_list_append (glist_device, "hw:1,0");
-  glist_device = g_list_append (glist_device, "hw:1,1");
-  glist_device = g_list_append (glist_device, "hw:1,2");
-  gtk_combo_set_popdown_strings (GTK_COMBO (combo_device), glist_device);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_device)->entry), "/dev/dsp");  
+  combo_device = gtk_combo_box_text_new_with_entry ();
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "jack");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "jack_auto");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "default");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "/dev/dsp");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "/dev/dsp0");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "/dev/dsp1");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "/dev/dsp2");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "/dev/dsp3");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "hw:0,0");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "hw:0,1");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "hw:0,2");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "hw:1,0");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "hw:1,1");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "hw:1,2");
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_device))),"/dev/dsp");
 
   /* End Audio Options Widgets */
   
@@ -423,12 +425,10 @@ int main( int  argc, char *argv[], char *envp[]) {
 
   
   label_public = gtk_label_new ( gettext("Public: "));
-  combo_public = gtk_combo_new ();
-  glist_public = NULL;
-  glist_public = g_list_append (glist_public, gettext("yes"));
-  glist_public = g_list_append (glist_public, gettext("no"));
-  gtk_combo_set_popdown_strings (GTK_COMBO (combo_public), glist_public);
-
+  combo_public = gtk_combo_box_text_new_with_entry ();
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_public), "yes");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_public), "no");
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_public))),"no");
 
   /* text view stuff */
   tag = gtk_text_tag_new ("");
@@ -457,32 +457,23 @@ int main( int  argc, char *argv[], char *envp[]) {
 
   g_signal_connect (G_OBJECT (window), "delete_event",G_CALLBACK (main_quit), NULL);
   
-  g_signal_connect_swapped (G_OBJECT (dialog_about), "delete_event",G_CALLBACK (gtk_widget_hide), dialog_about);
-  g_signal_connect_swapped (G_OBJECT (button_about), "clicked",G_CALLBACK (gtk_widget_hide), dialog_about);
+  g_signal_connect_swapped (G_OBJECT (dialog_about), "response",G_CALLBACK (gtk_widget_hide), dialog_about);
 
   g_signal_connect (G_OBJECT (button_start), "clicked", G_CALLBACK (dark_start), NULL);
   g_signal_connect (G_OBJECT (button_stop), "clicked", G_CALLBACK (dark_stop), NULL);
   g_signal_connect (G_OBJECT (button_detail), "clicked", G_CALLBACK (dark_detail), NULL);
   
-  g_signal_connect_swapped (G_OBJECT (menu_item_open), "activate", G_CALLBACK (gtk_widget_show), file_open);
-  g_signal_connect_swapped (G_OBJECT (menu_item_save), "activate", G_CALLBACK (gtk_widget_show), file_save);
+  g_signal_connect_swapped (G_OBJECT (menu_item_open), "activate", G_CALLBACK (gtk_dialog_run), file_open);
+  g_signal_connect_swapped (G_OBJECT (menu_item_save), "activate", G_CALLBACK (gtk_dialog_run), file_save);
   g_signal_connect (G_OBJECT (menu_item_quit), "activate", G_CALLBACK (main_quit), NULL);
   g_signal_connect (G_OBJECT (menu_item_quit_nd), "activate", G_CALLBACK (delete_event_nd), NULL);
-  g_signal_connect (G_OBJECT (menu_item_about), "activate", G_CALLBACK (dark_about), NULL);
-  
-  g_signal_connect_swapped (G_OBJECT (button_localdump), "clicked", G_CALLBACK (gtk_widget_show), file_localdump);
+  g_signal_connect_swapped (G_OBJECT (menu_item_about), "activate", G_CALLBACK (gtk_dialog_run), dialog_about);
+  g_signal_connect_swapped (G_OBJECT (button_localdump), "clicked", G_CALLBACK (gtk_dialog_run), file_localdump);
 
-  g_signal_connect ( G_OBJECT (GTK_FILE_SELECTION (file_open)->ok_button), "clicked", G_CALLBACK (dark_put_in_box), NULL);
-  g_signal_connect_swapped ( G_OBJECT (GTK_FILE_SELECTION (file_open)->cancel_button), "clicked", G_CALLBACK (gtk_widget_hide), file_open);
-  g_signal_connect_swapped ( G_OBJECT (file_open), "delete_event", G_CALLBACK (gtk_widget_hide), file_open);
+  g_signal_connect ( G_OBJECT (GTK_FILE_CHOOSER_DIALOG (file_open)), "response", G_CALLBACK (dark_put_in_box), NULL);
+  g_signal_connect ( G_OBJECT (GTK_FILE_CHOOSER_DIALOG (file_save)), "response", G_CALLBACK (dark_write_config), NULL);
+  g_signal_connect ( G_OBJECT (GTK_FILE_CHOOSER_DIALOG (file_localdump)), "response", G_CALLBACK (dark_localdump), NULL);
 
-  g_signal_connect ( G_OBJECT (GTK_FILE_SELECTION (file_save)->ok_button), "clicked", G_CALLBACK (dark_write_config), NULL);
-  g_signal_connect_swapped ( G_OBJECT (GTK_FILE_SELECTION (file_save)->cancel_button), "clicked", G_CALLBACK (gtk_widget_hide), file_save);
-  g_signal_connect_swapped ( G_OBJECT (file_save), "delete_event", G_CALLBACK (gtk_widget_hide), file_save);
-
-  g_signal_connect ( G_OBJECT (GTK_FILE_SELECTION (file_localdump)->ok_button), "clicked", G_CALLBACK (dark_localdump), NULL);
-  g_signal_connect_swapped ( G_OBJECT (GTK_FILE_SELECTION (file_localdump)->cancel_button), "clicked", G_CALLBACK (gtk_widget_hide), file_localdump);
-  g_signal_connect_swapped ( G_OBJECT (file_localdump), "delete_event", G_CALLBACK (gtk_widget_hide), file_localdump);
   
   /* pack the notebook, the buttons and textview widgets into the main table */
   gtk_table_attach (GTK_TABLE (table), notebook, 0, SIZE_X, 0, 400, (GTK_FILL | GTK_SHRINK | GTK_EXPAND), (GTK_FILL | GTK_SHRINK), 5, 5);
@@ -578,8 +569,6 @@ int main( int  argc, char *argv[], char *envp[]) {
   gtk_widget_show (button_detail);
   gtk_widget_show (label_status);
 
-  gtk_widget_show (label_about);
-  gtk_widget_show (button_about);
   
   gtk_widget_show (label_icecast);
   gtk_widget_show (combo_icecast);
