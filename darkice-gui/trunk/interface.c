@@ -192,7 +192,12 @@ void dark_put_in_box ( GtkWidget *widget, gpointer data ) {
   gtk_entry_set_text ( (GtkEntry *) entry_server, server);
   gtk_entry_set_text ( (GtkEntry *) entry_remotedump, remotedump);
   gtk_entry_set_text ( (GtkEntry *) entry_localdump, localdump);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_icecast)->entry), icecast);
+  if (strcmp(icecast, "Icecast 1") == 0)
+      gtk_combo_box_set_active ( GTK_COMBO_BOX(combo_icecast), 0);
+  if (strcmp(icecast, "Icecast 2") == 0)
+      gtk_combo_box_set_active ( GTK_COMBO_BOX(combo_icecast), 1);
+  if (strcmp(icecast, "Shoutcast") == 0)
+      gtk_combo_box_set_active ( GTK_COMBO_BOX(combo_icecast), 2);
   gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_format)->entry), format);
   gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_bitrate)->entry), bitrate);
   gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_bitratemode)->entry), bitratemode);

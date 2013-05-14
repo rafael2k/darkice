@@ -3,7 +3,7 @@
  *
  * This source code is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Public License as published 
- * by the Free Software Foundation; either version 2 of the License,
+ * by the Free Software Foundation; either version 3 of the License,
  * or (at your option) any later version.
  *
  * This source code is distributed in the hope that it will be useful,
@@ -230,13 +230,11 @@ int main( int  argc, char *argv[], char *envp[]) {
 
   /* Server Options Widgets */
   label_icecast = gtk_label_new ( gettext("Streaming Destination: "));
-  combo_icecast = gtk_combo_new ();
-  glist_icecast = NULL;
-  glist_icecast = g_list_append (glist_icecast, "Icecast 1");
-  glist_icecast = g_list_append (glist_icecast, "Icecast 2");
-  glist_icecast = g_list_append (glist_icecast, "Shoutcast");
-  gtk_combo_set_popdown_strings (GTK_COMBO (combo_icecast), glist_icecast);
-  gtk_entry_set_text ( GTK_ENTRY(GTK_COMBO(combo_icecast)->entry), "Icecast 2");
+  combo_icecast = gtk_combo_box_entry_new_text();
+  gchar *txt[] = {"Icecast 1", "Icecast 2", "Shoutcast", NULL };
+  gchar **p=txt;
+  while (*p) gtk_combo_box_append_text(GTK_COMBO_BOX(combo_icecast), *p++);
+  gtk_combo_box_set_active ( GTK_COMBO_BOX(combo_icecast), 1);
 
   label_server = gtk_label_new ( gettext("Server: "));
   entry_server = gtk_entry_new ();

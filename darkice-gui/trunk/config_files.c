@@ -84,7 +84,7 @@ gboolean darksnow_config_store(char opt, char *save_path) {
   adddate = (char) (gtk_toggle_button_get_active ( GTK_TOGGLE_BUTTON (checkbutton_adddate) ))? '1': '0';
   
   /* Combo box inputs */
-  icecast = (char *) gtk_entry_get_text ( GTK_ENTRY( GTK_COMBO(combo_icecast)->entry));
+  icecast = (char *) gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo_icecast));
   format = (char *) gtk_entry_get_text ( GTK_ENTRY(GTK_COMBO (combo_format)->entry ));
   bitrate = (char *) gtk_entry_get_text ( GTK_ENTRY(GTK_COMBO(combo_bitrate)->entry));
   bitratemode = (char *) gtk_entry_get_text ( GTK_ENTRY(GTK_COMBO(combo_bitratemode)->entry));
