@@ -61,7 +61,8 @@ CastSink :: init (  TcpSocket             * socket,
                     const char            * name,
                     const char            * url,
                     const char            * genre,
-                    bool                    isPublic )
+                    bool                    isPublic,
+                    unsigned int            bufferDuration )
                                                         throw ( Exception )
 {
     this->socket         = socket;
@@ -72,6 +73,13 @@ CastSink :: init (  TcpSocket             * socket,
     this->url            = url            ? Util::strDup( url)      : 0;
     this->genre          = genre          ? Util::strDup( genre)    : 0;
     this->isPublic       = isPublic;
+    this->bufferDuration = bufferDuration;
+
+    int       bufferSize = bitRate ? (bitRate * 1024 / 8) * bufferDuration
+                                   : (128 * 1024 / 8) * bufferDuration;
+
+    bufferedSink = socket ?  new BufferedSink( socket, bufferSize)
+                          : 0;
 }
 
 
@@ -110,7 +118,7 @@ CastSink :: open ( void )                       throw ( Exception )
         return false;
     }
 
-    if ( !getSink()->open() ) {
+    if ( !bufferedSink->open() ) {
         return false;
     }
 
