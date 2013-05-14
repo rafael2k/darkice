@@ -105,7 +105,7 @@ class MultiThreadedConnector : public virtual Connector
                  *  Marks if the thread has processed the last batch
                  *  of data.
                  */
-                int                        isDone;
+                bool                        isDone;
 
                 /**
                  *  A flag to show that the sink should be made to cut in the
@@ -123,7 +123,7 @@ class MultiThreadedConnector : public virtual Connector
                     this->ixSink    = 0;
                     this->thread    = 0;
                     this->accepting = false;
-                    this->isDone    = 1;        // 0==RUN 1=STOP 2=TERMINATE        
+                    this->isDone    = false;
                     this->cut       = false;
                 }
 
@@ -138,20 +138,16 @@ class MultiThreadedConnector : public virtual Connector
                 threadFunction( void      * param );
         };
         
-        /* mutex and cond variable for signaling new data 
-         * the consumers wait for this 
+        /**
+         *  The mutex of this object.
          */
-        pthread_mutex_t         mutex_start;
-        pthread_cond_t          cond_start; // producer sets this
-        
-        /* mutex and cond variable for signaling that a single thread has 
-         * finished working on a block of data 
-         * the producer waits for this, then checks if everyone is done
-         * and maybe waits again until everyone has finished on the data
+        pthread_mutex_t         mutexProduce;
+
+        /**
+         *  The conditional variable for presenting new data.
          */
-        pthread_mutex_t mutex_done;
-        pthread_cond_t  cond_done; // consumer sets this  
-        
+        pthread_cond_t          condProduce;
+
         /**
          *  The thread attributes.
          */
@@ -163,7 +159,7 @@ class MultiThreadedConnector : public virtual Connector
         ThreadData            * threads;
 
         /**
-         *  Signal if we're running or not running
+         *  Signal if we're running or not, so the threads no if to stop.
          */
         bool                    running;
 
@@ -286,7 +282,7 @@ class MultiThreadedConnector : public virtual Connector
         virtual MultiThreadedConnector &
         operator= ( const MultiThreadedConnector &   connector )
                                                             throw ( Exception );
-        
+
         /**
          *  Open the connector. Opens the Source and the Sinks if necessary.
          *
@@ -318,7 +314,7 @@ class MultiThreadedConnector : public virtual Connector
          *  @return the number of bytes read from the Source.
          *  @exception Exception
          */
-        virtual unsigned long
+        virtual unsigned int
         transfer (  unsigned long       bytes,
                     unsigned int        bufSize,
                     unsigned int        sec,
