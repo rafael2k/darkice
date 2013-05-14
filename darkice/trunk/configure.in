@@ -116,6 +116,44 @@ fi
 
 
 dnl-----------------------------------------------------------------------------
+dnl link the ogg / opus libraries if requested
+dnl-----------------------------------------------------------------------------
+AC_SUBST(OPUS_INCFLAGS)
+AC_SUBST(OPUS_LDFLAGS)
+
+AC_ARG_WITH(opus,
+[  --with-opus           use Ogg Opus for encoding opus streams [yes] ],
+    USE_OPUS=${withval}, USE_OPUS="yes" )
+AC_ARG_WITH(opus-prefix,
+[  --with-opus-prefix=DIR    alternate location for opus [/usr]
+                              look for libraries in OPUS-PREFIX/lib,
+                              for headers in OPUS-PREFIX/include],
+    CONFIG_OPUS_PREFIX="${withval}", CONFIG_OPUS_PREFIX="/usr")
+
+if test "x${USE_OPUS}" = "xyes" ; then
+    AC_MSG_CHECKING( [for opus libraries at ${CONFIG_OPUS_PREFIX}] )
+    LA_SEARCH_LIB( OGG_LIB_LOC, OGG_INC_LOC, libogg.a libogg.so, ogg/ogg.h,
+                   ${CONFIG_OPUS_PREFIX})
+    LA_SEARCH_LIB( OPUS_LIB_LOC, OPUS_INC_LOC, libopus.a libopus.so, opus/opus.h,
+                   ${CONFIG_OPUS_PREFIX})
+
+    if test "x${OGG_LIB_LOC}" != "x" -a \
+            "x${OPUS_LIB_LOC}" != "x" ; then
+
+        AC_DEFINE( HAVE_OPUS_LIB, 1, [build with Ogg Opus library] )
+        if test "x${OGG_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
+            OPUS_INCFLAGS="-I${OGG_INC_LOC}"
+        fi
+        OPUS_LDFLAGS="-L${OGG_LIB_LOC} -logg -lopus"
+        AC_MSG_RESULT( [found at ${CONFIG_OPUS_PREFIX}] )
+    else
+        AC_MSG_WARN( [not found, building without Ogg Opus])
+    fi
+else
+    AC_MSG_RESULT( [building without Ogg Opus] )
+fi
+
+dnl-----------------------------------------------------------------------------
 dnl link the faac library if requested
 dnl-----------------------------------------------------------------------------
 AC_SUBST(FAAC_INCFLAGS)

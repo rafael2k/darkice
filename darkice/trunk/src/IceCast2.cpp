@@ -153,6 +153,10 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
             str = "application/ogg";
             break;
 
+        case oggOpus:
+            str = "application/ogg";
+            break;
+
         case aac:
             str = "audio/aac";
             break;

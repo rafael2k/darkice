@@ -92,6 +92,10 @@
 #include "VorbisLibEncoder.h"
 #endif
 
+#ifdef HAVE_VORBIS_LIB
+#include "OpusLibEncoder.h"
+#endif
+
 #ifdef HAVE_FAAC_LIB
 #include "FaacEncoder.h"
 #endif
@@ -469,6 +473,8 @@ DarkIce :: configIceCast2 (  const Config      & config,
         str         = cs->getForSure( "format", " missing in section ", stream);
         if ( Util::strEq( str, "vorbis") ) {
             format = IceCast2::oggVorbis;
+        } else if ( Util::strEq( str, "opus") ) {
+            format = IceCast2::oggOpus;
         } else if ( Util::strEq( str, "mp3") ) {
             format = IceCast2::mp3;
         } else if ( Util::strEq( str, "mp2") ) {
@@ -636,6 +642,28 @@ DarkIce :: configIceCast2 (  const Config      & config,
 
                 audioOuts[u].encoder = new BufferedSink(encoder, bufferSize, dsp->getBitsPerSample() / 8);
 #endif // HAVE_VORBIS_LIB
+                break;
+
+            case IceCast2::oggOpus:
+#ifndef HAVE_OPUS_LIB
+                throw Exception( __FILE__, __LINE__,
+                                "DarkIce not compiled with Ogg Opus support, "
+                                "thus can't Ogg Opus stream: ",
+                                stream);
+#else
+
+                encoder = new OpusLibEncoder(
+                                               audioOuts[u].server.get(),
+                                               dsp.get(),
+                                               bitrateMode,
+                                               bitrate,
+                                               quality,
+                                               sampleRate,
+                                               dsp->getChannel(),
+                                               maxBitrate);
+
+                audioOuts[u].encoder = new BufferedSink(encoder, bufferSize, dsp->getBitsPerSample() / 8);
+#endif // HAVE_OPUS_LIB
                 break;
 
             case IceCast2::mp2:
@@ -937,6 +965,7 @@ DarkIce :: configFileCast (  const Config      & config )
 
         format      = cs->getForSure( "format", " missing in section ", stream);
         if ( !Util::strEq( format, "vorbis")
+          && !Util::strEq( format, "opus")
           && !Util::strEq( format, "mp3")
           && !Util::strEq( format, "mp2")
           && !Util::strEq( format, "aac")
@@ -1083,6 +1112,22 @@ DarkIce :: configFileCast (  const Config      & config )
                                                     dsp->getSampleRate(),
                                                     dsp->getChannel() );
 #endif // HAVE_VORBIS_LIB
+        } else if ( Util::strEq( format, "opus") ) {
+#ifndef HAVE_OPUS_LIB
+                throw Exception( __FILE__, __LINE__,
+                                "DarkIce not compiled with Ogg Opus support, "
+                                "thus can't Ogg Opus stream: ",
+                                stream);
+#else
+                audioOuts[u].encoder = new OpusLibEncoder(
+                                                    audioOuts[u].server.get(),
+                                                    dsp.get(),
+                                                    bitrateMode,
+                                                    bitrate,
+                                                    quality,
+                                                    dsp->getSampleRate(),
+                                                    dsp->getChannel() );
+#endif // HAVE_OPUS_LIB
         } else if ( Util::strEq( format, "aac") ) {
 #ifndef HAVE_FAAC_LIB
                 throw Exception( __FILE__, __LINE__,
