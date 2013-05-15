@@ -252,7 +252,7 @@ Connector :: open ( void )                          throw ( Exception )
 /*------------------------------------------------------------------------------
  *  Transfer some data from the source to the sink
  *----------------------------------------------------------------------------*/
-unsigned int
+unsigned long
 Connector :: transfer ( unsigned long       bytes,
                         unsigned int        bufSize,
                         unsigned int        sec,
