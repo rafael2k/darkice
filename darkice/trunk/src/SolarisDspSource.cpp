@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : SolarisDspSource.cpp
-   Version  : $Revision$
-   Author   : $Author$
+   Version  : $Revision: 474 $
+   Author   : $Author: rafael@riseup.net $
    Location : $HeadURL$
    
    Copyright notice:
@@ -108,7 +108,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id$";
+static const char fileid[] = "$Id: SolarisDspSource.cpp 474 2010-05-10 01:18:15Z rafael@riseup.net $";
 
 
 /* ===============================================  local function prototypes */

@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : BufferedSink.h
-   Version  : $Revision$
-   Author   : $Author$
+   Version  : $Revision: 474 $
+   Author   : $Author: rafael@riseup.net $
    Location : $HeadURL$
    
    Copyright notice:
@@ -55,8 +55,8 @@
  *  data contained if needed.
  *  The class is not thread-safe.
  *
- *  @author  $Author$
- *  @version $Revision$
+ *  @author  $Author: rafael@riseup.net $
+ *  @version $Revision: 474 $
  */
 class BufferedSink : public Sink, public virtual Reporter
 {

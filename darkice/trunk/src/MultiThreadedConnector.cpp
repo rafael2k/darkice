@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : MultiThreadedConnector.cpp
-   Version  : $Revision$
-   Author   : $Author$
+   Version  : $Revision: 523 $
+   Author   : $Author: rafael@riseup.net $
    Location : $HeadURL$
    
    Copyright notice:
@@ -53,7 +53,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id$";
+static const char fileid[] = "$Id: MultiThreadedConnector.cpp 523 2013-05-15 21:17:10Z rafael@riseup.net $";
 
 
 /* ===============================================  local function prototypes */

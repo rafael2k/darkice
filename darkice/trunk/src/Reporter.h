@@ -5,8 +5,8 @@
    Tyrell Reporter
 
    File     : Reporter.h
-   Version  : $Revision$
-   Author   : $Author$
+   Version  : $Revision: 474 $
+   Author   : $Author: rafael@riseup.net $
    Location : $HeadURL$
    
    Copyright notice:
@@ -77,8 +77,8 @@
  * 
  *  Known problems: this class is not thread-safe.
  * 
- *  @author  $Author$
- *  @version $Revision$
+ *  @author  $Author: rafael@riseup.net $
+ *  @version $Revision: 474 $
  */
 class Reporter
 {

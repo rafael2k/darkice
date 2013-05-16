@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : TwoLameLibEncoder.cpp
-   Version  : $Revision$
-   Author   : $Author$
+   Version  : $Revision: 474 $
+   Author   : $Author: rafael@riseup.net $
    Location : $HeadURL$
    
    Copyright notice:
@@ -66,8 +66,8 @@
  *  A class representing the TwoLame encoder linked as a shared object or as
  *  a static library.
  *
- *  @author  $Author$
- *  @version $Revision$
+ *  @author  $Author: rafael@riseup.net $
+ *  @version $Revision: 474 $
  */
 class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
 {

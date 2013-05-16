@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : aacPlusEncoder.h
-   Version  : $Revision$
-   Author   : $Author$
+   Version  : $Revision: 491 $
+   Author   : $Author: rafael@riseup.net $
    Location : $HeadURL$
    
    Copyright notice:
@@ -72,8 +72,8 @@
 /**
  *  A class representing aacplus AAC+ encoder.
  *
- *  @author  $Author$
- *  @version $Revision$
+ *  @author  $Author: rafael@riseup.net $
+ *  @version $Revision: 491 $
  */
 
 class aacPlusEncoder : public AudioEncoder, public virtual Reporter

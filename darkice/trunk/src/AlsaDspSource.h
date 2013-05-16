@@ -10,8 +10,8 @@
    Tyrell DarkIce
 
    File     : AlsaDspSource.h
-   Version  : $Revision$
-   Author   : $Author$
+   Version  : $Revision: 474 $
+   Author   : $Author: rafael@riseup.net $
    Location : $HeadURL$
    
    Copyright notice:
@@ -66,8 +66,8 @@
 /**
  *  An audio input based on the ALSA sound system 
  *
- *  @author  $Author$
- *  @version $Revision$
+ *  @author  $Author: rafael@riseup.net $
+ *  @version $Revision: 474 $
  */
 class AlsaDspSource : public AudioSource, public virtual Reporter
 {

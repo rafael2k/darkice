@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : DarkIce.h
-   Version  : $Revision$
-   Author   : $Author$
+   Version  : $Revision: 503 $
+   Author   : $Author: rafael@riseup.net $
    Location : $HeadURL$
    
    Copyright notice:
@@ -72,8 +72,8 @@
 /**
  *  Program main object.
  *
- *  @author  $Author$
- *  @version $Revision$
+ *  @author  $Author: rafael@riseup.net $
+ *  @version $Revision: 503 $
  */
 class DarkIce : public virtual Referable, public virtual Reporter
 {

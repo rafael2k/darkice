@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : main.cpp
-   Version  : $Revision$
-   Author   : $Author$
+   Version  : $Revision: 476 $
+   Author   : $Author: rafael@riseup.net $
    Location : $HeadURL$
    
    Abstract : 
@@ -71,7 +71,7 @@ static Ref<DarkIce>     darkice;
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id$";
+static const char fileid[] = "$Id: main.cpp 476 2010-05-10 01:30:13Z rafael@riseup.net $";
 
 /*------------------------------------------------------------------------------
  *  Default config file name

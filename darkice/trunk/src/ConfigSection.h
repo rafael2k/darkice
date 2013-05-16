@@ -5,8 +5,8 @@
    Tyrell ConfigSection
 
    File     : ConfigSection.h
-   Version  : $Revision$
-   Author   : $Author$
+   Version  : $Revision: 474 $
+   Author   : $Author: rafael@riseup.net $
    Location : $HeadURL$
    
    Copyright notice:
@@ -64,8 +64,8 @@
  *
  *  Knwon problem: you can't use '#' in any part of a key / value pair
  *
- *  @author  $Author$
- *  @version $Revision$
+ *  @author  $Author: rafael@riseup.net $
+ *  @version $Revision: 474 $
  */
 class ConfigSection : public virtual Referable
 {

@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : OssDspSource.cpp
-   Version  : $Revision$
-   Author   : $Author$
+   Version  : $Revision: 474 $
+   Author   : $Author: rafael@riseup.net $
    Location : $HeadURL$
    
    Copyright notice:
@@ -106,7 +106,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id$";
+static const char fileid[] = "$Id: OssDspSource.cpp 474 2010-05-10 01:18:15Z rafael@riseup.net $";
 
 /*------------------------------------------------------------------------------
  *  Define the natural endiannes of 16 bit recording if not defined,

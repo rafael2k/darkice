@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : aacPlusEncoder.cpp
-   Version  : $Revision$
-   Author   : $Author$
+   Version  : $Revision: 507 $
+   Author   : $Author: alban.peignier@gmail.com $
    Location : $HeadURL$
 
    Copyright notice:
@@ -51,7 +51,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id$";
+static const char fileid[] = "$Id: aacPlusEncoder.cpp 507 2013-04-04 04:52:37Z alban.peignier@gmail.com $";
 
 
 /* ===============================================  local function prototypes */

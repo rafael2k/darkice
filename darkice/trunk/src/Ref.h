@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : Ref.h
-   Version  : $Revision$
-   Author   : $Author$
+   Version  : $Revision: 474 $
+   Author   : $Author: rafael@riseup.net $
    Location : $HeadURL$
    
    Copyright notice:
@@ -75,8 +75,8 @@
  *
  *  @ref Referable
  *  
- *  @author  $Author$
- *  @version $Revision$
+ *  @author  $Author: rafael@riseup.net $
+ *  @version $Revision: 474 $
  */
 template <class T>
 class Ref

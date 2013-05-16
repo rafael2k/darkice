@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : AudioSource.h
-   Version  : $Revision$
-   Author   : $Author$
+   Version  : $Revision: 488 $
+   Author   : $Author: rafael@riseup.net $
    Location : $HeadURL$
    
    Copyright notice:
@@ -96,8 +96,8 @@
 /**
  *  Audio data input
  *
- *  @author  $Author$
- *  @version $Revision$
+ *  @author  $Author: rafael@riseup.net $
+ *  @version $Revision: 488 $
  */
 class AudioSource : public Source, public virtual Reporter
 {

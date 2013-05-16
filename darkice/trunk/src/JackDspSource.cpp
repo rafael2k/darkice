@@ -7,8 +7,8 @@
    Tyrell DarkIce
 
    File     : JackDspSource.cpp
-   Version  : $Revision$
-   Author   : $Author$
+   Version  : $Revision: 510 $
+   Author   : $Author: oetelaar.automatisering@gmail.com $
    Location : $HeadURL$
    
    Copyright notice:
@@ -95,7 +95,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id$";
+static const char fileid[] = "$Id: JackDspSource.cpp 510 2013-04-11 18:52:57Z oetelaar.automatisering@gmail.com $";
 
 
 /* ===============================================  local function prototypes */

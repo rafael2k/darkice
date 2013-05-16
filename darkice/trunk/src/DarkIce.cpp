@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : DarkIce.cpp
-   Version  : $Revision$
-   Author   : $Author$
+   Version  : $Revision: 517 $
+   Author   : $Author: rafael@riseup.net $
    Location : $HeadURL$
    
 
@@ -113,7 +113,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id$";
+static const char fileid[] = "$Id: DarkIce.cpp 517 2013-05-14 16:08:20Z rafael@riseup.net $";
 
 
 /*------------------------------------------------------------------------------

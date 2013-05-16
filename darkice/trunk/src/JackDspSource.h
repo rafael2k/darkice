@@ -7,8 +7,8 @@
    Tyrell DarkIce
 
    File     : JackDspSource.h
-   Version  : $Revision$
-   Author   : $Author$
+   Version  : $Revision: 474 $
+   Author   : $Author: rafael@riseup.net $
    Location : $HeadURL$
    
    Copyright notice:
@@ -61,8 +61,8 @@
 /**
  *  An audio input based on JACK
  *
- *  @author  $Author$
- *  @version $Revision$
+ *  @author  $Author: rafael@riseup.net $
+ *  @version $Revision: 474 $
  */
 class JackDspSource : public AudioSource, public virtual Reporter
 {

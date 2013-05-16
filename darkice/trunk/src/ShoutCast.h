@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : ShoutCast.h
-   Version  : $Revision$
-   Author   : $Author$
+   Version  : $Revision: 503 $
+   Author   : $Author: rafael@riseup.net $
    Location : $HeadURL$
    
    Copyright notice:
@@ -53,8 +53,8 @@
  *  Class representing output to a ShoutCast server with
  *  icy login
  *
- *  @author  $Author$
- *  @version $Revision$
+ *  @author  $Author: rafael@riseup.net $
+ *  @version $Revision: 503 $
  */
 class ShoutCast : public CastSink
 {
