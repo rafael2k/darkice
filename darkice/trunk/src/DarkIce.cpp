@@ -92,7 +92,7 @@
 #include "VorbisLibEncoder.h"
 #endif
 
-#ifdef HAVE_VORBIS_LIB
+#ifdef HAVE_OPUS_LIB
 #include "OpusLibEncoder.h"
 #endif
 
