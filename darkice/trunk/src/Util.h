@@ -187,13 +187,11 @@ class Util
          *  Convert a string to long.
          *
          *  @param str the string to convert.
-         *  @param base numeric base of number in str.
          *  @return the value of str as a long int
          *  @exception Exception
          */
         static long int
-        strToL ( const char    * str,
-                 int             base = 10 )         throw ( Exception );
+        strToL ( const char    * str) throw ( Exception );
 
         /**
          *  Convert a string to double.

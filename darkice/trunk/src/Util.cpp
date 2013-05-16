@@ -33,6 +33,12 @@
 #include "config.h"
 #endif
 
+#ifdef HAVE_ERRNO_H
+#include <errno.h>
+#else
+#error need errno.h
+#endif
+
 #ifdef HAVE_STRING_H
 #include <string.h>
 #else
@@ -245,21 +251,23 @@ Util :: strEq( const char    * str1,
  *  Convert a string to a long integer
  *----------------------------------------------------------------------------*/
 long int
-Util :: strToL( const char    * str,
-                int             base )                  throw ( Exception )
+Util :: strToL( const char *str) throw ( Exception )
 {
-    long int    val;
-    char      * s;
+    long int   val;
+    char      *end;
 
-    if ( !str ) {
-        throw Exception( __FILE__, __LINE__, "no str");
-    }
-
-    val = strtol( str, &s, base);
-    if ( s == str || val == LONG_MIN || val == LONG_MAX ) {
-        throw Exception( __FILE__, __LINE__, "number conversion error");
-    }
-
+    if ( NULL == str ) 
+        throw Exception( __FILE__, __LINE__, "null pointer parameter, not string");
+    
+    errno = 0; // set it, strtol() can change it 
+    val = strtol( str, &end, 10); 
+    
+    if (end == str)
+        throw Exception( __FILE__, __LINE__, "number conversion error, not a decimal string");
+    
+    if ((LONG_MIN == val || LONG_MAX ==  val) && ERANGE == errno) 
+        throw Exception( __FILE__, __LINE__, "number conversion error, out of range of type long");
+    
     return val;
 }
 
