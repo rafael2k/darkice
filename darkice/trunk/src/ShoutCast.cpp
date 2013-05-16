@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : ShoutCast.cpp
-   Version  : $Revision: 508 $
-   Author   : $Author: alban.peignier@gmail.com $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $Source$
    
    Copyright notice:
@@ -69,7 +69,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id: ShoutCast.cpp 508 2013-04-04 04:56:31Z alban.peignier@gmail.com $";
+static const char fileid[] = "$Id$";
 
 
 /*------------------------------------------------------------------------------

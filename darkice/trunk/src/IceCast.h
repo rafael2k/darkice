@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : IceCast.h
-   Version  : $Revision: 503 $
-   Author   : $Author: rafael@riseup.net $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -53,8 +53,8 @@
  *  Class representing output to an IceCast server with
  *  x-audiocast login
  *
- *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 503 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class IceCast : public CastSink
 {

@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : CastSink.cpp
-   Version  : $Revision: 524 $
-   Author   : $Author: rafael@riseup.net $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -42,7 +42,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id: CastSink.cpp 524 2013-05-16 03:36:12Z rafael@riseup.net $";
+static const char fileid[] = "$Id$";
 
 
 /* ===============================================  local function prototypes */

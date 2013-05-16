@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : FileCast.h
-   Version  : $Revision: 474 $
-   Author   : $Author: rafael@riseup.net $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -54,8 +54,8 @@
 /**
  *  Class representing output to a local file.
  *
- *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class FileCast : public CastSink
 {

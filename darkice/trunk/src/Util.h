@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : Util.h
-   Version  : $Revision: 474 $
-   Author   : $Author: rafael@riseup.net $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -60,8 +60,8 @@
  *  char  * str = Util::strDup( otherStr);
  *  </pre>
  *
- *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class Util
 {

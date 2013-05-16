@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : Connector.h
-   Version  : $Revision: 523 $
-   Author   : $Author: rafael@riseup.net $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -54,8 +54,8 @@
 /**
  *  Connects a source to one or more sinks.
  *
- *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 523 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class Connector : public virtual Referable, public virtual Reporter
 {

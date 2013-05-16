@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : Exception.h
-   Version  : $Revision: 474 $
-   Author   : $Author: rafael@riseup.net $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -59,8 +59,8 @@
  *  throw Exception( __FILE__, __LINE__, "describe the exception", code);
  *  </pre>
  *
- *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class Exception
 {

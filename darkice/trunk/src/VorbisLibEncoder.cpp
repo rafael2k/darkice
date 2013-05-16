@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : VorbisLibEncoder.cpp
-   Version  : $Revision: 474 $
-   Author   : $Author: rafael@riseup.net $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -50,7 +50,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id: VorbisLibEncoder.cpp 474 2010-05-10 01:18:15Z rafael@riseup.net $";
+static const char fileid[] = "$Id$";
 
 
 /* ===============================================  local function prototypes */

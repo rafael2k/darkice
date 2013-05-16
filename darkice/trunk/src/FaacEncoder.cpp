@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : FaacEncoder.cpp
-   Version  : $Revision: 507 $
-   Author   : $Author: alban.peignier@gmail.com $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -51,7 +51,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id: FaacEncoder.cpp 507 2013-04-04 04:52:37Z alban.peignier@gmail.com $";
+static const char fileid[] = "$Id$";
 
 
 /* ===============================================  local function prototypes */

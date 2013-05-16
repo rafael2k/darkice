@@ -10,8 +10,8 @@
    Tyrell DarkIce
 
    File     : PulseAudioDspSource.h
-   Version  : $Revision: 394 $
-   Author   : $Author: darkeye $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -65,8 +65,8 @@
 /**
  *  An audio input based on the PULSEAUDIO sound system 
  *
- *  @author  $Author: darkeye $
- *  @version $Revision: 394 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class PulseAudioDspSource : public AudioSource, public virtual Reporter
 {
@@ -257,8 +257,8 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
    Tyrell DarkIce
 
    File     : PulseAudioDspSource.h
-   Version  : $Revision: 394 $
-   Author   : $Author: darkeye $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -312,8 +312,8 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
 /**
  *  An audio input based on the PULSEAUDIO sound system 
  *
- *  @author  $Author: darkeye $
- *  @version $Revision: 394 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class PulseAudioDspSource : public AudioSource, public virtual Reporter
 {

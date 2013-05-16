@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : AudioSource.cpp
-   Version  : $Revision: 488 $
-   Author   : $Author: rafael@riseup.net $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -46,7 +46,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id: AudioSource.cpp 488 2010-09-17 20:37:46Z rafael@riseup.net $";
+static const char fileid[] = "$Id$";
 
 
 /* ===============================================  local function prototypes */

@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : VorbisLibEncoder.h
-   Version  : $Revision: 503 $
-   Author   : $Author: rafael@riseup.net $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -71,8 +71,8 @@
  *  A class representing the ogg vorbis encoder linked as a shared object or
  *  as a static library.
  *
- *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 503 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
 {

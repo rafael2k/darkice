@@ -6,8 +6,8 @@
    Tyrell DarkIce
 
    File     : SerialUlaw.cpp
-   Version  : $Revision: 1.13 $
-   Author   : $Author: darkeye $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $Source: /cvsroot/darkice/darkice/src/SerialUlaw.cpp,v $
    
    Copyright notice:

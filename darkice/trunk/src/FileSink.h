@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : FileSink.h
-   Version  : $Revision: 474 $
-   Author   : $Author: rafael@riseup.net $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -51,8 +51,8 @@
 /**
  *  File data output
  *
- *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class FileSink : public Sink, public virtual Reporter
 {

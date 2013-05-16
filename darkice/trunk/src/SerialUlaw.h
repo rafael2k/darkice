@@ -52,8 +52,8 @@
 /**
  *  An audio input based on /dev/dsp-like raw devices
  *
- *  @author  $Author: darkeye $
- *  @version $Revision: 1.7 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class SerialUlaw : public AudioSource, public virtual Reporter
 {

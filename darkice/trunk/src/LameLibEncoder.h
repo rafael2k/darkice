@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : LameLibEncoder.h
-   Version  : $Revision: 474 $
-   Author   : $Author: rafael@riseup.net $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -66,8 +66,8 @@
  *  A class representing the lame encoder linked as a shared object or as
  *  a static library.
  *
- *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class LameLibEncoder : public AudioEncoder, public virtual Reporter
 {

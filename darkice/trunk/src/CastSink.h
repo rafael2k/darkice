@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : CastSink.h
-   Version  : $Revision: 524 $
-   Author   : $Author: rafael@riseup.net $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -56,8 +56,8 @@
  *  This is an abstract class. A subclass should override at least
  *  the sendLogin() function.
  *
- *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 524 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class CastSink : public Sink, public virtual Reporter
 {

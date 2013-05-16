@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : FaacEncoder.h
-   Version  : $Revision: 474 $
-   Author   : $Author: rafael@riseup.net $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -70,8 +70,8 @@
 /**
  *  A class representing faac AAC encoder.
  *
- *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class FaacEncoder : public AudioEncoder, public virtual Reporter
 {

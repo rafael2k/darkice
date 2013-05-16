@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : TcpSocket.h
-   Version  : $Revision: 474 $
-   Author   : $Author: rafael@riseup.net $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -52,8 +52,8 @@
 /**
  *  A TCP network socket
  *
- *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class TcpSocket : public Source, public Sink, public virtual Reporter
 {

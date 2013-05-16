@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : Sink.h
-   Version  : $Revision: 474 $
-   Author   : $Author: rafael@riseup.net $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -51,8 +51,8 @@
 /**
  *  A general data sink
  *
- *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class Sink : public virtual Referable
 {

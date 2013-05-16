@@ -5,8 +5,8 @@
    Tyrell DarkIce
 
    File     : IceCast.cpp
-   Version  : $Revision: 505 $
-   Author   : $Author: rafael@riseup.net $
+   Version  : $Revision$
+   Author   : $Author$
    Location : $HeadURL$
    
    Copyright notice:
@@ -67,7 +67,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id: IceCast.cpp 505 2012-01-19 01:07:30Z rafael@riseup.net $";
+static const char fileid[] = "$Id$";
 
 
 /*------------------------------------------------------------------------------
