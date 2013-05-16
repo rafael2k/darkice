@@ -83,6 +83,7 @@
 
 #ifdef HAVE_SIGNAL_H
 #include <signal.h>
+#include <netinet/tcp.h>
 #else
 #error need signal.h
 #endif
@@ -193,6 +194,7 @@ bool
 TcpSocket :: open ( void )                       throw ( Exception )
 {
     int                     optval;
+    struct timeval optval2 = {5L, 0L};
     socklen_t               optlen;
 #ifdef HAVE_ADDRINFO
     struct addrinfo         hints
@@ -221,10 +223,13 @@ TcpSocket :: open ( void )                       throw ( Exception )
     memcpy ( addr, ptr->ai_addr, ptr->ai_addrlen);
     freeaddrinfo(ptr);
 #else
+    reportEvent(9, "Gonna do gethostbyname()");
     if ( !(pHostEntry = gethostbyname( host)) ) {
         sockfd = 0;
+        reportEvent(9, "Fail in gethostbyname()");        
         throw Exception( __FILE__, __LINE__, "gethostbyname error", errno);
     }
+    reportEvent(9, "done gethostbyname()");
     
     memset( &addr, 0, sizeof(addr));
     addr.sin_family      = AF_INET;
@@ -241,9 +246,40 @@ TcpSocket :: open ( void )                       throw ( Exception )
     optval = 1;
     optlen = sizeof(optval);
     if (setsockopt(sockfd, SOL_SOCKET, SO_KEEPALIVE, &optval, optlen) == -1) {  
-        reportEvent(5, "can't set TCP socket keep-alive mode", errno);
+        reportEvent(5, "can't set TCP socket SO_KEEPALIVE mode", errno);
+    }
+    // set keep alive to some short value, this is a streaming server
+    // a long value will not work and lead to delay in reconnection
+    optval=5;
+    if (setsockopt(sockfd, SOL_TCP, TCP_KEEPIDLE, &optval, optlen) == -1) {  
+        reportEvent(5, "can't set TCP socket keep-alive TCP_KEEPIDLE value", errno);
+    }
+    
+    optval=2;
+    if (setsockopt(sockfd, SOL_TCP, TCP_KEEPCNT, &optval, optlen) == -1) {  
+        reportEvent(5, "can't set TCP socket keep-alive TCP_KEEPCNT value", errno);
+    }
+    
+    optval=5;
+    if (setsockopt(sockfd, SOL_TCP, TCP_KEEPINTVL, &optval, optlen) == -1) {  
+        reportEvent(5, "can't set TCP socket keep-alive TCP_KEEPCNT value", errno);
+    }
+    
+    if (-1 == setsockopt(sockfd, SOL_SOCKET, SO_SNDTIMEO, (const char *) &optval2, sizeof (optval2))) {
+        reportEvent(5,"could not set socket option SO_SNDTIMEO");
     }
 
+    if (-1 == setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (const char *) &optval2, sizeof (optval2))) {
+        reportEvent(5,"could not set socket option SO_RCVTIMEO");
+    }
+    
+    #ifdef TCP_CORK
+    // send larger network segments, limit buffer upto 0.2 sec before actual sending
+    if (-1 == setsockopt(sockfd, IPPROTO_TCP,  TCP_CORK, (const char *) &optval, sizeof (optval))) {
+        reportEvent(5,"could not set socket option TCP_CORK");
+    }
+    #endif
+    
     // connect
     if ( connect( sockfd, (struct sockaddr*)&addr, sizeof(addr)) == -1 ) {
         ::close( sockfd);
@@ -329,7 +365,7 @@ TcpSocket :: read (     void          * buf,
 
 
 /*------------------------------------------------------------------------------
- *  Check wether read() would return anything
+ *  Check if write() would block
  *----------------------------------------------------------------------------*/
 bool
 TcpSocket :: canWrite (    unsigned int    sec,
@@ -370,7 +406,7 @@ TcpSocket :: canWrite (    unsigned int    sec,
  *  Write to the socket
  *----------------------------------------------------------------------------*/
 unsigned int
-TcpSocket :: write (    const void    * buf,
+TcpSocket :: write (    const void * buf,
                         unsigned int    len )       throw ( Exception )
 {
     int         ret;
@@ -378,26 +414,41 @@ TcpSocket :: write (    const void    * buf,
     if ( !isOpen() ) {
         return 0;
     }
-
-#ifdef HAVE_MSG_NOSIGNAL
-    ret = send( sockfd, buf, len, MSG_NOSIGNAL);
-#else
-    ret = send( sockfd, buf, len, 0);
-#endif
-
-    if ( ret == -1 ) {
-        if ( errno == EAGAIN ) {
-            ret = 0;
+    // let us try to write stuff to this socket
+    // we can not take forever to do it, so the open() call set up
+    // a send timeout, of 5 seconds
+    // we give it 2 retries and then give up, the stream has
+    // been blocked for 10+ seconds and we need to take action anyway
+    unsigned int bytesleft = len;
+    int retries = 2;
+    errno = 0;
+    while (bytesleft && (retries)) {
+        reportEvent(9,"before write\n", retries);
+        #ifdef HAVE_MSG_NOSIGNAL
+        ret = send( sockfd, buf, bytesleft, MSG_NOSIGNAL); // no SIGPIPE
+        #else
+        ret = send( sockfd, buf, bytesleft, 0);
+        #endif
+        if ((ret < 0) && ( errno == EAGAIN )) {
+           // problem happened, but try again
+           // try again
+           retries--;
         } else {
-	    ::close( sockfd);
-	    sockfd = 0;
-            throw Exception( __FILE__, __LINE__, "send error", errno);
+           // some data was written
+           bytesleft -= ret;  // we 
+           buf = (char*)buf + ret; // move pointer to unsent portion
         }
+        reportEvent(9,"after write\n",ret);
     }
-
-    return ret;
+    if (bytesleft) {
+        // data not send after this time means serious problem
+        ::close(sockfd);
+	    sockfd = 0;
+        throw Exception( __FILE__, __LINE__, "send error", errno);
+    } else {
+        return len; // all bytes sent
+    }
 }
-
 
 /*------------------------------------------------------------------------------
  *  Close the socket

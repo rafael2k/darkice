@@ -68,10 +68,11 @@ void
 MultiThreadedConnector :: init ( bool    reconnect )    throw ( Exception )
 {
     this->reconnect = reconnect;
-    pthread_mutex_init( &mutex_start, 0);
-    pthread_cond_init( &cond_start, 0);
-    pthread_mutex_init( &mutex_done, 0);
-    pthread_cond_init( &cond_done, 0);
+    pthread_mutex_init(&mutex_number_not_listening_yet, 0);
+    pthread_mutex_init(&mutex_start, 0);
+    pthread_cond_init(&cond_start, 0);
+    pthread_mutex_init(&mutex_done, 0);
+    pthread_cond_init(&cond_done, 0);
     threads = 0;
 }
 
@@ -87,10 +88,11 @@ MultiThreadedConnector :: strip ( void )                throw ( Exception )
         threads = 0;
     }
 
-    pthread_cond_destroy( &cond_start);
-    pthread_mutex_destroy( &mutex_start);
-    pthread_cond_destroy( &cond_done);
-    pthread_mutex_destroy( &mutex_done);
+    pthread_cond_destroy(&cond_done);
+    pthread_mutex_destroy(&mutex_done);
+    pthread_cond_destroy(&cond_start);
+    pthread_mutex_destroy(&mutex_start);
+    pthread_mutex_destroy(&mutex_number_not_listening_yet);
 }
 
 
@@ -104,6 +106,9 @@ MultiThreadedConnector :: MultiThreadedConnector (
 {
     reconnect      = connector.reconnect;
     mutex_start    = connector.mutex_start;
+    mutex_number_not_listening_yet = connector.mutex_number_not_listening_yet;
+    number_not_listening_yet = connector.number_not_listening_yet;
+
     cond_start     = connector.cond_start;
     mutex_done     = connector.mutex_done;
     cond_done      = connector.cond_done;
@@ -129,6 +134,8 @@ MultiThreadedConnector :: operator= ( const MultiThreadedConnector & connector )
 
         reconnect      = connector.reconnect;
         mutex_start    = connector.mutex_start;
+        mutex_number_not_listening_yet = connector.mutex_number_not_listening_yet;
+        number_not_listening_yet = connector.number_not_listening_yet;
         cond_start     = connector.cond_start;
         mutex_done     = connector.mutex_done;
         cond_done      = connector.cond_done;
@@ -161,7 +168,7 @@ MultiThreadedConnector :: open ( void )                     throw ( Exception )
 
     running = true;
 
-    pthread_attr_init( &threadAttr);
+    pthread_attr_init(&threadAttr);
     pthread_attr_getstacksize(&threadAttr, &st);
     if (st < 128 * 1024) {
         reportEvent( 5, "MultiThreadedConnector :: open, stack size ",
@@ -169,8 +176,12 @@ MultiThreadedConnector :: open ( void )                     throw ( Exception )
         st = 128 * 1024;
         pthread_attr_setstacksize(&threadAttr, st);
     }
-    pthread_attr_setdetachstate( &threadAttr, PTHREAD_CREATE_JOINABLE);
-
+    pthread_attr_setdetachstate(&threadAttr, PTHREAD_CREATE_JOINABLE);
+    
+    pthread_mutex_lock(&mutex_number_not_listening_yet);
+    number_not_listening_yet = numSinks;
+    pthread_mutex_unlock(&mutex_number_not_listening_yet);
+    
     threads = new ThreadData[numSinks];
     for ( i = 0; i < numSinks; ++i ) {
         ThreadData    * threadData = threads + i;
@@ -207,6 +218,21 @@ MultiThreadedConnector :: open ( void )                     throw ( Exception )
         return false;
     }
 
+    // we have created all threads, make sure they are waiting for 
+    // command from the producer
+    while (1) {
+        pthread_mutex_lock(&mutex_number_not_listening_yet);
+        if (0 == number_not_listening_yet) { 
+            reportEvent( 6, "MultiThreadedConnector::open() all consumers standing by");
+            break;
+        } else {
+            pthread_mutex_unlock(&mutex_number_not_listening_yet);
+            pthread_yield(); // give space to let the consumers running
+            reportEvent( 6, "MultiThreadedConnector::open() waiting for consumers standing by");
+            usleep(10);
+        }
+    }
+    
     return true;
 }
 
@@ -240,7 +266,7 @@ MultiThreadedConnector :: transfer ( unsigned long       bytes,
     reportEvent( 6, "MultiThreadedConnector::transfer count:", bytes);
     byteCounter = 0;		// init, no data bytes sent yet
     
-    
+        
     while (running && (bytes == 0 || byteCounter < bytes)) {
 
         if (source->canRead(sec, usec)) {
@@ -252,14 +278,15 @@ MultiThreadedConnector :: transfer ( unsigned long       bytes,
             if (dataSize == 0) {
                 reportEvent(3, "MultiThreadedConnector :: transfer, EOF");
                 break;
+            } else {
+             //   reportEvent(9, "MultiThreadedConnector::transfer ",dataSize);
             }
-
+            
             pthread_mutex_lock(&mutex_start);
             for (i = 0; i < numSinks; ++i) {
-                if (threads[i].accepting)
-                    threads[i].isDone = 0; // consumers => RUN
+                    threads[i].isDone = 0; // ALL consumers => RUN
             }
-            pthread_cond_broadcast(&cond_start); // kick the waiting consumers to look again
+            pthread_cond_broadcast(&cond_start); // kick ALL the waiting consumers to look again
 
             // wait for all sink threads to get done with this data
             // we do not spin here, we just wait for an event from the consumers
@@ -281,22 +308,28 @@ MultiThreadedConnector :: transfer ( unsigned long       bytes,
                 for (i = 0; i < numSinks; ++i) {
                     if (threads[i].accepting) { 
                         acceptor_count++; // number of accepting threads
-			if (threads[i].isDone == 1) 
+                        if (threads[i].isDone == 1) 
                             stopped_count++; // number of accepting threads which have STOP
                     }
                 }
+                // if no thread is accepting and reconnect is not set stop the application
+                if (acceptor_count == 0 && reconnect == false) {
+                    running=false;
+                    break;
+                }
+                
                 // break when all accepting threads are done                
                 if (acceptor_count == stopped_count) {
                     break;
                 }
-		        // at least one thread has not set the STOP flag yet
+		        // at least one thread has not set the isDone flag yet and is still accepting
             }
             pthread_mutex_unlock(&mutex_done);
-	    // at this point all consumers are done with the block
+	        // at this point all consumers are done with the block
         } else {
             reportEvent(3,"MultiThreadedConnector :: transfer, can't read");
             break;
-	}  
+	    }  
     }
 
     delete[] dataBuffer;
@@ -312,20 +345,26 @@ void
 MultiThreadedConnector::sinkThread(int ixSink)
 {
     ThreadData * threadData = &threads[ixSink];
-    Sink * sink = sinks[ixSink].get( );
-
-    while ( running )
-    {
+    Sink * sink = sinks[ixSink].get();
+    
+    pthread_mutex_lock( &mutex_start ); // LOCK mutex for cond_start
+    // we now tell the producer we are listening
+    pthread_mutex_lock(&mutex_number_not_listening_yet);
+    number_not_listening_yet--;
+    pthread_mutex_unlock(&mutex_number_not_listening_yet);
+    
+    while (1) {
         // wait for some data to become available
         // producer sets isDone==0 when consumer can continue
         // producer sets isDone==2 or running==0 to request termination
-        pthread_mutex_lock( &mutex_start ); // LOCK
+        
         int rc=0;
         while ( (rc==0) && running && (threadData->isDone==1) )
         {
             // wait for condition, releases lock
             rc = pthread_cond_wait( &cond_start, &mutex_start );
             // we hold the lock again 
+            // we check flags under protection of the lock
         }
         pthread_mutex_unlock( &mutex_start ); // UNLOCK
         
@@ -350,20 +389,27 @@ MultiThreadedConnector::sinkThread(int ixSink)
                 } catch ( Exception & e )
                 {
                     // something wrong. don't accept more data, try to
-                    // reopen the sink next time around
+                    // reopen the sink NEXT time around, for now just report done
                     threadData->accepting = false;
+                    reportEvent( 4,
+                             "MultiThreadedConnector :: sinkThread can't write X", ixSink );
                 }
             }
             else
             {
                 reportEvent( 4,
-                             "MultiThreadedConnector :: sinkThread can't write ",
-                             ixSink );
+                             "MultiThreadedConnector :: sinkThread can't write ", ixSink );
                 // don't care if we can't write
             }
-        }
+        } 
 
-        if ( !threadData->accepting ) {
+        pthread_mutex_lock( &mutex_done );
+        threadData->isDone = 1; // producer will check this flag
+        pthread_cond_signal( &cond_done ); // signal producer
+        pthread_mutex_unlock( &mutex_done );
+        
+        if ( ! threadData->accepting) {
+            // not accepting
             if ( reconnect ) {
                 reportEvent( 4,
                              "MultiThreadedConnector :: sinkThread reconnecting ",
@@ -377,21 +423,17 @@ MultiThreadedConnector::sinkThread(int ixSink)
                     threadData->accepting = sink->isOpen( );
                 } catch ( Exception & e ) {
                     // don't care, just try and try again
+                    reportEvent( 4,
+                             "MultiThreadedConnector::sinkThread Reconnect failed", ixSink );
                 }
-            }
-            else {
+            } else {
                 // if !reconnect, just stop the connector
-                // running = false; /* kill the whole application */	
-                // tell that we used the databuffer, do not wait for us anymore
-                pthread_mutex_lock( &mutex_done );
-                threadData->isDone = 1; // 1==STOP
-                pthread_mutex_unlock( &mutex_done );
                 reportEvent( 4,
                              "MultiThreadedConnector :: sinkThread no reconnect? ",
-                             ixSink );
+                             ixSink);
                 try
                 {
-                    threadData->accepting = false;
+                    threadData->accepting = false; // no more data for us
                     sink->close( );
                 } catch ( Exception & e )
                 {

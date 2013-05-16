@@ -152,6 +152,20 @@ class MultiThreadedConnector : public virtual Connector
         pthread_mutex_t mutex_done;
         pthread_cond_t  cond_done; // consumer sets this  
         
+        /* mutex on number of consumers not listening yet to the producer
+         * this is to prevent a race during startup
+         * The producer should only signal the consumers when it knows
+         * that all consumers are waiting on the condition var to change
+         * not before, because a consumer might mis the signal and not start
+         * which would also mean that it will not finish, thereby blocking 
+         * the producer
+         */
+        
+        pthread_mutex_t mutex_number_not_listening_yet;
+        // when this is 0 all consumers are 
+        // ready to take commands from the producer
+        int number_not_listening_yet;   
+        
         /**
          *  The thread attributes.
          */
