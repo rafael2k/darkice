@@ -217,8 +217,10 @@ FileSink :: create ( void )                     throw ( Exception )
     if ( isOpen() ) {
         return false;
     }
-
-    if ( (fd = ::creat( fileName, S_IRUSR | S_IWUSR)) == -1 ) {
+    /* filemode default to 0666 */
+    const int filemode = (S_IRUSR|S_IWUSR|S_IWGRP|S_IRGRP|S_IROTH|S_IWOTH) ;
+    /* create the file */
+    if ( (fd = ::creat( fileName, filemode )) == -1 ) {
         reportEvent( 3, "can't create file", fileName, errno);
         return false;
     }
