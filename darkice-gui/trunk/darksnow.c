@@ -304,7 +304,7 @@ int main( int  argc, char *argv[], char *envp[]) {
   gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitratemode), gettext("Constant"));
   gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitratemode), gettext("Average"));
   gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_bitratemode), gettext("Variable"));
-  gtk_entry_set_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (combo_bitratemode))),"Constant");
+  gtk_entry_set_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (combo_bitratemode))), gettext("Constant"));
 
   label_bitrate = gtk_label_new ( gettext("BitRate: "));
   combo_bitrate = gtk_combo_box_text_new_with_entry ();
@@ -340,7 +340,7 @@ int main( int  argc, char *argv[], char *envp[]) {
   gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_samplerate), "44100");
   gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_samplerate), "48000");
   gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_samplerate), "96000");
-  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_samplerate))),"44100");
+  gtk_entry_set_text ( GTK_ENTRY(gtk_bin_get_child (GTK_BIN (combo_samplerate))),"48000");
 
   label_quality = gtk_label_new ( gettext("Quality: "));
   combo_quality = gtk_combo_box_text_new_with_entry ();

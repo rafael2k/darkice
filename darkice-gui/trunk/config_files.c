@@ -256,13 +256,13 @@ gboolean darksnow2darkice_cfg() {
 
   /* write bitratemode */
   fprintf(f_darkice_cfg, "\nbitrateMode = ");
-  if (!strcmp("Constant", bitratemode))
+  if (!strcmp(gettext("Constant"), bitratemode))
     fprintf(f_darkice_cfg, "cbr"); /* Constant bitrate mode */
   else 
-    if (!strcmp("Average", bitratemode))
+    if (!strcmp(gettext("Average"), bitratemode))
       fprintf(f_darkice_cfg, "abr"); /* average bitrate mode */
-    else 
-      if (!strcmp("Variable", bitratemode)) 
+  else 
+    if (!strcmp(gettext("Variable"), bitratemode)) 
       fprintf(f_darkice_cfg, "vbr"); /* variable bitrate mode */
   
 
