@@ -111,7 +111,7 @@ main (
          << std::endl
          << "Copyright (c) 2000-2007, Tyrell Hungary, http://tyrell.hu/"
          << std::endl
-         << "Copyright (c) 2008-2010, Akos Maroy and Rafael Diniz" 
+         << "Copyright (c) 2008-2013, Akos Maroy and Rafael Diniz" 
          << std::endl
          << "This is free software, and you are welcome to redistribute it "
          << std::endl
