@@ -226,7 +226,10 @@ gboolean darksnow2darkice_cfg() {
   fprintf(f_darkice_cfg, "%s", buffersize);        /* size of internal slip buffer, in seconds */
   fprintf(f_darkice_cfg, "\n\n[input]");
   fprintf(f_darkice_cfg, "\ndevice = ");
-  fprintf(f_darkice_cfg, "%s", device); /* OSS, ALSA or JACK */
+  fprintf(f_darkice_cfg, "%s", device); /* OSS, ALSA, Pulse or JACK */
+  if (!strcmp(device, "pulseaudio")) {
+      fprintf(f_darkice_cfg, "\npaSourceName = default");
+  }
   fprintf(f_darkice_cfg, "\nsampleRate = "); 
   fprintf(f_darkice_cfg, "%s", samplerate); /* sample rate in Hz. try 11025, 22050 or 44100 */
   fprintf(f_darkice_cfg, "\nbitsPerSample = ");

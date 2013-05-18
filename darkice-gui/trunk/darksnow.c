@@ -397,6 +397,7 @@ int main( int  argc, char *argv[], char *envp[]) {
   gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "jack");
   gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "jack_auto");
   gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "default");
+  gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "pulseaudio");
   gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "/dev/dsp");
   gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "/dev/dsp0");
   gtk_combo_box_text_append_text ( GTK_COMBO_BOX_TEXT (combo_device), "/dev/dsp1");
