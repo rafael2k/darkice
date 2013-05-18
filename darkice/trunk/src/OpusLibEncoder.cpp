@@ -82,7 +82,7 @@ OpusLibEncoder :: init ( unsigned int     outMaxBitrate )
 
     if ( getOutSampleRate() != 48000 ) {
         throw Exception( __FILE__, __LINE__,
-                         "unsupported sample rate for this encoder",
+                         "unsupported sample rate for this encoder, you should resample your input to 48000Hz",
                          getOutSampleRate() );
     }
 
@@ -180,7 +180,7 @@ OpusLibEncoder :: open ( void )
     switch ( getOutBitrateMode() ) {
 
         case cbr: {
-                int     maxBitrate = getOutMaxBitrate() * 1000;
+                int     maxBitrate = getOutBitrate() * 1000;
                 if ( !maxBitrate ) {
                     maxBitrate = 96000;
                 }
@@ -189,7 +189,17 @@ OpusLibEncoder :: open ( void )
             } break;
 
         case abr: {
-                int     maxBitrate = getOutMaxBitrate() * 1000;
+                int     maxBitrate = getOutBitrate() * 1000;
+                if ( !maxBitrate ) {
+                    maxBitrate = 96000;
+                }
+                /* set non-managed VBR around the average bitrate */
+                opus_encoder_ctl(opusEncoder, OPUS_SET_BITRATE(maxBitrate));
+                opus_encoder_ctl(opusEncoder, OPUS_SET_VBR(1));
+                opus_encoder_ctl(opusEncoder, OPUS_SET_VBR_CONSTRAINT(1));
+            } break;
+        case vbr:
+                int     maxBitrate = getOutBitrate() * 1000;
                 if ( !maxBitrate ) {
                     maxBitrate = 96000;
                 }
@@ -197,9 +207,7 @@ OpusLibEncoder :: open ( void )
                 opus_encoder_ctl(opusEncoder, OPUS_SET_BITRATE(maxBitrate));
                 opus_encoder_ctl(opusEncoder, OPUS_SET_VBR(1));
                 opus_encoder_ctl(opusEncoder, OPUS_SET_VBR_CONSTRAINT(0));
-            } break;
-        case vbr:
-            throw Exception( __FILE__, __LINE__, "vbr is not supported; use cbr/abr");
+                break;
     }
 
     if ( (ret = ogg_stream_init( &oggStreamState, 0)) ) {
