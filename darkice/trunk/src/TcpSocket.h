@@ -245,7 +245,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          *  @exception Exception
          */
         virtual unsigned int
-        write (        const void * buf,
+        write (        const void    * buf,
                        unsigned int    len )        throw ( Exception );
 
         /**

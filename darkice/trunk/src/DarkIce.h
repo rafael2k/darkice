@@ -235,8 +235,8 @@ class DarkIce : public virtual Referable, public virtual Reporter
          *  @return if shouting was successful.
          *  @exception Exception
          */
-        //bool
-        //shout ( unsigned int )                      throw ( Exception );
+        bool
+        shout ( unsigned int )                      throw ( Exception );
 
 
     protected:
