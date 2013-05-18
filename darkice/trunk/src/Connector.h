@@ -228,7 +228,7 @@ class Connector : public virtual Referable, public virtual Reporter
          *  @return the number of bytes read from the Source.
          *  @exception Exception
          */
-        virtual unsigned long
+        virtual unsigned int
         transfer (  unsigned long       bytes,
                     unsigned int        bufSize,
                     unsigned int        sec,
