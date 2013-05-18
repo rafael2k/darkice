@@ -87,6 +87,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
           */
         pa_sample_spec ss;
 
+	int running;
         int error;
 
     protected:

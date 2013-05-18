@@ -88,6 +88,8 @@ PulseAudioDspSource :: init (  const char      * paSourceName )    throw ( Excep
     }
     ss.channels = getChannel();
     ss.rate = getSampleRate();
+
+    running = 0;
     
     //Supported for some bits per sample, both Big and Little endian
     if (isBigEndian())
@@ -153,6 +155,7 @@ PulseAudioDspSource :: strip ( void )                      throw ( Exception )
 bool
 PulseAudioDspSource :: open ( void )                       throw ( Exception )
 {
+  
     char         client_name[255];
 
     //to identify each darkice on pulseaudio server
@@ -162,6 +165,8 @@ PulseAudioDspSource :: open ( void )                       throw ( Exception )
         throw Exception( __FILE__, __LINE__, ": pa_simple_new() failed: %s\n", pa_strerror(error));
     }
 
+    running = 1;
+  
     return true;
 }
 
@@ -173,17 +178,27 @@ bool
 PulseAudioDspSource :: canRead ( unsigned int    sec,
                            unsigned int    usec )    throw ( Exception )
 {
-//this seems to be a problem. 
-//to explore in the future
-/*    if ( !isOpen() ) {
+  
+  /** Strange have to remove this, need to investigate... */
+  /*  if ( !isOpen() ) {
         return false;
-    }
-*/
+      }
+  */
 
-    /*
-     * FIXME How to check if it can read?
-     */
-    return true; // bad!!
+    if (running == 0) {
+      char         client_name[255];
+      
+      //to identify each darkice on pulseaudio server
+      snprintf(client_name, 255, "darkice-%d", getpid());
+      
+      if (!(s = pa_simple_new(NULL, client_name, PA_STREAM_RECORD, sourceName, "darkice record", &ss, NULL, NULL, &error))) {
+        throw Exception( __FILE__, __LINE__, ": pa_simple_new() failed: %s\n", pa_strerror(error));
+      }
+      
+      running = 1;
+    }
+
+    return true; 
 }
 
 
@@ -195,7 +210,7 @@ PulseAudioDspSource :: read (    void          * buf,
                            unsigned int    len )     throw ( Exception )
 {
     int ret;
-
+    
     ret = pa_simple_read(s, buf, len, &error);
     if ( ret < 0) {
         throw Exception(__FILE__, __LINE__, ": pa_simple_read() failed: %s\n", pa_strerror(error));
@@ -215,6 +230,7 @@ PulseAudioDspSource :: close ( void )                  throw ( Exception )
     }
 
     pa_simple_free(s);
+    running = 0;
 }
 
 #endif // HAVE_PULSEAUDIO_LIB
