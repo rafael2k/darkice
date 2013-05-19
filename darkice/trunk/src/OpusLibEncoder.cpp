@@ -135,11 +135,6 @@ OpusLibEncoder :: init ( unsigned int     outMaxBitrate )
 #endif
     }
 
-    int bufferSize = (getInBitsPerSample()/8) * getInChannel() * 480;
-    internalBuffer = new unsigned char[bufferSize];
-    internalBufferLength = 0;
-    memset( internalBuffer, 0, bufferSize);
-
     encoderOpen = false;
 }
 
@@ -162,6 +157,11 @@ OpusLibEncoder :: open ( void )
         throw Exception( __FILE__, __LINE__,
                          "opus lib opening underlying sink error");
     }
+
+    int bufferSize = (getInBitsPerSample()/8) * getInChannel() * 480;
+    internalBuffer = new unsigned char[bufferSize];
+    internalBufferLength = 0;
+    memset( internalBuffer, 0, bufferSize);
 
     int err;
     opusEncoder = opus_encoder_create( getOutSampleRate(),
