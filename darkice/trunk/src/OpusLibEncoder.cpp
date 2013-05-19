@@ -548,7 +548,13 @@ OpusLibEncoder :: close ( void )                    throw ( Exception )
         opusEncoder = NULL;
 
         encoderOpen = false;
-        delete[] internalBuffer;
+        if (internalBuffer) {
+            delete[] internalBuffer;
+            internalBuffer = NULL;
+        }
+        else {
+            fprintf(stderr, "Opus internalBuffer is NULL!\n");
+        }
 
         getSink()->close();
     }
