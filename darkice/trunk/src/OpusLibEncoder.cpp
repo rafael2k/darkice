@@ -467,7 +467,7 @@ void
 OpusLibEncoder :: flush ( void )
                                                             throw ( Exception )
 {
-    if ( !isOpen() ) {
+    if ( !isOpen() || encoderOpen == false ) {
         return;
     }
 
