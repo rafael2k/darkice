@@ -163,8 +163,6 @@ OpusLibEncoder :: open ( void )
     internalBufferLength = 0;
     memset( internalBuffer, 0, bufferSize);
 
-    reconnectError = false;
-
     int err;
     opusEncoder = opus_encoder_create( getOutSampleRate(),
                                        getInChannel(),
@@ -313,6 +311,7 @@ OpusLibEncoder :: open ( void )
     }
 
     encoderOpen = true;
+    reconnectError = false;
 
     return true;
 }
