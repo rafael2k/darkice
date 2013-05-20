@@ -216,6 +216,7 @@ class OpusLibEncoder : public AudioEncoder, public virtual Reporter
 
         unsigned char*                  internalBuffer;
         int                             internalBufferLength;
+        bool                            reconnectError;
 
         /**
          *  Maximum bitrate of the output in kbits/sec. If 0, don't care.

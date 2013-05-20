@@ -163,6 +163,8 @@ OpusLibEncoder :: open ( void )
     internalBufferLength = 0;
     memset( internalBuffer, 0, bufferSize);
 
+    reconnectError = false;
+
     int err;
     opusEncoder = opus_encoder_create( getOutSampleRate(),
                                        getInChannel(),
@@ -467,7 +469,7 @@ void
 OpusLibEncoder :: flush ( void )
                                                             throw ( Exception )
 {
-    if ( !isOpen() || encoderOpen == false ) {
+    if ( !isOpen() || reconnectError == true ) {
         return;
     }
 
@@ -522,6 +524,7 @@ OpusLibEncoder :: opusBlocksOut ( int bytes,
             written += getSink()->write( oggPage.body, oggPage.body_len);
 
             if ( written < oggPage.header_len + oggPage.body_len ) {
+                reconnectError = true;
                 // just let go data that could not be written
                 reportEvent( 2,
                        "couldn't write full opus data to underlying sink",
