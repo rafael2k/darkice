@@ -406,7 +406,7 @@ if test "x${USE_SRC}" = "xyes" ; then
         SRC_LDFLAGS="-L${SRC_LIB_LOC} -lsamplerate"
         AC_MSG_RESULT( [found at ${CONFIG_SRC_PREFIX}] )
     else
-        AC_MSG_WARN( [not found, building libsamplerate support])
+        AC_MSG_WARN( [not found, building without libsamplerate support])
     fi
 else
     AC_MSG_RESULT( [building without libsamplerate support] )
