@@ -93,7 +93,7 @@ struct OpusIdHeader {
     inline int buildPacket( unsigned char** packet) throw ( Exception ) {
         int i = 0;
         // FIXME - doesn't support multistream
-        unsigned char* out = (unsigned char*)malloc(15);
+        unsigned char* out = (unsigned char*)malloc(19);
         if( out == NULL ) {
              throw Exception( __FILE__, __LINE__, "cannot alloc buffer");
         }

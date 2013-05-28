@@ -240,7 +240,7 @@ OpusLibEncoder :: open ( void )
         strncpy(name, "Darkice Stream", 39);
     }
     tags[0].tag_len = strlen(titlestr) + strlen(name);
-    tags[0].tag_str = (char*) malloc( tags[0].tag_len );
+    tags[0].tag_str = (char*) malloc( tags[0].tag_len + 1 );
     if( tags[0].tag_str == NULL ) {
         throw Exception( __FILE__, __LINE__, "malloc failed");
     }
