@@ -265,6 +265,18 @@ class AudioSource : public Source, public virtual Reporter
         }
 
         /**
+         *  Get the number of bytes for a sample for each channel
+         *  (returns 4 bytes for 16 bits par sample in stereo)
+         *
+         *  @return the number of bits per sample.
+         */
+        inline unsigned int
+        getSampleSize ( void ) const     throw ()
+        {
+            return bitsPerSample / 8 * channel;
+        }
+
+        /**
          *  Factory method for creating an AudioSource object of the
          *  appropriate type, based on the compiled DSP support and
          *  the supplied DSP name parameter.
@@ -324,4 +336,3 @@ class AudioSource : public Source, public virtual Reporter
 
 
 #endif  /* AUDIO_SOURCE_H */
-
