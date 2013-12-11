@@ -40,7 +40,7 @@
 #include "Exception.h"
 #include "Util.h"
 #include "VorbisLibEncoder.h"
-
+#define VORBIS_MIN_BITRATE 45
 
 /* ===================================================  local data structures */
 
@@ -77,6 +77,15 @@ VorbisLibEncoder :: init ( unsigned int     outMaxBitrate )
         throw Exception( __FILE__, __LINE__,
                          "unsupported number of channels for the encoder",
                          getInChannel() );
+    }
+
+    if ( getOutBitrateMode() == abr || getOutBitrateMode() == cbr ) {
+        if ( getOutBitrate() < VORBIS_MIN_BITRATE ) {
+            throw Exception( __FILE__, __LINE__,
+                            "output bitrate is lower than libvorbis minimum",
+                            getOutBitrate() );
+        }
+        
     }
 
     if ( getOutSampleRate() == getInSampleRate() ) {
