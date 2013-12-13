@@ -40,6 +40,8 @@
 #include "config.h"
 #endif
 
+#include <stdlib.h>
+
 #ifdef HAVE_OPUS_LIB
 #include <opus/opus.h>
 #include <ogg/ogg.h>

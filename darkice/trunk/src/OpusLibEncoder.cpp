@@ -36,6 +36,9 @@
 // compile only if configured for Ogg / Opus
 #ifdef HAVE_OPUS_LIB
 
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 
 #include "Exception.h"
 #include "Util.h"
@@ -474,10 +477,10 @@ OpusLibEncoder :: flush ( void )
 
     int opusBufferSize = (1275*3+7)*getOutChannel();
     unsigned char * opusBuffer = new unsigned char[opusBufferSize];
-    short int * shortBuffer = new short int[480];
+    short int * shortBuffer = new short int[480*getInChannel()];
 
     // Send an empty audio packet along to flush out the stream.
-    memset( shortBuffer, 0, 480);
+    memset( shortBuffer, 0, 480*getInChannel()*sizeof(*shortBuffer));
     memset( opusBuffer, 0, opusBufferSize);
     int encBytes = opus_encode( opusEncoder, shortBuffer, 480, opusBuffer, opusBufferSize);
     if( encBytes == -1 ) {
