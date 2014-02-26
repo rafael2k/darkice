@@ -51,7 +51,7 @@
 #include "Exception.h"
 #include "Reporter.h"
 #include "AudioEncoder.h"
-#include "CastSink.h"
+#include "Sink.h"
 #ifdef HAVE_SRC_LIB
 #include <samplerate.h>
 #else
@@ -199,7 +199,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline
-        VorbisLibEncoder (  CastSink      * sink,
+        VorbisLibEncoder (  Sink          * sink,
                             unsigned int    inSampleRate,
                             unsigned int    inBitsPerSample,
                             unsigned int    inChannel,
@@ -244,7 +244,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline
-        VorbisLibEncoder (  CastSink              * sink,
+        VorbisLibEncoder (  Sink                  * sink,
                             const AudioSource     * as,
                             BitrateMode             outBitrateMode,
                             unsigned int            outBitrate,

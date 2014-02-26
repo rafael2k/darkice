@@ -54,7 +54,7 @@
 #include "Exception.h"
 #include "Reporter.h"
 #include "AudioEncoder.h"
-#include "CastSink.h"
+#include "Sink.h"
 #ifdef HAVE_SRC_LIB
 #include <samplerate.h>
 #else
@@ -313,7 +313,7 @@ class OpusLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline
-        OpusLibEncoder (  CastSink      * sink,
+        OpusLibEncoder (  Sink      * sink,
                             unsigned int    inSampleRate,
                             unsigned int    inBitsPerSample,
                             unsigned int    inChannel,
@@ -358,7 +358,7 @@ class OpusLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline
-        OpusLibEncoder (  CastSink              * sink,
+        OpusLibEncoder (    Sink                  * sink,
                             const AudioSource     * as,
                             BitrateMode             outBitrateMode,
                             unsigned int            outBitrate,

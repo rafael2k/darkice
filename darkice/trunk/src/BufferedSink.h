@@ -109,6 +109,17 @@ class BufferedSink : public Sink, public virtual Reporter
          *  The underlying Sink.
          */
         Ref<Sink>           sink;
+        
+        /**
+         *  Is BufferedSink open.
+         */
+        bool               bOpen;
+         
+         /**
+          * Number of attempts so far to open underlying sink after it has
+          * closed on its own.
+          */
+        unsigned int       openAttempts;  
 
         /**
          *  Initialize the object.
@@ -163,10 +174,17 @@ class BufferedSink : public Sink, public virtual Reporter
             unsigned int    u;
 
             u = outp <= inp ? inp - outp : (bufferEnd - outp) + (inp - buffer);
-            if ( peak < u ) {
+            
+            // report new peaks if it is either significantly more severe than
+            // the previously reported peak
+            if ( peak * 2 < u ) {
                 peak = u;
-                reportEvent( 4, "BufferedSink, new peak:", peak);
-                reportEvent( 4, "BufferedSink, remaining:", bufferSize - peak);
+                reportEvent( 4, "BufferedSink, new peak:", peak, " / ", bufferSize);
+            }
+            
+            if ( peak > 0 && u == 0 ) {
+                peak = 0;
+                reportEvent( 4, "BufferedSink, healed:", peak, " / ", bufferSize);
             }
         }
 
@@ -306,7 +324,9 @@ class BufferedSink : public Sink, public virtual Reporter
         inline virtual bool
         open ( void )                                   throw ( Exception )
         {
-            return sink->open();
+            bOpen = sink->open();
+            openAttempts = 0;
+            return bOpen;
         }
 
         /**
@@ -317,7 +337,7 @@ class BufferedSink : public Sink, public virtual Reporter
         inline virtual bool
         isOpen ( void ) const                           throw ()
         {
-            return sink->isOpen();
+            return bOpen;
         }
 
         /**

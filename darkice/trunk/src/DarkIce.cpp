@@ -262,7 +262,7 @@ DarkIce :: configIceCast (  const Config      & config,
         FileSink                  * localDumpFile   = 0;
         bool                        fileAddDate     = false;
         const char                * fileDateFormat  = 0;
-        AudioEncoder              * encoder         = 0;
+        BufferedSink              * audioOut        = 0;
         int                         bufferSize      = 0;
 
         str         = cs->get( "sampleRate");
@@ -384,10 +384,14 @@ DarkIce :: configIceCast (  const Config      & config,
                              "unsupported stream format: ", str);
 
         }
+        
+        // augment audio outs with a buffer when used from encoder
+        audioOut = new BufferedSink( audioOuts[u].server.get(), 
+                                                  bufferSize, 1);
 
 #ifdef HAVE_LAME_LIB
         if ( Util::strEq( str, "mp3") ) {
-            encoder = new LameLibEncoder( audioOuts[u].server.get(),
+            audioOuts[u].encoder = new LameLibEncoder( audioOut,
                                           dsp.get(),
                                           bitrateMode,
                                           bitrate,
@@ -400,8 +404,8 @@ DarkIce :: configIceCast (  const Config      & config,
 #endif
 #ifdef HAVE_TWOLAME_LIB
         if ( Util::strEq( str, "mp2") ) {
-            encoder = new TwoLameLibEncoder(
-                                            audioOuts[u].server.get(),
+            audioOuts[u].encoder = new TwoLameLibEncoder(
+                                            audioOut,
                                             dsp.get(),
                                             bitrateMode,
                                             bitrate,
@@ -410,7 +414,6 @@ DarkIce :: configIceCast (  const Config      & config,
         }
 #endif
 
-        audioOuts[u].encoder = new BufferedSink(encoder, bufferSize, dsp->getSampleSize());
         encConnector->attach( audioOuts[u].encoder.get());
 #endif // HAVE_LAME_LIB || HAVE_TWOLAME_LIB
     }
@@ -467,7 +470,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
         FileSink                  * localDumpFile   = 0;
         bool                        fileAddDate     = false;
         const char                * fileDateFormat  = 0;
-        AudioEncoder              * encoder         = 0;
+        BufferedSink              * audioOut        = 0;
         int                         bufferSize      = 0;
 
         str         = cs->getForSure( "format", " missing in section ", stream);
@@ -597,6 +600,9 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                             isPublic,
                                             localDumpFile);
 
+        audioOut = new BufferedSink( audioOuts[u].server.get(), 
+                                     bufferSize, 1);
+        
         switch ( format ) {
             case IceCast2::mp3:
 #ifndef HAVE_LAME_LIB
@@ -605,8 +611,8 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                  "thus can't create mp3 stream: ",
                                  stream);
 #else
-                encoder = new LameLibEncoder(
-                                             audioOuts[u].server.get(),
+                audioOuts[u].encoder = new LameLibEncoder(
+                                             audioOut,
                                              dsp.get(),
                                              bitrateMode,
                                              bitrate,
@@ -615,8 +621,6 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                              channel,
                                              lowpass,
                                              highpass );
-
-                audioOuts[u].encoder = new BufferedSink(encoder, bufferSize, dsp->getSampleSize());
 
 #endif // HAVE_LAME_LIB
                 break;
@@ -630,8 +634,8 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                 stream);
 #else
 
-                encoder = new VorbisLibEncoder(
-                                               audioOuts[u].server.get(),
+                audioOuts[u].encoder = new VorbisLibEncoder(
+                                               audioOut,
                                                dsp.get(),
                                                bitrateMode,
                                                bitrate,
@@ -640,7 +644,6 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                                dsp->getChannel(),
                                                maxBitrate);
 
-                audioOuts[u].encoder = new BufferedSink(encoder, bufferSize, dsp->getSampleSize());
 #endif // HAVE_VORBIS_LIB
                 break;
 
@@ -652,8 +655,8 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                 stream);
 #else
 
-                encoder = new OpusLibEncoder(
-                                               audioOuts[u].server.get(),
+                audioOuts[u].encoder = new OpusLibEncoder(
+                                               audioOut,
                                                dsp.get(),
                                                bitrateMode,
                                                bitrate,
@@ -662,7 +665,6 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                                dsp->getChannel(),
                                                maxBitrate);
 
-                audioOuts[u].encoder = new BufferedSink(encoder, bufferSize, dsp->getBitsPerSample() / 8);
 #endif // HAVE_OPUS_LIB
                 break;
 
@@ -673,15 +675,14 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                  "thus can't create mp2 stream: ",
                                  stream);
 #else
-                encoder = new TwoLameLibEncoder(
-                                                audioOuts[u].server.get(),
+                audioOuts[u].encoder = new TwoLameLibEncoder(
+                                                audioOut,
                                                 dsp.get(),
                                                 bitrateMode,
                                                 bitrate,
                                                 sampleRate,
                                                 channel );
 
-                audioOuts[u].encoder = new BufferedSink(encoder, bufferSize, dsp->getSampleSize());
 #endif // HAVE_TWOLAME_LIB
                 break;
 
@@ -693,8 +694,8 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                 "thus can't aac stream: ",
                                 stream);
 #else
-                encoder = new FaacEncoder(
-                                          audioOuts[u].server.get(),
+                audioOuts[u].encoder = new FaacEncoder(
+                                          audioOut,
                                           dsp.get(),
                                           bitrateMode,
                                           bitrate,
@@ -702,7 +703,6 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                           sampleRate,
                                           dsp->getChannel());
 
-                audioOuts[u].encoder = new BufferedSink(encoder, bufferSize, dsp->getSampleSize());
 #endif // HAVE_FAAC_LIB
                 break;
 
@@ -713,8 +713,8 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                 "thus can't aacp stream: ",
                                 stream);
 #else
-                encoder = new aacPlusEncoder(
-                                             audioOuts[u].server.get(),
+                audioOuts[u].encoder = new aacPlusEncoder(
+                                             audioOut,
                                              dsp.get(),
                                              bitrateMode,
                                              bitrate,
@@ -722,7 +722,6 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                              sampleRate,
                                              channel );
 
-                audioOuts[u].encoder = new BufferedSink(encoder, bufferSize, dsp->getSampleSize());
 #endif // HAVE_AACPLUS_LIB
                 break;
 
@@ -793,7 +792,7 @@ DarkIce :: configShoutCast (    const Config      & config,
         FileSink                  * localDumpFile   = 0;
         bool                        fileAddDate     = false;
         const char                * fileDateFormat  = 0;
-        AudioEncoder              * encoder         = 0;
+        BufferedSink              * audioOut        = 0;
         int                         bufferSize      = 0;
 
         str         = cs->get( "sampleRate");
@@ -908,7 +907,9 @@ DarkIce :: configShoutCast (    const Config      & config,
                                              localDumpFile);
 
 
-        encoder = new LameLibEncoder( audioOuts[u].server.get(),
+        audioOut = new BufferedSink(audioOuts[u].socket.get(), bufferSize, 1);
+        audioOuts[u].encoder = new LameLibEncoder( 
+                                      audioOut,
                                       dsp.get(),
                                       bitrateMode,
                                       bitrate,
@@ -917,7 +918,6 @@ DarkIce :: configShoutCast (    const Config      & config,
                                       channel,
                                       lowpass,
                                       highpass );
-        audioOuts[u].encoder = new BufferedSink(encoder, bufferSize, dsp->getSampleSize());
 
         encConnector->attach( audioOuts[u].encoder.get());
 #endif // HAVE_LAME_LIB

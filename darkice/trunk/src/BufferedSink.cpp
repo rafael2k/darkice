@@ -99,6 +99,8 @@ BufferedSink :: init (  Sink          * sink,
     this->bufferEnd    = buffer + bufferSize;
     this->inp          = buffer;
     this->outp         = buffer;
+    this->bOpen        = true;
+    this->openAttempts = 0; 
 }
 
 
@@ -112,6 +114,8 @@ BufferedSink :: BufferedSink (  const BufferedSink &  buffer )
 
     this->peak         = buffer.peak;
     this->misalignment = buffer.misalignment;
+    this->bOpen        = buffer.bOpen;
+    this->openAttempts = buffer.openAttempts; 
     memcpy( this->buffer, buffer.buffer, this->bufferSize);
 }
 
@@ -145,6 +149,8 @@ BufferedSink :: operator= (     const BufferedSink &  buffer )
         
         this->peak         = buffer.peak;
         this->misalignment = buffer.misalignment;
+        this->bOpen        = buffer.bOpen;
+        this->openAttempts = buffer.openAttempts;
         memcpy( this->buffer, buffer.buffer, this->bufferSize);
     }
 
@@ -175,6 +181,16 @@ BufferedSink :: store (     const void    * buffer,
 
     if ( !bufferSize ) {
         return 0;
+    }
+
+    unsigned int remaining = this->bufferSize - ( outp <= inp ? inp - outp : 
+                             (bufferEnd - outp) + (inp - this->buffer) );
+
+    // react only to the first overrun whenever there is a series of overruns
+    if ( remaining + chunkSize <= bufferSize && remaining > chunkSize  ) {
+        reportEvent(3,"BufferedSink :: store, buffer overrun");
+        throw Exception( __FILE__, __LINE__,
+                         "buffer overrun");
     }
 
     oldInp = inp;
@@ -257,8 +273,8 @@ unsigned int
 BufferedSink :: write (    const void    * buf,
                            unsigned int    len )       throw ( Exception )
 {
-    unsigned int    length;
-    unsigned int    soFar;
+    unsigned int    length = 0;
+    unsigned int    soFar = 0;
     unsigned char * b = (unsigned char *) buf;
 
     if ( !buf ) {
@@ -271,6 +287,28 @@ BufferedSink :: write (    const void    * buf,
 
     if ( !align() ) {
         return 0;
+    }
+    
+    if ( !sink->isOpen() && openAttempts < 10 ) {
+        // try to reopen underlying sink, because it has closed on its own
+        openAttempts++;
+        try {
+            if( sink->open() ) {
+                // if reopening succeeds, reset open attempts
+                openAttempts = 0;
+            }
+        } catch ( Exception &e ) {
+            reportEvent( 4,"BufferedSink :: write,",
+                         "couldn't reopen underlying sink, attempt",
+                         openAttempts, "/ 10" );
+        }
+        
+        if( openAttempts == 10 ) {
+            // all the attempts have been used, give up
+            close();
+            throw Exception( __FILE__, __LINE__,
+                             "reopen failed");
+        }
     }
 
     // make it a multiple of chunkSize
@@ -286,12 +324,24 @@ BufferedSink :: write (    const void    * buf,
             // try to write the outp -> bufferEnd
             // the rest will be written in the next if
 
-            size    = bufferEnd - outp - 1;
+            size    = bufferEnd - outp;
             size   -= size % chunkSize;
+            if( size > len * 2 ) {
+                // do not try to send the content of the entire buffer at once,
+                // but limit sending to a multiple of len
+                // this prevents a surge of data to underlying buffer
+                // which is important especially during a lot of packet loss
+                size = len * 2;
+            }
             soFar   = 0;
 
             while ( outp > inp && soFar < size && sink->canWrite( 0, 0) ) {
-                length  = sink->write( outp + soFar, size - soFar);
+                try {
+                    length  = sink->write( outp + soFar, size - soFar);
+                } catch (Exception &e) {
+                    length = 0;
+                    reportEvent(3,"Exception caught in BufferedSink :: write1");
+                }
                 outp    = slidePointer( outp, length);
                 soFar  += length;
             }
@@ -305,10 +355,19 @@ BufferedSink :: write (    const void    * buf,
             // this part will write the rest
 
             size    = inp - outp;
+            if( size > len * 2 ) {
+                // prevent a surge of data to underlying buffer
+                size = len * 2;
+            }
             soFar   = 0;
 
             while ( soFar < size && sink->canWrite( 0, 0) ) {
-                length  = sink->write( outp + soFar, size - soFar);
+                try {
+                    length  = sink->write( outp + soFar, size - soFar);
+                } catch (Exception &e) {
+                    length = 0;
+                    reportEvent(3,"Exception caught in BufferedSink :: write2" );
+                }
                 outp    = slidePointer( outp, length);
                 soFar  += length;
             }
@@ -332,13 +391,12 @@ BufferedSink :: write (    const void    * buf,
     soFar = 0;
     if ( inp == outp ) { 
         while ( soFar < len && sink->canWrite( 0, 0) ) {
-	    try {
-	        soFar += sink->write( b + soFar, len - soFar);
-	    } catch (Exception &e) {
-	        reportEvent(3,"Exception caught in BufferedSink :: write3\n");
-		throw; /* up a level */
-	    }
-	}
+            try {
+                soFar += sink->write( b + soFar, len - soFar);
+            } catch (Exception &e) {
+                reportEvent(3,"Exception caught in BufferedSink :: write3");
+            }
+        }
     }
     length = soFar;
 
@@ -350,6 +408,8 @@ BufferedSink :: write (    const void    * buf,
 
         store( b + length, len - length);
     }
+
+    updatePeak();
 
     // tell them we ate everything up to chunkSize alignment
     return len;
@@ -369,5 +429,6 @@ BufferedSink :: close ( void )                      throw ( Exception )
     flush();
     sink->close();
     inp = outp = buffer;
+    bOpen = false;
 }
 

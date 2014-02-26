@@ -318,9 +318,9 @@ TcpSocket :: read (     void          * buf,
                 break;
 
             default:
-		::close( sockfd);
-		sockfd = 0;
-		throw Exception( __FILE__, __LINE__, "recv error", errno);
+                ::close( sockfd);
+                sockfd = 0;
+                throw Exception( __FILE__, __LINE__, "recv error", errno);
         }
     }
 
@@ -329,7 +329,7 @@ TcpSocket :: read (     void          * buf,
 
 
 /*------------------------------------------------------------------------------
- *  Check wether read() would return anything
+ *  Check wether write() would send anything
  *----------------------------------------------------------------------------*/
 bool
 TcpSocket :: canWrite (    unsigned int    sec,
@@ -357,11 +357,11 @@ TcpSocket :: canWrite (    unsigned int    sec,
     ret = pselect( sockfd + 1, NULL, &fdset, NULL, &timespec, &sigset);
     
     if ( ret == -1 ) {
-	::close( sockfd);
-	sockfd = 0;
-        throw Exception( __FILE__, __LINE__, "select error");
+        ::close( sockfd);
+        sockfd = 0;
+        reportEvent(4,"TcpSocket :: canWrite, connection lost", errno);
     }
-
+  
     return ret > 0;
 }
 
@@ -389,8 +389,9 @@ TcpSocket :: write (    const void    * buf,
         if ( errno == EAGAIN ) {
             ret = 0;
         } else {
-	    ::close( sockfd);
-	    sockfd = 0;
+            ::close( sockfd);
+            sockfd = 0;
+            reportEvent(4,"TcpSocket :: write, send error", errno);
             throw Exception( __FILE__, __LINE__, "send error", errno);
         }
     }

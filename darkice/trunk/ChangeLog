@@ -1,3 +1,7 @@
+trunk:
+    o Bugs related to streaming to remote servers fixed. Patch by Kalle Kulonen
+	<kulonenk@gmail.com> and Mark Turner <jmarkturner@gmail.com>.
+
 15-07-2013 Darkice 1.2 released
     o Issue #75: Added Ogg/Opus support. Patch by Doug Kelly
 	dougk.ff7@gmail.com

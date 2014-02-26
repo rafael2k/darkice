@@ -255,7 +255,7 @@ AlsaDspSource :: read (    void          * buf,
 
         // Check for buffer overrun
         if (ret == -EPIPE) {
-            reportEvent(1, "Buffer overrun!");
+            reportEvent(1, "AlsaDspSource :: Buffer overrun!");
             snd_pcm_prepare(captureHandle);
             ret = -EAGAIN;
         }

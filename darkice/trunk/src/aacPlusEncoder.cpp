@@ -114,7 +114,7 @@ aacPlusEncoder :: open ( void )
 #else
         converter->initialize( resampleRatio, getInChannel());
         //needed 2x(converted input samples) to handle offsets
-	int outCount                 = 2 * getInChannel() * (inputSamples + 1);
+    int outCount                 = 2 * getInChannel() * (inputSamples + 1);
         if (resampleRatio > 1)
         outCount = (int) (outCount * resampleRatio);
         resampledOffset = new short int[outCount];
@@ -152,7 +152,6 @@ aacPlusEncoder :: write (  const void    * buf,
     int             processedSamples = 0;
 
 
-
     if ( converter ) {
         unsigned int         converted;
 #ifdef HAVE_SRC_LIB
@@ -178,25 +177,29 @@ aacPlusEncoder :: write (  const void    * buf,
 
         // encode samples (if enough)
         while(resampledOffsetSize - processedSamples >= inputSamples/channels) {
-            int outputBytes;
 #ifdef HAVE_SRC_LIB
             short *shortData = new short[inputSamples];
             src_float_to_short_array(resampledOffset + (processedSamples * channels),
                                      shortData, inputSamples) ;
-            outputBytes = aacplusEncEncode(encoderHandle,
+            int outputBytes = aacplusEncEncode(encoderHandle,
                                        (int32_t*) shortData,
                                         inputSamples,
                                         aacplusBuf,
                                         maxOutputBytes);
             delete [] shortData;
 #else
-            outputBytes = aacplusEncEncode(encoderHandle,
+            int outputBytes = aacplusEncEncode(encoderHandle,
                                        (int32_t*) &resampledOffset[processedSamples*channels],
                                         inputSamples,
                                         aacplusBuf,
                                         maxOutputBytes);
 #endif
-            getSink()->write(aacplusBuf, outputBytes);
+            unsigned int wrote = getSink()->write(aacplusBuf, outputBytes);
+            
+            if (wrote < outputBytes) {
+                reportEvent(3, "aacPlusEncoder :: write, couldn't write full data to underlying sink");
+            }
+
             processedSamples+=inputSamples/channels;
         }
 
@@ -214,18 +217,22 @@ aacPlusEncoder :: write (  const void    * buf,
         }
     } else {
         while (processedSamples < samples) {
-            int     outputBytes;
             int     inSamples = samples - processedSamples < (int) inputSamples
                               ? samples - processedSamples
                               : inputSamples;
 
-            outputBytes = aacplusEncEncode(encoderHandle,
+            int outputBytes = aacplusEncEncode(encoderHandle,
                                        (int32_t*) (b + processedSamples/sampleSize),
                                         inSamples,
                                         aacplusBuf,
                                         maxOutputBytes);
-            getSink()->write(aacplusBuf, outputBytes);
-
+            
+            unsigned int wrote = getSink()->write(aacplusBuf, outputBytes);
+            
+            if (wrote < outputBytes) {
+                reportEvent(3, "aacPlusEncoder :: write, couldn't write full data to underlying sink");
+            }
+            
             processedSamples += inSamples;
         }
     }

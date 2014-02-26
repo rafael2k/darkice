@@ -300,13 +300,13 @@ VorbisLibEncoder :: write ( const void    * buf,
             if ( bitsPerSample == 8 ) {
                 char          * buf8 = (char *) buf;
                 unsigned int    ix   = sampleSize * i;
-		unsigned int    iix  = ix;
+                unsigned int    iix  = ix;
                 buf8[i] = (buf8[ix] + buf8[++iix]) / 2;
             }
             if ( bitsPerSample == 16 ) {
                 short         * buf16 = (short *) buf;
                 unsigned int    ix    = (bitsPerSample >> 3) * i;
-		unsigned int    iix   = ix;
+                unsigned int    iix   = ix;
                 buf16[i] = (buf16[ix] + buf16[++iix]) / 2;
             }
         }
@@ -370,6 +370,7 @@ VorbisLibEncoder :: write ( const void    * buf,
     }
 
     delete[] shortBuffer;
+    
     vorbisBlocksOut();
 
     return processed;
@@ -411,7 +412,7 @@ VorbisLibEncoder :: vorbisBlocksOut ( void )                throw ( Exception )
             ogg_stream_packetin( &oggStreamState, &oggPacket);
 
             while ( ogg_stream_pageout( &oggStreamState, &oggPage) ) {
-                int    written;
+                int    written = 0;
                 
                 written  = getSink()->write(oggPage.header, oggPage.header_len);
                 written += getSink()->write( oggPage.body, oggPage.body_len);
