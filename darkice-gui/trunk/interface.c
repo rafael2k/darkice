@@ -56,7 +56,7 @@
 /* callback that start darkice */
 void dark_start( GtkWidget *widget, gpointer data) {
   char *darkice_verbosity;
-  char command[128], foo, dark_output[128];
+  char command[512], foo, dark_output[512];
 
   /* if the first char of shared area is 1, means that the streaming is running and we cannot start another darkice */
   sscanf((char *) shared_area, "%c", &foo);
@@ -109,7 +109,7 @@ void dark_start( GtkWidget *widget, gpointer data) {
 void dark_stop( GtkWidget *widget, gpointer data ){
   char out[32];
 
-  system("killall darkice &> /dev/null");
+  system("killall darkice 2> /dev/null");
   strcpy(out, gettext("Darkice off") );
   gtk_text_buffer_set_text (buffer, out, strlen(out));
 
