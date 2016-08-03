@@ -229,7 +229,7 @@ MultiThreadedConnector :: transfer ( unsigned long       bytes,
     dataBuffer   = new unsigned char[bufSize];
     dataSize     = 0;
 
-    reportEvent( 6, "MultiThreadedConnector :: tranfer, bytes", bytes);
+    reportEvent( 6, "MultiThreadedConnector :: transfer, bytes", bytes);
 
     for ( b = 0; !bytes || b < bytes; ) {
         if ( source->canRead( sec, usec) ) {

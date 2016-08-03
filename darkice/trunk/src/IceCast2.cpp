@@ -233,7 +233,7 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
         sink->write( str, strlen( str));
     }
 
-    str = "\n\n";
+    str = "\r\n\r\n";
     sink->write( str, strlen( str));
     sink->flush();
 

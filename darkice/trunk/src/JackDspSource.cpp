@@ -82,6 +82,12 @@
 #error need limits.h
 #endif
 
+#ifdef HAVE_STDIO_H
+#include <stdio.h>
+#endif
+
+#include <climits>
+
 #include "Util.h"
 #include "Exception.h"
 #include "JackDspSource.h"
@@ -296,7 +302,7 @@ JackDspSource :: open ( void )                       throw ( Exception )
 
 
 /*------------------------------------------------------------------------------
- *  Check wether read() would return anything
+ *  Check whether read() would return anything
  *----------------------------------------------------------------------------*/
 bool
 JackDspSource :: canRead ( unsigned int   sec,

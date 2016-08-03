@@ -201,7 +201,7 @@ SolarisDspSource :: open ( void )                       throw ( Exception )
 
 
 /*------------------------------------------------------------------------------
- *  Check wether read() would return anything
+ *  Check whether read() would return anything
  *----------------------------------------------------------------------------*/
 bool
 SolarisDspSource :: canRead ( unsigned int    sec,

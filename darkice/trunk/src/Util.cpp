@@ -87,6 +87,9 @@
 #error need signal.h
 #endif
 
+#ifdef HAVE_ERRNO_H
+#include <errno.h>
+#endif
 
 #include "Util.h"
 
@@ -232,7 +235,7 @@ Util :: base64Encode( const char  * str )               throw ( Exception )
 
 
 /*------------------------------------------------------------------------------
- *  Check wether two strings are equal
+ *  Check whether two strings are equal
  *----------------------------------------------------------------------------*/
 bool
 Util :: strEq( const char    * str1,
@@ -286,7 +289,7 @@ Util :: strToD( const char    * str )                   throw ( Exception )
     }
 
     val = strtod( str, &s);
-    if ( s == str || val == HUGE_VAL ) {
+    if ( s == str || errno == ERANGE ) {
         throw Exception( __FILE__, __LINE__, "number conversion error");
     }
 

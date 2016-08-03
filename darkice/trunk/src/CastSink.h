@@ -431,7 +431,7 @@ class CastSink : public Sink, public virtual Reporter
         }
 
         /**
-         *  Get wether this stream is public.
+         *  Get whether this stream is public.
          *
          *  @return true if the stream is public, false otherwise.
          */

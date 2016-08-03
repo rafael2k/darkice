@@ -1277,7 +1277,7 @@ DarkIce :: encode ( void )                          throw ( Exception )
 
     len = encConnector->transfer( bytes, 4096, 1, 0 );
 
-    reportEvent( 1, len, "bytes transfered to the encoders");
+    reportEvent( 1, len, "bytes transferred to the encoders");
 
     encConnector->close();
 

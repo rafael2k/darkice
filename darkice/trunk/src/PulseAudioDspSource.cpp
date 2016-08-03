@@ -35,6 +35,7 @@
 /* ============================================================ include files */
 
 #include "AudioSource.h"
+#include <stdio.h>
 
 // compile only if configured for PULSEAUDIO
 #ifdef SUPPORT_PULSEAUDIO_DSP
@@ -172,7 +173,7 @@ PulseAudioDspSource :: open ( void )                       throw ( Exception )
 
 
 /*------------------------------------------------------------------------------
- *  Check wether read() would return anything
+ *  Check whether read() would return anything
  *----------------------------------------------------------------------------*/
 bool
 PulseAudioDspSource :: canRead ( unsigned int    sec,

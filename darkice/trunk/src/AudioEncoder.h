@@ -441,7 +441,7 @@ class AudioEncoder : public Sink, public virtual Referable
         }
 
         /**
-         *  Check wether encoding is in progress.
+         *  Check whether encoding is in progress.
          *
          *  @return true if encoding is in progress, false otherwise.
          */

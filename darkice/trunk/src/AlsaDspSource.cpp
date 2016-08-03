@@ -210,7 +210,7 @@ AlsaDspSource :: open ( void )                       throw ( Exception )
 
 
 /*------------------------------------------------------------------------------
- *  Check wether read() would return anything
+ *  Check whether read() would return anything
  *----------------------------------------------------------------------------*/
 bool
 AlsaDspSource :: canRead ( unsigned int    sec,

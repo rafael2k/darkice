@@ -94,6 +94,10 @@
 #error need termios.h
 #endif
 
+#ifdef HAVE_STDIO_H
+#include <stdio.h>
+#endif
+
 
 #include "Util.h"
 #include "Exception.h"

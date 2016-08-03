@@ -229,7 +229,7 @@ OssDspSource :: open ( void )                       throw ( Exception )
 
 
 /*------------------------------------------------------------------------------
- *  Check wether read() would return anything
+ *  Check whether read() would return anything
  *----------------------------------------------------------------------------*/
 bool
 OssDspSource :: canRead ( unsigned int    sec,

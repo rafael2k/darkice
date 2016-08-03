@@ -169,7 +169,7 @@ class Util
         strDup (        const char    * str )       throw ( Exception );
 
         /**
-         *  Determine wether two string are equal.
+         *  Determine whether two string are equal.
          *
          *  @param str1 one of the strings.
          *  @param str2 the other string.

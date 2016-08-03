@@ -44,6 +44,8 @@
 #include "Util.h"
 #include "OpusLibEncoder.h"
 #include "CastSink.h"
+#include <cstring>
+#include <cstdlib>
 
 
 /* ===================================================  local data structures */

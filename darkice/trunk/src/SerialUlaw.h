@@ -70,7 +70,7 @@ class SerialUlaw : public AudioSource, public virtual Reporter
         int         fileDescriptor;
 
         /**
-         *  Indicates wether the low-level OSS DSP device is in a recording
+         *  Indicates whether the low-level OSS DSP device is in a recording
          *  state.
          */
         bool        running;

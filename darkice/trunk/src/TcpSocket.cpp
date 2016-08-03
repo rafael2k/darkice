@@ -256,7 +256,7 @@ TcpSocket :: open ( void )                       throw ( Exception )
 
 
 /*------------------------------------------------------------------------------
- *  Check wether read() would return anything
+ *  Check whether read() would return anything
  *----------------------------------------------------------------------------*/
 bool
 TcpSocket :: canRead (      unsigned int    sec,
@@ -329,7 +329,7 @@ TcpSocket :: read (     void          * buf,
 
 
 /*------------------------------------------------------------------------------
- *  Check wether write() would send anything
+ *  Check whether write() would send anything
  *----------------------------------------------------------------------------*/
 bool
 TcpSocket :: canWrite (    unsigned int    sec,
