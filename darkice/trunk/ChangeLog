@@ -1,4 +1,5 @@
-trunk:
+04-08-2016 Darkice 1.3 released
+    o Small bugs fixed by Nicolas Boulenguez <nicolas@debian.org>.
     o Bugs related to streaming to remote servers fixed. Patch by Kalle Kulonen
 	<kulonenk@gmail.com> and Mark Turner <jmarkturner@gmail.com>.
 

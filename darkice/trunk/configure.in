@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(darkice, 1.2)
+AC_INIT(darkice, 1.3)
 AC_CONFIG_SRCDIR(src/DarkIce.cpp)
 AM_CONFIG_HEADER(src/config.h)
 
@@ -8,6 +8,8 @@ AM_INIT_AUTOMAKE
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL
+
+PKG_PROG_PKG_CONFIG
 
 dnl AC_STDC_HEADERS
 AC_HAVE_HEADERS(errno.h fcntl.h stdio.h stdlib.h string.h unistd.h limits.h)
@@ -41,29 +43,32 @@ SYSTEM_INCLUDE=/usr/include
 dnl-----------------------------------------------------------------------------
 dnl link the lame library if requested
 dnl-----------------------------------------------------------------------------
-AC_SUBST(LAME_INCFLAGS)
-AC_SUBST(LAME_LDFLAGS)
+AC_SUBST(LAME_CFLAGS)
+AC_SUBST(LAME_LIBS)
 
 AC_ARG_WITH(lame,
-[  --with-lame             use lame for encoding mp3 streams [yes] ],
-    USE_LAME=${withval}, USE_LAME="yes" )
+    AS_HELP_STRING([--with-lame], [use lame for encoding mp3 streams @<:@check@:>@]),
+    [], with_lame=check)
 AC_ARG_WITH(lame-prefix,
-[  --with-lame-prefix=DIR  alternate location for lame [/usr]
-                              look for libraries in LAME-PREFIX/lib,
-                              for headers in LAME-PREFIX/include],
+    AS_HELP_STRING([--with-lame-prefix=DIR],
+        [alternate location for lame @<:@/usr@:>@.
+        Look for libraries in LAME-PREFIX/lib,
+        for headers in LAME-PREFIX/include]),
     CONFIG_LAME_PREFIX="${withval}", CONFIG_LAME_PREFIX="/usr")
 
-if test "x${USE_LAME}" = "xyes" ; then
+if test "x$with_lame" != xno ; then
     AC_MSG_CHECKING( [for lame library at ${CONFIG_LAME_PREFIX}] )
     LA_SEARCH_LIB( LAME_LIB_LOC, LAME_INC_LOC, libmp3lame.a libmp3lame.so, lame/lame.h,
                    ${CONFIG_LAME_PREFIX})
     if test "x${LAME_LIB_LOC}" != "x" ; then
         AC_DEFINE( HAVE_LAME_LIB, 1, [build with lame library] )
         if test "x${LAME_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
-            LAME_INCFLAGS="-I${LAME_INC_LOC}"
+            LAME_CFLAGS="-I${LAME_INC_LOC}"
         fi
-        LAME_LDFLAGS="-L${LAME_LIB_LOC} -lmp3lame"
+        LAME_LIBS="-L${LAME_LIB_LOC} -lmp3lame"
         AC_MSG_RESULT( [found at ${CONFIG_LAME_PREFIX}] )
+    elif test "x$with_lame" = xyes ; then
+        AC_MSG_ERROR([unable to find lame library])
     else
         AC_MSG_WARN( [not found, building without lame])
     fi
@@ -75,110 +80,58 @@ fi
 dnl-----------------------------------------------------------------------------
 dnl link the ogg vorbis libraries if requested
 dnl-----------------------------------------------------------------------------
-AC_SUBST(VORBIS_INCFLAGS)
-AC_SUBST(VORBIS_LDFLAGS)
-
 AC_ARG_WITH(vorbis,
-[  --with-vorbis           use Ogg Vorbis for encoding vorbis streams [yes] ],
-    USE_VORBIS=${withval}, USE_VORBIS="yes" )
-AC_ARG_WITH(vorbis-prefix,
-[  --with-vorbis-prefix=DIR    alternate location for vorbis [/usr]
-                              look for libraries in VORBIS-PREFIX/lib,
-                              for headers in VORBIS-PREFIX/include],
-    CONFIG_VORBIS_PREFIX="${withval}", CONFIG_VORBIS_PREFIX="/usr")
-
-if test "x${USE_VORBIS}" = "xyes" ; then
-    AC_MSG_CHECKING( [for vorbis libraries at ${CONFIG_VORBIS_PREFIX}] )
-    LA_SEARCH_LIB( OGG_LIB_LOC, OGG_INC_LOC, libogg.a libogg.so, ogg/ogg.h,
-                   ${CONFIG_VORBIS_PREFIX})
-    LA_SEARCH_LIB( VORBIS_LIB_LOC, VORBIS_INC_LOC, libvorbis.a libvorbis.so, vorbis/codec.h,
-                   ${CONFIG_VORBIS_PREFIX})
-    LA_SEARCH_LIB( VORBISENC_LIB_LOC, VORBISENC_INC_LOC,
-                   libvorbisenc.a libvorbisenc.so, vorbis/vorbisenc.h,
-                   ${CONFIG_VORBIS_PREFIX})
-
-    if test "x${OGG_LIB_LOC}" != "x" -a \
-            "x${VORBIS_LIB_LOC}" != "x" -a \
-            "x${VORBISENC_LIB_LOC}" != "x" ; then
-
-        AC_DEFINE( HAVE_VORBIS_LIB, 1, [build with Ogg Vorbis library] )
-        if test "x${OGG_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
-            VORBIS_INCFLAGS="-I${OGG_INC_LOC}"
-        fi
-        VORBIS_LDFLAGS="-L${OGG_LIB_LOC} -logg -lvorbis -lvorbisenc"
-        AC_MSG_RESULT( [found at ${CONFIG_VORBIS_PREFIX}] )
-    else
-        AC_MSG_WARN( [not found, building without Ogg Vorbis])
-    fi
-else
-    AC_MSG_RESULT( [building without Ogg Vorbis] )
-fi
-
+    AS_HELP_STRING([--with-vorbis], [use Ogg Vorbis for encoding vorbis streams @<:@check@:>@]),
+    [], with_vorbis=check)
+AS_CASE([$with_vorbis],
+    check, [PKG_CHECK_MODULES(VORBIS, [ogg vorbis vorbisenc], [], true)],
+    yes,   [PKG_CHECK_MODULES(VORBIS, [ogg vorbis vorbisenc])],
+    AC_MSG_RESULT([building without Ogg Vorbis]))
+AS_IF(test -n "$VORBIS_LIBS",
+    AC_DEFINE(HAVE_VORBIS_LIB, 1, [build with Ogg Vorbis library]))
 
 dnl-----------------------------------------------------------------------------
 dnl link the ogg / opus libraries if requested
 dnl-----------------------------------------------------------------------------
-AC_SUBST(OPUS_INCFLAGS)
-AC_SUBST(OPUS_LDFLAGS)
-
 AC_ARG_WITH(opus,
-[  --with-opus           use Ogg Opus for encoding opus streams [yes] ],
-    USE_OPUS=${withval}, USE_OPUS="yes" )
-AC_ARG_WITH(opus-prefix,
-[  --with-opus-prefix=DIR    alternate location for opus [/usr]
-                              look for libraries in OPUS-PREFIX/lib,
-                              for headers in OPUS-PREFIX/include],
-    CONFIG_OPUS_PREFIX="${withval}", CONFIG_OPUS_PREFIX="/usr")
-
-if test "x${USE_OPUS}" = "xyes" ; then
-    AC_MSG_CHECKING( [for opus libraries at ${CONFIG_OPUS_PREFIX}] )
-    LA_SEARCH_LIB( OGG_LIB_LOC, OGG_INC_LOC, libogg.a libogg.so, ogg/ogg.h,
-                   ${CONFIG_OPUS_PREFIX})
-    LA_SEARCH_LIB( OPUS_LIB_LOC, OPUS_INC_LOC, libopus.a libopus.so, opus/opus.h,
-                   ${CONFIG_OPUS_PREFIX})
-
-    if test "x${OGG_LIB_LOC}" != "x" -a \
-            "x${OPUS_LIB_LOC}" != "x" ; then
-
-        AC_DEFINE( HAVE_OPUS_LIB, 1, [build with Ogg Opus library] )
-        if test "x${OGG_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
-            OPUS_INCFLAGS="-I${OGG_INC_LOC}"
-        fi
-        OPUS_LDFLAGS="-L${OGG_LIB_LOC} -logg -lopus"
-        AC_MSG_RESULT( [found at ${CONFIG_OPUS_PREFIX}] )
-    else
-        AC_MSG_WARN( [not found, building without Ogg Opus])
-    fi
-else
-    AC_MSG_RESULT( [building without Ogg Opus] )
-fi
+    AS_HELP_STRING([--with-opus], [use Ogg Opus for encoding opus streams @<:@check@:>@]),
+    [], with_opus=check)
+AS_CASE([$with_opus],
+    check, [PKG_CHECK_MODULES(OPUS, [ogg opus], [], true)],
+    yes,   [PKG_CHECK_MODULES(OPUS, [ogg opus])],
+    AC_MSG_RESULT([building without Ogg Opus]))
+AS_IF(test -n "$OPUS_LIBS",
+    AC_DEFINE(HAVE_OPUS_LIB, 1, [build with Ogg Opus library]))
 
 dnl-----------------------------------------------------------------------------
 dnl link the faac library if requested
 dnl-----------------------------------------------------------------------------
-AC_SUBST(FAAC_INCFLAGS)
-AC_SUBST(FAAC_LDFLAGS)
+AC_SUBST(FAAC_CFLAGS)
+AC_SUBST(FAAC_LIBS)
 
 AC_ARG_WITH(faac,
-[  --with-faac             use faac for encoding AAC streams [yes] ],
-    USE_FAAC=${withval}, USE_FAAC="yes" )
+    AS_HELP_STRING([--with-faac], [use faac for encoding AAC streams @<:@check@:>@]),
+    [], with_faac=check)
 AC_ARG_WITH(faac-prefix,
-[  --with-faac-prefix=DIR  alternate location for faac [/usr]
-                              look for libraries in FAAC-PREFIX/lib,
-                              for headers in FAAC-PREFIX/include],
+    AS_HELP_STRING([--with-faac-prefix=DIR],
+        [alternate location for faac @<:@/usr@:>@.
+        Look for libraries in FAAC-PREFIX/lib,
+        for headers in FAAC-PREFIX/include]),
     CONFIG_FAAC_PREFIX="${withval}", CONFIG_FAAC_PREFIX="/usr")
 
-if test "x${USE_FAAC}" = "xyes" ; then
+if test "x$with_faac" != xno ; then
     AC_MSG_CHECKING( [for faac library at ${CONFIG_FAAC_PREFIX}] )
     LA_SEARCH_LIB( FAAC_LIB_LOC, FAAC_INC_LOC, libfaac.a libfaac.so, faac.h,
                    ${CONFIG_FAAC_PREFIX})
     if test "x${FAAC_LIB_LOC}" != "x" ; then
         AC_DEFINE( HAVE_FAAC_LIB, 1, [build with faac library] )
         if test "x${FAAC_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
-            FAAC_INCFLAGS="-I${FAAC_INC_LOC}"
+            FAAC_CFLAGS="-I${FAAC_INC_LOC}"
         fi
-        FAAC_LDFLAGS="-L${FAAC_LIB_LOC} -lfaac"
+        FAAC_LIBS="-L${FAAC_LIB_LOC} -lfaac"
         AC_MSG_RESULT( [found at ${CONFIG_FAAC_PREFIX}] )
+    elif test "x$with_faac" = yes ; then
+        AC_MSG_ERROR([unable to find faac library])
     else
         AC_MSG_WARN( [not found, building without faac])
     fi
@@ -190,80 +143,38 @@ fi
 dnl-----------------------------------------------------------------------------
 dnl link the aacplus library if requested
 dnl-----------------------------------------------------------------------------
-AC_SUBST(AACPLUS_INCFLAGS)
-AC_SUBST(AACPLUS_LDFLAGS)
-
 AC_ARG_WITH(aacplus,
-[  --with-aacplus             use aacplus for encoding AAC HEv2 streams [yes] ],
-    USE_AACPLUS=${withval}, USE_AACPLUS="yes" )
-AC_ARG_WITH(aacplus-prefix,
-[  --with-aacplus-prefix=DIR  alternate location for aacplus [/usr]
-                              look for libraries in AACPLUS-PREFIX/lib,
-                              for headers in AACPLUS-PREFIX/include],
-    CONFIG_AACPLUS_PREFIX="${withval}", CONFIG_AACPLUS_PREFIX="/usr")
-
-if test "x${USE_AACPLUS}" = "xyes" ; then
-    AC_MSG_CHECKING( [for aacplus library at ${CONFIG_AACPLUS_PREFIX}] )
-    LA_SEARCH_LIB( AACPLUS_LIB_LOC, AACPLUS_INC_LOC, libaacplus.a libaacplus.so, aacplus.h,
-                   ${CONFIG_AACPLUS_PREFIX})
-    if test "x${AACPLUS_LIB_LOC}" != "x" ; then
-        AC_DEFINE( HAVE_AACPLUS_LIB, 1, [build with aacplus library] )
-        if test "x${AACPLUS_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
-            AACPLUS_INCFLAGS="-I${AACPLUS_INC_LOC}"
-        fi
-        AACPLUS_LDFLAGS="-L${AACPLUS_LIB_LOC} -laacplus"
-        AC_MSG_RESULT( [found at ${CONFIG_AACPLUS_PREFIX}] )
-    else
-        AC_MSG_WARN( [not found, building without aacplus])
-    fi
-else
-    AC_MSG_RESULT( [building without aacplus] )
-fi
-
+    AS_HELP_STRING([--with-aacplus], [use aacplus for encoding AAC HEv2 streams @<:@check@:>@]),
+    [], with_aacplus=check)
+AS_CASE([$with_aacplus],
+    check, [PKG_CHECK_MODULES(AACPLUS, aacplus, [], true)],
+    yes,   [PKG_CHECK_MODULES(AACPLUS, aacplus)],
+    AC_MSG_RESULT([building without aacplus]))
+AS_IF(test -n "$AACPLUS_LIBS",
+    AC_DEFINE(HAVE_AACPLUS_LIB, 1, [build with aacplus library]))
 
 dnl-----------------------------------------------------------------------------
 dnl link the twolame library if requested
 dnl-----------------------------------------------------------------------------
-AC_SUBST(TWOLAME_INCFLAGS)
-AC_SUBST(TWOLAME_LDFLAGS)
-
 AC_ARG_WITH(twolame,
-[  --with-twolame             use twolame for encoding MP2 streams [yes] ],
-    USE_TWOLAME=${withval}, USE_TWOLAME="yes" )
-AC_ARG_WITH(twolame-prefix,
-[  --with-twolame-prefix=DIR  alternate location for twolame [/usr]
-                              look for libraries in TWOLAME-PREFIX/lib,
-                              for headers in TWOLAME-PREFIX/include],
-    CONFIG_TWOLAME_PREFIX="${withval}", CONFIG_TWOLAME_PREFIX="/usr")
-
-if test "x${USE_TWOLAME}" = "xyes" ; then
-    AC_MSG_CHECKING( [for twolame library at ${CONFIG_TWOLAME_PREFIX}] )
-    LA_SEARCH_LIB( TWOLAME_LIB_LOC, TWOLAME_INC_LOC, libtwolame.a libtwolame.so, twolame.h,
-                   ${CONFIG_TWOLAME_PREFIX})
-    if test "x${TWOLAME_LIB_LOC}" != "x" ; then
-        AC_DEFINE( HAVE_TWOLAME_LIB, 1, [build with twolame library] )
-        if test "x${TWOLAME_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
-            TWOLAME_INCFLAGS="-I${TWOLAME_INC_LOC}"
-        fi
-        TWOLAME_LDFLAGS="-L${TWOLAME_LIB_LOC} -ltwolame"
-        AC_MSG_RESULT( [found at ${CONFIG_TWOLAME_PREFIX}] )
-    else
-        AC_MSG_WARN( [not found, building without twolame])
-    fi
-else
-    AC_MSG_RESULT( [building without twolame] )
-fi
-
+    AS_HELP_STRING([--with-twolame], [use twolame for encoding MP2 streams @<:@check@:>@]),
+    [], with_twolame=check)
+AS_CASE([$with_twolame],
+    check, [PKG_CHECK_MODULES(TWOLAME, twolame, [], true)],
+    yes,   [PKG_CHECK_MODULES(TWOLAME, twolame)],
+    AC_MSG_RESULT([building without twolame]))
+AS_IF(test -n "$TWOLAME_LIBS",
+    AC_DEFINE(HAVE_TWOLAME_LIB, 1, [build with twolame library]))
 
 dnl-----------------------------------------------------------------------------
 dnl make sure at least one of lame and vorbis present
 dnl-----------------------------------------------------------------------------
-if test "x${LAME_LDFLAGS}" = "x" \
-     -a "x${VORBIS_LDFLAGS}" = "x" \
-     -a "x${OPUS_LDFLAGS}" = "x" \
-     -a "x${FAAC_LDFLAGS}" = "x" \
-     -a "x${AACPLUS_LDFLAGS}" = "x" \
-     -a "x${TWOLAME_LDFLAGS}" = "x"; then
+if test -z "x${LAME_LIBS}" \
+     -a -z "${VORBIS_LIBS}" \
+     -a -z "${OPUS_LIBS}" \
+     -a -z "${FAAC_LIBS}" \
+     -a -z "${AACPLUS_LIBS}" \
+     -a -z "${TWOLAME_LIBS}" ; then
     AC_MSG_ERROR([neither lame, Ogg Vorbis, opus, faac, aac+ nor twolame configured])
 fi
 
@@ -271,149 +182,56 @@ fi
 dnl-----------------------------------------------------------------------------
 dnl link ALSA sound system if requested 
 dnl-----------------------------------------------------------------------------
-AC_SUBST(ALSA_INCFLAGS)
-AC_SUBST(ALSA_LDFLAGS)
-
 AC_ARG_WITH(alsa,
-[  --with-alsa             use ALSA sound system [yes] ],
-    USE_ALSA=${withval}, USE_ALSA="yes" )
-AC_ARG_WITH(alsa-prefix,
-[  --with-alsa-prefix=DIR      alternate location for ALSA [/usr]
-                              look for libraries in ALSA-PREFIX/lib,
-                              for headers in ALSA-PREFIX/include],
-    CONFIG_ALSA_PREFIX="${withval}", CONFIG_ALSA_PREFIX="/usr")
-
-if test "x${USE_ALSA}" = "xyes" ; then
-    AC_MSG_CHECKING( [for alsa libraries at ${CONFIG_ALSA_PREFIX}] )
-    LA_SEARCH_LIB( ALSA_LIB_LOC, ALSA_INC_LOC, libasound.so, alsa/asoundlib.h,
-                   ${CONFIG_ALSA_PREFIX})
-
-    if test "x${ALSA_LIB_LOC}" != "x" ; then
-
-        AC_DEFINE( HAVE_ALSA_LIB, 1, [build with ALSA sound system] )
-        if test "x${ALSA_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
-            ALSA_INCFLAGS="-I${ALSA_INC_LOC}"
-        fi
-        ALSA_LDFLAGS="-L${ALSA_LIB_LOC} -lasound"
-        AC_MSG_RESULT( [found at ${CONFIG_ALSA_PREFIX}] )
-    else
-        AC_MSG_WARN( [not found, building without ALSA support])
-    fi
-else
-    AC_MSG_RESULT( [building without ALSA support] )
-fi
-
+    AS_HELP_STRING([--with-alsa], [use ALSA sound system @<:@check@:>@]),
+    [], with_alsa=check)
+AS_CASE([$with_alsa],
+    check, [PKG_CHECK_MODULES(ALSA, alsa, [], true)],
+    yes,   [PKG_CHECK_MODULES(ALSA, alsa)],
+    AC_MSG_RESULT([building without ALSA support]))
+AS_IF(test -n "$ALSA_LIBS",
+    AC_DEFINE(HAVE_ALSA_LIB, 1, [build with ALSA sound system]))
 
 dnl-----------------------------------------------------------------------------
 dnl link PULSEAUDIO sound system if requested 
 dnl-----------------------------------------------------------------------------
-AC_SUBST(PULSEAUDIO_INCFLAGS)
-AC_SUBST(PULSEAUDIO_LDFLAGS)
-
 AC_ARG_WITH(pulseaudio,
-[  --with-pulseaudio             use PULSEAUDIO sound system [yes] ],
-    USE_PULSEAUDIO=${withval}, USE_PULSEAUDIO="yes" )
-AC_ARG_WITH(pulseaudio-prefix,
-[  --with-pulseaudio-prefix=DIR      alternate location for PULSEAUDIO [/usr]
-                              look for libraries in PULSEAUDIO-PREFIX/lib,
-                              for headers in PULSEAUDIO-PREFIX/include],
-    CONFIG_PULSEAUDIO_PREFIX="${withval}", CONFIG_PULSEAUDIO_PREFIX="/usr")
-
-if test "x${USE_PULSEAUDIO}" = "xyes" ; then
-    AC_MSG_CHECKING( [for pulseaudio libraries at ${CONFIG_PULSEAUDIO_PREFIX}] )
-    LA_SEARCH_LIB( PULSEAUDIO_LIB_LOC, PULSEAUDIO_INC_LOC, libpulse.so, pulse/pulseaudio.h,
-                   ${CONFIG_PULSEAUDIO_PREFIX})
-
-    if test "x${PULSEAUDIO_LIB_LOC}" != "x" ; then
-
-        AC_DEFINE( HAVE_PULSEAUDIO_LIB, 1, [build with PULSEAUDIO sound system] )
-        if test "x${PULSEAUDIO_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
-            PULSEAUDIO_INCFLAGS="-I${PULSEAUDIO_INC_LOC}"
-        fi
-        PULSEAUDIO_LDFLAGS="-L${PULSEAUDIO_LIB_LOC} -lpulse-simple -L${PULSEAUDIO_LIB_LOC} -lpulse"
-        AC_MSG_RESULT( [found at ${CONFIG_PULSEAUDIO_PREFIX}] )
-    else
-        AC_MSG_WARN( [not found, building without PULSEAUDIO support])
-    fi
-else
-    AC_MSG_RESULT( [building without PULSEAUDIO support] )
-fi
-
+    AS_HELP_STRING([--with-pulseaudio], [use PULSEAUDIO sound system @<:@check@:>@]),
+    [], with_pulseaudio=check)
+AS_CASE([$with_pulseaudio],
+    check, [PKG_CHECK_MODULES(PULSEAUDIO, libpulse-simple libpulse, [], true)],
+    yes,   [PKG_CHECK_MODULES(PULSEAUDIO, libpulse-simple libpulse)],
+    AC_MSG_RESULT([building without PULSEAUDIO support]))
+AS_IF(test -n "$PULSEAUDIO_LIBS",
+    AC_DEFINE(HAVE_PULSEAUDIO_LIB, 1, [build with PULSEAUDIO sound system]))
 
 dnl-----------------------------------------------------------------------------
 dnl link JACK sound server if requested 
 dnl-----------------------------------------------------------------------------
-AC_SUBST(JACK_CFLAGS)
-AC_SUBST(JACK_LDFLAGS)
-AC_SUBST(JACK_INCFLAGS)
-
 AC_ARG_WITH(jack,
-[  --with-jack             use JACK sound system [yes] ],
-    USE_JACK=${withval}, USE_JACK="yes" )
-AC_ARG_WITH(jack-prefix,
-[  --with-jack-prefix=DIR      alternate location for JACK [/usr]
-                              look for libraries in JACK-PREFIX/lib,
-                              for headers in JACK-PREFIX/include],
-    CONFIG_JACK_PREFIX="${withval}", CONFIG_JACK_PREFIX="/usr")
-
-if test "x${USE_JACK}" = "xyes" ; then
-    AC_MSG_CHECKING( [for jack libraries at ${CONFIG_JACK_PREFIX}] )
-    LA_SEARCH_LIB( JACK_LIB_LOC, JACK_INC_LOC, libjack.la libjack.so libjack.dylib, jack/jack.h,
-                   ${CONFIG_JACK_PREFIX})
-
-    if test "x${JACK_LIB_LOC}" != "x" ; then
-
-        AC_DEFINE( HAVE_JACK_LIB, 1, [build with JACK audio server support] )
-        if test "x${JACK_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
-            JACK_INCFLAGS="-I${JACK_INC_LOC}"
-        fi
-        JACK_LDFLAGS="-L${JACK_LIB_LOC} -ljack"
-        AC_MSG_RESULT( [found at ${CONFIG_JACK_PREFIX}] )
-    else
-        AC_MSG_WARN( [not found, building without JACK support])
-    fi
-else
-    AC_MSG_RESULT( [building without JACK support] )
-fi
-
+    AS_HELP_STRING([--with-jack], [use JACK sound system @<:@check@:>@]),
+    [], with_jack=check)
+AS_CASE([$with_jack],
+    check, [PKG_CHECK_MODULES(JACK, jack, [], true)],
+    yes,   [PKG_CHECK_MODULES(JACK, jack)],
+    AC_MSG_RESULT([building without JACK support]))
+AS_IF(test -n "$JACK_LIBS",
+    AC_DEFINE(HAVE_JACK_LIB, 1, [build with JACK audio server support]))
 
 dnl-----------------------------------------------------------------------------
 dnl link Secret Rabbit Code (aka libsamplerate) if requested 
 dnl-----------------------------------------------------------------------------
-AC_SUBST(SRC_CFLAGS)
-AC_SUBST(SRC_LDFLAGS)
-AC_SUBST(SRC_INCFLAGS)
-
 AC_ARG_WITH(samplerate,
-[  --with-samplerate             use Secret Rabbit Code (aka libsamplerate) for samplerate conversion [yes] ],
-    USE_SRC=${withval}, USE_SRC="yes" )
-AC_ARG_WITH(samplerate-prefix,
-[  --with-samplerate-prefix=DIR      alternate location for samplerate [/usr]
-                              look for libraries in SRC-PREFIX/lib,
-                              for headers in SRC-PREFIX/include],
-    CONFIG_SRC_PREFIX="${withval}", CONFIG_SRC_PREFIX="/usr")
+    AS_HELP_STRING([--with-samplerate], [use Secret Rabbit Code (aka libsamplerate) for samplerate conversion @<:@check@:>@]),
+    [], with_samplerate=check)
+AS_CASE([$with_samplerate],
+    check, [PKG_CHECK_MODULES(SRC, samplerate, [], true)],
+    yes,   [PKG_CHECK_MODULES(SRC, samplerate)],
+    AC_MSG_RESULT([building without libsamplerate support]))
+AS_IF(test -n "$SRC_LIBS",
+    AC_DEFINE(HAVE_SRC_LIB, 1, [build with samplerate conversion through libsamplerate]))
 
-if test "x${USE_SRC}" = "xyes" ; then
-    AC_MSG_CHECKING( [for samplerate libraries at ${CONFIG_SRC_PREFIX}] )
-    LA_SEARCH_LIB( SRC_LIB_LOC, SRC_INC_LOC, libsamplerate.la libsamplerate.so libsamplerate.dylib, samplerate.h,
-                   ${CONFIG_SRC_PREFIX})
-
-    if test "x${SRC_LIB_LOC}" != "x" ; then
-
-        AC_DEFINE( HAVE_SRC_LIB, 1, [build with samplerate conversion through libsamplerate] )
-        if test "x${SRC_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
-            SRC_INCFLAGS="-I${SRC_INC_LOC}"
-        fi
-        SRC_LDFLAGS="-L${SRC_LIB_LOC} -lsamplerate"
-        AC_MSG_RESULT( [found at ${CONFIG_SRC_PREFIX}] )
-    else
-        AC_MSG_WARN( [not found, building libsamplerate support])
-    fi
-else
-    AC_MSG_RESULT( [building without libsamplerate support] )
-fi
-
-AM_CONDITIONAL(HAVE_SRC_LIB, test "x${SRC_LIB_LOC}" != "x")
+AM_CONDITIONAL(HAVE_SRC_LIB, test -n "${SRC_LIBS}")
 dnl-----------------------------------------------------------------------------
 dnl check for MSG_NOSIGNAL for the send() function in libsocket
 dnl-----------------------------------------------------------------------------
@@ -441,17 +259,13 @@ dnl enable compilation with debug flags
 dnl-----------------------------------------------------------------------------
 AC_SUBST(DEBUG_CXXFLAGS)
 
-AC_ARG_WITH(debug,
-[  --with-debug            enable debug mode [no] ],
-    USE_DEBUG=${withval}, USE_DEBUG="no" )
-    
-if test "x${USE_DEBUG}" == "xyes" ; then
-    DEBUG_CXXFLAGS="-g"
-    AC_MSG_RESULT([compiling in debug mode])
-else
-    AC_MSG_RESULT([not compiling in debug mode])
-fi
-
+AC_ARG_ENABLE(debug,
+  AS_HELP_STRING([--enable-debug], [enable debug mode @<:@no@:>@]),
+  [], enable_debug=no)
+AS_IF([test "x$enable_debug" = xyes],
+    [DEBUG_CXXFLAGS="-g"
+     AC_MSG_RESULT([compiling in debug mode])],
+    AC_MSG_RESULT([not compiling in debug mode]))
 
 AC_OUTPUT(Makefile src/Makefile man/Makefile)
 
