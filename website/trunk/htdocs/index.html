@@ -1,13 +1,13 @@
 <html>
 <head>
 <title>DarkIce live audio streamer</title>
-<!-- $Id$ -->
+<!-- $Id: index.html 478 2010-05-12 20:54:28Z rafael@riseup.net $ -->
 </head>
 
 <body bgcolor="#000000" text="#eeeeee" link="#88ccff" alink="#8888ff" vlink="#8888ff">
 <center>
 <table cellspacing="0" cellpadding="0" border="0" width="450" height="100%">
-<tr valign="bottom"><td colspan="9"><a href="http://tyrell.hu"><img src="blankheader.gif" alt="" border="0" width="450" height="54"></a></td></tr>
+<tr valign="bottom"><td colspan="9"><img src="blankheader.gif" alt="" border="0" width="450" height="54"></td></tr> 
 <tr valign="middle">
 <td width="2" bgcolor="#604c8f"><img src="spacer.gif" width="2" alt=""></td>
 <td width="5" bgcolor="#392073"><img src="spacer.gif" width="5" alt=""></td>
@@ -36,14 +36,17 @@ DarkIce can record from:
 <br>
 DarkIce can encode in the following formats:
 <ul>
-    <li>MP3 - using the <a href="http://lame.sourceforge.net/">lame</a>
+    <li>MP3 - using the <a href="http://www.mp3dev.org/mp3">lame</a>
         library</li>
     <li>MP2 - using the <a href="http://www.twolame.org/">twolame</a>
         library</li>
     <li><a href="http://www.xiph.org/ogg/vorbis/">Ogg Vorbis</a></li>
-    <li>AAC - using the <a href="http://www.audiocoding.com/">faac</a>
+    <li>AAC LC - using the <a href="http://www.audiocoding.com/">faac</a>
         library</li>
-    <li>AAC HEv2 - using <a href="http://tipok.org.ua/node/17">libaacplus</a> library </li>
+    <li>AAC HEv2 -
+    using <a href="http://tipok.org.ua/node/17">libaacplus</a> library </li>
+    <li>Opus - using Xiph's libopus library</li>
+    <li>Vorbis - using Xiph's libvorbis library</li>
 </ul>
 <br>
 DarkIce can send the encoded stream to the following streaming servers:
@@ -58,10 +61,10 @@ DarkIce can send the encoded stream to the following streaming servers:
 Darkice runs on the following operating systems:
 <ul>
     <li>FreeBSD</li>
-    <li>Linux on intel and PowerPC</li>
+    <li>Linux</li>
     <li>MacOS X</li>
     <li>NetBSD / OpenBSD</li>
-    <li>SUN Solaris</li>
+    <li>Solaris</li>
 </ul>
 <br>
 DarkIce initial author is 
@@ -72,8 +75,8 @@ DarkIce current author and maintainer is <a href="mailto:rafael@riseup.net">Rafa
 <h2>2. Status</h2>
 DarkIce is considered stable, it has been used since fall 2000 in production 24 hours per day.
 <br>
-The latest version is <b>1.0</b>, check out the
-<a href="ChangeLog">ChangeLog</a>.
+The latest version is <b>1.3</b>, check out the
+<a href="https://github.com/rafael2k/darkice/blob/master/darkice/trunk/ChangeLog">ChangeLog</a>.
 <br>
 There is a GTK frontend made by Rafael Diniz, called DarkSnow.
 <a href="http://darksnow.radiolivre.org/index.en.html">DarkSnow</a>.
@@ -84,45 +87,37 @@ For questions &amp; feedback on DarkIce, please join the
 mailing list.
 <p>
 Should you find any issues with DarkIce, please submit a bug or feature
-request at our <a href="http://code.google.com/p/darkice/issues/list">Trac</a> system.
+request at
+Git <a href="https://github.com/rafael2k/darkice/issueshttps://sourceforge.net/p/darkice/tickets/">Issues</a>
+page.
+</p>
 
 <h2>4. Support</h2>
 If you feel that DarkIce is having a good effect on your online streaming radio, feel free to donate some money to allow further development. 
-<b>Thank you!</b>
+<b>Thank you! Btw, we already received a donation!</b>
 
 <h2>5. Download</h2>
+<br>
+You can download DarkIce releases from the project's
+<a href="https://sourceforge.net/projects/darkice/files/">download page</a>.
+<p>
+Download the source tarball
+    <a href="http://sourceforge.net/projects/darkice/files/darkice/1.3/darkice-1.3.tar.gz/download">darkice-1.3.tar.gz</a>
+    and compile it.
+</p>
+<p>
+If you like to live on the edge, you can check the
+git repository at github:</p>
+git clone <a href="https://github.com/rafael2k/darkice">https://github.com/rafael2k/darkice.git</a>
+<p>
 DarkIce is
 &copy; Copyright <a href="http://tyrell.hu">Tyrell Hungary</a> and Rafael Diniz and &Aacute;kos Mar&oacute;y
  under the
 <a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public Licence version 3</a>.
-<br>
-You can download DarkIce releases from the project's
-<a href="http://code.google.com/p/darkice/">download page</a>.
+</p>
 <p>
-Download the source tarball
-    <a href="http://darkice.googlecode.com/files/darkice-1.0.tar.gz">darkice-1.0.tar.gz</a>
-    and compile it. You will also need
-    <a href="http://lame.sourceforge.net/download/download.html">lame</a>
-    (version 3.89 or above),
-    <a href="http://sourceforge.net/project/showfiles.php?group_id=136040">twolame</a>
-    (version 0.3.6 or above),
-    <a href="http://www.vorbis.com/download.psp">Ogg Vorbis</a>
-    and
-    <a href="http://www.audiocoding.com/modules/mydownloads/">faac</a>
-    libs. I used the following libs:
-    <ul>
-        <li><a href="http://prdownloads.sourceforge.net/lame/lame-3.96.1.tar.gz?download">lame-3.96.1.tar.gz</a></li>
-        <li><a href="http://prdownloads.sourceforge.net/twolame/twolame-0.3.6.tar.gz?download">twolame-0.3.6.tar.gz</a></li>
-        <li><a href="http://downloads.xiph.org/releases/ogg/libogg-1.1.2.tar.gz">libogg-1.1.2.tar.gz</a></li>
-        <li><a href="http://downloads.xiph.org/releases/vorbis/libvorbis-1.1.0.tar.gz">libvorbis-1.1.0.tar.gz</a></li>
-        <li><a href="http://prdownloads.sourceforge.net/faac/faac-1.24.zip?download">faac-1.24.zip</a></li>
-    </ul>
-<p>
-If you like to live on the edge, you can check the
-<a href="http://subversion.tigris.org/">subversion</a> repository: 
-svn checkout http://darkice.googlecode.com/svn/darkice/trunk/ darkice
-<p>
-This page last updated: $Date$.
+  This page last updated: 04/08/2016.
+  </p>
 </td>
 <td width="5" bgcolor="#1d103a"><img src="spacer.gif" width="5" alt=""></td>
 <td width="2" bgcolor="#604c8f"><img src="spacer.gif" width="2" alt=""></td>

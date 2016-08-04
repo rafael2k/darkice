@@ -1,3 +1,72 @@
+04-08-2016 Darkice 1.3 released
+    o Small bugs fixed by Nicolas Boulenguez <nicolas@debian.org>.
+    o Bugs related to streaming to remote servers fixed. Patch by Kalle Kulonen
+	<kulonenk@gmail.com> and Mark Turner <jmarkturner@gmail.com>.
+
+15-07-2013 Darkice 1.2 released
+    o Issue #75: Added Ogg/Opus support. Patch by Doug Kelly
+	dougk.ff7@gmail.com
+    o Fix 'Ring Ruffer' reports.
+      - Increased buffer for jack to 5 seconds
+      - prevent darkice termination by jack, report no fatal problem when we
+        have a ringbuffer overflow, can happen during startup
+        If we can not handle input audio fast enough we just ignore the buffer
+        and skip it, and just report it.
+      - new multithreaded connector code, now handles encoders in parallel
+        and does not spin waiting, cpu load will be very much lower now
+        Codes uses 2 condition variables to report data availability and
+        consumer thread availability
+      - Hopes are that glitching reports will be a thing of the past
+      - minor compiler warnings fixed
+        (Fix by Edwin van den Oetelaar)
+    o Issue #56: Wrong icecast2 password isn't properly reported, fixed.
+	  thanks to Filipe Roque <flip.roque@gmail.com>
+    o Issue #57: BufferedSink makes streams invalid, fixed.
+	  thanks to Alban Peignier <alban.peignier@gmail.com>
+    o Issue #30: Segmentation Fault when creating file with fileAddDate, fixed
+	  thanks to Filipe Roque <flip.roque@gmail.com>
+
+27-10-2011 Darkice 1.1 released
+    o Updated aac+ encoding to use libaacplus-2.0.0 api.
+	  thanks to Sergiy <piratfm@gmail.com>
+    o Added pulseaudio support
+	  closes ticket #25
+	  thanks to Filipe Roque <flip.roque@gmail.com> and
+	  and Johann Fot <johann.fot@dunkelfuerst.com>
+    o Added rtprio parameter and revisited realtime priority
+	  closes ticket #21
+          thanks to Adrian Knoth <adi@drcomp.erfurt.thur.de>
+    o Fixed a call to a deprecated jack call
+	  closes ticket #22
+	  thanks to Adrian Knoth again.
+
+09-05-2010 Darkice 1.0 released
+    o fixed a bug in BufferedSink.cpp that leads to some buffers 
+	  being written twice, causing corruption of datastream,
+	  closes ticked #20
+	  thanks to Edwin van den Oetelaar <oetelaar.automatisering@gmail.com>
+    o implemented samplerate conversion for all codecs using libsamplerate, 
+	  and keeping internal aflibConverter as fallback,
+          thanks to Sergiy <piratfm@gmail.com>
+    o bugfix: fix for alsa driver - closes ticked #8
+          thanks to Clemens Ladisch <clemens@ladisch.de> 
+
+14-11-2009 Darkice 0.20.1 released
+    o added rc.darkice init script
+	  thanks to Niels Dettenbach <nd@syndicat.com>
+    o bugfix: fix for gcc 4.4
+
+05-11-2009 Darkice 0.20 released
+
+    o new maintainer: Rafael Diniz <rafael@riseup.net>	
+    o added AAC HEv2 encoding support (branch darkice-aacp merged) through 
+	  libaacplus, http://tipok.org.ua/ru/node/17
+	  thanks to tipok <piratfm@gmail.com> and others for the contribution.
+    o bugfix: the configure script recognizes Ogg Vorbis shared objects
+	  now, not just static libraries. Thanks to omroepvenray.
+    o bugfix: enabling jack source compilation on Debian Lenny,
+	  thanks to Alessandro Beretta <alessandro.baretta@radiomaria.org>
+
 07-07-2008 Darkice 0.19 released
 
     o added mount point option for Darwin Streaming Server
