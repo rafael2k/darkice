@@ -1,0 +1,271 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(darkice, 1.3)
+AC_CONFIG_SRCDIR(src/DarkIce.cpp)
+AM_CONFIG_HEADER(src/config.h)
+
+AM_INIT_AUTOMAKE
+
+AC_PROG_CC
+AC_PROG_CXX
+AC_PROG_INSTALL
+
+PKG_PROG_PKG_CONFIG
+
+dnl AC_STDC_HEADERS
+AC_HAVE_HEADERS(errno.h fcntl.h stdio.h stdlib.h string.h unistd.h limits.h)
+AC_HAVE_HEADERS(signal.h time.h sys/time.h sys/types.h sys/wait.h math.h)
+AC_HAVE_HEADERS(netdb.h netinet/in.h sys/ioctl.h sys/socket.h sys/stat.h)
+AC_HAVE_HEADERS(sched.h pthread.h termios.h)
+AC_HAVE_HEADERS(sys/soundcard.h sys/audio.h sys/audioio.h)
+AC_HEADER_SYS_WAIT()
+
+AC_TYPE_PID_T()
+AC_TYPE_SIZE_T()
+AC_C_BIGENDIAN()
+
+AC_CHECK_LIB(socket, socket)
+AC_CHECK_LIB(nsl, gethostbyname)
+AC_CHECK_LIB(rt, sched_getscheduler)
+
+AC_CHECK_FUNC(getaddrinfo, AC_DEFINE(HAVE_GETADDRINFO, 1, [Does function getaddrinfo exist?] ))
+
+dnl-----------------------------------------------------------------------------
+dnl funky posix threads checking, thanks to
+dnl Steven G. Johnson <stevenj@alum.mit.edu>
+dnl and Alejandro Forero Cuervo <bachue@bachue.com>
+dnl see http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html
+dnl-----------------------------------------------------------------------------
+ACX_PTHREAD(, AC_MSG_ERROR( [pthread library not found] ))
+
+SYSTEM_INCLUDE=/usr/include
+
+
+dnl-----------------------------------------------------------------------------
+dnl link the lame library if requested
+dnl-----------------------------------------------------------------------------
+AC_SUBST(LAME_CFLAGS)
+AC_SUBST(LAME_LIBS)
+
+AC_ARG_WITH(lame,
+    AS_HELP_STRING([--with-lame], [use lame for encoding mp3 streams @<:@check@:>@]),
+    [], with_lame=check)
+AC_ARG_WITH(lame-prefix,
+    AS_HELP_STRING([--with-lame-prefix=DIR],
+        [alternate location for lame @<:@/usr@:>@.
+        Look for libraries in LAME-PREFIX/lib,
+        for headers in LAME-PREFIX/include]),
+    CONFIG_LAME_PREFIX="${withval}", CONFIG_LAME_PREFIX="/usr")
+
+if test "x$with_lame" != xno ; then
+    AC_MSG_CHECKING( [for lame library at ${CONFIG_LAME_PREFIX}] )
+    LA_SEARCH_LIB( LAME_LIB_LOC, LAME_INC_LOC, libmp3lame.a libmp3lame.so, lame/lame.h,
+                   ${CONFIG_LAME_PREFIX})
+    if test "x${LAME_LIB_LOC}" != "x" ; then
+        AC_DEFINE( HAVE_LAME_LIB, 1, [build with lame library] )
+        if test "x${LAME_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
+            LAME_CFLAGS="-I${LAME_INC_LOC}"
+        fi
+        LAME_LIBS="-L${LAME_LIB_LOC} -lmp3lame"
+        AC_MSG_RESULT( [found at ${CONFIG_LAME_PREFIX}] )
+    elif test "x$with_lame" = xyes ; then
+        AC_MSG_ERROR([unable to find lame library])
+    else
+        AC_MSG_WARN( [not found, building without lame])
+    fi
+else
+    AC_MSG_RESULT( [building without lame] )
+fi
+
+
+dnl-----------------------------------------------------------------------------
+dnl link the ogg vorbis libraries if requested
+dnl-----------------------------------------------------------------------------
+AC_ARG_WITH(vorbis,
+    AS_HELP_STRING([--with-vorbis], [use Ogg Vorbis for encoding vorbis streams @<:@check@:>@]),
+    [], with_vorbis=check)
+AS_CASE([$with_vorbis],
+    check, [PKG_CHECK_MODULES(VORBIS, [ogg vorbis vorbisenc], [], true)],
+    yes,   [PKG_CHECK_MODULES(VORBIS, [ogg vorbis vorbisenc])],
+    AC_MSG_RESULT([building without Ogg Vorbis]))
+AS_IF(test -n "$VORBIS_LIBS",
+    AC_DEFINE(HAVE_VORBIS_LIB, 1, [build with Ogg Vorbis library]))
+
+dnl-----------------------------------------------------------------------------
+dnl link the ogg / opus libraries if requested
+dnl-----------------------------------------------------------------------------
+AC_ARG_WITH(opus,
+    AS_HELP_STRING([--with-opus], [use Ogg Opus for encoding opus streams @<:@check@:>@]),
+    [], with_opus=check)
+AS_CASE([$with_opus],
+    check, [PKG_CHECK_MODULES(OPUS, [ogg opus], [], true)],
+    yes,   [PKG_CHECK_MODULES(OPUS, [ogg opus])],
+    AC_MSG_RESULT([building without Ogg Opus]))
+AS_IF(test -n "$OPUS_LIBS",
+    AC_DEFINE(HAVE_OPUS_LIB, 1, [build with Ogg Opus library]))
+
+dnl-----------------------------------------------------------------------------
+dnl link the faac library if requested
+dnl-----------------------------------------------------------------------------
+AC_SUBST(FAAC_CFLAGS)
+AC_SUBST(FAAC_LIBS)
+
+AC_ARG_WITH(faac,
+    AS_HELP_STRING([--with-faac], [use faac for encoding AAC streams @<:@check@:>@]),
+    [], with_faac=check)
+AC_ARG_WITH(faac-prefix,
+    AS_HELP_STRING([--with-faac-prefix=DIR],
+        [alternate location for faac @<:@/usr@:>@.
+        Look for libraries in FAAC-PREFIX/lib,
+        for headers in FAAC-PREFIX/include]),
+    CONFIG_FAAC_PREFIX="${withval}", CONFIG_FAAC_PREFIX="/usr")
+
+if test "x$with_faac" != xno ; then
+    AC_MSG_CHECKING( [for faac library at ${CONFIG_FAAC_PREFIX}] )
+    LA_SEARCH_LIB( FAAC_LIB_LOC, FAAC_INC_LOC, libfaac.a libfaac.so, faac.h,
+                   ${CONFIG_FAAC_PREFIX})
+    if test "x${FAAC_LIB_LOC}" != "x" ; then
+        AC_DEFINE( HAVE_FAAC_LIB, 1, [build with faac library] )
+        if test "x${FAAC_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
+            FAAC_CFLAGS="-I${FAAC_INC_LOC}"
+        fi
+        FAAC_LIBS="-L${FAAC_LIB_LOC} -lfaac"
+        AC_MSG_RESULT( [found at ${CONFIG_FAAC_PREFIX}] )
+    elif test "x$with_faac" = yes ; then
+        AC_MSG_ERROR([unable to find faac library])
+    else
+        AC_MSG_WARN( [not found, building without faac])
+    fi
+else
+    AC_MSG_RESULT( [building without faac] )
+fi
+
+
+dnl-----------------------------------------------------------------------------
+dnl link the aacplus library if requested
+dnl-----------------------------------------------------------------------------
+AC_ARG_WITH(aacplus,
+    AS_HELP_STRING([--with-aacplus], [use aacplus for encoding AAC HEv2 streams @<:@check@:>@]),
+    [], with_aacplus=check)
+AS_CASE([$with_aacplus],
+    check, [PKG_CHECK_MODULES(AACPLUS, aacplus, [], true)],
+    yes,   [PKG_CHECK_MODULES(AACPLUS, aacplus)],
+    AC_MSG_RESULT([building without aacplus]))
+AS_IF(test -n "$AACPLUS_LIBS",
+    AC_DEFINE(HAVE_AACPLUS_LIB, 1, [build with aacplus library]))
+
+dnl-----------------------------------------------------------------------------
+dnl link the twolame library if requested
+dnl-----------------------------------------------------------------------------
+AC_ARG_WITH(twolame,
+    AS_HELP_STRING([--with-twolame], [use twolame for encoding MP2 streams @<:@check@:>@]),
+    [], with_twolame=check)
+AS_CASE([$with_twolame],
+    check, [PKG_CHECK_MODULES(TWOLAME, twolame, [], true)],
+    yes,   [PKG_CHECK_MODULES(TWOLAME, twolame)],
+    AC_MSG_RESULT([building without twolame]))
+AS_IF(test -n "$TWOLAME_LIBS",
+    AC_DEFINE(HAVE_TWOLAME_LIB, 1, [build with twolame library]))
+
+dnl-----------------------------------------------------------------------------
+dnl make sure at least one of lame and vorbis present
+dnl-----------------------------------------------------------------------------
+if test -z "x${LAME_LIBS}" \
+     -a -z "${VORBIS_LIBS}" \
+     -a -z "${OPUS_LIBS}" \
+     -a -z "${FAAC_LIBS}" \
+     -a -z "${AACPLUS_LIBS}" \
+     -a -z "${TWOLAME_LIBS}" ; then
+    AC_MSG_ERROR([neither lame, Ogg Vorbis, opus, faac, aac+ nor twolame configured])
+fi
+
+
+dnl-----------------------------------------------------------------------------
+dnl link ALSA sound system if requested 
+dnl-----------------------------------------------------------------------------
+AC_ARG_WITH(alsa,
+    AS_HELP_STRING([--with-alsa], [use ALSA sound system @<:@check@:>@]),
+    [], with_alsa=check)
+AS_CASE([$with_alsa],
+    check, [PKG_CHECK_MODULES(ALSA, alsa, [], true)],
+    yes,   [PKG_CHECK_MODULES(ALSA, alsa)],
+    AC_MSG_RESULT([building without ALSA support]))
+AS_IF(test -n "$ALSA_LIBS",
+    AC_DEFINE(HAVE_ALSA_LIB, 1, [build with ALSA sound system]))
+
+dnl-----------------------------------------------------------------------------
+dnl link PULSEAUDIO sound system if requested 
+dnl-----------------------------------------------------------------------------
+AC_ARG_WITH(pulseaudio,
+    AS_HELP_STRING([--with-pulseaudio], [use PULSEAUDIO sound system @<:@check@:>@]),
+    [], with_pulseaudio=check)
+AS_CASE([$with_pulseaudio],
+    check, [PKG_CHECK_MODULES(PULSEAUDIO, libpulse-simple libpulse, [], true)],
+    yes,   [PKG_CHECK_MODULES(PULSEAUDIO, libpulse-simple libpulse)],
+    AC_MSG_RESULT([building without PULSEAUDIO support]))
+AS_IF(test -n "$PULSEAUDIO_LIBS",
+    AC_DEFINE(HAVE_PULSEAUDIO_LIB, 1, [build with PULSEAUDIO sound system]))
+
+dnl-----------------------------------------------------------------------------
+dnl link JACK sound server if requested 
+dnl-----------------------------------------------------------------------------
+AC_ARG_WITH(jack,
+    AS_HELP_STRING([--with-jack], [use JACK sound system @<:@check@:>@]),
+    [], with_jack=check)
+AS_CASE([$with_jack],
+    check, [PKG_CHECK_MODULES(JACK, jack, [], true)],
+    yes,   [PKG_CHECK_MODULES(JACK, jack)],
+    AC_MSG_RESULT([building without JACK support]))
+AS_IF(test -n "$JACK_LIBS",
+    AC_DEFINE(HAVE_JACK_LIB, 1, [build with JACK audio server support]))
+
+dnl-----------------------------------------------------------------------------
+dnl link Secret Rabbit Code (aka libsamplerate) if requested 
+dnl-----------------------------------------------------------------------------
+AC_ARG_WITH(samplerate,
+    AS_HELP_STRING([--with-samplerate], [use Secret Rabbit Code (aka libsamplerate) for samplerate conversion @<:@check@:>@]),
+    [], with_samplerate=check)
+AS_CASE([$with_samplerate],
+    check, [PKG_CHECK_MODULES(SRC, samplerate, [], true)],
+    yes,   [PKG_CHECK_MODULES(SRC, samplerate)],
+    AC_MSG_RESULT([building without libsamplerate support]))
+AS_IF(test -n "$SRC_LIBS",
+    AC_DEFINE(HAVE_SRC_LIB, 1, [build with samplerate conversion through libsamplerate]))
+
+AM_CONDITIONAL(HAVE_SRC_LIB, test -n "${SRC_LIBS}")
+dnl-----------------------------------------------------------------------------
+dnl check for MSG_NOSIGNAL for the send() function in libsocket
+dnl-----------------------------------------------------------------------------
+AC_MSG_CHECKING(for MSG_NOSIGNAL)
+AC_TRY_COMPILE([#include <sys/socket.h>], [
+    int f = MSG_NOSIGNAL;
+], [
+    # Yes, we have it...
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_MSG_NOSIGNAL, 1, [use MSG_NOSIGNAL for send()])
+], [
+    # We'll have to use signals
+    AC_MSG_RESULT(no)
+])
+
+
+dnl-----------------------------------------------------------------------------
+dnl check for POSIX real-time scheduling
+dnl-----------------------------------------------------------------------------
+AC_CHECK_FUNCS( sched_getscheduler sched_getparam )
+
+
+dnl-----------------------------------------------------------------------------
+dnl enable compilation with debug flags
+dnl-----------------------------------------------------------------------------
+AC_SUBST(DEBUG_CXXFLAGS)
+
+AC_ARG_ENABLE(debug,
+  AS_HELP_STRING([--enable-debug], [enable debug mode @<:@no@:>@]),
+  [], enable_debug=no)
+AS_IF([test "x$enable_debug" = xyes],
+    [DEBUG_CXXFLAGS="-g"
+     AC_MSG_RESULT([compiling in debug mode])],
+    AC_MSG_RESULT([not compiling in debug mode]))
+
+AC_OUTPUT(Makefile src/Makefile man/Makefile)
+
