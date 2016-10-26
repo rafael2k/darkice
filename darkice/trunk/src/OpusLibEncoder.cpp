@@ -403,7 +403,7 @@ OpusLibEncoder :: write ( const void    * buf,
 #ifdef HAVE_SRC_LIB
             (void)inCount;
             converterData.input_frames   = processed;
-            src_short_to_float_array (shortBuffer, converterData.data_in, totalSamples);
+            src_short_to_float_array (shortBuffer, (float *) converterData.data_in, totalSamples);
             int srcError = src_process (converter, &converterData);
             if (srcError)
                  throw Exception (__FILE__, __LINE__, "libsamplerate error: ", src_strerror (srcError));
