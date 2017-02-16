@@ -164,7 +164,7 @@ FaacEncoder :: write (  const void    * buf,
     if ( converter ) {
         unsigned int         converted;
 #ifdef HAVE_SRC_LIB
-        src_short_to_float_array ((short *) b, converterData.data_in, samples);
+        src_short_to_float_array ((short *) b, (float *) converterData.data_in, samples);
         converterData.input_frames   = nSamples;
         converterData.data_out = resampledOffset + (resampledOffsetSize * channels);
         int srcError = src_process (converter, &converterData);
