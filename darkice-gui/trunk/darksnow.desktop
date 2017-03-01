@@ -1,0 +1,7 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=DarkSnow
+Comment=GUI front-end for DarkICE
+Exec=darksnow
+Icon=darksnow
