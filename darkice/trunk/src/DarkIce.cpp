@@ -8,20 +8,20 @@
    Version  : $Revision$
    Author   : $Author$
    Location : $HeadURL$
-   
+
 
    Copyright notice:
 
     This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License  
+    modify it under the terms of the GNU General Public License
     as published by the Free Software Foundation; either version 3
     of the License, or (at your option) any later version.
-   
+
     This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-   
+
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -384,9 +384,9 @@ DarkIce :: configIceCast (  const Config      & config,
                              "unsupported stream format: ", str);
 
         }
-        
+
         // augment audio outs with a buffer when used from encoder
-        audioOut = new BufferedSink( audioOuts[u].server.get(), 
+        audioOut = new BufferedSink( audioOuts[u].server.get(),
                                                   bufferSize, 1);
 
 #ifdef HAVE_LAME_LIB
@@ -600,9 +600,9 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                             isPublic,
                                             localDumpFile);
 
-        audioOut = new BufferedSink( audioOuts[u].server.get(), 
+        audioOut = new BufferedSink( audioOuts[u].server.get(),
                                      bufferSize, 1);
-        
+
         switch ( format ) {
             case IceCast2::mp3:
 #ifndef HAVE_LAME_LIB
@@ -792,7 +792,7 @@ DarkIce :: configShoutCast (    const Config      & config,
         FileSink                  * localDumpFile   = 0;
         bool                        fileAddDate     = false;
         const char                * fileDateFormat  = 0;
-        BufferedSink              * audioOut        = 0;
+        AudioEncoder              * encoder         = 0;
         int                         bufferSize      = 0;
 
         str         = cs->get( "sampleRate");
@@ -907,9 +907,7 @@ DarkIce :: configShoutCast (    const Config      & config,
                                              localDumpFile);
 
 
-        audioOut = new BufferedSink(audioOuts[u].socket.get(), bufferSize, 1);
-        audioOuts[u].encoder = new LameLibEncoder( 
-                                      audioOut,
+        encoder = new LameLibEncoder( audioOuts[u].server.get(),
                                       dsp.get(),
                                       bitrateMode,
                                       bitrate,
@@ -918,6 +916,7 @@ DarkIce :: configShoutCast (    const Config      & config,
                                       channel,
                                       lowpass,
                                       highpass );
+        audioOuts[u].encoder = new BufferedSink(encoder, bufferSize, dsp->getSampleSize());
 
         encConnector->attach( audioOuts[u].encoder.get());
 #endif // HAVE_LAME_LIB

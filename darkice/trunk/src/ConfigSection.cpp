@@ -8,19 +8,19 @@
    Version  : $Revision$
    Author   : $Author$
    Location : $HeadURL$
-   
+
    Copyright notice:
 
     This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License  
+    modify it under the terms of the GNU General Public License
     as published by the Free Software Foundation; either version 3
     of the License, or (at your option) any later version.
-   
+
     This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-   
+
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -81,8 +81,8 @@ ConfigSection :: add (   const char    * key,
 
     return res.second;
 }
-        
-        
+
+
 /*------------------------------------------------------------------------------
  *  Get a value for a key
  *----------------------------------------------------------------------------*/
@@ -112,7 +112,7 @@ ConfigSection :: getForSure (   const char    * key,
                                                         throw ( Exception )
 {
     const char      * value;
-    
+
     if ( !(value = get( key)) ) {
         throw Exception( __FILE__, __LINE__, key, message1, message2, code);
     }
@@ -132,12 +132,16 @@ ConfigSection :: addLine (  const char    * line )          throw ( Exception )
     }
 
     std::string::size_type  ix;
-    std::string             str( line);
+    std::string str( line);
+    std::string str2 ("password");
 
-    /* delete everything after the first # */
-    if ( (ix = str.find( '#')) != str.npos ) {
-        str.erase( ix);
+    if ( (ix = str.find(str2)) == str.npos ) {
+        /* delete everything after the first # */
+           if ( (ix = str.find( '#')) != str.npos ) {
+              str.erase( ix);
+            }
     }
+
     /* eat up all white space from the front */
     if ( (ix = str.find_first_not_of( WHITE_SPACE_STR)) != str.npos ) {
         str.erase( 0, ix);
@@ -170,4 +174,3 @@ ConfigSection :: addLine (  const char    * line )          throw ( Exception )
     /* now add the new key / value pair */
     return add( key.c_str(), value.c_str());
 }
-
