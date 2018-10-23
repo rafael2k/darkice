@@ -51,6 +51,7 @@
 #error need math.h
 #endif
 
+#include <regex>
 
 #include "Exception.h"
 #include "Source.h"
@@ -73,9 +74,10 @@ static const char fileid[] = "$Id$";
 /*------------------------------------------------------------------------------
  *  Expected positive response from server begins like this.
  *----------------------------------------------------------------------------*/
-static const char responseOK[] = "HTTP/1.0 200";
-static const char responseWrongPasswd[] = "HTTP/1.0 401";
-static const char responseForbidden[] = "HTTP/1.0 403";
+static const std::regex responseOK( "HTTP/1.[0-9] 200" );
+static const std::regex responseWrongPasswd( "HTTP/1.[0-9] 401" );
+static const std::regex responseForbidden( "HTTP/1.[0-9] 403" );
+static const unsigned int responseLen = Util::strLen( "HTTP/1.0 200" );
 
 /* ===============================================  local function prototypes */
 
@@ -122,7 +124,7 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     const int       buflen = 1024;  // some small buffer size
     char            resp[buflen];   // a little buffer
     unsigned int    len;
-    unsigned int    lenExpected;
+    std::cmatch     cm;
 
     if ( !source->isOpen() ) {
         return false;
@@ -238,25 +240,24 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     sink->flush();
 
     // read the response, expected response begins with responseOK
-    lenExpected = Util::strLen( responseOK);
-    if ( (len = source->read( resp, buflen )) < lenExpected ) {
+    if ( (len = source->read( resp, buflen )) < responseLen ) {
         return false; // short read, no need to continue
     }
-    resp[lenExpected] = '\x00'; // end string, truncate to expected length
+    resp[responseLen] = '\x00'; // end string, truncate to expected length
 
     reportEvent(5,resp);
 
-    if ( Util::strEq( resp, responseWrongPasswd) ) {
+    if ( std::regex_match( resp, cm, responseWrongPasswd) ) {
 	throw Exception( __FILE__, __LINE__,
                          "Icecast2 - wrong password");
     }
 
-    if ( Util::strEq( resp, responseForbidden) ) {
+    if ( std::regex_match( resp, cm, responseForbidden) ) {
 	throw Exception( __FILE__, __LINE__,
                          "Icecast2 - forbidden. Is the mountpoint occupied, or maximum sources reached?");
     }
 
-    if ( !Util::strEq( resp, responseOK) ) {
+    if ( !std::regex_match( resp, cm, responseOK) ) {
         // some unexpected response from server
         throw Exception( __FILE__, __LINE__,
                          "Icecast2 - Unexpected response from server");
