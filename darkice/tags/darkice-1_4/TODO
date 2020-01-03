@@ -1,0 +1,13 @@
+o Add samplerate conversion for samplerate audio output different from audio source
+o Add Coreaudio support
+o change Ref to follow inheritance
+o make a master config file, and a small one ?
+o add support for multiple servers for one stream ?
+o revisit real-time scheduling
+o look into performance
+o create proper error-reporting module
+o set comment fields for Ogg Vorbis streams as in
+  http://www.xiph.org/ogg/vorbis/doc/v-comment.html
+o change config file to separate descriptions of input, streams and
+  stream targets (servers, files, etc.)
+o add support for 24 and 32 bit input and higher sample rates (up to 96kHz)
