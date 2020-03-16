@@ -26,6 +26,11 @@ DarkIce website: http://www.darkice.org/
 2. Compiling and installing
 ---------------------------
 
+On ubuntu, it's helpful to have some packages installed:
+
+sudo apt install libmp3lame-dev libvorbis-dev pkg-config
+
+
 On how to compile and install, please read the file INSTALL. If you're
 impatient, try:
 
