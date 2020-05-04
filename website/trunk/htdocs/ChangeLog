@@ -1,3 +1,25 @@
+03-01-2020 Darkice 1.4 released
+    Shoutcast and Icecast 2 connection issues fixed:
+
+    o Support newer HTTP versions in IceCast2 codebase.
+      PR #140 by LuK1337 <priv.luk@gmail.com>
+      - Some servers pretending to be IceCast 2 might return a version newer
+        than 1.0. The example server that happens to do
+        that is Cast ( https://github.com/innovate-technologies/Cast ).
+      - Replacing HTTP/1.0 with HTTP/1.[0-9] regex makes sure that we handle
+        newer versions properly instead of showing:
+        "Icecast2 - Unexpected response from server".
+    o Fixed SHOUTCast password.
+      PR #138 by Alejandro Olivan Alvarez <alejandro.olivan.alvarez@gmail.com>
+      - Darkice.cpp configShoutcast part is returned as it was on commit
+        710d2c26c4f9518d2f382673bf8b1829b9bdac3d. This makes DNAS 1.9.8
+        work again.
+      - Added suggested code patches to code at DarkiceConfig.cpp and
+        Config.cpp by Yahoosam on issue #121. So DNAS2.x now can get stream IDs.
+    o Added darksnow.desktop file.
+    o Cast float* in SRC lib calls to delete fpermissive compilation error.
+      PR #120 by belette <ouack23@yahoo.fr>
+
 04-08-2016 Darkice 1.3 released
     o Small bugs fixed by Nicolas Boulenguez <nicolas@debian.org>.
     o Bugs related to streaming to remote servers fixed. Patch by Kalle Kulonen
@@ -41,15 +63,15 @@
 	  thanks to Adrian Knoth again.
 
 09-05-2010 Darkice 1.0 released
-    o fixed a bug in BufferedSink.cpp that leads to some buffers 
+    o fixed a bug in BufferedSink.cpp that leads to some buffers
 	  being written twice, causing corruption of datastream,
 	  closes ticked #20
 	  thanks to Edwin van den Oetelaar <oetelaar.automatisering@gmail.com>
-    o implemented samplerate conversion for all codecs using libsamplerate, 
+    o implemented samplerate conversion for all codecs using libsamplerate,
 	  and keeping internal aflibConverter as fallback,
           thanks to Sergiy <piratfm@gmail.com>
     o bugfix: fix for alsa driver - closes ticked #8
-          thanks to Clemens Ladisch <clemens@ladisch.de> 
+          thanks to Clemens Ladisch <clemens@ladisch.de>
 
 14-11-2009 Darkice 0.20.1 released
     o added rc.darkice init script
@@ -58,8 +80,8 @@
 
 05-11-2009 Darkice 0.20 released
 
-    o new maintainer: Rafael Diniz <rafael@riseup.net>	
-    o added AAC HEv2 encoding support (branch darkice-aacp merged) through 
+    o new maintainer: Rafael Diniz <rafael@riseup.net>
+    o added AAC HEv2 encoding support (branch darkice-aacp merged) through
 	  libaacplus, http://tipok.org.ua/ru/node/17
 	  thanks to tipok <piratfm@gmail.com> and others for the contribution.
     o bugfix: the configure script recognizes Ogg Vorbis shared objects
