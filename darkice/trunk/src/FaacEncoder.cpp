@@ -90,7 +90,7 @@ FaacEncoder :: open ( void )
 
     faacConfig = faacEncGetCurrentConfiguration(encoderHandle);
 
-    faacConfig->aacObjectType = MAIN;
+    faacConfig->aacObjectType = LOW;
     faacConfig->mpegVersion   = MPEG2;
     faacConfig->useTns        = 1;
     faacConfig->shortctl      = SHORTCTL_NORMAL;
