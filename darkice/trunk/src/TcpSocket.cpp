@@ -194,8 +194,8 @@ TcpSocket :: open ( void )                       throw ( Exception )
 {
     int                     optval;
     socklen_t               optlen;
-#ifdef HAVE_ADDRINFO
-    struct addrinfo         hints
+#ifdef HAVE_GETADDRINFO
+    struct addrinfo         hints;
     struct addrinfo       * ptr;
     struct sockaddr_storage addr;
     char                    portstr[6];
@@ -208,17 +208,17 @@ TcpSocket :: open ( void )                       throw ( Exception )
         return false;
     }
 
-#ifdef HAVE_ADDRINFO
+#ifdef HAVE_GETADDRINFO
     memset(&hints, 0, sizeof(hints));
     hints.ai_socktype = SOCK_STREAM;
-    hints.ai_family = AF_ANY;
+    hints.ai_family = AF_UNSPEC;
     snprintf(portstr, sizeof(portstr), "%d", port);
 
     if (getaddrinfo(host , portstr, &hints, &ptr)) {
         sockfd = 0;
         throw Exception( __FILE__, __LINE__, "getaddrinfo error", errno);
     }
-    memcpy ( addr, ptr->ai_addr, ptr->ai_addrlen);
+    memcpy ( &addr, ptr->ai_addr, ptr->ai_addrlen);
     freeaddrinfo(ptr);
 #else
     if ( !(pHostEntry = gethostbyname( host)) ) {
@@ -232,7 +232,7 @@ TcpSocket :: open ( void )                       throw ( Exception )
     addr.sin_addr.s_addr = *((long*) pHostEntry->h_addr_list[0]);
 #endif
 
-    if ( (sockfd = socket( AF_INET, SOCK_STREAM,  IPPROTO_TCP)) == -1 ) {
+    if ( (sockfd = socket( addr.ss_family, SOCK_STREAM,  IPPROTO_TCP)) == -1 ) {
         sockfd = 0;
         throw Exception( __FILE__, __LINE__, "socket error", errno);
     }
