@@ -74,6 +74,11 @@ class CastSink : public Sink, public virtual Reporter
         Ref<Sink>           streamDump;
 
         /**
+         *  username to the server.
+         */
+        char              * username;
+
+        /**
          *  Password to the server.
          */
         char              * password;
@@ -118,6 +123,7 @@ class CastSink : public Sink, public virtual Reporter
         void
         init (  TcpSocket             * socket,
                 Sink                  * streamDump,
+                const char            * username,
                 const char            * password,
                 unsigned int            bitRate,
                 const char            * name,
@@ -193,6 +199,7 @@ class CastSink : public Sink, public virtual Reporter
          *  @param bitRate bitrate of the stream (e.g. mp3 bitrate).
          *  @param isPublic is the stream public?
          *  @param streamDump a Sink to dump the streamed binary data to
+         *  @param username username to the server.
          *
          *  @exception Exception
          */
@@ -204,11 +211,13 @@ class CastSink : public Sink, public virtual Reporter
                     const char        * url            = 0,
                     const char        * genre          = 0,
                     bool                isPublic       = false,
-                    Sink              * streamDump     = 0)
+                    Sink              * streamDump     = 0,
+                    const char        * username       = "source")
                                                         throw ( Exception )
         {
             init( socket,
                   streamDump,
+                  username,
                   password,
                   bitRate,
                   name,
@@ -233,7 +242,8 @@ class CastSink : public Sink, public virtual Reporter
                   cs.name,
                   cs.url,
                   cs.genre,
-                  cs.isPublic );
+                  cs.isPublic,
+                  cs.username );
         }
 
         /**
@@ -267,7 +277,8 @@ class CastSink : public Sink, public virtual Reporter
                       cs.name,
                       cs.url,
                       cs.genre,
-                      cs.isPublic );
+                      cs.isPublic,
+                      cs.username );
             }
             return *this;
         }
@@ -374,6 +385,18 @@ class CastSink : public Sink, public virtual Reporter
 
             return getSink()->close();
         }
+
+        /**
+         *  Get the username to the server.
+         *
+         *  @return the username to the server.
+         */
+        inline const char *
+        getUsername ( void ) const                  throw ()
+        {
+            return username;
+        }
+
 
         /**
          *  Get the password to the server.
