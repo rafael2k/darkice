@@ -180,6 +180,8 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     {
         // send source:<password> encoded as base64
         const char  * username = getUsername();
+        if(username == NULL)
+            username = "source";
         const char  * pwd    = getPassword();
         char        * tmp    = new char[Util::strLen(username) + 1 +
                                         Util::strLen(pwd) + 1];

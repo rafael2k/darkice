@@ -112,6 +112,7 @@ class CastSink : public Sink, public virtual Reporter
          *  Initalize the object.
          *
          *  @param socket socket connection to the server.
+         *  @param username username to the server.
          *  @param password password to the server.
          *  @param name name of the stream.
          *  @param url URL associated with the stream.
@@ -205,14 +206,14 @@ class CastSink : public Sink, public virtual Reporter
          */
         inline
         CastSink (  TcpSocket         * socket,
+                    const char        * username,
                     const char        * password,
                     unsigned int        bitRate,
                     const char        * name           = 0,
                     const char        * url            = 0,
                     const char        * genre          = 0,
                     bool                isPublic       = false,
-                    Sink              * streamDump     = 0,
-                    const char        * username       = "source")
+                    Sink              * streamDump     = 0 )
                                                         throw ( Exception )
         {
             init( socket,
@@ -237,13 +238,13 @@ class CastSink : public Sink, public virtual Reporter
         {
             init( cs.socket.get(),
                   cs.streamDump.get(),
+                  cs.username,
                   cs.password,
                   cs.bitRate,
                   cs.name,
                   cs.url,
                   cs.genre,
-                  cs.isPublic,
-                  cs.username );
+                  cs.isPublic );
         }
 
         /**
@@ -272,13 +273,13 @@ class CastSink : public Sink, public virtual Reporter
                 Sink::operator=( cs );
                 init( cs.socket.get(),
                       cs.streamDump.get(),
+                      cs.username,
                       cs.password,
                       cs.bitRate,
                       cs.name,
                       cs.url,
                       cs.genre,
-                      cs.isPublic,
-                      cs.username );
+                      cs.isPublic );
             }
             return *this;
         }
