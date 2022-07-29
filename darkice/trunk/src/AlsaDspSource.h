@@ -47,6 +47,7 @@
 
 #include "Reporter.h"
 #include "AudioSource.h"
+#include <string>
 
 #ifdef HAVE_ALSA_LIB
 #include <alsa/asoundlib.h>
