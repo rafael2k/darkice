@@ -156,6 +156,7 @@ class IceCast : public CastSink
                     Sink              * streamDump     = 0 )
                                                         throw ( Exception )
               : CastSink( socket,
+                          NULL,
                           password,
                           bitRate,
                           name,

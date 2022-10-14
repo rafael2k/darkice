@@ -135,6 +135,7 @@ class IceCast2 : public CastSink
          *  Constructor.
          *
          *  @param socket socket connection to the server.
+         *  @param username to be passed to the server
          *  @param password password to the server.
          *  @param mountPoint mount point of the stream on the server.
          *  @param format the format of the stream.
@@ -152,6 +153,7 @@ class IceCast2 : public CastSink
          */
         inline
         IceCast2 (  TcpSocket         * socket,
+                    const char        * username,
                     const char        * password,
                     const char        * mountPoint,
                     StreamFormat        format,
@@ -164,6 +166,7 @@ class IceCast2 : public CastSink
                     Sink              * streamDump     = 0 )
                                                         throw ( Exception )
               : CastSink( socket,
+                          username,
                           password,
                           bitRate,
                           name,

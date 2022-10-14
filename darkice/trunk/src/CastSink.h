@@ -74,6 +74,11 @@ class CastSink : public Sink, public virtual Reporter
         Ref<Sink>           streamDump;
 
         /**
+         *  username to the server.
+         */
+        char              * username;
+
+        /**
          *  Password to the server.
          */
         char              * password;
@@ -107,6 +112,7 @@ class CastSink : public Sink, public virtual Reporter
          *  Initalize the object.
          *
          *  @param socket socket connection to the server.
+         *  @param username username to the server.
          *  @param password password to the server.
          *  @param name name of the stream.
          *  @param url URL associated with the stream.
@@ -118,6 +124,7 @@ class CastSink : public Sink, public virtual Reporter
         void
         init (  TcpSocket             * socket,
                 Sink                  * streamDump,
+                const char            * username,
                 const char            * password,
                 unsigned int            bitRate,
                 const char            * name,
@@ -193,22 +200,25 @@ class CastSink : public Sink, public virtual Reporter
          *  @param bitRate bitrate of the stream (e.g. mp3 bitrate).
          *  @param isPublic is the stream public?
          *  @param streamDump a Sink to dump the streamed binary data to
+         *  @param username username to the server.
          *
          *  @exception Exception
          */
         inline
         CastSink (  TcpSocket         * socket,
+                    const char        * username,
                     const char        * password,
                     unsigned int        bitRate,
                     const char        * name           = 0,
                     const char        * url            = 0,
                     const char        * genre          = 0,
                     bool                isPublic       = false,
-                    Sink              * streamDump     = 0)
+                    Sink              * streamDump     = 0 )
                                                         throw ( Exception )
         {
             init( socket,
                   streamDump,
+                  username,
                   password,
                   bitRate,
                   name,
@@ -228,6 +238,7 @@ class CastSink : public Sink, public virtual Reporter
         {
             init( cs.socket.get(),
                   cs.streamDump.get(),
+                  cs.username,
                   cs.password,
                   cs.bitRate,
                   cs.name,
@@ -262,6 +273,7 @@ class CastSink : public Sink, public virtual Reporter
                 Sink::operator=( cs );
                 init( cs.socket.get(),
                       cs.streamDump.get(),
+                      cs.username,
                       cs.password,
                       cs.bitRate,
                       cs.name,
@@ -374,6 +386,18 @@ class CastSink : public Sink, public virtual Reporter
 
             return getSink()->close();
         }
+
+        /**
+         *  Get the username to the server.
+         *
+         *  @return the username to the server.
+         */
+        inline const char *
+        getUsername ( void ) const                  throw ()
+        {
+            return username;
+        }
+
 
         /**
          *  Get the password to the server.

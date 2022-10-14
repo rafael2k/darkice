@@ -179,11 +179,14 @@ IceCast2 :: sendLogin ( void )                           throw ( Exception )
     sink->write( str, strlen(str));
     {
         // send source:<password> encoded as base64
-        const char  * source = "source:";
+        const char  * username = getUsername();
+        if(username == NULL)
+            username = "source";
         const char  * pwd    = getPassword();
-        char        * tmp    = new char[Util::strLen(source) +
+        char        * tmp    = new char[Util::strLen(username) + 1 +
                                         Util::strLen(pwd) + 1];
-        Util::strCpy( tmp, source);
+        Util::strCpy( tmp, username);
+        Util::strCat( tmp, ":");
         Util::strCat( tmp, pwd);
         char  * base64 = Util::base64Encode( tmp);
         delete[] tmp;

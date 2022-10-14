@@ -131,7 +131,7 @@ class FileCast : public CastSink
         inline
         FileCast (  FileSink          * targetFile )
                                                         throw ( Exception )
-                : CastSink( 0, 0, 0)
+                : CastSink( 0, 0, 0, 0)
         {
             init( targetFile );
         }

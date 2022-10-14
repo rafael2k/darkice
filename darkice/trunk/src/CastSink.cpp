@@ -56,6 +56,7 @@ static const char fileid[] = "$Id$";
 void
 CastSink :: init (  TcpSocket             * socket,
                     Sink                  * streamDump,
+                    const char            * username,
                     const char            * password,
                     unsigned int            bitRate,
                     const char            * name,
@@ -67,6 +68,7 @@ CastSink :: init (  TcpSocket             * socket,
     this->socket         = socket;
     this->streamDump     = streamDump;
     this->password       = password       ? Util::strDup( password) : 0;
+    this->username       = username       ? Util::strDup( username) : 0;
     this->bitRate        = bitRate;
     this->name           = name           ? Util::strDup( name)     : 0;
     this->url            = url            ? Util::strDup( url)      : 0;

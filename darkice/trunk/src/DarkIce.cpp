@@ -457,6 +457,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
         double                      quality         = 0.0;
         const char                * server          = 0;
         unsigned int                port            = 0;
+        const char                * username        = 0;
         const char                * password        = 0;
         const char                * mountPoint      = 0;
         const char                * name            = 0;
@@ -537,6 +538,8 @@ DarkIce :: configIceCast2 (  const Config      & config,
         str         = cs->getForSure( "port", " missing in section ", stream);
         port        = Util::strToL( str);
         password    = cs->getForSure("password"," missing in section ",stream);
+        username    = cs->get("username");
+        username    = (username != NULL) ? username : "source";
         mountPoint  = cs->getForSure( "mountPoint",
                                       " missing in section ",
                                       stream);
@@ -589,6 +592,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
         // streaming related stuff
         audioOuts[u].socket = new TcpSocket( server, port);
         audioOuts[u].server = new IceCast2( audioOuts[u].socket.get(),
+                                            username,
                                             password,
                                             mountPoint,
                                             format,
