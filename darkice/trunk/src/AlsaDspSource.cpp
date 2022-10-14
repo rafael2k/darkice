@@ -261,8 +261,18 @@ AlsaDspSource :: read (    void          * buf,
         }
     } while (ret == -EAGAIN);
 
+    if ( ret == -EBADFD ) {
+        Exception e = Exception(__FILE__, __LINE__,
+                                "ALSA/PCM device is in a bad state: ",
+                                std::to_string(snd_pcm_state(captureHandle)).c_str());
+        close();
+        throw e;
+    }
+
     if ( ret < 0 ) {
-        throw Exception(__FILE__, __LINE__, snd_strerror(ret));
+        Exception e = Exception(__FILE__, __LINE__, snd_strerror(ret));
+        close();
+        throw e;
     }
 
     running = true;

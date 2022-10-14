@@ -160,6 +160,7 @@ main (
 
     } catch ( Exception   & e ) {
         std::cout << "DarkIce: " << e << std::endl << std::flush;
+        _exit(1);
     }
 
     return res;
