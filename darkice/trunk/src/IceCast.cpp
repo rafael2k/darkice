@@ -88,7 +88,7 @@ void
 IceCast :: init (   const char            * mountPoint,
                     const char            * description,
                     const char            * remoteDumpFile )
-                                                        throw ( Exception )
+                                                        
 {
     this->mountPoint     = Util::strDup( mountPoint);
     this->description    = description    ? Util::strDup( description) : 0;
@@ -100,7 +100,7 @@ IceCast :: init (   const char            * mountPoint,
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-IceCast :: strip ( void )                           throw ( Exception )
+IceCast :: strip ( void )                           
 {
     delete[] mountPoint;
     if ( description ) {
@@ -116,7 +116,7 @@ IceCast :: strip ( void )                           throw ( Exception )
  *  Log in to the IceCast server
  *----------------------------------------------------------------------------*/
 bool
-IceCast :: sendLogin ( void )                           throw ( Exception )
+IceCast :: sendLogin ( void )                           
 {
     Sink          * sink   = getSink();
     Source        * source = getSocket();

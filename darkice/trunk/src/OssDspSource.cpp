@@ -140,7 +140,7 @@ OssDspSource :: isBigEndian ( void ) const                  throw ()
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-OssDspSource :: init (  const char      * name )    throw ( Exception )
+OssDspSource :: init (  const char      * name )    
 {
     fileName       = Util::strDup( name);
     fileDescriptor = 0;
@@ -152,7 +152,7 @@ OssDspSource :: init (  const char      * name )    throw ( Exception )
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-OssDspSource :: strip ( void )                      throw ( Exception )
+OssDspSource :: strip ( void )                      
 {
     if ( isOpen() ) {
         close();
@@ -166,7 +166,7 @@ OssDspSource :: strip ( void )                      throw ( Exception )
  *  Open the audio source
  *----------------------------------------------------------------------------*/
 bool
-OssDspSource :: open ( void )                       throw ( Exception )
+OssDspSource :: open ( void )                       
 {
     int             format;
     int             i;
@@ -233,7 +233,7 @@ OssDspSource :: open ( void )                       throw ( Exception )
  *----------------------------------------------------------------------------*/
 bool
 OssDspSource :: canRead ( unsigned int    sec,
-                          unsigned int    usec )    throw ( Exception )
+                          unsigned int    usec )    
 {
     fd_set              fdset;
     struct timespec     timespec;
@@ -277,7 +277,7 @@ OssDspSource :: canRead ( unsigned int    sec,
  *----------------------------------------------------------------------------*/
 unsigned int
 OssDspSource :: read (    void          * buf,
-                          unsigned int    len )     throw ( Exception )
+                          unsigned int    len )     
 {
     ssize_t     ret;
 
@@ -300,7 +300,7 @@ OssDspSource :: read (    void          * buf,
  *  Close the audio source
  *----------------------------------------------------------------------------*/
 void
-OssDspSource :: close ( void )                  throw ( Exception )
+OssDspSource :: close ( void )                  
 {
     if ( !isOpen() ) {
         return;

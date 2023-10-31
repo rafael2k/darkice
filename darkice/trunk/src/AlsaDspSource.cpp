@@ -78,7 +78,7 @@ AlsaDspSource :: isBigEndian ( void ) const                  throw ()
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-AlsaDspSource :: init (  const char      * name )    throw ( Exception )
+AlsaDspSource :: init (  const char      * name )
 {
     pcmName       = Util::strDup( name);
     captureHandle = 0;
@@ -91,7 +91,7 @@ AlsaDspSource :: init (  const char      * name )    throw ( Exception )
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-AlsaDspSource :: strip ( void )                      throw ( Exception )
+AlsaDspSource :: strip ( void )
 {
     if ( isOpen() ) {
         close();
@@ -105,7 +105,7 @@ AlsaDspSource :: strip ( void )                      throw ( Exception )
  *  Open the audio source
  *----------------------------------------------------------------------------*/
 bool
-AlsaDspSource :: open ( void )                       throw ( Exception )
+AlsaDspSource :: open ( void )
 {
     unsigned int        u;
     snd_pcm_format_t    format;
@@ -214,7 +214,7 @@ AlsaDspSource :: open ( void )                       throw ( Exception )
  *----------------------------------------------------------------------------*/
 bool
 AlsaDspSource :: canRead ( unsigned int    sec,
-                           unsigned int    usec )    throw ( Exception )
+                           unsigned int    usec )
 {
     if ( !isOpen() ) {
         return false;
@@ -242,7 +242,7 @@ AlsaDspSource :: canRead ( unsigned int    sec,
  *----------------------------------------------------------------------------*/
 unsigned int
 AlsaDspSource :: read (    void          * buf,
-                           unsigned int    len )     throw ( Exception )
+                           unsigned int    len )
 {
     snd_pcm_sframes_t ret;
 
@@ -284,7 +284,7 @@ AlsaDspSource :: read (    void          * buf,
  *  Close the audio source
  *----------------------------------------------------------------------------*/
 void
-AlsaDspSource :: close ( void )                  throw ( Exception )
+AlsaDspSource :: close ( void )
 {
     if ( !isOpen() ) {
         return;

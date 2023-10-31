@@ -129,7 +129,7 @@ class Reporter
          *  @exception Exception
          */
         inline virtual
-        ~Reporter ( void )                                  throw ( Exception )
+        ~Reporter ( void )                                  
         {
             (Reporter::os)->flush();
         }

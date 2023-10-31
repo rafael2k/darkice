@@ -63,7 +63,7 @@ static const char fileid[] = "$Id$";
  *----------------------------------------------------------------------------*/
 void
 VorbisLibEncoder :: init ( unsigned int     outMaxBitrate )
-                                                            throw ( Exception )
+                                                            
 {
     this->outMaxBitrate = outMaxBitrate;
 
@@ -146,7 +146,7 @@ VorbisLibEncoder :: init ( unsigned int     outMaxBitrate )
  *----------------------------------------------------------------------------*/
 bool
 VorbisLibEncoder :: open ( void )
-                                                            throw ( Exception )
+                                                            
 {
     int     ret;
 
@@ -283,7 +283,7 @@ VorbisLibEncoder :: open ( void )
  *----------------------------------------------------------------------------*/
 unsigned int
 VorbisLibEncoder :: write ( const void    * buf,
-                            unsigned int    len )           throw ( Exception )
+                            unsigned int    len )           
 {
     if ( !isOpen() || len == 0 ) {
         return 0;
@@ -382,7 +382,7 @@ VorbisLibEncoder :: write ( const void    * buf,
  *----------------------------------------------------------------------------*/
 void
 VorbisLibEncoder :: flush ( void )
-                                                            throw ( Exception )
+                                                            
 {
     if ( !isOpen() ) {
         return;
@@ -398,7 +398,7 @@ VorbisLibEncoder :: flush ( void )
  *  Send pending Vorbis blocks to the underlying stream
  *----------------------------------------------------------------------------*/
 void
-VorbisLibEncoder :: vorbisBlocksOut ( void )                throw ( Exception )
+VorbisLibEncoder :: vorbisBlocksOut ( void )                
 {
     while ( 1 == vorbis_analysis_blockout( &vorbisDspState, &vorbisBlock) ) {
         ogg_packet      oggPacket;
@@ -433,7 +433,7 @@ VorbisLibEncoder :: vorbisBlocksOut ( void )                throw ( Exception )
  *  Close the encoding session
  *----------------------------------------------------------------------------*/
 void
-VorbisLibEncoder :: close ( void )                    throw ( Exception )
+VorbisLibEncoder :: close ( void )                    
 {
     if ( isOpen() ) {
         flush();

@@ -74,7 +74,7 @@ class FileCast : public CastSink
          */
         inline void
         init (  FileSink          * targetFile )
-                                                    throw ( Exception )
+                                                    
         {
             this->targetFile = targetFile;
         }
@@ -85,7 +85,7 @@ class FileCast : public CastSink
          *  @exception Exception
          */
         inline void
-        strip ( void )                              throw ( Exception )
+        strip ( void )                              
         {
             if ( isOpen() ) {
                 close();
@@ -101,7 +101,7 @@ class FileCast : public CastSink
          *  @exception Exception
          */
         inline
-        FileCast ( void )                            throw ( Exception )
+        FileCast ( void )                            
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -114,7 +114,7 @@ class FileCast : public CastSink
          *  @exception Exception
          */
         inline virtual bool
-        sendLogin ( void )              throw ( Exception )
+        sendLogin ( void )              
         {
             return true;
         }
@@ -130,7 +130,7 @@ class FileCast : public CastSink
          */
         inline
         FileCast (  FileSink          * targetFile )
-                                                        throw ( Exception )
+                                                        
                 : CastSink( 0, 0, 0, 0)
         {
             init( targetFile );
@@ -142,7 +142,7 @@ class FileCast : public CastSink
          *  @param cs the FileCast to copy.
          */
         inline
-        FileCast(   const FileCast &    cs )        throw ( Exception )
+        FileCast(   const FileCast &    cs )        
         {
             init( targetFile.get() );
         }
@@ -153,7 +153,7 @@ class FileCast : public CastSink
          *  @exception Exception
          */
         inline virtual
-        ~FileCast( void )                           throw ( Exception )
+        ~FileCast( void )                           
         {
             strip();
         }
@@ -166,7 +166,7 @@ class FileCast : public CastSink
          *  @exception Exception
          */
         inline virtual FileCast &
-        operator= ( const FileCast &    cs )        throw ( Exception )
+        operator= ( const FileCast &    cs )        
         {
             if ( this != &cs ) {
                 strip();
@@ -182,7 +182,7 @@ class FileCast : public CastSink
          *  @exception Exception
          */
         virtual bool
-        open ( void )                               throw ( Exception );
+        open ( void )                               ;
 
         /**
          *  Check if the FileCast is open.
@@ -207,7 +207,7 @@ class FileCast : public CastSink
          */
         inline virtual bool
         canWrite (     unsigned int    sec,
-                       unsigned int    usec )       throw ( Exception )
+                       unsigned int    usec )       
         {
             return targetFile->canWrite( sec, usec);
         }
@@ -222,7 +222,7 @@ class FileCast : public CastSink
          */
         inline virtual unsigned int
         write (        const void    * buf,
-                       unsigned int    len )        throw ( Exception )
+                       unsigned int    len )        
         {
             return targetFile->write( buf, len);
         }
@@ -233,7 +233,7 @@ class FileCast : public CastSink
          *  @exception Exception
          */
         inline virtual void
-        flush ( void )                              throw ( Exception )
+        flush ( void )                              
         {
             return targetFile->flush();
         }
@@ -255,7 +255,7 @@ class FileCast : public CastSink
          *  @exception Exception
          */
         inline virtual void
-        close ( void )                              throw ( Exception )
+        close ( void )                              
         {
             return targetFile->close();
         }

@@ -114,7 +114,7 @@ static const char fileid[] = "$Id$";
  *----------------------------------------------------------------------------*/
 void
 TcpSocket :: init (   const char    * host,
-                      unsigned short  port )          throw ( Exception )
+                      unsigned short  port )          
 {
     this->host   = Util::strDup( host);
     this->port   = port;
@@ -126,7 +126,7 @@ TcpSocket :: init (   const char    * host,
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-TcpSocket :: strip ( void)                           throw ( Exception )
+TcpSocket :: strip ( void)                           
 {
     if ( isOpen() ) {
         close();
@@ -139,7 +139,7 @@ TcpSocket :: strip ( void)                           throw ( Exception )
 /*------------------------------------------------------------------------------
  *  Copy Constructor
  *----------------------------------------------------------------------------*/
-TcpSocket :: TcpSocket (  const TcpSocket &    ss )    throw ( Exception )
+TcpSocket :: TcpSocket (  const TcpSocket &    ss )    
                 : Source( ss), Sink( ss )
 {
     int     fd;
@@ -159,7 +159,7 @@ TcpSocket :: TcpSocket (  const TcpSocket &    ss )    throw ( Exception )
  *  Assignment operator
  *----------------------------------------------------------------------------*/
 TcpSocket &
-TcpSocket :: operator= (  const TcpSocket &    ss )   throw ( Exception )
+TcpSocket :: operator= (  const TcpSocket &    ss )   
 {
     if ( this != &ss ) {
         int     fd;
@@ -190,7 +190,7 @@ TcpSocket :: operator= (  const TcpSocket &    ss )   throw ( Exception )
  *  Open the file
  *----------------------------------------------------------------------------*/
 bool
-TcpSocket :: open ( void )                       throw ( Exception )
+TcpSocket :: open ( void )                       
 {
     int                     optval;
     socklen_t               optlen;
@@ -260,7 +260,7 @@ TcpSocket :: open ( void )                       throw ( Exception )
  *----------------------------------------------------------------------------*/
 bool
 TcpSocket :: canRead (      unsigned int    sec,
-                            unsigned int    usec )      throw ( Exception )
+                            unsigned int    usec )      
 {
     fd_set              fdset;
     struct timespec     timespec;
@@ -298,7 +298,7 @@ TcpSocket :: canRead (      unsigned int    sec,
  *----------------------------------------------------------------------------*/
 unsigned int
 TcpSocket :: read (     void          * buf,
-                        unsigned int    len )       throw ( Exception )
+                        unsigned int    len )       
 {
     int         ret;
 
@@ -333,7 +333,7 @@ TcpSocket :: read (     void          * buf,
  *----------------------------------------------------------------------------*/
 bool
 TcpSocket :: canWrite (    unsigned int    sec,
-                           unsigned int    usec )      throw ( Exception )
+                           unsigned int    usec )      
 {
     fd_set              fdset;
     struct timespec     timespec;
@@ -371,7 +371,7 @@ TcpSocket :: canWrite (    unsigned int    sec,
  *----------------------------------------------------------------------------*/
 unsigned int
 TcpSocket :: write (    const void    * buf,
-                        unsigned int    len )       throw ( Exception )
+                        unsigned int    len )       
 {
     int         ret;
 
@@ -404,7 +404,7 @@ TcpSocket :: write (    const void    * buf,
  *  Close the socket
  *----------------------------------------------------------------------------*/
 void
-TcpSocket :: close ( void )                          throw ( Exception )
+TcpSocket :: close ( void )                          
 {
     if ( !isOpen() ) {
         return;

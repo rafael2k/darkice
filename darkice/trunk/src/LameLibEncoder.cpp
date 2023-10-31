@@ -64,7 +64,7 @@ static const char fileid[] = "$Id$";
  *----------------------------------------------------------------------------*/
 bool
 LameLibEncoder :: open ( void )
-                                                            throw ( Exception )
+                                                            
 {
     if ( isOpen() ) {
         close();
@@ -275,7 +275,7 @@ LameLibEncoder :: open ( void )
  *----------------------------------------------------------------------------*/
 unsigned int
 LameLibEncoder :: write (   const void    * buf,
-                            unsigned int    len )           throw ( Exception )
+                            unsigned int    len )           
 {
     if ( !isOpen() || len == 0 ) {
         return 0;
@@ -349,7 +349,7 @@ LameLibEncoder :: write (   const void    * buf,
  *----------------------------------------------------------------------------*/
 void
 LameLibEncoder :: flush ( void )
-                                                            throw ( Exception )
+                                                            
 {
     if ( !isOpen() ) {
         return;
@@ -380,7 +380,7 @@ LameLibEncoder :: flush ( void )
  *  Close the encoding session
  *----------------------------------------------------------------------------*/
 void
-LameLibEncoder :: close ( void )                    throw ( Exception )
+LameLibEncoder :: close ( void )                    
 {
     if ( isOpen() ) {
         flush();

@@ -65,7 +65,6 @@ AudioSource :: createDspSource( const char    * deviceName,
                                 int             sampleRate,
                                 int             bitsPerSample,
                                 int             channel)
-                                                            throw ( Exception )
 {
     
     if ( Util::strEq( deviceName, "/dev/tty", 8) ) {

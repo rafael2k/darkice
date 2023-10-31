@@ -68,7 +68,7 @@ static const char fileid[] = "$Id$";
  *----------------------------------------------------------------------------*/
 bool
 ConfigSection :: add (   const char    * key,
-                         const char    * value )            throw ( Exception )
+                         const char    * value )
 {
     if ( !key || !value ) {
         throw Exception( __FILE__, __LINE__, "no key or value");
@@ -87,7 +87,7 @@ ConfigSection :: add (   const char    * key,
  *  Get a value for a key
  *----------------------------------------------------------------------------*/
 const char *
-ConfigSection :: get (  const char    * key ) const         throw ( Exception )
+ConfigSection :: get (  const char    * key ) const
 {
     if ( !key ) {
         throw Exception( __FILE__, __LINE__, "no key");
@@ -109,7 +109,6 @@ ConfigSection :: getForSure (   const char    * key,
                                 const char    * message1,
                                 const char    * message2,
                                 int             code ) const
-                                                        throw ( Exception )
 {
     const char      * value;
 
@@ -125,7 +124,7 @@ ConfigSection :: getForSure (   const char    * key,
  *  Add a configuration line
  *----------------------------------------------------------------------------*/
 bool
-ConfigSection :: addLine (  const char    * line )          throw ( Exception )
+ConfigSection :: addLine (  const char    * line )
 {
     if ( !line ) {
         throw Exception( __FILE__, __LINE__, "no line");

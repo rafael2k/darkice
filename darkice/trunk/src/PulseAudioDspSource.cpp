@@ -70,7 +70,7 @@ static const char fileid[] = "$Id$";
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-PulseAudioDspSource :: init (  const char      * paSourceName )    throw ( Exception )
+PulseAudioDspSource :: init (  const char      * paSourceName )    
 {
 
     if (paSourceName == NULL)
@@ -140,7 +140,7 @@ PulseAudioDspSource :: init (  const char      * paSourceName )    throw ( Excep
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-PulseAudioDspSource :: strip ( void )                      throw ( Exception )
+PulseAudioDspSource :: strip ( void )                      
 {
     if ( isOpen() ) {
         close();
@@ -154,7 +154,7 @@ PulseAudioDspSource :: strip ( void )                      throw ( Exception )
  *  Open the audio source
  *----------------------------------------------------------------------------*/
 bool
-PulseAudioDspSource :: open ( void )                       throw ( Exception )
+PulseAudioDspSource :: open ( void )                       
 {
   
     char         client_name[255];
@@ -177,7 +177,7 @@ PulseAudioDspSource :: open ( void )                       throw ( Exception )
  *----------------------------------------------------------------------------*/
 bool
 PulseAudioDspSource :: canRead ( unsigned int    sec,
-                           unsigned int    usec )    throw ( Exception )
+                           unsigned int    usec )    
 {
   
   /** Strange have to remove this, need to investigate... */
@@ -208,7 +208,7 @@ PulseAudioDspSource :: canRead ( unsigned int    sec,
  *----------------------------------------------------------------------------*/
 unsigned int
 PulseAudioDspSource :: read (    void          * buf,
-                           unsigned int    len )     throw ( Exception )
+                           unsigned int    len )     
 {
     int ret;
     
@@ -224,7 +224,7 @@ PulseAudioDspSource :: read (    void          * buf,
  *  Close the audio source
  *----------------------------------------------------------------------------*/
 void
-PulseAudioDspSource :: close ( void )                  throw ( Exception )
+PulseAudioDspSource :: close ( void )                  
 {
     if ( !isOpen() ) {
         return;

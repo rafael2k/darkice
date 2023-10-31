@@ -68,7 +68,7 @@ class Connector : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         void
-        init (  Source            * source )        throw ( Exception );
+        init (  Source            * source );
 
         /**
          *  De-initialize the object.
@@ -76,7 +76,7 @@ class Connector : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         void
-        strip ( void )                              throw ( Exception );
+        strip ( void );
 
 
     protected:
@@ -102,7 +102,7 @@ class Connector : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         inline
-        Connector ( void )                          throw ( Exception )
+        Connector ( void )                          
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -115,7 +115,7 @@ class Connector : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         virtual bool
-        detach (    Sink          * sink )          throw ( Exception );
+        detach (    Sink          * sink )          ;
 
 
     public:
@@ -127,7 +127,7 @@ class Connector : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         inline
-        Connector (     Source        * source )    throw ( Exception )
+        Connector (     Source        * source )    
         {
             init( source);
         }
@@ -141,7 +141,7 @@ class Connector : public virtual Referable, public virtual Reporter
          */
         inline
         Connector ( Source            * source,
-                    Sink              * sink )        throw ( Exception )
+                    Sink              * sink )        
         {
             init( source);
             attach( sink);
@@ -153,7 +153,7 @@ class Connector : public virtual Referable, public virtual Reporter
          *  @param connector the object to copy.
          *  @exception Exception
          */
-        Connector ( const Connector &   connector )     throw ( Exception );
+        Connector ( const Connector &   connector )     ;
         
         /**
          *  Destructor.
@@ -161,7 +161,7 @@ class Connector : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~Connector( void )                              throw ( Exception )
+        ~Connector( void )                              
         {
             strip();
         }
@@ -174,7 +174,7 @@ class Connector : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         virtual Connector &
-        operator= ( const Connector &   connector )     throw ( Exception );
+        operator= ( const Connector &   connector )     ;
 
         /**
          *  Get the number of Sinks in the Connector.
@@ -195,7 +195,7 @@ class Connector : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        attach (    Sink          * sink )              throw ( Exception );
+        attach (    Sink          * sink )              ;
 
         /**
          *  Open the connector. Opens the Source and the Sinks if necessary.
@@ -204,7 +204,7 @@ class Connector : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         virtual bool
-        open ( void )                                   throw ( Exception );
+        open ( void )                                   ;
 
         /**
          *  Transfer a given amount of data from the Source to all the
@@ -232,7 +232,7 @@ class Connector : public virtual Referable, public virtual Reporter
         transfer (  unsigned long       bytes,
                     unsigned int        bufSize,
                     unsigned int        sec,
-                    unsigned int        usec )          throw ( Exception );
+                    unsigned int        usec )          ;
 
         /**
          *  Signal to each sink we have that they need to cut what they are
@@ -249,7 +249,7 @@ class Connector : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        close ( void )                                  throw ( Exception );
+        close ( void )                                  ;
 };
 
 

@@ -82,7 +82,7 @@ static const char fileid[] = "$Id$";
 void
 BufferedSink :: init (  Sink          * sink,
                         unsigned int    size,
-                        unsigned int    chunkSize )     throw ( Exception )
+                        unsigned int    chunkSize )
 {
     if ( !sink ) {
         throw Exception( __FILE__, __LINE__, "no sink");
@@ -108,7 +108,6 @@ BufferedSink :: init (  Sink          * sink,
  *  Copy Constructor
  *----------------------------------------------------------------------------*/
 BufferedSink :: BufferedSink (  const BufferedSink &  buffer )
-                                                        throw ( Exception )
 {
     init( buffer.sink.get(), buffer.bufferSize, buffer.chunkSize);
 
@@ -124,7 +123,7 @@ BufferedSink :: BufferedSink (  const BufferedSink &  buffer )
  *  De-initalize the object
  *----------------------------------------------------------------------------*/
 void
-BufferedSink :: strip ( void )                      throw ( Exception )
+BufferedSink :: strip ( void )
 {
     if ( isOpen() ) {
         close();
@@ -140,7 +139,6 @@ BufferedSink :: strip ( void )                      throw ( Exception )
  *----------------------------------------------------------------------------*/
 BufferedSink &
 BufferedSink :: operator= (     const BufferedSink &  buffer )
-                                                    throw ( Exception )
 {
     if ( this != &buffer ) {
         strip();
@@ -168,7 +166,7 @@ BufferedSink :: operator= (     const BufferedSink &  buffer )
  *----------------------------------------------------------------------------*/
 unsigned int
 BufferedSink :: store (     const void    * buffer,
-                            unsigned int    bufferSize )    throw ( Exception )
+                            unsigned int    bufferSize )
 {
     const unsigned char   * buf;
     unsigned int            size;
@@ -271,7 +269,7 @@ BufferedSink :: store (     const void    * buffer,
  *----------------------------------------------------------------------------*/
 unsigned int
 BufferedSink :: write (    const void    * buf,
-                           unsigned int    len )       throw ( Exception )
+                           unsigned int    len )
 {
     unsigned int    length = 0;
     unsigned int    soFar = 0;
@@ -420,7 +418,7 @@ BufferedSink :: write (    const void    * buf,
  *  Close the sink, lose all pending data
  *----------------------------------------------------------------------------*/
 void
-BufferedSink :: close ( void )                      throw ( Exception )
+BufferedSink :: close ( void )
 {
     if ( !isOpen() ) {
         return;

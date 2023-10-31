@@ -111,7 +111,7 @@ class Config : public virtual Referable
          *  @exception Exception
          */
         inline
-        Config ( void )                             throw ( Exception )
+        Config ( void )                             
         {
         }
 
@@ -123,7 +123,7 @@ class Config : public virtual Referable
          *  @exception Exception
          */
         inline
-        Config (    std::istream  & is )            throw ( Exception )
+        Config (    std::istream  & is )            
         {
             read( is );
         }
@@ -134,7 +134,7 @@ class Config : public virtual Referable
          *  @exception Exception
          */
         inline virtual
-        ~Config ( void )                            throw ( Exception )
+        ~Config ( void )                            
         {
         }
 
@@ -142,13 +142,13 @@ class Config : public virtual Referable
 /*  TODO
 
         inline
-        Config ( const Config   & di )            throw ( Exception )
+        Config ( const Config   & di )            
         {
         }
 
 
         inline Config &
-        operator= ( const Config   * di )          throw ( Exception )
+        operator= ( const Config   * di )          
         {
         }
 */
@@ -160,7 +160,7 @@ class Config : public virtual Referable
          *  @exception Exception
          */
         inline virtual void
-        reset ( void )                                  throw ( Exception )
+        reset ( void )                                  
         {
             table.clear();
             currentSection = "";
@@ -174,7 +174,7 @@ class Config : public virtual Referable
          *  @exception Exception
          */
         virtual bool
-        addLine (   const char    * line )              throw ( Exception );
+        addLine (   const char    * line )              ;
 
         /**
          *  Read a line of confiugration information.
@@ -184,7 +184,7 @@ class Config : public virtual Referable
          *  @exception Exception
          */
         virtual void
-        read (   std::istream     & is )                throw ( Exception );
+        read (   std::istream     & is )                ;
 
         /**
          *  Get a ConfigSection by name.
@@ -194,7 +194,7 @@ class Config : public virtual Referable
          *  @exception Exception
          */
         virtual const ConfigSection *
-        get (   const char    * key ) const             throw ( Exception );
+        get (   const char    * key ) const             ;
 };
 
 

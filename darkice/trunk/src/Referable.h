@@ -99,13 +99,8 @@ class Referable
          *  @exception Exception
          */
         inline virtual
-        ~Referable ( void )                             throw ( Exception )
+        ~Referable ( void )                             
         {
-            if ( referenceCount > 0 ) {
-                throw Exception( __FILE__, __LINE__,
-                                 "reference count positive in destructor",
-                                 referenceCount);
-            }
         }
 
 
@@ -118,7 +113,7 @@ class Referable
          *  @exception Exception
          */
         inline unsigned int
-        increaseReferenceCount ( void )                 throw ( Exception )
+        increaseReferenceCount ( void )                 
         {
             if ( referenceCount >= maxCount ) {
                 throw Exception( __FILE__,
@@ -136,7 +131,7 @@ class Referable
          *  @exception Exception
          */
         inline unsigned int
-        decreaseReferenceCount ( void )                 throw ( Exception )
+        decreaseReferenceCount ( void )                 
         {
             if ( referenceCount == 0 ) {
                 throw Exception( __FILE__, __LINE__,

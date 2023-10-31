@@ -131,7 +131,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline void
-        init ( int              lowpass)                throw (Exception)
+        init ( int              lowpass)
         {
             this->faacOpen        = false;
             this->lowpass         = lowpass;
@@ -216,7 +216,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline void
-        strip ( void )                                  throw ( Exception )
+        strip ( void )                                  
         {
             if ( converter ) {
 #ifdef HAVE_SRC_LIB
@@ -238,7 +238,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline
-        FaacEncoder ( void )                         throw ( Exception )
+        FaacEncoder ( void )                         
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -279,7 +279,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
                         unsigned int    outSampleRate = 0,
                         unsigned int    outChannel    = 0,
                         int             lowpass       = 0)
-                                                        throw ( Exception )
+                                                        
             
                     : AudioEncoder ( sink,
                                      inSampleRate,
@@ -323,7 +323,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
                         unsigned int            outSampleRate = 0,
                         unsigned int            outChannel    = 0,
                         int                     lowpass       = 0)
-                                                            throw ( Exception )
+                                                            
             
                     : AudioEncoder ( sink,
                                      as,
@@ -343,7 +343,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
          */
         inline
         FaacEncoder (  const FaacEncoder &    encoder )
-                                                            throw ( Exception )
+                                                            
                     : AudioEncoder( encoder )
         {
             init( encoder.lowpass);
@@ -356,7 +356,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~FaacEncoder ( void )                            throw ( Exception )
+        ~FaacEncoder ( void )                            
         {
             if ( isOpen() ) {
                 close();
@@ -372,7 +372,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual FaacEncoder &
-        operator= ( const FaacEncoder &      encoder )   throw ( Exception )
+        operator= ( const FaacEncoder &      encoder )   
         {
             if ( this != &encoder ) {
                 strip();
@@ -417,7 +417,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual bool
-        start ( void )                      throw ( Exception )
+        start ( void )                      
         {
             return open();
         }
@@ -428,7 +428,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual void
-        stop ( void )                       throw ( Exception )
+        stop ( void )                       
         {
             return close();
         }
@@ -440,7 +440,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         virtual bool
-        open ( void )                               throw ( Exception );
+        open ( void )                               ;
 
         /**
          *  Check if the encoding session is open.
@@ -464,7 +464,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
          */
         inline virtual bool
         canWrite (     unsigned int    sec,
-                       unsigned int    usec )       throw ( Exception )
+                       unsigned int    usec )       
         {
             if ( !isOpen() ) {
                 return false;
@@ -486,7 +486,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
          */
         virtual unsigned int
         write (        const void    * buf,
-                       unsigned int    len )        throw ( Exception );
+                       unsigned int    len )        ;
 
         /**
          *  Flush all data that was written to the encoder to the underlying
@@ -495,7 +495,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        flush ( void )                              throw ( Exception );
+        flush ( void )                              ;
 
         /**
          *  Close the encoding session.
@@ -503,7 +503,7 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        close ( void )                              throw ( Exception );
+        close ( void )                              ;
 };
 
 

@@ -174,7 +174,7 @@ SerialUlaw :: isBigEndian ( void ) const                  throw ()
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-SerialUlaw :: init (  const char      * name )    throw ( Exception )
+SerialUlaw :: init (  const char      * name )    
 {
     fileName       = Util::strDup( name);
     fileDescriptor = 0;
@@ -186,7 +186,7 @@ SerialUlaw :: init (  const char      * name )    throw ( Exception )
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-SerialUlaw :: strip ( void )                      throw ( Exception )
+SerialUlaw :: strip ( void )                      
 {
     if ( isOpen() ) {
         close();
@@ -200,7 +200,7 @@ SerialUlaw :: strip ( void )                      throw ( Exception )
  *  Open the audio source
  *----------------------------------------------------------------------------*/
 bool
-SerialUlaw :: open ( void )                       throw ( Exception )
+SerialUlaw :: open ( void )                       
 {
     struct termios    ts;
 
@@ -254,7 +254,7 @@ SerialUlaw :: open ( void )                       throw ( Exception )
  *----------------------------------------------------------------------------*/
 bool
 SerialUlaw :: canRead ( unsigned int    sec,
-                          unsigned int    usec )    throw ( Exception )
+                          unsigned int    usec )    
 {
     fd_set              fdset;
     struct timeval      tv;
@@ -284,7 +284,7 @@ SerialUlaw :: canRead ( unsigned int    sec,
  *----------------------------------------------------------------------------*/
 unsigned int
 SerialUlaw :: read (    void          * buf,
-                          unsigned int    len )     throw ( Exception )
+                          unsigned int    len )     
 {
     ssize_t         ret;
     unsigned char    ubuf[256], * ptr;
@@ -323,7 +323,7 @@ SerialUlaw :: read (    void          * buf,
  *  Close the audio source
  *----------------------------------------------------------------------------*/
 void
-SerialUlaw :: close ( void )                  throw ( Exception )
+SerialUlaw :: close ( void )                  
 {
     if ( !isOpen() ) {
         return;

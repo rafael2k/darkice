@@ -101,7 +101,7 @@ static const char fileid[] = "$Id$";
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-FileSource :: init (    const char    * name )          throw ( Exception )
+FileSource :: init (    const char    * name )          
 {
     fileName = Util::strDup( name);
     fileDescriptor = 0;
@@ -112,7 +112,7 @@ FileSource :: init (    const char    * name )          throw ( Exception )
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-FileSource :: strip ( void )                            throw ( Exception )
+FileSource :: strip ( void )                            
 {
     if ( isOpen() ) {
         close();
@@ -126,7 +126,7 @@ FileSource :: strip ( void )                            throw ( Exception )
 /*------------------------------------------------------------------------------
  *  Copy Constructor
  *----------------------------------------------------------------------------*/
-FileSource :: FileSource ( const FileSource &     fs )      throw ( Exception )
+FileSource :: FileSource ( const FileSource &     fs )      
 {
     init( fs.fileName);
 
@@ -143,7 +143,7 @@ FileSource :: FileSource ( const FileSource &     fs )      throw ( Exception )
  *  Assignment operator
  *----------------------------------------------------------------------------*/
 FileSource &
-FileSource :: operator= ( const FileSource &     fs )       throw ( Exception )
+FileSource :: operator= ( const FileSource &     fs )       
 {
     if ( this != &fs ) {
         init( fs.fileName);
@@ -180,7 +180,7 @@ FileSource :: exists ( void ) const               throw ()
  *  Open the source
  *----------------------------------------------------------------------------*/
 bool
-FileSource :: open ( void )                             throw ( Exception )
+FileSource :: open ( void )                             
 {
     if ( isOpen() ) {
         return false;
@@ -200,7 +200,7 @@ FileSource :: open ( void )                             throw ( Exception )
  *----------------------------------------------------------------------------*/
 bool
 FileSource :: canRead (     unsigned int    sec,
-                            unsigned int    usec )      throw ( Exception )
+                            unsigned int    usec )      
 {
     fd_set              fdset;
     struct timespec     timespec;
@@ -236,7 +236,7 @@ FileSource :: canRead (     unsigned int    sec,
  *----------------------------------------------------------------------------*/
 unsigned int
 FileSource :: read (        void          * buf,
-                            unsigned int    len )       throw ( Exception )
+                            unsigned int    len )       
 {
     ssize_t     ret;
 
@@ -258,7 +258,7 @@ FileSource :: read (        void          * buf,
  *  Close the audio source
  *----------------------------------------------------------------------------*/
 void
-FileSource :: close ( void )                            throw ( Exception )
+FileSource :: close ( void )                            
 {
     if ( !isOpen() ) {
         return;

@@ -91,7 +91,7 @@ ShoutCast :: init ( const char            * irc,
                     const char            * aim,
                     const char            * icq,
                     const char            * mountPoint )
-                                                        throw ( Exception )
+                                                        
 {
     this->irc    = irc   ? Util::strDup( irc) : 0;
     this->aim    = aim   ? Util::strDup( aim) : 0;
@@ -104,7 +104,7 @@ ShoutCast :: init ( const char            * irc,
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-ShoutCast :: strip ( void )                             throw ( Exception )
+ShoutCast :: strip ( void )                             
 {
     if ( irc ) {
         delete[] irc;
@@ -125,7 +125,7 @@ ShoutCast :: strip ( void )                             throw ( Exception )
  *  Log in to the ShoutCast server using the icy login scheme
  *----------------------------------------------------------------------------*/
 bool
-ShoutCast :: sendLogin ( void )                           throw ( Exception )
+ShoutCast :: sendLogin ( void )                           
 {
     Sink          * sink   = getSink();
     Source        * source = getSocket();

@@ -113,7 +113,7 @@ static const char fileid[] = "$Id$";
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-JackDspSource :: init ( const char* name )           throw ( Exception )
+JackDspSource :: init ( const char* name )           
 {
     // Set defaults
     ports[0]     = NULL;        // Left Port
@@ -142,7 +142,7 @@ JackDspSource :: init ( const char* name )           throw ( Exception )
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-JackDspSource :: strip ( void )                      throw ( Exception )
+JackDspSource :: strip ( void )                      
 {
     if ( isOpen() ) {
         close();
@@ -161,7 +161,7 @@ JackDspSource :: strip ( void )                      throw ( Exception )
  *   - Just connect left&right to the first two output ports we find
  *----------------------------------------------------------------------------*/
 void
-JackDspSource :: do_auto_connect ( void )                   throw ( Exception )
+JackDspSource :: do_auto_connect ( void )                   
 {
     const char **all_ports;
     unsigned int ch = 0;
@@ -201,7 +201,7 @@ JackDspSource :: do_auto_connect ( void )                   throw ( Exception )
  *  Open the audio source
  *----------------------------------------------------------------------------*/
 bool
-JackDspSource :: open ( void )                       throw ( Exception )
+JackDspSource :: open ( void )                       
 {
     char         client_name[255];
     size_t       rb_size;
@@ -306,7 +306,7 @@ JackDspSource :: open ( void )                       throw ( Exception )
  *----------------------------------------------------------------------------*/
 bool
 JackDspSource :: canRead ( unsigned int   sec,
-                           unsigned int   usec )    throw ( Exception )
+                           unsigned int   usec )    
 {
     const unsigned int max_wait_time  = sec * 1000000;
     const unsigned int wait_increment = 10000;
@@ -349,7 +349,7 @@ JackDspSource :: canRead ( unsigned int   sec,
  *----------------------------------------------------------------------------*/
 unsigned int
 JackDspSource :: read (   void          * buf,
-                          unsigned int    len )     throw ( Exception )
+                          unsigned int    len )     
 {
     jack_nframes_t samples         = len / 2 / getChannel();
     jack_nframes_t samples_read[2] = { 0, 0 };
@@ -416,7 +416,7 @@ JackDspSource :: read (   void          * buf,
  *  Close the audio source
  *----------------------------------------------------------------------------*/
 void
-JackDspSource :: close ( void )                  throw ( Exception )
+JackDspSource :: close ( void )                  
 {
     unsigned int i;
 

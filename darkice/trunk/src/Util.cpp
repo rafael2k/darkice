@@ -124,7 +124,7 @@ Util :: base64Table[] = {
  *  w/o the zero-termination
  *----------------------------------------------------------------------------*/
 unsigned int
-Util :: strLen( const char    * str )                   throw ( Exception )
+Util :: strLen( const char    * str )                   
 {
     size_t      len;
 
@@ -143,7 +143,7 @@ Util :: strLen( const char    * str )                   throw ( Exception )
  *----------------------------------------------------------------------------*/
 void
 Util :: strCpy (    char          * dest,
-                    const char    * src )               throw ( Exception )
+                    const char    * src )               
 {
     if ( !dest || !src ) {
         throw Exception( __FILE__, __LINE__, "no src or dest");
@@ -158,7 +158,7 @@ Util :: strCpy (    char          * dest,
  *----------------------------------------------------------------------------*/
 void
 Util :: strCat (    char          * dest,
-                    const char    * src )               throw ( Exception )
+                    const char    * src )               
 {
     if ( !dest || !src ) {
         throw Exception( __FILE__, __LINE__, "no src or dest");
@@ -173,7 +173,7 @@ Util :: strCat (    char          * dest,
  *  The returned string must be freed with delete[]
  *----------------------------------------------------------------------------*/
 char *
-Util :: strDup( const char    * str )                   throw ( Exception )
+Util :: strDup( const char    * str )                   
 {
     size_t      len;
     char      * s;
@@ -194,7 +194,7 @@ Util :: strDup( const char    * str )                   throw ( Exception )
  *  Convert a string into base64 encoding.
  *----------------------------------------------------------------------------*/
 char *
-Util :: base64Encode( const char  * str )               throw ( Exception )
+Util :: base64Encode( const char  * str )               
 {
     if ( !str ) {
         throw Exception( __FILE__, __LINE__, "no str");
@@ -240,7 +240,7 @@ Util :: base64Encode( const char  * str )               throw ( Exception )
 bool
 Util :: strEq( const char    * str1,
                const char    * str2,
-               unsigned int    len )                    throw ( Exception )
+               unsigned int    len )                    
 {
     if ( !str1 || !str2 ) {
         throw Exception( __FILE__, __LINE__, "no str1 or no str2");
@@ -254,7 +254,7 @@ Util :: strEq( const char    * str1,
  *  Convert a string to a long integer
  *----------------------------------------------------------------------------*/
 long int
-Util :: strToL( const char *str) throw ( Exception )
+Util :: strToL( const char *str) 
 {
     long int   val;
     char      *end;
@@ -279,7 +279,7 @@ Util :: strToL( const char *str) throw ( Exception )
  *  Convert a string to a double
  *----------------------------------------------------------------------------*/
 double
-Util :: strToD( const char    * str )                   throw ( Exception )
+Util :: strToD( const char    * str )                   
 {
     double      val;
     char      * s;
@@ -302,7 +302,7 @@ Util :: strToD( const char    * str )                   throw ( Exception )
  *----------------------------------------------------------------------------*/
 char *
 Util :: fileAddDate ( const char * str,
-                      const char * format )             throw ( Exception )
+                      const char * format )             
 {
     unsigned int    size;
     const char          * last; 
@@ -346,7 +346,7 @@ Util :: conv (  unsigned int        bitsPerSample,
                 unsigned char     * pcmBuffer,
                 unsigned int        lenPcmBuffer,
                 short int         * outBuffer,
-                bool                isBigEndian )           throw ( Exception )
+                bool                isBigEndian )           
 {
     if ( bitsPerSample == 8 ) {
         unsigned int    i, j;
@@ -396,7 +396,7 @@ void
 Util :: conv (  short int         * shortBuffer,
                 unsigned int        lenShortBuffer,
                 float            ** floatBuffers,
-                unsigned int        channels )              throw ( Exception )
+                unsigned int        channels )              
 {
     unsigned int    i, j;
 
@@ -418,7 +418,7 @@ Util :: conv8 (     unsigned char     * pcmBuffer,
                     unsigned int        lenPcmBuffer,
                     short int         * leftBuffer,
                     short int         * rightBuffer,
-                    unsigned int        channels )          throw ( Exception )
+                    unsigned int        channels )          
 {
     if ( channels == 1 ) {
         unsigned int    i, j;
@@ -459,7 +459,7 @@ Util :: conv16 (    unsigned char     * pcmBuffer,
                     short int         * leftBuffer,
                     short int         * rightBuffer,
                     unsigned int        channels,
-                    bool                isBigEndian )       throw ( Exception )
+                    bool                isBigEndian )       
 {
     if ( isBigEndian ) {
         if ( channels == 1 ) {

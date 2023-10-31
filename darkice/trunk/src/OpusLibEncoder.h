@@ -94,7 +94,7 @@ struct OpusIdHeader {
      *
      * @return number of bytes in packet.
      */
-    inline int buildPacket( unsigned char** packet) throw ( Exception ) {
+    inline int buildPacket( unsigned char** packet)  {
         int i = 0;
         // FIXME - doesn't support multistream
         unsigned char* out = (unsigned char*)malloc(19);
@@ -150,7 +150,7 @@ struct OpusCommentHeader {
      *
      * @return number of bytes in packet.
      */
-    inline int buildPacket( unsigned char** packet) throw ( Exception ) {
+    inline int buildPacket( unsigned char** packet)  {
         int len = 8 + sizeof(unsigned int) * 2 + vendor_length;
         int pos = 0;
         for( unsigned int i = 0; i < num_tags; i++ )
@@ -249,7 +249,7 @@ class OpusLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         void
-        init ( unsigned int     outMaxBitrate )         throw ( Exception );
+        init ( unsigned int     outMaxBitrate )         ;
 
         /**
          *  De-initialize the object.
@@ -257,7 +257,7 @@ class OpusLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline void
-        strip ( void )                                  throw ( Exception )
+        strip ( void )                                  
         {
             if ( converter ) {
 #ifdef HAVE_SRC_LIB
@@ -276,7 +276,7 @@ class OpusLibEncoder : public AudioEncoder, public virtual Reporter
         void
         opusBlocksOut( int bytes,
                        unsigned char* data,
-                       bool eos = false )               throw ( Exception );
+                       bool eos = false )               ;
 
 
     protected:
@@ -287,7 +287,7 @@ class OpusLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline
-        OpusLibEncoder ( void )                         throw ( Exception )
+        OpusLibEncoder ( void )                         
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -326,7 +326,7 @@ class OpusLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int    outSampleRate = 0,
                             unsigned int    outChannel    = 0,
                             unsigned int    outMaxBitrate = 0 )
-                                                        throw ( Exception )
+                                                        
 
                     : AudioEncoder ( sink,
                                      inSampleRate,
@@ -368,7 +368,7 @@ class OpusLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int            outSampleRate = 0,
                             unsigned int            outChannel    = 0,
                             unsigned int            outMaxBitrate = 0 )
-                                                            throw ( Exception )
+                                                            
 
                     : AudioEncoder ( sink,
                                      as,
@@ -388,7 +388,7 @@ class OpusLibEncoder : public AudioEncoder, public virtual Reporter
          */
         inline
         OpusLibEncoder (  const OpusLibEncoder &    encoder )
-                                                            throw ( Exception )
+                                                            
                     : AudioEncoder( encoder )
         {
             if( encoder.isOpen() ) {
@@ -403,7 +403,7 @@ class OpusLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~OpusLibEncoder ( void )                         throw ( Exception )
+        ~OpusLibEncoder ( void )                         
         {
             if ( isOpen() ) {
                 close();
@@ -419,7 +419,7 @@ class OpusLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual OpusLibEncoder &
-        operator= ( const OpusLibEncoder &   encoder )   throw ( Exception )
+        operator= ( const OpusLibEncoder &   encoder )   
         {
             if( encoder.isOpen() ) {
                 throw Exception(__FILE__, __LINE__, "don't copy open encoders");
@@ -465,7 +465,7 @@ class OpusLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual bool
-        start ( void )                      throw ( Exception )
+        start ( void )                      
         {
             return open();
         }
@@ -476,7 +476,7 @@ class OpusLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual void
-        stop ( void )                       throw ( Exception )
+        stop ( void )                       
         {
             return close();
         }
@@ -488,7 +488,7 @@ class OpusLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         virtual bool
-        open ( void )                               throw ( Exception );
+        open ( void )                               ;
 
         /**
          *  Check if the encoding session is open.
@@ -512,7 +512,7 @@ class OpusLibEncoder : public AudioEncoder, public virtual Reporter
          */
         inline virtual bool
         canWrite (     unsigned int    sec,
-                       unsigned int    usec )       throw ( Exception )
+                       unsigned int    usec )       
         {
             if ( !isOpen() ) {
                 return false;
@@ -534,7 +534,7 @@ class OpusLibEncoder : public AudioEncoder, public virtual Reporter
          */
         virtual unsigned int
         write (        const void    * buf,
-                       unsigned int    len )        throw ( Exception );
+                       unsigned int    len )        ;
 
         /**
          *  Flush all data that was written to the encoder to the underlying
@@ -543,7 +543,7 @@ class OpusLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        flush ( void )                              throw ( Exception );
+        flush ( void )                              ;
 
         /**
          *  Close the encoding session.
@@ -551,7 +551,7 @@ class OpusLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        close ( void )                              throw ( Exception );
+        close ( void )                              ;
 };
 
 

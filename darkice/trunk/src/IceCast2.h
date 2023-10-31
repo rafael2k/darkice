@@ -95,7 +95,7 @@ class IceCast2 : public CastSink
         init (  StreamFormat            format,
                 const char            * mountPoint,
                 const char            * description )
-                                                    throw ( Exception );
+                                                    ;
 
         /**
          *  De-initalize the object.
@@ -103,7 +103,7 @@ class IceCast2 : public CastSink
          *  @exception Exception
          */
         void
-        strip ( void )                              throw ( Exception );
+        strip ( void )                              ;
 
 
     protected:
@@ -114,7 +114,7 @@ class IceCast2 : public CastSink
          *  @exception Exception
          */
         inline
-        IceCast2 ( void )                            throw ( Exception )
+        IceCast2 ( void )                            
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -126,7 +126,7 @@ class IceCast2 : public CastSink
          *  @exception Exception
          */
         virtual bool
-        sendLogin ( void )              throw ( Exception );
+        sendLogin ( void )              ;
 
 
     public:
@@ -164,7 +164,7 @@ class IceCast2 : public CastSink
                     const char        * genre          = 0,
                     bool                isPublic       = false,
                     Sink              * streamDump     = 0 )
-                                                        throw ( Exception )
+                                                        
               : CastSink( socket,
                           username,
                           password,
@@ -184,7 +184,7 @@ class IceCast2 : public CastSink
          *  @param cs the IceCast2 to copy.
          */
         inline
-        IceCast2(   const IceCast2 &    cs )        throw ( Exception )
+        IceCast2(   const IceCast2 &    cs )        
                 : CastSink( cs )
         {
             init( cs.getFormat(),
@@ -198,7 +198,7 @@ class IceCast2 : public CastSink
          *  @exception Exception
          */
         inline virtual
-        ~IceCast2( void )                           throw ( Exception )
+        ~IceCast2( void )                           
         {
             strip();
         }
@@ -211,7 +211,7 @@ class IceCast2 : public CastSink
          *  @exception Exception
          */
         inline virtual IceCast2 &
-        operator= ( const IceCast2 &    cs )        throw ( Exception )
+        operator= ( const IceCast2 &    cs )        
         {
             if ( this != &cs ) {
                 strip();

@@ -109,7 +109,7 @@ class AlsaDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline
-        AlsaDspSource ( void )                       throw ( Exception )
+        AlsaDspSource ( void )
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -121,7 +121,7 @@ class AlsaDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         void
-        init (  const char    * name )              throw ( Exception );
+        init (  const char    * name );
 
         /**
          *  De-iitialize the object
@@ -129,7 +129,7 @@ class AlsaDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         void
-        strip ( void )                              throw ( Exception );
+        strip ( void );
 
 
     public:
@@ -149,7 +149,6 @@ class AlsaDspSource : public AudioSource, public virtual Reporter
                          int             sampleRate    = 44100,
                          int             bitsPerSample = 16,
                          int             channel       = 2 )
-                                                        throw ( Exception )
                     : AudioSource( sampleRate, bitsPerSample, channel)
         {
             init( name);
@@ -162,7 +161,7 @@ class AlsaDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline
-        AlsaDspSource (  const AlsaDspSource &    ds )    throw ( Exception )
+        AlsaDspSource (  const AlsaDspSource &    ds )
                     : AudioSource( ds )
         {
             init( ds.pcmName);
@@ -174,7 +173,7 @@ class AlsaDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~AlsaDspSource ( void )                          throw ( Exception )
+        ~AlsaDspSource ( void )
         {
             strip();
         }
@@ -187,7 +186,7 @@ class AlsaDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline virtual AlsaDspSource &
-        operator= (     const AlsaDspSource &     ds )   throw ( Exception )
+        operator= (     const AlsaDspSource &     ds )
         {
             if ( this != &ds ) {
                 strip();
@@ -217,7 +216,7 @@ class AlsaDspSource : public AudioSource, public virtual Reporter
          *  @see #read
          */
         virtual bool
-        open ( void )                                   throw ( Exception );
+        open ( void );
 
         /**
          *  Check if the AlsaDspSource is open.
@@ -243,7 +242,7 @@ class AlsaDspSource : public AudioSource, public virtual Reporter
          */
         virtual bool
         canRead (               unsigned int    sec,
-                                unsigned int    usec )  throw ( Exception );
+                                unsigned int    usec );
 
         /**
          *  Read from the AlsaDspSource.
@@ -256,7 +255,7 @@ class AlsaDspSource : public AudioSource, public virtual Reporter
          */
         virtual unsigned int
         read (                  void          * buf,
-                                unsigned int    len )   throw ( Exception );
+                                unsigned int    len );
 
         /**
          *  Close the AlsaDspSource.
@@ -264,7 +263,7 @@ class AlsaDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        close ( void )                                  throw ( Exception );
+        close ( void );
 
         /**
          *  Returns the buffer size in useconds.

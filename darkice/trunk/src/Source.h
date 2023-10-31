@@ -66,7 +66,7 @@ class Source : public virtual Referable
          *  @exception Exception
          */
         inline
-        Source ( void )                             throw ( Exception )
+        Source ( void )                             
         {
         }
 
@@ -77,7 +77,7 @@ class Source : public virtual Referable
          *  @exception Exception
          */
         inline
-        Source (    const Source &  source )        throw ( Exception )
+        Source (    const Source &  source )        
         {
         }
 
@@ -89,7 +89,7 @@ class Source : public virtual Referable
          *  @exception Exception
          */
         inline virtual Source &
-        operator= ( const Source &  source )        throw ( Exception )
+        operator= ( const Source &  source )        
         {
             return *this;
         }
@@ -103,7 +103,7 @@ class Source : public virtual Referable
          *  @exception Exception
          */
         inline virtual
-        ~Source ( void )                            throw ( Exception )
+        ~Source ( void )                            
         {
         }
 
@@ -114,7 +114,7 @@ class Source : public virtual Referable
          *  @exception Exception
          */
         virtual bool
-        open ( void )                           throw ( Exception )     = 0;
+        open ( void )                                = 0;
 
         /**
          *  Check if the Source is open.
@@ -136,7 +136,7 @@ class Source : public virtual Referable
          */
         virtual bool
         canRead (  unsigned int    sec,
-                   unsigned int    usec )       throw ( Exception )     = 0;
+                   unsigned int    usec )            = 0;
 
         /**
          *  Read from the Source.
@@ -148,7 +148,7 @@ class Source : public virtual Referable
          */
         virtual unsigned int
         read (     void          * buf,
-                   unsigned int    len )        throw ( Exception )     = 0;
+                   unsigned int    len )             = 0;
 
         /**
          *  Close the Source.
@@ -156,7 +156,7 @@ class Source : public virtual Referable
          *  @exception Exception
          */
         virtual void
-        close ( void )                          throw ( Exception )     = 0;
+        close ( void )                               = 0;
 };
 
 

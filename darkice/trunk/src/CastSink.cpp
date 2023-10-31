@@ -63,7 +63,6 @@ CastSink :: init (  TcpSocket             * socket,
                     const char            * url,
                     const char            * genre,
                     bool                    isPublic )
-                                                        throw ( Exception )
 {
     this->socket         = socket;
     this->streamDump     = streamDump;
@@ -81,7 +80,7 @@ CastSink :: init (  TcpSocket             * socket,
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-CastSink :: strip ( void )                          throw ( Exception )
+CastSink :: strip ( void )
 {
     if ( isOpen() ) {
         close();
@@ -106,7 +105,7 @@ CastSink :: strip ( void )                          throw ( Exception )
  *  Open the connection
  *----------------------------------------------------------------------------*/
 bool
-CastSink :: open ( void )                       throw ( Exception )
+CastSink :: open ( void )
 {
     if ( isOpen() ) {
         return false;

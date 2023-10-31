@@ -188,7 +188,7 @@ class MultiThreadedConnector : public virtual Connector
          *  @exception Exception
          */
         void
-        init ( bool     reconnect )                 throw ( Exception );
+        init ( bool     reconnect )                 ;
 
         /**
          *  De-initialize the object.
@@ -196,7 +196,7 @@ class MultiThreadedConnector : public virtual Connector
          *  @exception Exception
          */
         void
-        strip ( void )                              throw ( Exception );
+        strip ( void )                              ;
 
     protected:
 
@@ -206,7 +206,7 @@ class MultiThreadedConnector : public virtual Connector
          *  @exception Exception
          */
         inline
-        MultiThreadedConnector ( void )                 throw ( Exception )
+        MultiThreadedConnector ( void )                 
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -226,7 +226,7 @@ class MultiThreadedConnector : public virtual Connector
         inline
         MultiThreadedConnector (    Source        * source,
                                     bool            reconnect )
-                                                            throw ( Exception )
+                                                            
                     : Connector( source )
         {
             init(reconnect);
@@ -246,7 +246,7 @@ class MultiThreadedConnector : public virtual Connector
         MultiThreadedConnector ( Source            * source,
                                  Sink              * sink,
                                  bool                reconnect )
-                                                            throw ( Exception )
+                                                            
                     : Connector( source, sink)
         {
             init(reconnect);
@@ -259,7 +259,7 @@ class MultiThreadedConnector : public virtual Connector
          *  @exception Exception
          */
         MultiThreadedConnector ( const MultiThreadedConnector &   connector )
-                                                            throw ( Exception );
+                                                            ;
         
         /**
          *  Destructor.
@@ -267,7 +267,7 @@ class MultiThreadedConnector : public virtual Connector
          *  @exception Exception
          */
         inline virtual
-        ~MultiThreadedConnector( void )                     throw ( Exception )
+        ~MultiThreadedConnector( void )                     
         {
             strip();
         }
@@ -281,7 +281,7 @@ class MultiThreadedConnector : public virtual Connector
          */
         virtual MultiThreadedConnector &
         operator= ( const MultiThreadedConnector &   connector )
-                                                            throw ( Exception );
+                                                            ;
 
         /**
          *  Open the connector. Opens the Source and the Sinks if necessary.
@@ -290,7 +290,7 @@ class MultiThreadedConnector : public virtual Connector
          *  @exception Exception
          */
         virtual bool
-        open ( void )                                   throw ( Exception );
+        open ( void )                                   ;
 
         /**
          *  Transfer a given amount of data from the Source to all the
@@ -318,7 +318,7 @@ class MultiThreadedConnector : public virtual Connector
         transfer (  unsigned long       bytes,
                     unsigned int        bufSize,
                     unsigned int        sec,
-                    unsigned int        usec )          throw ( Exception );
+                    unsigned int        usec )          ;
 
         /**
          *  Signal to each sink we have that they need to cut what they are
@@ -335,7 +335,7 @@ class MultiThreadedConnector : public virtual Connector
          *  @exception Exception
          */
         virtual void
-        close ( void )                                  throw ( Exception );
+        close ( void )                                  ;
 
         /**
          *  This is the worker function for each thread.

@@ -87,7 +87,7 @@ class IceCast : public CastSink
         init (  const char            * mountPoint,
                 const char            * description,
                 const char            * remoteDumpFile )
-                                                    throw ( Exception );
+                                                    ;
 
         /**
          *  De-initalize the object.
@@ -95,7 +95,7 @@ class IceCast : public CastSink
          *  @exception Exception
          */
         void
-        strip ( void )                              throw ( Exception );
+        strip ( void )                              ;
 
 
     protected:
@@ -106,7 +106,7 @@ class IceCast : public CastSink
          *  @exception Exception
          */
         inline
-        IceCast ( void )                            throw ( Exception )
+        IceCast ( void )                            
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -118,7 +118,7 @@ class IceCast : public CastSink
          *  @exception Exception
          */
         virtual bool
-        sendLogin ( void )              throw ( Exception );
+        sendLogin ( void )              ;
 
 
     public:
@@ -154,7 +154,7 @@ class IceCast : public CastSink
                     bool                isPublic       = false,
                     const char        * remoteDumpFile = 0,
                     Sink              * streamDump     = 0 )
-                                                        throw ( Exception )
+                                                        
               : CastSink( socket,
                           NULL,
                           password,
@@ -174,7 +174,7 @@ class IceCast : public CastSink
          *  @param cs the IceCast to copy.
          */
         inline
-        IceCast(   const IceCast &    cs )        throw ( Exception )
+        IceCast(   const IceCast &    cs )        
                 : CastSink( cs )
         {
             init( cs.getMountPoint(),
@@ -188,7 +188,7 @@ class IceCast : public CastSink
          *  @exception Exception
          */
         inline virtual
-        ~IceCast( void )                           throw ( Exception )
+        ~IceCast( void )                           
         {
             strip();
         }
@@ -201,7 +201,7 @@ class IceCast : public CastSink
          *  @exception Exception
          */
         inline virtual IceCast &
-        operator= ( const IceCast &    cs )        throw ( Exception )
+        operator= ( const IceCast &    cs )        
         {
             if ( this != &cs ) {
                 strip();

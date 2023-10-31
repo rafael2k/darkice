@@ -85,7 +85,7 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         void
-        init ( void )                               throw ( Exception );
+        init ( void )                               ;
 
         /**
          *  De-initialize the object.
@@ -93,7 +93,7 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline void
-        strip ( void )                                  throw ( Exception )
+        strip ( void )                                  
         {
         }
 
@@ -106,7 +106,7 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline
-        TwoLameLibEncoder ( void )                         throw ( Exception )
+        TwoLameLibEncoder ( void )                         
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -140,7 +140,7 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int    outBitrate,
                             unsigned int    outSampleRate = 0,
                             unsigned int    outChannel    = 0 )
-                                                        throw ( Exception )
+                                                        
             
                     : AudioEncoder ( sink,
                                      inSampleRate,
@@ -177,7 +177,7 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int            outBitrate,
                             unsigned int            outSampleRate = 0,
                             unsigned int            outChannel    = 0 )
-                                                            throw ( Exception )
+                                                            
             
                     : AudioEncoder ( sink,
                                      as,
@@ -197,7 +197,7 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
          */
         inline
         TwoLameLibEncoder (  const TwoLameLibEncoder &    encoder )
-                                                            throw ( Exception )
+                                                            
                     : AudioEncoder( encoder )
         {
             init();
@@ -210,7 +210,7 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~TwoLameLibEncoder ( void )                            throw ( Exception )
+        ~TwoLameLibEncoder ( void )                            
         {
             if ( isOpen() ) {
                 close();
@@ -226,7 +226,7 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual TwoLameLibEncoder &
-        operator= ( const TwoLameLibEncoder &      encoder )   throw ( Exception )
+        operator= ( const TwoLameLibEncoder &      encoder )   
         {
             if ( this != &encoder ) {
                 strip();
@@ -267,7 +267,7 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual bool
-        start ( void )                      throw ( Exception )
+        start ( void )                      
         {
             return open();
         }
@@ -278,7 +278,7 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual void
-        stop ( void )                       throw ( Exception )
+        stop ( void )                       
         {
             return close();
         }
@@ -290,7 +290,7 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         virtual bool
-        open ( void )                               throw ( Exception );
+        open ( void )                               ;
 
         /**
          *  Check if the encoding session is open.
@@ -314,7 +314,7 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
          */
         inline virtual bool
         canWrite (     unsigned int    sec,
-                       unsigned int    usec )       throw ( Exception )
+                       unsigned int    usec )       
         {
             if ( !isOpen() ) {
                 return false;
@@ -336,7 +336,7 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
          */
         virtual unsigned int
         write (        const void    * buf,
-                       unsigned int    len )        throw ( Exception );
+                       unsigned int    len )        ;
 
         /**
          *  Flush all data that was written to the encoder to the underlying
@@ -345,7 +345,7 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        flush ( void )                              throw ( Exception );
+        flush ( void )                              ;
 
         /**
          *  Close the encoding session.
@@ -353,7 +353,7 @@ class TwoLameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        close ( void )                              throw ( Exception );
+        close ( void )                              ;
 };
 
 

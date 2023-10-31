@@ -64,7 +64,7 @@ static const char fileid[] = "$Id$";
  *----------------------------------------------------------------------------*/
 bool
 FaacEncoder :: open ( void )
-                                                            throw ( Exception )
+                                                            
 {
     if ( isOpen() ) {
         close();
@@ -143,7 +143,7 @@ FaacEncoder :: open ( void )
  *----------------------------------------------------------------------------*/
 unsigned int
 FaacEncoder :: write (  const void    * buf,
-                        unsigned int    len )           throw ( Exception )
+                        unsigned int    len )           
 {
     if ( !isOpen() || len == 0 ) {
         return 0;
@@ -249,7 +249,7 @@ FaacEncoder :: write (  const void    * buf,
  *----------------------------------------------------------------------------*/
 void
 FaacEncoder :: flush ( void )
-                                                            throw ( Exception )
+                                                            
 {
     if ( !isOpen() ) {
         return;
@@ -263,7 +263,7 @@ FaacEncoder :: flush ( void )
  *  Close the encoding session
  *----------------------------------------------------------------------------*/
 void
-FaacEncoder :: close ( void )                           throw ( Exception )
+FaacEncoder :: close ( void )                           
 {
     if ( isOpen() ) {
         flush();

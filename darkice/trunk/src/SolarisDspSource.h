@@ -77,7 +77,7 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline
-        SolarisDspSource ( void )                       throw ( Exception )
+        SolarisDspSource ( void )                       
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -89,7 +89,7 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         void
-        init (  const char    * name )              throw ( Exception );
+        init (  const char    * name )              ;
 
         /**
          *  De-iitialize the object
@@ -97,7 +97,7 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         void
-        strip ( void )                              throw ( Exception );
+        strip ( void )                              ;
 
 
     public:
@@ -118,7 +118,7 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
                             int             sampleRate    = 44100,
                             int             bitsPerSample = 16,
                             int             channel       = 2 )
-                                                        throw ( Exception )
+                                                        
 
                     : AudioSource( sampleRate, bitsPerSample, channel)
         {
@@ -133,7 +133,7 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
          */
         inline
         SolarisDspSource (  const SolarisDspSource &    sds )
-                                                        throw ( Exception )
+                                                        
                     : AudioSource( sds )
         {
             init( sds.fileName);
@@ -145,7 +145,7 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~SolarisDspSource ( void )                          throw ( Exception )
+        ~SolarisDspSource ( void )                          
         {
             strip();
         }
@@ -158,7 +158,7 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline virtual SolarisDspSource &
-        operator= (     const SolarisDspSource &     ds )   throw ( Exception )
+        operator= (     const SolarisDspSource &     ds )   
         {
             if ( this != &ds ) {
                 strip();
@@ -195,7 +195,7 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
          *  @see #read
          */
         virtual bool
-        open ( void )                                   throw ( Exception );
+        open ( void )                                   ;
 
         /**
          *  Check if the SolarisDspSource is open.
@@ -221,7 +221,7 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
          */
         virtual bool
         canRead (               unsigned int    sec,
-                                unsigned int    usec )  throw ( Exception );
+                                unsigned int    usec )  ;
 
         /**
          *  Read from the SolarisDspSource.
@@ -234,7 +234,7 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
          */
         virtual unsigned int
         read (                  void          * buf,
-                                unsigned int    len )   throw ( Exception );
+                                unsigned int    len )   ;
 
         /**
          *  Close the SolarisDspSource.
@@ -242,7 +242,7 @@ class SolarisDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        close ( void )                                  throw ( Exception );
+        close ( void )                                  ;
 };
 
 

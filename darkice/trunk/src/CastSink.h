@@ -130,8 +130,7 @@ class CastSink : public Sink, public virtual Reporter
                 const char            * name,
                 const char            * url,
                 const char            * genre,
-                bool                    isPublic)
-                                                    throw ( Exception );
+                bool                    isPublic);
 
         /**
          *  De-initalize the object.
@@ -139,7 +138,7 @@ class CastSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         void
-        strip ( void )                              throw ( Exception );
+        strip ( void );
 
 
     protected:
@@ -150,7 +149,7 @@ class CastSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline
-        CastSink ( void )                           throw ( Exception )
+        CastSink ( void )
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -162,7 +161,7 @@ class CastSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         virtual bool
-        sendLogin ( void )              throw ( Exception )         = 0;
+        sendLogin ( void ) = 0;
 
         /**
          *  Get the Sink underneath this CastSink.
@@ -214,7 +213,6 @@ class CastSink : public Sink, public virtual Reporter
                     const char        * genre          = 0,
                     bool                isPublic       = false,
                     Sink              * streamDump     = 0 )
-                                                        throw ( Exception )
         {
             init( socket,
                   streamDump,
@@ -233,7 +231,7 @@ class CastSink : public Sink, public virtual Reporter
          *  @param cs the CastSink to copy.
          */
         inline
-        CastSink(   const CastSink &    cs )        throw ( Exception )
+        CastSink(   const CastSink &    cs )
                 : Sink( cs )
         {
             init( cs.socket.get(),
@@ -253,7 +251,7 @@ class CastSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~CastSink( void )                           throw ( Exception )
+        ~CastSink( void )
         {
             strip();
         }
@@ -266,7 +264,7 @@ class CastSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline virtual CastSink &
-        operator= ( const CastSink &    cs )        throw ( Exception )
+        operator= ( const CastSink &    cs )
         {
             if ( this != &cs ) {
                 strip();
@@ -292,7 +290,7 @@ class CastSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         virtual bool
-        open ( void )                               throw ( Exception );
+        open ( void );
 
         /**
          *  Check if the CastSink is open.
@@ -320,7 +318,7 @@ class CastSink : public Sink, public virtual Reporter
          */
         inline virtual bool
         canWrite (     unsigned int    sec,
-                       unsigned int    usec )       throw ( Exception )
+                       unsigned int    usec )
         {
             return getSink()->canWrite( sec, usec);
         }
@@ -335,7 +333,7 @@ class CastSink : public Sink, public virtual Reporter
          */
         inline virtual unsigned int
         write (        const void    * buf,
-                       unsigned int    len )        throw ( Exception )
+                       unsigned int    len )
         {
             if ( streamDump != 0 ) {
                 streamDump->write( buf, len);
@@ -350,7 +348,7 @@ class CastSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline virtual void
-        flush ( void )                              throw ( Exception )
+        flush ( void )
         {
             if ( streamDump != 0 ) {
                 streamDump->flush();
@@ -378,7 +376,7 @@ class CastSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline virtual void
-        close ( void )                              throw ( Exception )
+        close ( void )
         {
             if ( streamDump != 0 ) {
                 streamDump->close();

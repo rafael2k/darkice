@@ -73,7 +73,7 @@ static const char fileid[] = "$Id$";
  *  Get a value for a key
  *----------------------------------------------------------------------------*/
 const ConfigSection *
-Config :: get (  const char    * key ) const            throw ( Exception )
+Config :: get (  const char    * key ) const            
 {
     if ( !key ) {
         throw Exception( __FILE__, __LINE__, "no key");
@@ -91,7 +91,7 @@ Config :: get (  const char    * key ) const            throw ( Exception )
  *  Add a configuration line
  *----------------------------------------------------------------------------*/
 bool
-Config :: addLine (  const char    * line )          throw ( Exception )
+Config :: addLine (  const char    * line )          
 {
     if ( !line ) {
         throw Exception( __FILE__, __LINE__, "no line");
@@ -150,7 +150,7 @@ Config :: addLine (  const char    * line )          throw ( Exception )
  *  Add a configuration line
  *----------------------------------------------------------------------------*/
 void
-Config :: read (    std::istream  & is  )               throw ( Exception )
+Config :: read (    std::istream  & is  )               
 {
     char            line[LINE_SIZE];
     unsigned int    num;

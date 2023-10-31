@@ -120,7 +120,7 @@ static const char fileid[] = "$Id$";
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-SolarisDspSource :: init (  const char      * name )    throw ( Exception )
+SolarisDspSource :: init (  const char      * name )    
 {
     fileName       = Util::strDup( name);
     fileDescriptor = 0;
@@ -131,7 +131,7 @@ SolarisDspSource :: init (  const char      * name )    throw ( Exception )
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-SolarisDspSource :: strip ( void )                      throw ( Exception )
+SolarisDspSource :: strip ( void )                      
 {
     if ( isOpen() ) {
         close();
@@ -146,7 +146,7 @@ SolarisDspSource :: strip ( void )                      throw ( Exception )
  *  Open the audio source
  *----------------------------------------------------------------------------*/
 bool
-SolarisDspSource :: open ( void )                       throw ( Exception )
+SolarisDspSource :: open ( void )                       
 {
     audio_info_t    audioInfo;
 
@@ -205,7 +205,7 @@ SolarisDspSource :: open ( void )                       throw ( Exception )
  *----------------------------------------------------------------------------*/
 bool
 SolarisDspSource :: canRead ( unsigned int    sec,
-                              unsigned int    usec )    throw ( Exception )
+                              unsigned int    usec )    
 {
     fd_set              fdset;
     struct timespec     timespec;
@@ -241,7 +241,7 @@ SolarisDspSource :: canRead ( unsigned int    sec,
  *----------------------------------------------------------------------------*/
 unsigned int
 SolarisDspSource :: read (    void          * buf,
-                              unsigned int    len )     throw ( Exception )
+                              unsigned int    len )     
 {
     ssize_t     ret;
 
@@ -263,7 +263,7 @@ SolarisDspSource :: read (    void          * buf,
  *  Close the audio source
  *----------------------------------------------------------------------------*/
 void
-SolarisDspSource :: close ( void )                  throw ( Exception )
+SolarisDspSource :: close ( void )                  
 {
     if ( !isOpen() ) {
         return;
