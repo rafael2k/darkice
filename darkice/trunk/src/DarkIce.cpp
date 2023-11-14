@@ -137,7 +137,7 @@ static const char fileid[] = "$Id$";
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-DarkIce :: init ( const Config      & config )              throw ( Exception )
+DarkIce :: init ( const Config      & config )              
 {
     unsigned int             bufferSecs;
     const ConfigSection    * cs;
@@ -214,7 +214,7 @@ DarkIce :: init ( const Config      & config )              throw ( Exception )
 void
 DarkIce :: configIceCast (  const Config      & config,
                             unsigned int        bufferSecs  )
-                                                        throw ( Exception )
+                                                        
 {
     // look for IceCast encoder output streams,
     // sections [icecast-0], [icecast-1], ...
@@ -428,7 +428,7 @@ DarkIce :: configIceCast (  const Config      & config,
 void
 DarkIce :: configIceCast2 (  const Config      & config,
                              unsigned int        bufferSecs  )
-                                                        throw ( Exception )
+                                                        
 {
     // look for IceCast2 encoder output streams,
     // sections [icecast2-0], [icecast2-1], ...
@@ -747,7 +747,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
 void
 DarkIce :: configShoutCast (    const Config      & config,
                                 unsigned int        bufferSecs  )
-                                                        throw ( Exception )
+                                                        
 {
     // look for Shoutcast encoder output streams,
     // sections [shoutcast-0], [shoutcast-1], ...
@@ -935,7 +935,7 @@ DarkIce :: configShoutCast (    const Config      & config,
  *----------------------------------------------------------------------------*/
 void
 DarkIce :: configFileCast (  const Config      & config )
-                                                        throw ( Exception )
+                                                        
 {
     // look for FileCast encoder output streams,
     // sections [file-0], [file-1], ...
@@ -1179,7 +1179,7 @@ DarkIce :: configFileCast (  const Config      & config )
  *  Set POSIX real-time scheduling
  *----------------------------------------------------------------------------*/
 void
-DarkIce :: setRealTimeScheduling ( void )               throw ( Exception )
+DarkIce :: setRealTimeScheduling ( void )               
 {
 // Only if the OS has the POSIX real-time scheduling functions implemented.
 #if defined( HAVE_SCHED_GETSCHEDULER ) && defined( HAVE_SCHED_GETPARAM )
@@ -1236,7 +1236,7 @@ DarkIce :: setRealTimeScheduling ( void )               throw ( Exception )
  *  WARNING: make sure you don't call this before setRealTimeScheduling!!
  *----------------------------------------------------------------------------*/
 void
-DarkIce :: setOriginalScheduling ( void )               throw ( Exception )
+DarkIce :: setOriginalScheduling ( void )               
 {
 // Only if the OS has the POSIX real-time scheduling functions implemented.
 #if defined( HAVE_SCHED_GETSCHEDULER ) && defined( HAVE_SCHED_GETPARAM )
@@ -1267,7 +1267,7 @@ DarkIce :: setOriginalScheduling ( void )               throw ( Exception )
  *  Run the encoder
  *----------------------------------------------------------------------------*/
 bool
-DarkIce :: encode ( void )                          throw ( Exception )
+DarkIce :: encode ( void )                          
 {
     unsigned int       len;
     unsigned long      bytes;
@@ -1292,7 +1292,7 @@ DarkIce :: encode ( void )                          throw ( Exception )
  *  Run
  *----------------------------------------------------------------------------*/
 int
-DarkIce :: run ( void )                             throw ( Exception )
+DarkIce :: run ( void )                             
 {
     reportEvent( 3, "encoding");
 

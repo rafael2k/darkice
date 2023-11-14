@@ -91,7 +91,7 @@ void
 IceCast2 :: init (  StreamFormat            format,
                     const char            * mountPoint,
                     const char            * description )
-                                                        throw ( Exception )
+                                                        
 {
     this->format         = format;
     this->mountPoint     = Util::strDup( mountPoint);
@@ -103,7 +103,7 @@ IceCast2 :: init (  StreamFormat            format,
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-IceCast2 :: strip ( void )                           throw ( Exception )
+IceCast2 :: strip ( void )                           
 {
     delete[] mountPoint;
     if ( description ) {
@@ -116,7 +116,7 @@ IceCast2 :: strip ( void )                           throw ( Exception )
  *  Log in to the IceCast2 server
  *----------------------------------------------------------------------------*/
 bool
-IceCast2 :: sendLogin ( void )                           throw ( Exception )
+IceCast2 :: sendLogin ( void )                           
 {
     Sink          * sink   = getSink();
     Source        * source = getSocket();

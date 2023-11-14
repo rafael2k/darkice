@@ -105,7 +105,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          */
         inline void
         init ( int              lowpass,
-               int              highpass )              throw ( Exception )
+               int              highpass )              
         {
             this->lameGlobalFlags = NULL;
             this->lowpass         = lowpass;
@@ -140,7 +140,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline void
-        strip ( void )                                  throw ( Exception )
+        strip ( void )                                  
         {
         }
 
@@ -153,7 +153,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline
-        LameLibEncoder ( void )                         throw ( Exception )
+        LameLibEncoder ( void )                         
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -199,7 +199,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int    outChannel    = 0,
                             int             lowpass       = 0,
                             int             highpass      = 0 )
-                                                        throw ( Exception )
+                                                        
             
                     : AudioEncoder ( sink,
                                      inSampleRate,
@@ -248,7 +248,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int            outChannel    = 0,
                             int                     lowpass       = 0,
                             int                     highpass      = 0 )
-                                                            throw ( Exception )
+                                                            
             
                     : AudioEncoder ( sink,
                                      as,
@@ -268,7 +268,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          */
         inline
         LameLibEncoder (  const LameLibEncoder &    encoder )
-                                                            throw ( Exception )
+                                                            
                     : AudioEncoder( encoder )
         {
             init( encoder.lowpass, encoder.highpass );
@@ -281,7 +281,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~LameLibEncoder ( void )                            throw ( Exception )
+        ~LameLibEncoder ( void )                            
         {
             if ( isOpen() ) {
                 close();
@@ -297,7 +297,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual LameLibEncoder &
-        operator= ( const LameLibEncoder &      encoder )   throw ( Exception )
+        operator= ( const LameLibEncoder &      encoder )   
         {
             if ( this != &encoder ) {
                 strip();
@@ -338,7 +338,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual bool
-        start ( void )                      throw ( Exception )
+        start ( void )                      
         {
             return open();
         }
@@ -349,7 +349,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual void
-        stop ( void )                       throw ( Exception )
+        stop ( void )                       
         {
             return close();
         }
@@ -361,7 +361,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         virtual bool
-        open ( void )                               throw ( Exception );
+        open ( void )                               ;
 
         /**
          *  Check if the encoding session is open.
@@ -385,7 +385,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          */
         inline virtual bool
         canWrite (     unsigned int    sec,
-                       unsigned int    usec )       throw ( Exception )
+                       unsigned int    usec )       
         {
             if ( !isOpen() ) {
                 return false;
@@ -407,7 +407,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          */
         virtual unsigned int
         write (        const void    * buf,
-                       unsigned int    len )        throw ( Exception );
+                       unsigned int    len )        ;
 
         /**
          *  Flush all data that was written to the encoder to the underlying
@@ -416,7 +416,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        flush ( void )                              throw ( Exception );
+        flush ( void )                              ;
 
         /**
          *  Close the encoding session.
@@ -424,7 +424,7 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        close ( void )                              throw ( Exception );
+        close ( void )                              ;
 };
 
 

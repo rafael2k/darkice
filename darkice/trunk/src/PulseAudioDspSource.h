@@ -98,7 +98,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline
-        PulseAudioDspSource ( void )                       throw ( Exception )
+        PulseAudioDspSource ( void )                       
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -110,7 +110,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         void
-        init (  const char    * name )              throw ( Exception );
+        init (  const char    * name )              ;
 
         /**
          *  De-iitialize the object
@@ -118,7 +118,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         void
-        strip ( void )                              throw ( Exception );
+        strip ( void )                              ;
 
 
     public:
@@ -138,7 +138,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
                          int             sampleRate    = 44100,
                          int             bitsPerSample = 16,
                          int             channel       = 2 )
-                                                        throw ( Exception )
+                                                        
                     : AudioSource( sampleRate, bitsPerSample, channel)
         {
             init( paSourceName);
@@ -151,7 +151,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline
-        PulseAudioDspSource (  const PulseAudioDspSource &    ds )    throw ( Exception )
+        PulseAudioDspSource (  const PulseAudioDspSource &    ds )    
                     : AudioSource( ds )
         {
             init( ds.sourceName);
@@ -163,7 +163,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~PulseAudioDspSource ( void )                          throw ( Exception )
+        ~PulseAudioDspSource ( void )                          
         {
             strip();
         }
@@ -176,7 +176,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline virtual PulseAudioDspSource &
-        operator= (     const PulseAudioDspSource &     ds )   throw ( Exception )
+        operator= (     const PulseAudioDspSource &     ds )   
         {
             if ( this != &ds ) {
                 strip();
@@ -193,7 +193,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         virtual bool
-        open ( void )                                   throw ( Exception );
+        open ( void )                                   ;
 
         /**
          *  Check if the PulseAudioDspSource is open.
@@ -217,7 +217,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          */
         virtual bool
         canRead (               unsigned int    sec,
-                                unsigned int    usec )  throw ( Exception );
+                                unsigned int    usec )  ;
 
         /**
          *  Read from the PulseAudioDspSource.
@@ -229,7 +229,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          */
         virtual unsigned int
         read (                  void          * buf,
-                                unsigned int    len )   throw ( Exception );
+                                unsigned int    len )   ;
 
         /**
          *  Close the PulseAudioDspSource.
@@ -237,7 +237,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        close ( void )                                  throw ( Exception );
+        close ( void )                                  ;
 
 };
 
@@ -345,7 +345,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline
-        PulseAudioDspSource ( void )                       throw ( Exception )
+        PulseAudioDspSource ( void )                       
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -357,7 +357,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         void
-        init (  const char    * name )              throw ( Exception );
+        init (  const char    * name )              ;
 
         /**
          *  De-iitialize the object
@@ -365,7 +365,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         void
-        strip ( void )                              throw ( Exception );
+        strip ( void )                              ;
 
 
     public:
@@ -385,7 +385,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
                          int             sampleRate    = 44100,
                          int             bitsPerSample = 16,
                          int             channel       = 2 )
-                                                        throw ( Exception )
+                                                        
                     : AudioSource( sampleRate, bitsPerSample, channel)
         {
             init( paSourceName);
@@ -398,7 +398,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline
-        PulseAudioDspSource (  const PulseAudioDspSource &    ds )    throw ( Exception )
+        PulseAudioDspSource (  const PulseAudioDspSource &    ds )    
                     : AudioSource( ds )
         {
             init( ds.sourceName);
@@ -410,7 +410,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~PulseAudioDspSource ( void )                          throw ( Exception )
+        ~PulseAudioDspSource ( void )                          
         {
             strip();
         }
@@ -423,7 +423,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline virtual PulseAudioDspSource &
-        operator= (     const PulseAudioDspSource &     ds )   throw ( Exception )
+        operator= (     const PulseAudioDspSource &     ds )   
         {
             if ( this != &ds ) {
                 strip();
@@ -440,7 +440,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         virtual bool
-        open ( void )                                   throw ( Exception );
+        open ( void )                                   ;
 
         /**
          *  Check if the PulseAudioDspSource is open.
@@ -464,7 +464,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          */
         virtual bool
         canRead (               unsigned int    sec,
-                                unsigned int    usec )  throw ( Exception );
+                                unsigned int    usec )  ;
 
         /**
          *  Read from the PulseAudioDspSource.
@@ -476,7 +476,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          */
         virtual unsigned int
         read (                  void          * buf,
-                                unsigned int    len )   throw ( Exception );
+                                unsigned int    len )   ;
 
         /**
          *  Close the PulseAudioDspSource.
@@ -484,7 +484,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        close ( void )                                  throw ( Exception );
+        close ( void )                                  ;
 
 };
 

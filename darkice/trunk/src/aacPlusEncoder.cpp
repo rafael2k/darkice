@@ -64,7 +64,6 @@ static const char fileid[] = "$Id$";
  *----------------------------------------------------------------------------*/
 bool
 aacPlusEncoder :: open ( void )
-                                                            throw ( Exception )
 {
     if ( isOpen() ) {
         close();
@@ -135,7 +134,7 @@ aacPlusEncoder :: open ( void )
  *----------------------------------------------------------------------------*/
 unsigned int
 aacPlusEncoder :: write (  const void    * buf,
-                        unsigned int    len )           throw ( Exception )
+                        unsigned int    len )
 {
     if ( !isOpen() || len == 0) {
         return 0;
@@ -248,7 +247,6 @@ aacPlusEncoder :: write (  const void    * buf,
  *----------------------------------------------------------------------------*/
 void
 aacPlusEncoder :: flush ( void )
-                                                            throw ( Exception )
 {
     if ( !isOpen() ) {
         return;
@@ -262,7 +260,7 @@ aacPlusEncoder :: flush ( void )
  *  Close the encoding session
  *----------------------------------------------------------------------------*/
 void
-aacPlusEncoder :: close ( void )                           throw ( Exception )
+aacPlusEncoder :: close ( void )
 {
     if ( isOpen() ) {
         flush();

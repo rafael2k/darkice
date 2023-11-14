@@ -119,7 +119,7 @@ static const char fileid[] = "$Id$";
  *----------------------------------------------------------------------------*/
 void
 FileSink :: init (  const char    * configName,
-                    const char    * name )          throw ( Exception )
+                    const char    * name )          
 {
     this->configName  = Util::strDup(configName);
     fileName          = Util::strDup(name);
@@ -131,7 +131,7 @@ FileSink :: init (  const char    * configName,
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-FileSink :: strip ( void)                           throw ( Exception )
+FileSink :: strip ( void)                           
 {
     if ( isOpen() ) {
         close();
@@ -144,7 +144,7 @@ FileSink :: strip ( void)                           throw ( Exception )
 /*------------------------------------------------------------------------------
  *  Copy Constructor
  *----------------------------------------------------------------------------*/
-FileSink :: FileSink (  const FileSink &    fs )    throw ( Exception )
+FileSink :: FileSink (  const FileSink &    fs )    
                 : Sink( fs )
 {
     int     fd;
@@ -164,7 +164,7 @@ FileSink :: FileSink (  const FileSink &    fs )    throw ( Exception )
  *  Assignment operator
  *----------------------------------------------------------------------------*/
 FileSink &
-FileSink :: operator= (  const FileSink &    fs )   throw ( Exception )
+FileSink :: operator= (  const FileSink &    fs )   
 {
     if ( this != &fs ) {
         int     fd;
@@ -210,7 +210,7 @@ FileSink :: exists ( void ) const               throw ()
  *  Create a file, truncate if already exists
  *----------------------------------------------------------------------------*/
 bool
-FileSink :: create ( void )                     throw ( Exception )
+FileSink :: create ( void )                     
 {
     int     fd;
     
@@ -234,7 +234,7 @@ FileSink :: create ( void )                     throw ( Exception )
  *  Open the file
  *----------------------------------------------------------------------------*/
 bool
-FileSink :: open ( void )                       throw ( Exception )
+FileSink :: open ( void )                       
 {
     if ( isOpen() ) {
         return false;
@@ -254,7 +254,7 @@ FileSink :: open ( void )                       throw ( Exception )
  *----------------------------------------------------------------------------*/
 bool
 FileSink :: canWrite (     unsigned int    sec,
-                           unsigned int    usec )   throw ( Exception )
+                           unsigned int    usec )   
 {
     fd_set              fdset;
     struct timespec     timespec;
@@ -290,7 +290,7 @@ FileSink :: canWrite (     unsigned int    sec,
  *----------------------------------------------------------------------------*/
 unsigned int
 FileSink :: write (    const void    * buf,
-                       unsigned int    len )        throw ( Exception )
+                       unsigned int    len )        
 {
     ssize_t     ret;
 
@@ -320,7 +320,7 @@ FileSink :: write (    const void    * buf,
  *   - $PID is the current process id
  *----------------------------------------------------------------------------*/
 std::string
-FileSink :: getArchiveFileName ( void )             throw ( Exception )
+FileSink :: getArchiveFileName ( void )             
 {
     pid_t               pid = getpid();
     std::stringstream   metaFileName;
@@ -370,7 +370,7 @@ FileSink :: cut ( void )                            throw ()
  *  Close the FileSink
  *----------------------------------------------------------------------------*/
 void
-FileSink :: close ( void )                          throw ( Exception )
+FileSink :: close ( void )                          
 {
     if ( !isOpen() ) {
         return;

@@ -87,7 +87,7 @@ class Sink : public virtual Referable
          *  @exception Exception
          */
         inline virtual Sink &
-        operator= ( const Sink &    sink )              throw ( Exception )
+        operator= ( const Sink &    sink )              
         {
             return *this;
         }
@@ -101,7 +101,7 @@ class Sink : public virtual Referable
          *  @exception Exception
          */
         inline virtual
-        ~Sink ( void )                                  throw ( Exception )
+        ~Sink ( void )                                  
         {
         }
 
@@ -112,7 +112,7 @@ class Sink : public virtual Referable
          *  @exception Exception
          */
         virtual bool
-        open ( void )                               throw ( Exception )    = 0;
+        open ( void )                                   = 0;
 
         /**
          *  Check if the Sink is open.
@@ -133,7 +133,7 @@ class Sink : public virtual Referable
          */
         virtual bool
         canWrite (              unsigned int    sec,
-                                unsigned int    usec )  throw ( Exception ) = 0;
+                                unsigned int    usec )   = 0;
 
         /**
          *  Write data to the Sink.
@@ -145,7 +145,7 @@ class Sink : public virtual Referable
          */
         virtual unsigned int
         write (                 const void    * buf,
-                                unsigned int    len )   throw ( Exception ) = 0;
+                                unsigned int    len )    = 0;
 
         /**
          *  Flush all data that was written to the Sink to the underlying
@@ -154,7 +154,7 @@ class Sink : public virtual Referable
          *  @exception Exception
          */
         virtual void
-        flush ( void )                                  throw ( Exception ) = 0;
+        flush ( void )                                   = 0;
 
         /**
          *  Cut what the sink has been doing so far, and start anew.
@@ -170,7 +170,7 @@ class Sink : public virtual Referable
          *  @exception Exception
          */
         virtual void
-        close ( void )                                  throw ( Exception ) = 0;
+        close ( void )                                   = 0;
 };
 
 

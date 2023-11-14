@@ -83,7 +83,7 @@ class OssDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline
-        OssDspSource ( void )                       throw ( Exception )
+        OssDspSource ( void )                       
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -95,7 +95,7 @@ class OssDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         void
-        init (  const char    * name )              throw ( Exception );
+        init (  const char    * name )              ;
 
         /**
          *  De-iitialize the object
@@ -103,7 +103,7 @@ class OssDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         void
-        strip ( void )                              throw ( Exception );
+        strip ( void )                              ;
 
 
     public:
@@ -124,7 +124,7 @@ class OssDspSource : public AudioSource, public virtual Reporter
                         int             sampleRate    = 44100,
                         int             bitsPerSample = 16,
                         int             channel       = 2 )
-                                                        throw ( Exception )
+                                                        
 
                     : AudioSource( sampleRate, bitsPerSample, channel)
         {
@@ -138,7 +138,7 @@ class OssDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline
-        OssDspSource (  const OssDspSource &    ods )   throw ( Exception )
+        OssDspSource (  const OssDspSource &    ods )   
                     : AudioSource( ods )
         {
             init( ods.fileName);
@@ -150,7 +150,7 @@ class OssDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~OssDspSource ( void )                          throw ( Exception )
+        ~OssDspSource ( void )                          
         {
             strip();
         }
@@ -163,7 +163,7 @@ class OssDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline virtual OssDspSource &
-        operator= (     const OssDspSource &     ds )   throw ( Exception )
+        operator= (     const OssDspSource &     ds )   
         {
             if ( this != &ds ) {
                 strip();
@@ -193,7 +193,7 @@ class OssDspSource : public AudioSource, public virtual Reporter
          *  @see #read
          */
         virtual bool
-        open ( void )                                   throw ( Exception );
+        open ( void )                                   ;
 
         /**
          *  Check if the OssDspSource is open.
@@ -219,7 +219,7 @@ class OssDspSource : public AudioSource, public virtual Reporter
          */
         virtual bool
         canRead (               unsigned int    sec,
-                                unsigned int    usec )  throw ( Exception );
+                                unsigned int    usec )  ;
 
         /**
          *  Read from the OssDspSource.
@@ -232,7 +232,7 @@ class OssDspSource : public AudioSource, public virtual Reporter
          */
         virtual unsigned int
         read (                  void          * buf,
-                                unsigned int    len )   throw ( Exception );
+                                unsigned int    len )   ;
 
         /**
          *  Close the OssDspSource.
@@ -240,7 +240,7 @@ class OssDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        close ( void )                                  throw ( Exception );
+        close ( void )                                  ;
 };
 
 

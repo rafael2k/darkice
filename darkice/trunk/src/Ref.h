@@ -111,7 +111,7 @@ class Ref
          *  @exception Exception
          */
         inline
-        Ref ( const Ref<T> &    other )         throw ( Exception )
+        Ref ( const Ref<T> &    other )         
         {
             object = NULL;
             set( other.object);
@@ -124,7 +124,7 @@ class Ref
          *  @exception Exception
          */
         inline
-        Ref ( T   * obj )                       throw ( Exception )
+        Ref ( T   * obj )                       
         {
             object = obj;
             obj->increaseReferenceCount();
@@ -136,7 +136,7 @@ class Ref
          *  @exception Exception
          */
         inline virtual
-        ~Ref ( void )                           throw ( Exception )
+        ~Ref ( void )                           
         {
             set( 0 );
         }
@@ -147,7 +147,7 @@ class Ref
          *  @return the pointer to the object referenced.
          */
         inline T*
-        operator->() const                      throw ( Exception )
+        operator->() const                      
         {
             if ( !object ) {
                 throw Exception( __FILE__, __LINE__,
@@ -164,7 +164,7 @@ class Ref
          *  @exception Exception
          */
         inline Ref<T> &
-        operator= ( Ref<T>  other )             throw ( Exception )
+        operator= ( Ref<T>  other )             
         {
             set( other.object);
             return *this;
@@ -178,7 +178,7 @@ class Ref
          *  @exception Exception
          */
         inline Ref<T> &
-        operator= ( T*  obj )                   throw ( Exception )
+        operator= ( T*  obj )                   
         {
             set( obj);
             return *this;
@@ -192,7 +192,7 @@ class Ref
          *  @exception Exception
          */
         inline void
-        set ( T   * newobj )                    throw ( Exception )
+        set ( T   * newobj )                    
         {
             // If equal do nothing
             if ( newobj == object ) {

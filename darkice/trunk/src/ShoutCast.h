@@ -94,7 +94,7 @@ class ShoutCast : public CastSink
                 const char            * aim,
                 const char            * icq,
                 const char            * mountPoint )
-                                                    throw ( Exception );
+                                                    ;
 
         /**
          *  De-initalize the object.
@@ -102,7 +102,7 @@ class ShoutCast : public CastSink
          *  @exception Exception
          */
         void
-        strip ( void )                              throw ( Exception );
+        strip ( void )                              ;
 
 
     protected:
@@ -113,7 +113,7 @@ class ShoutCast : public CastSink
          *  @exception Exception
          */
         inline
-        ShoutCast ( void )                            throw ( Exception )
+        ShoutCast ( void )                            
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -125,7 +125,7 @@ class ShoutCast : public CastSink
          *  @exception Exception
          */
         virtual bool
-        sendLogin ( void )              throw ( Exception );
+        sendLogin ( void )              ;
 
 
     public:
@@ -163,7 +163,7 @@ class ShoutCast : public CastSink
                     const char        * aim            = 0,
                     const char        * icq            = 0,
                     Sink              * streamDump     = 0 )
-                                                        throw ( Exception )
+                                                        
               : CastSink( socket,
                           NULL,
                           password,
@@ -183,7 +183,7 @@ class ShoutCast : public CastSink
          *  @param cs the ShoutCast to copy.
          */
         inline
-        ShoutCast(   const ShoutCast &    cs )        throw ( Exception )
+        ShoutCast(   const ShoutCast &    cs )        
                 : CastSink( cs )
         {
             init( cs.getIrc(), cs.getAim(), cs.getIcq(), cs.getMountPoint());
@@ -195,7 +195,7 @@ class ShoutCast : public CastSink
          *  @exception Exception
          */
         inline virtual
-        ~ShoutCast( void )                           throw ( Exception )
+        ~ShoutCast( void )                           
         {
             strip();
         }
@@ -208,7 +208,7 @@ class ShoutCast : public CastSink
          *  @exception Exception
          */
         inline virtual ShoutCast &
-        operator= ( const ShoutCast &    cs )        throw ( Exception )
+        operator= ( const ShoutCast &    cs )        
         {
             if ( this != &cs ) {
                 strip();

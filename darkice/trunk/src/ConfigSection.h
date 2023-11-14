@@ -93,7 +93,7 @@ class ConfigSection : public virtual Referable
          *  @exception Exception
          */
         inline
-        ConfigSection ( void )                            throw ( Exception )
+        ConfigSection ( void )
         {
         }
 
@@ -103,7 +103,7 @@ class ConfigSection : public virtual Referable
          *  @exception Exception
          */
         inline virtual
-        ~ConfigSection ( void )                           throw ( Exception )
+        ~ConfigSection ( void )
         {
         }
 
@@ -111,13 +111,13 @@ class ConfigSection : public virtual Referable
 /* TODO
 
         inline
-        ConfigSection ( const ConfigSection   & di )            throw ( Exception )
+        ConfigSection ( const ConfigSection   & di )
         {
         }
 
 
         inline ConfigSection &
-        operator= ( const ConfigSection   * di )          throw ( Exception )
+        operator= ( const ConfigSection   * di )
         {
         }
 */
@@ -132,7 +132,7 @@ class ConfigSection : public virtual Referable
          */
         virtual bool
         add (   const char    * key,
-                const char    * value )                 throw ( Exception );
+                const char    * value );
 
         /**
          *  Get a value for a key.
@@ -142,7 +142,7 @@ class ConfigSection : public virtual Referable
          *  @exception Exception
          */
         virtual const char *
-        get (   const char    * key ) const             throw ( Exception );
+        get (   const char    * key ) const;
 
         /**
          *  Get a value for a key, or throw an Exception.
@@ -158,8 +158,7 @@ class ConfigSection : public virtual Referable
         getForSure (    const char    * key,
                         const char    * message1 = 0,
                         const char    * message2 = 0,
-                        int             code     = 0 ) const
-                                                        throw ( Exception );
+                        int             code     = 0 ) const;
 
         /**
          *  Add a line of configuration information.
@@ -169,7 +168,7 @@ class ConfigSection : public virtual Referable
          *  @exception Exception
          */
         virtual bool
-        addLine (   const char    * line )              throw ( Exception );
+        addLine (   const char    * line );
 };
 
 

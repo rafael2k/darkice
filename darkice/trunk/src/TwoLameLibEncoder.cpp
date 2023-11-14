@@ -65,7 +65,7 @@ static const char fileid[] = "$Id$";
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-TwoLameLibEncoder :: init ( void )                  throw ( Exception )
+TwoLameLibEncoder :: init ( void )                  
 {
 	this->twolame_opts    = NULL;
 
@@ -98,7 +98,7 @@ TwoLameLibEncoder :: init ( void )                  throw ( Exception )
  *----------------------------------------------------------------------------*/
 bool
 TwoLameLibEncoder :: open ( void )
-                                                            throw ( Exception )
+                                                            
 {
     if ( isOpen() ) {
         close();
@@ -182,7 +182,7 @@ TwoLameLibEncoder :: open ( void )
  *----------------------------------------------------------------------------*/
 unsigned int
 TwoLameLibEncoder :: write (   const void    * buf,
-                            unsigned int    len )           throw ( Exception )
+                            unsigned int    len )           
 {
     if ( !isOpen() || len == 0 ) {
         return 0;
@@ -256,7 +256,7 @@ TwoLameLibEncoder :: write (   const void    * buf,
  *----------------------------------------------------------------------------*/
 void
 TwoLameLibEncoder :: flush ( void )
-                                                            throw ( Exception )
+                                                            
 {
     if ( !isOpen() ) {
         return;
@@ -287,7 +287,7 @@ TwoLameLibEncoder :: flush ( void )
  *  Close the encoding session
  *----------------------------------------------------------------------------*/
 void
-TwoLameLibEncoder :: close ( void )                    throw ( Exception )
+TwoLameLibEncoder :: close ( void )                    
 {
     if ( isOpen() ) {
         flush();

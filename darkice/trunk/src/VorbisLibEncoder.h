@@ -135,7 +135,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         void
-        init ( unsigned int     outMaxBitrate )         throw ( Exception );
+        init ( unsigned int     outMaxBitrate )         ;
 
         /**
          *  De-initialize the object.
@@ -143,7 +143,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline void
-        strip ( void )                                  throw ( Exception )
+        strip ( void )                                  
         {
             if ( converter ) {
 #ifdef HAVE_SRC_LIB
@@ -160,7 +160,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  Send pending Vorbis blocks to the underlying stream
          */
         void
-        vorbisBlocksOut( void )                         throw ( Exception );
+        vorbisBlocksOut( void )                         ;
 
 
     protected:
@@ -171,7 +171,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline
-        VorbisLibEncoder ( void )                         throw ( Exception )
+        VorbisLibEncoder ( void )                         
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -210,7 +210,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int    outSampleRate = 0,
                             unsigned int    outChannel    = 0,
                             unsigned int    outMaxBitrate = 0 )
-                                                        throw ( Exception )
+                                                        
 
                     : AudioEncoder ( sink,
                                      inSampleRate,
@@ -252,7 +252,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int            outSampleRate = 0,
                             unsigned int            outChannel    = 0,
                             unsigned int            outMaxBitrate = 0 )
-                                                            throw ( Exception )
+                                                            
 
                     : AudioEncoder ( sink,
                                      as,
@@ -272,7 +272,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          */
         inline
         VorbisLibEncoder (  const VorbisLibEncoder &    encoder )
-                                                            throw ( Exception )
+                                                            
                     : AudioEncoder( encoder )
         {
             if( encoder.isOpen() ) {
@@ -287,7 +287,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~VorbisLibEncoder ( void )                         throw ( Exception )
+        ~VorbisLibEncoder ( void )                         
         {
             if ( isOpen() ) {
                 close();
@@ -303,7 +303,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual VorbisLibEncoder &
-        operator= ( const VorbisLibEncoder &   encoder )   throw ( Exception )
+        operator= ( const VorbisLibEncoder &   encoder )   
         {
             if( encoder.isOpen() ) {
                 throw Exception(__FILE__, __LINE__, "don't copy open encoders");
@@ -349,7 +349,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual bool
-        start ( void )                      throw ( Exception )
+        start ( void )                      
         {
             return open();
         }
@@ -360,7 +360,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual void
-        stop ( void )                       throw ( Exception )
+        stop ( void )                       
         {
             return close();
         }
@@ -372,7 +372,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         virtual bool
-        open ( void )                               throw ( Exception );
+        open ( void )                               ;
 
         /**
          *  Check if the encoding session is open.
@@ -396,7 +396,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          */
         inline virtual bool
         canWrite (     unsigned int    sec,
-                       unsigned int    usec )       throw ( Exception )
+                       unsigned int    usec )       
         {
             if ( !isOpen() ) {
                 return false;
@@ -422,7 +422,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          */
         virtual unsigned int
         write (        const void    * buf,
-                       unsigned int    len )        throw ( Exception );
+                       unsigned int    len )        ;
 
         /**
          *  Flush all data that was written to the encoder to the underlying
@@ -431,7 +431,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        flush ( void )                              throw ( Exception );
+        flush ( void )                              ;
 
         /**
          *  Close the encoding session.
@@ -439,7 +439,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        close ( void )                              throw ( Exception );
+        close ( void )                              ;
 };
 
 

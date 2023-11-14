@@ -79,7 +79,7 @@ class FileSink : public Sink, public virtual Reporter
          */
         void
         init (  const char    * configName,
-                const char    * name )              throw ( Exception );
+                const char    * name )              ;
 
         /**
          *  De-initialize the object.
@@ -87,7 +87,7 @@ class FileSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         void
-        strip ( void )                              throw ( Exception );
+        strip ( void )                              ;
 
         /**
          *  Get the file name to where to move the data saved so far.
@@ -97,7 +97,7 @@ class FileSink : public Sink, public virtual Reporter
          *  @throws Exception on file operation errors
          */
         std::string
-        getArchiveFileName( void )                  throw ( Exception );
+        getArchiveFileName( void )                  ;
 
 
     protected:
@@ -113,7 +113,7 @@ class FileSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline
-        FileSink ( void )                           throw ( Exception )
+        FileSink ( void )                           
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -131,7 +131,7 @@ class FileSink : public Sink, public virtual Reporter
          */
         inline
         FileSink(   const char        * configName,
-                    const char        * name )      throw ( Exception )
+                    const char        * name )      
         {
             init( configName, name);
         }
@@ -142,7 +142,7 @@ class FileSink : public Sink, public virtual Reporter
          *  @param fsink the FileSink to copy.
          *  @exception Exception
          */
-        FileSink(   const FileSink &    fsink )     throw ( Exception );
+        FileSink(   const FileSink &    fsink )     ;
 
         /**
          *  Destructor.
@@ -150,7 +150,7 @@ class FileSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~FileSink( void )                           throw ( Exception )
+        ~FileSink( void )                           
         {
             strip();
         }
@@ -163,7 +163,7 @@ class FileSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         virtual FileSink &
-        operator= ( const FileSink &    fs )        throw ( Exception );
+        operator= ( const FileSink &    fs )        ;
 
         /**
          *  Get the file name this FileSink represents.
@@ -192,7 +192,7 @@ class FileSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         virtual bool
-        create ( void )                             throw ( Exception );
+        create ( void )                             ;
 
         /**
          *  Open the file. Truncates the file.
@@ -201,7 +201,7 @@ class FileSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         virtual bool
-        open ( void )                               throw ( Exception );
+        open ( void )                               ;
 
         /**
          *  Check if the FileSink is open.
@@ -225,7 +225,7 @@ class FileSink : public Sink, public virtual Reporter
          */
         virtual bool
         canWrite (     unsigned int    sec,
-                       unsigned int    usec )       throw ( Exception );
+                       unsigned int    usec )       ;
 
         /**
          *  Write data to the FileSink.
@@ -237,7 +237,7 @@ class FileSink : public Sink, public virtual Reporter
          */
         virtual unsigned int
         write (        const void    * buf,
-                       unsigned int    len )        throw ( Exception );
+                       unsigned int    len )        ;
 
         /**
          *  This is a no-op in this FileSink.
@@ -245,7 +245,7 @@ class FileSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline virtual void
-        flush ( void )                              throw ( Exception )
+        flush ( void )                              
         {
         }
 
@@ -263,7 +263,7 @@ class FileSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        close ( void )                              throw ( Exception );
+        close ( void )                              ;
 };
 
 

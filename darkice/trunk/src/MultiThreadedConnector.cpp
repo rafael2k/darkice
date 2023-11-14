@@ -65,7 +65,7 @@ static const char fileid[] = "$Id$";
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-MultiThreadedConnector :: init ( bool    reconnect )    throw ( Exception )
+MultiThreadedConnector :: init ( bool    reconnect )    
 {
     this->reconnect = reconnect;
 
@@ -79,7 +79,7 @@ MultiThreadedConnector :: init ( bool    reconnect )    throw ( Exception )
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-MultiThreadedConnector :: strip ( void )                throw ( Exception )
+MultiThreadedConnector :: strip ( void )                
 {
     if ( threads ) {
         delete[] threads;
@@ -96,7 +96,7 @@ MultiThreadedConnector :: strip ( void )                throw ( Exception )
  *----------------------------------------------------------------------------*/
 MultiThreadedConnector :: MultiThreadedConnector (
                                 const MultiThreadedConnector &   connector )
-                                                            throw ( Exception )
+                                                            
             : Connector( connector)
 {
     reconnect       = connector.reconnect;
@@ -118,7 +118,7 @@ MultiThreadedConnector :: MultiThreadedConnector (
  *----------------------------------------------------------------------------*/
 MultiThreadedConnector &
 MultiThreadedConnector :: operator= ( const MultiThreadedConnector & connector )
-                                                            throw ( Exception )
+                                                            
 {
     if ( this != &connector ) {
         Connector::operator=( connector);
@@ -145,7 +145,7 @@ MultiThreadedConnector :: operator= ( const MultiThreadedConnector & connector )
  *  Create the sink threads
  *----------------------------------------------------------------------------*/
 bool
-MultiThreadedConnector :: open ( void )                     throw ( Exception )
+MultiThreadedConnector :: open ( void )                     
 {
     unsigned int        i;
     size_t              st;
@@ -214,7 +214,7 @@ MultiThreadedConnector :: transfer ( unsigned long       bytes,
                                      unsigned int        bufSize,
                                      unsigned int        sec,
                                      unsigned int        usec )
-                                                            throw ( Exception )
+                                                            
 {   
     unsigned int        b;
 
@@ -364,7 +364,7 @@ MultiThreadedConnector :: cut ( void )                      throw ()
  *  Close the source and all the sinks if needed
  *----------------------------------------------------------------------------*/
 void
-MultiThreadedConnector :: close ( void )                    throw ( Exception )
+MultiThreadedConnector :: close ( void )                    
 {
     unsigned int    i;
 

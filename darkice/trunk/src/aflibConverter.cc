@@ -553,7 +553,7 @@ aflibConverter::resampleWithFilter(  /* number of output samples returned */
 #endif
     unsigned short Xp, Xoff, Xread;
     int OBUFFSIZE = (int)(((double)IBUFFSIZE)*_factor);
-    unsigned short Nout = 0, Nx, orig_Nx;
+    unsigned short Nout = 0, Nx;
     unsigned short maxOutput;
     int total_inCount = 0;
     int c, i, Ycount, last;
@@ -600,7 +600,6 @@ aflibConverter::resampleWithFilter(  /* number of output samples returned */
 
       for (c = 0; c < _nChans; c++)
       {
-			orig_Nx = Nx;
 	   	Time2 = _Time;
            /* Resample stuff in input buffer */
 	   	if (_factor >= 1) {	/* SrcUp() is faster if we can use it */

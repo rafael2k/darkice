@@ -53,7 +53,7 @@ static const char fileid[] = "$Id$";
  *  Initialize the object
  *----------------------------------------------------------------------------*/
 void
-Connector :: init ( Source          * source )        throw ( Exception )
+Connector :: init ( Source          * source )
 {
     this->source   = source;
     this->sinks    = 0;
@@ -65,7 +65,7 @@ Connector :: init ( Source          * source )        throw ( Exception )
  *  De-initialize the object
  *----------------------------------------------------------------------------*/
 void
-Connector :: strip ( void )                             throw ( Exception )
+Connector :: strip ( void )
 {
     source = 0;
 
@@ -84,7 +84,7 @@ Connector :: strip ( void )                             throw ( Exception )
 /*------------------------------------------------------------------------------
  *  Constructor
  *----------------------------------------------------------------------------*/
-Connector :: Connector (    const Connector &   connector ) throw ( Exception )
+Connector :: Connector (    const Connector &   connector )
 {
     unsigned int    u;
 
@@ -100,7 +100,7 @@ Connector :: Connector (    const Connector &   connector ) throw ( Exception )
  *  Assignment operator
  *----------------------------------------------------------------------------*/
 Connector &
-Connector :: operator= (    const Connector &   connector ) throw ( Exception )
+Connector :: operator= (    const Connector &   connector )
 {
     if ( this != &connector ) {
         unsigned int    u;
@@ -124,7 +124,7 @@ Connector :: operator= (    const Connector &   connector ) throw ( Exception )
  *  Attach a sink to the connector
  *----------------------------------------------------------------------------*/
 void
-Connector :: attach (   Sink              * sink )          throw ( Exception )
+Connector :: attach (   Sink              * sink )
 {
     if ( !sinks ) {
         
@@ -153,7 +153,7 @@ Connector :: attach (   Sink              * sink )          throw ( Exception )
  *  Detach a sink to the connector
  *----------------------------------------------------------------------------*/
 bool
-Connector :: detach (   Sink              * sink )          throw ( Exception )
+Connector :: detach (   Sink              * sink )
 {
     if ( numSinks == 0 ) {
         
@@ -214,7 +214,7 @@ Connector :: detach (   Sink              * sink )          throw ( Exception )
  *  Open the source and all the sinks if needed
  *----------------------------------------------------------------------------*/
 bool
-Connector :: open ( void )                          throw ( Exception )
+Connector :: open ( void )
 {
     unsigned int        u;
 
@@ -256,7 +256,7 @@ unsigned int
 Connector :: transfer ( unsigned long       bytes,
                         unsigned int        bufSize,
                         unsigned int        sec,
-                        unsigned int        usec )      throw ( Exception )
+                        unsigned int        usec )
 {
     unsigned int    u;
     unsigned long   b;
@@ -275,7 +275,6 @@ Connector :: transfer ( unsigned long       bytes,
     
     for ( b = 0; !bytes || b < bytes; ) {
         unsigned int    d = 0;
-        unsigned int    e = 0;
 
         if ( source->canRead( sec, usec) ) {
             d = source->read( buf, bufSize);
@@ -291,7 +290,7 @@ Connector :: transfer ( unsigned long       bytes,
                 if ( sinks[u]->canWrite( sec, usec) ) {
                     try {
                         // we expect the sink to accept all data written
-                        e = sinks[u]->write( buf, d);
+                        sinks[u]->write( buf, d);
                     } catch ( Exception     & e ) {
                         sinks[u]->close();
                         detach( sinks[u].get() );
@@ -345,7 +344,7 @@ Connector :: cut ( void )                           throw ()
  *  Close the source and all the sinks if needed
  *----------------------------------------------------------------------------*/
 void
-Connector :: close ( void )                         throw ( Exception )
+Connector :: close ( void )
 {
     unsigned int        u;
     

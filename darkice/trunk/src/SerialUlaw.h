@@ -84,7 +84,7 @@ class SerialUlaw : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline
-        SerialUlaw ( void )                       throw ( Exception )
+        SerialUlaw ( void )                       
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -96,7 +96,7 @@ class SerialUlaw : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         void
-        init (  const char    * name )              throw ( Exception );
+        init (  const char    * name )              ;
 
         /**
          *  De-iitialize the object
@@ -104,7 +104,7 @@ class SerialUlaw : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         void
-        strip ( void )                              throw ( Exception );
+        strip ( void )                              ;
 
 
     public:
@@ -125,7 +125,7 @@ class SerialUlaw : public AudioSource, public virtual Reporter
                       int             sampleRate    = 44100,
                       int             bitsPerSample = 16,
                       int             channel       = 2 )
-                                                        throw ( Exception )
+                                                        
 
                     : AudioSource( sampleRate, bitsPerSample, channel)
         {
@@ -139,7 +139,7 @@ class SerialUlaw : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline
-        SerialUlaw (  const SerialUlaw &    ods )   throw ( Exception )
+        SerialUlaw (  const SerialUlaw &    ods )   
                     : AudioSource( ods )
         {
             init( ods.fileName);
@@ -151,7 +151,7 @@ class SerialUlaw : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~SerialUlaw ( void )                          throw ( Exception )
+        ~SerialUlaw ( void )                          
         {
             strip();
         }
@@ -164,7 +164,7 @@ class SerialUlaw : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline virtual SerialUlaw &
-        operator= (     const SerialUlaw &     ds )   throw ( Exception )
+        operator= (     const SerialUlaw &     ds )   
         {
             if ( this != &ds ) {
                 strip();
@@ -194,7 +194,7 @@ class SerialUlaw : public AudioSource, public virtual Reporter
          *  @see #read
          */
         virtual bool
-        open ( void )                                   throw ( Exception );
+        open ( void )                                   ;
 
         /**
          *  Check if the SerialUlaw is open.
@@ -220,7 +220,7 @@ class SerialUlaw : public AudioSource, public virtual Reporter
          */
         virtual bool
         canRead (               unsigned int    sec,
-                                unsigned int    usec )  throw ( Exception );
+                                unsigned int    usec )  ;
 
         /**
          *  Read from the SerialUlaw.
@@ -233,7 +233,7 @@ class SerialUlaw : public AudioSource, public virtual Reporter
          */
         virtual unsigned int
         read (                  void          * buf,
-                                unsigned int    len )   throw ( Exception );
+                                unsigned int    len )   ;
 
         /**
          *  Close the SerialUlaw.
@@ -241,7 +241,7 @@ class SerialUlaw : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        close ( void )                                  throw ( Exception );
+        close ( void )                                  ;
 };
 
 

@@ -132,7 +132,7 @@ class BufferedSink : public Sink, public virtual Reporter
         void
         init (  Sink              * sink,
                 unsigned int        size,
-                unsigned int        chunkSize )         throw ( Exception );
+                unsigned int        chunkSize );
 
         /**
          *  De-initialize the object.
@@ -140,7 +140,7 @@ class BufferedSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         void
-        strip ( void )                                  throw ( Exception );
+        strip ( void );
 
         /**
          *  Slide a pointer in the internal buffer by offset. If the pointer
@@ -196,7 +196,7 @@ class BufferedSink : public Sink, public virtual Reporter
          *  @see #chunkSize
          */
         inline bool
-        align ( void )                                      throw ( Exception )
+        align ( void )
         {
             char    b[] = { 0 };
 
@@ -226,7 +226,7 @@ class BufferedSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline
-        BufferedSink ( void )                       throw ( Exception )
+        BufferedSink ( void )
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -253,7 +253,7 @@ class BufferedSink : public Sink, public virtual Reporter
          */
         unsigned int
         store (     const void    * buffer,
-                    unsigned int    bufferSize )    throw ( Exception );
+                    unsigned int    bufferSize );
 
 
     public:
@@ -270,7 +270,7 @@ class BufferedSink : public Sink, public virtual Reporter
         inline 
         BufferedSink (  Sink              * sink,
                         unsigned int        size,
-                        unsigned int        chunkSize = 1 ) throw ( Exception )
+                        unsigned int        chunkSize = 1 )
         {
             init( sink, size, chunkSize);
         }
@@ -281,7 +281,7 @@ class BufferedSink : public Sink, public virtual Reporter
          *  @param buffer the object to copy.
          *  @exception Exception
          */
-        BufferedSink (  const BufferedSink &  buffer )  throw ( Exception );
+        BufferedSink (  const BufferedSink &  buffer );
 
         /**
          *  Destructor.
@@ -289,7 +289,7 @@ class BufferedSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~BufferedSink ( void )                          throw ( Exception )
+        ~BufferedSink ( void )
         {
             strip();
         }
@@ -302,7 +302,7 @@ class BufferedSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         virtual BufferedSink &
-        operator= ( const BufferedSink &    bs )        throw ( Exception );
+        operator= ( const BufferedSink &    bs );
 
         /**
          *  Get the peak usage of the internal buffer.
@@ -322,7 +322,7 @@ class BufferedSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline virtual bool
-        open ( void )                                   throw ( Exception )
+        open ( void )
         {
             bOpen = sink->open();
             openAttempts = 0;
@@ -351,7 +351,7 @@ class BufferedSink : public Sink, public virtual Reporter
          */
         inline virtual bool
         canWrite (     unsigned int    sec,
-                       unsigned int    usec )           throw ( Exception )
+                       unsigned int    usec )
         {
             return true;
         }
@@ -370,7 +370,7 @@ class BufferedSink : public Sink, public virtual Reporter
          */
         virtual unsigned int
         write (    const void    * buf,
-                   unsigned int    len )                throw ( Exception );
+                   unsigned int    len );
 
         /**
          *  Flush all data that was written to the BufferedSink to the
@@ -379,10 +379,10 @@ class BufferedSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline virtual void
-        flush ( void )                                  throw ( Exception )
+        flush ( void )
         {
             unsigned char   b[1];
-
+            b[0] = 0;
             write( b, 0);
         }
 
@@ -404,7 +404,7 @@ class BufferedSink : public Sink, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        close ( void )                                  throw ( Exception );
+        close ( void );
 };
 
 

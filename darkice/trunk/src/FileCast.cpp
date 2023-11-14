@@ -73,7 +73,7 @@ static const char fileid[] = "$Id$";
  *  Open the connection
  *----------------------------------------------------------------------------*/
 bool
-FileCast :: open ( void )                       throw ( Exception )
+FileCast :: open ( void )                       
 {
     if ( isOpen() ) {
         return false;

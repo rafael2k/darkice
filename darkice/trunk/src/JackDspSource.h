@@ -105,7 +105,7 @@ class JackDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline
-        JackDspSource ( void )                       throw ( Exception )
+        JackDspSource ( void )                       
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -116,7 +116,7 @@ class JackDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         void
-        init ( const char* name )                   throw ( Exception );
+        init ( const char* name )                   ;
 
         /**
          *  De-initialize the object
@@ -124,14 +124,14 @@ class JackDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         void
-        strip ( void )                              throw ( Exception );
+        strip ( void )                              ;
 
 
         /**
          *  Attempt to connect up the JACK ports automatically
          */
         void
-        do_auto_connect( )                          throw ( Exception );
+        do_auto_connect( )                          ;
 
         /**
          *  Callback called by JACK when audio is available
@@ -164,7 +164,7 @@ class JackDspSource : public AudioSource, public virtual Reporter
                         int             sampleRate    = 44100,
                         int             bitsPerSample = 16,
                         int             channels      = 2 )
-                                                        throw ( Exception )
+                                                        
 
                     : AudioSource( sampleRate, bitsPerSample, channels )
         {
@@ -179,7 +179,7 @@ class JackDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline
-        JackDspSource (  const JackDspSource &    jds )   throw ( Exception )
+        JackDspSource (  const JackDspSource &    jds )   
                     : AudioSource( jds )
         {
             throw Exception( __FILE__, __LINE__, "JackDspSource doesn't copy");
@@ -191,7 +191,7 @@ class JackDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~JackDspSource ( void )                          throw ( Exception )
+        ~JackDspSource ( void )                          
         {
             strip();
         }
@@ -204,7 +204,7 @@ class JackDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         inline virtual JackDspSource &
-        operator= (     const JackDspSource &     ds )   throw ( Exception )
+        operator= (     const JackDspSource &     ds )   
         {
             throw Exception( __FILE__, __LINE__, "JackDspSource doesn't assign");
         }
@@ -221,7 +221,7 @@ class JackDspSource : public AudioSource, public virtual Reporter
          *  @see #read
          */
         virtual bool
-        open ( void )                                   throw ( Exception );
+        open ( void )                                   ;
 
         /**
          *  Check if the JackDspSource is registered
@@ -247,7 +247,7 @@ class JackDspSource : public AudioSource, public virtual Reporter
          */
         virtual bool
         canRead (               unsigned int    sec,
-                                unsigned int    usec )  throw ( Exception );
+                                unsigned int    usec )  ;
 
         /**
          *  Read from the JackDspSource.
@@ -260,7 +260,7 @@ class JackDspSource : public AudioSource, public virtual Reporter
          */
         virtual unsigned int
         read (                  void          * buf,
-                                unsigned int    len )   throw ( Exception );
+                                unsigned int    len )   ;
 
         /**
          *  Close the JackDspSource.
@@ -268,7 +268,7 @@ class JackDspSource : public AudioSource, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        close ( void )                                  throw ( Exception );
+        close ( void )                                  ;
 
 };
 

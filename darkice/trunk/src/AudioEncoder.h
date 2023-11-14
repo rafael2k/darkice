@@ -145,7 +145,7 @@ class AudioEncoder : public Sink, public virtual Referable
                     unsigned int    outBitrate,
                     double          outQuality,
                     unsigned int    outSampleRate,
-                    unsigned int    outChannel )        throw ( Exception )
+                    unsigned int    outChannel )
         {
             this->sink             = sink;
             this->inSampleRate     = inSampleRate;
@@ -169,7 +169,7 @@ class AudioEncoder : public Sink, public virtual Referable
          *  @exception Exception
          */
         inline void
-        strip ( void )                                  throw ( Exception )
+        strip ( void )
         {
         }
 
@@ -182,7 +182,7 @@ class AudioEncoder : public Sink, public virtual Referable
          *  @exception Exception
          */
         inline
-        AudioEncoder ( void )                           throw ( Exception )
+        AudioEncoder ( void )
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -215,7 +215,6 @@ class AudioEncoder : public Sink, public virtual Referable
                         double          outQuality,
                         unsigned int    outSampleRate = 0,
                         unsigned int    outChannel    = 0 )
-                                                        throw ( Exception )
         {
             init ( sink,
                    inSampleRate,
@@ -252,7 +251,6 @@ class AudioEncoder : public Sink, public virtual Referable
                         double                  outQuality,
                         unsigned int            outSampleRate = 0,
                         unsigned int            outChannel    = 0 )
-                                                        throw ( Exception)
         {
             init( sink,
                   as->getSampleRate(),
@@ -272,7 +270,7 @@ class AudioEncoder : public Sink, public virtual Referable
          *  @param encoder the AudioEncoder to copy.
          */
         inline
-        AudioEncoder (  const AudioEncoder &    encoder )   throw ( Exception )
+        AudioEncoder (  const AudioEncoder &    encoder )
         {
             init ( encoder.sink.get(),
                    encoder.inSampleRate,
@@ -294,7 +292,7 @@ class AudioEncoder : public Sink, public virtual Referable
          *  @exception Exception
          */
         inline virtual AudioEncoder &
-        operator= ( const AudioEncoder &        encoder )   throw ( Exception )
+        operator= ( const AudioEncoder &        encoder )
         {
             if ( this != &encoder ) {
                 strip();
@@ -323,7 +321,7 @@ class AudioEncoder : public Sink, public virtual Referable
          *  @exception Exception
          */
         inline virtual
-        ~AudioEncoder ( void )          throw ( Exception )
+        ~AudioEncoder ( void )
         {
             strip();
         }
@@ -456,7 +454,7 @@ class AudioEncoder : public Sink, public virtual Referable
          *  @exception Exception
          */
         virtual bool
-        start ( void )                      throw ( Exception )     = 0;
+        start ( void )                                              = 0;
 
         /**
          *  Stop encoding. Stops the encoding running in the background.
@@ -464,7 +462,7 @@ class AudioEncoder : public Sink, public virtual Referable
          *  @exception Exception
          */
         virtual void
-        stop ( void )                       throw ( Exception )     = 0;
+        stop ( void )                                               = 0;
 
         /**
          *  Cut what the sink has been doing so far, and start anew.

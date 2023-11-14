@@ -69,7 +69,7 @@ static const char fileid[] = "$Id$";
  *----------------------------------------------------------------------------*/
 void
 OpusLibEncoder :: init ( unsigned int     outMaxBitrate )
-                                                            throw ( Exception )
+                                                            
 {
     this->outMaxBitrate = outMaxBitrate;
 
@@ -149,7 +149,7 @@ OpusLibEncoder :: init ( unsigned int     outMaxBitrate )
  *----------------------------------------------------------------------------*/
 bool
 OpusLibEncoder :: open ( void )
-                                                            throw ( Exception )
+                                                            
 {
     int     ret;
 
@@ -327,7 +327,7 @@ OpusLibEncoder :: open ( void )
  *----------------------------------------------------------------------------*/
 unsigned int
 OpusLibEncoder :: write ( const void    * buf,
-                          unsigned int    len )             throw ( Exception )
+                          unsigned int    len )             
 {
     if ( !isOpen() || len == 0 ) {
         return 0;
@@ -471,7 +471,7 @@ OpusLibEncoder :: write ( const void    * buf,
  *----------------------------------------------------------------------------*/
 void
 OpusLibEncoder :: flush ( void )
-                                                            throw ( Exception )
+                                                            
 {
     if ( !isOpen() || reconnectError == true ) {
         return;
@@ -506,7 +506,7 @@ OpusLibEncoder :: flush ( void )
 void
 OpusLibEncoder :: opusBlocksOut ( int bytes,
                                   unsigned char* data,
-                                  bool eos )               throw ( Exception )
+                                  bool eos )               
 {
     ogg_packet      oggPacket;
     ogg_page        oggPage;
@@ -545,7 +545,7 @@ OpusLibEncoder :: opusBlocksOut ( int bytes,
  *  Close the encoding session
  *----------------------------------------------------------------------------*/
 void
-OpusLibEncoder :: close ( void )                    throw ( Exception )
+OpusLibEncoder :: close ( void )                    
 {
     if ( isOpen() ) {
         flush();

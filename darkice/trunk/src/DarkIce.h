@@ -147,7 +147,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         void
-        init (  const Config   & config )            throw ( Exception );
+        init (  const Config   & config )            ;
 
         /**
          *  Look for the icecast stream outputs from the config file.
@@ -160,7 +160,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
          */
         void
         configIceCast (  const Config   & config,
-                         unsigned int     bufferSecs  )     throw ( Exception );
+                         unsigned int     bufferSecs  )     ;
 
         /**
          *  Look for the icecast2 stream outputs from the config file.
@@ -173,7 +173,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
          */
         void
         configIceCast2 (  const Config   & config,
-                          unsigned int     bufferSecs  )    throw ( Exception );
+                          unsigned int     bufferSecs  )    ;
 
         /**
          *  Look for the shoutcast stream outputs from the config file.
@@ -186,7 +186,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
          */
         void
         configShoutCast (   const Config   & config,
-                            unsigned int     bufferSecs )   throw ( Exception );
+                            unsigned int     bufferSecs )   ;
 
         /**
          *  Look for file outputs from the config file.
@@ -198,7 +198,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
          */
         void
         configFileCast  (   const Config   & config )
-                                                            throw ( Exception );
+                                                            ;
 
         /**
          *  Set POSIX real-time scheduling for the encoding process,
@@ -207,7 +207,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         void
-        setRealTimeScheduling ( void )              throw ( Exception );
+        setRealTimeScheduling ( void )              ;
 
         /**
          *  Set the scheduling that was before setting real-time scheduling.
@@ -216,7 +216,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         void
-        setOriginalScheduling ( void )              throw ( Exception );
+        setOriginalScheduling ( void )              ;
 
         /**
          *  Start encoding. Spawns all encoders, opens the dsp and
@@ -226,7 +226,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         bool
-        encode ( void )                             throw ( Exception );
+        encode ( void )                             ;
 
         /**
          *  Start shouting. fork()-s a process for each output, reads
@@ -236,7 +236,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         bool
-        shout ( unsigned int )                      throw ( Exception );
+        shout ( unsigned int )                      ;
 
 
     protected:
@@ -247,7 +247,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         inline
-        DarkIce ( void )                            throw ( Exception )
+        DarkIce ( void )                            
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -263,7 +263,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         inline
-        DarkIce (   const Config  & config )       throw ( Exception )
+        DarkIce (   const Config  & config )       
         {
             init( config);
         }
@@ -274,20 +274,20 @@ class DarkIce : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~DarkIce ( void )                           throw ( Exception )
+        ~DarkIce ( void )                           
         {
         }
 
 /* TODO
 
         inline
-        DarkIce ( const DarkIce   & di )            throw ( Exception )
+        DarkIce ( const DarkIce   & di )            
         {
         }
 
 
         inline DarkIce &
-        operator= ( const DarkIce   * di )          throw ( Exception )
+        operator= ( const DarkIce   * di )          
         {
         }
 */
@@ -299,7 +299,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
          *  @exception Exception
          */
         virtual int
-        run ( void )                                throw ( Exception );
+        run ( void )                                ;
 
         /**
          *  Signal to each sink we have that they need to cut what they are

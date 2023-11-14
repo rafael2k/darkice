@@ -83,7 +83,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          */
         void
         init (  const char        * host,
-                unsigned short      port )              throw ( Exception );
+                unsigned short      port )              ;
 
         /**
          *  De-initialize the object.
@@ -91,7 +91,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          *  @exception Exception
          */
         void
-        strip ( void )                                  throw ( Exception );
+        strip ( void )                                  ;
 
 
     protected:
@@ -102,7 +102,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline
-        TcpSocket ( void )                             throw ( Exception )
+        TcpSocket ( void )                             
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -119,7 +119,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          */
         inline
         TcpSocket(   const char        * host,
-                     unsigned short      port )         throw ( Exception )
+                     unsigned short      port )         
         {
             init( host, port);
         }
@@ -130,7 +130,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          *  @param ss the TcpSocket to copy.
          *  @exception Exception
          */
-        TcpSocket(   const TcpSocket &    ss )        throw ( Exception );
+        TcpSocket(   const TcpSocket &    ss )        ;
 
         /**
          *  Destructor.
@@ -138,7 +138,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~TcpSocket( void )                           throw ( Exception )
+        ~TcpSocket( void )                           
         {
             strip();
         }
@@ -151,7 +151,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline virtual TcpSocket &
-        operator= ( const TcpSocket &    ss )        throw ( Exception );
+        operator= ( const TcpSocket &    ss )        ;
 
         /**
          *  Get the host this socket connects to.
@@ -182,7 +182,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          *  @exception Exception
          */
         virtual bool
-        open ( void )                               throw ( Exception );
+        open ( void )                               ;
 
         /**
          *  Check if the TcpSocket is open.
@@ -207,7 +207,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          */
         virtual bool
         canRead (      unsigned int    sec,
-                       unsigned int    usec )       throw ( Exception );
+                       unsigned int    usec )       ;
 
         /**
          *  Read from the TcpSocket.
@@ -219,7 +219,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          */
         virtual unsigned int
         read (         void          * buf,
-                       unsigned int    len )        throw ( Exception );
+                       unsigned int    len )        ;
 
 
         /**
@@ -234,7 +234,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          */
         virtual bool
         canWrite (     unsigned int    sec,
-                       unsigned int    usec )       throw ( Exception );
+                       unsigned int    usec )       ;
 
         /**
          *  Write data to the TcpSocket.
@@ -246,7 +246,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          */
         virtual unsigned int
         write (        const void    * buf,
-                       unsigned int    len )        throw ( Exception );
+                       unsigned int    len )        ;
 
         /**
          *  Flush all data that was written to the TcpSocket to the underlying
@@ -255,7 +255,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          *  @exception Exception
          */
         inline virtual void
-        flush ( void )                              throw ( Exception )
+        flush ( void )                              
         {
         }
 
@@ -277,7 +277,7 @@ class TcpSocket : public Source, public Sink, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        close ( void )                              throw ( Exception );
+        close ( void )                              ;
 };
 
 

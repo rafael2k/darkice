@@ -130,7 +130,7 @@ class AudioSource : public Source, public virtual Reporter
         inline void
         init (   unsigned int   sampleRate,
                  unsigned int   bitsPerSample,
-                 unsigned int   channel )               throw ( Exception )
+                 unsigned int   channel )
         {
             this->sampleRate     = sampleRate;
             this->bitsPerSample  = bitsPerSample;
@@ -143,7 +143,7 @@ class AudioSource : public Source, public virtual Reporter
          *  @exception Exception
          */
         inline void
-        strip ( void )                                  throw ( Exception )
+        strip ( void )
         {
         }
 
@@ -165,7 +165,6 @@ class AudioSource : public Source, public virtual Reporter
         AudioSource (   unsigned int    sampleRate    = 44100,
                         unsigned int    bitsPerSample = 16,
                         unsigned int    channel       = 2 )
-                                                        throw ( Exception )
         {
             init ( sampleRate, bitsPerSample, channel);
         }
@@ -177,7 +176,7 @@ class AudioSource : public Source, public virtual Reporter
          *  @exception Exception
          */
         inline
-        AudioSource (   const AudioSource &     as )    throw ( Exception )
+        AudioSource (   const AudioSource &     as )
             : Source( as )
         {
             init ( as.sampleRate, as.bitsPerSample, as.channel);
@@ -191,7 +190,7 @@ class AudioSource : public Source, public virtual Reporter
          *  @exception Exception
          */
         inline virtual AudioSource &
-        operator= (     const AudioSource &     as )    throw ( Exception )
+        operator= (     const AudioSource &     as )
         {
             if ( this != &as ) {
                 strip();
@@ -211,7 +210,7 @@ class AudioSource : public Source, public virtual Reporter
          *  @exception Exception
          */
         virtual inline
-        ~AudioSource ( void )                           throw ( Exception )
+        ~AudioSource ( void )
         {
         }
 
@@ -296,7 +295,7 @@ class AudioSource : public Source, public virtual Reporter
                          const char    * paSourceName,
                          int             sampleRate    = 44100,
                          int             bitsPerSample = 16,
-                         int             channel       = 2) throw ( Exception );
+                         int             channel       = 2);
 
 };
 

@@ -135,7 +135,7 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline void
-        init ( Sink           * sink, int lowpass)                throw (Exception)
+        init ( Sink           * sink, int lowpass)
         {
             this->aacplusOpen        = false;
             this->sink            = sink;
@@ -219,7 +219,7 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline void
-        strip ( void )                                  throw ( Exception )
+        strip ( void )
         {
             if ( converter ) {
 #ifdef HAVE_SRC_LIB
@@ -240,7 +240,7 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline
-        aacPlusEncoder ( void )                         throw ( Exception )
+        aacPlusEncoder ( void )
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -281,7 +281,6 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
                         unsigned int    outSampleRate = 0,
                         unsigned int    outChannel    = 0,
                         int             lowpass       = 0)
-                                                        throw ( Exception )
 
                     : AudioEncoder ( sink,
                     				 inSampleRate,
@@ -325,7 +324,6 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
                         unsigned int            outSampleRate = 0,
                         unsigned int            outChannel    = 0,
                         int                     lowpass       = 0)
-                                                            throw ( Exception )
 
                     : AudioEncoder ( sink,
                     				 as,
@@ -345,7 +343,6 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
          */
         inline
         aacPlusEncoder (  const aacPlusEncoder &    encoder )
-                                                            throw ( Exception )
                     : AudioEncoder( encoder )
         {
             init( encoder.sink.get(), encoder.lowpass);
@@ -358,7 +355,7 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~aacPlusEncoder ( void )                            throw ( Exception )
+        ~aacPlusEncoder ( void )
         {
             if ( isOpen() ) {
                 close();
@@ -374,7 +371,7 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual aacPlusEncoder &
-        operator= ( const aacPlusEncoder &      encoder )   throw ( Exception )
+        operator= ( const aacPlusEncoder &      encoder )
         {
             if ( this != &encoder ) {
                 strip();
@@ -419,7 +416,7 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual bool
-        start ( void )                      throw ( Exception )
+        start ( void )
         {
             return open();
         }
@@ -430,7 +427,7 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual void
-        stop ( void )                       throw ( Exception )
+        stop ( void )
         {
             return close();
         }
@@ -442,7 +439,7 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         virtual bool
-        open ( void )                               throw ( Exception );
+        open ( void );
 
         /**
          *  Check if the encoding session is open.
@@ -466,7 +463,7 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
          */
         inline virtual bool
         canWrite (     unsigned int    sec,
-                       unsigned int    usec )       throw ( Exception )
+                       unsigned int    usec )
         {
             if ( !isOpen() ) {
                 return false;
@@ -488,7 +485,7 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
          */
         virtual unsigned int
         write (        const void    * buf,
-                       unsigned int    len )        throw ( Exception );
+                       unsigned int    len );
 
         /**
          *  Flush all data that was written to the encoder to the underlying
@@ -497,7 +494,7 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        flush ( void )                              throw ( Exception );
+        flush ( void );
 
         /**
          *  Close the encoding session.
@@ -505,7 +502,7 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         virtual void
-        close ( void )                              throw ( Exception );
+        close ( void );
 };
 
 

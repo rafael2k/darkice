@@ -80,7 +80,7 @@ class Util
          *  @exception Exception
          */
         inline
-        Util ( void )                           throw ( Exception )
+        Util ( void )                           
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -91,7 +91,7 @@ class Util
          *  @exception Exception
          */
         inline
-        Util ( const Util &   e )               throw ( Exception )
+        Util ( const Util &   e )               
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -102,9 +102,8 @@ class Util
          *  @exception Exception
          */
         inline
-        ~Util ( void )                          throw ( Exception )
+        ~Util ( void )                          
         {
-            throw Exception( __FILE__, __LINE__);
         }
 
         /**
@@ -114,7 +113,7 @@ class Util
          *  @exception Exception
          */
         inline Util &
-        operator= ( const Util &   u )          throw ( Exception )
+        operator= ( const Util &   u )          
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -131,7 +130,7 @@ class Util
          *  @exception Exception
          */
         static unsigned int
-        strLen (        const char    * str )       throw ( Exception );
+        strLen (        const char    * str )       ;
 
         /**
          *  Copy a C string into another.
@@ -143,7 +142,7 @@ class Util
          */
         static void
         strCpy (    char          * dest,
-                    const char    * src )           throw ( Exception );
+                    const char    * src )           ;
 
         /**
          *  Concatenate a string to another's end.
@@ -156,7 +155,7 @@ class Util
          */
         static void
         strCat (    char          * dest,
-                    const char    * src )           throw ( Exception );
+                    const char    * src )           ;
 
         /**
          *  Duplicate a string by allocating space with new[].
@@ -166,7 +165,7 @@ class Util
          *  @exception Exception
          */
         static char *
-        strDup (        const char    * str )       throw ( Exception );
+        strDup (        const char    * str )       ;
 
         /**
          *  Determine whether two string are equal.
@@ -181,7 +180,7 @@ class Util
         static bool
         strEq ( const char    * str1,
                 const char    * str2,
-                unsigned int    len = 0 )           throw ( Exception );
+                unsigned int    len = 0 )           ;
 
         /**
          *  Convert a string to long.
@@ -191,7 +190,7 @@ class Util
          *  @exception Exception
          */
         static long int
-        strToL ( const char    * str) throw ( Exception );
+        strToL ( const char    * str) ;
 
         /**
          *  Convert a string to double.
@@ -201,7 +200,7 @@ class Util
          *  @exception Exception
          */
         static double
-        strToD ( const char    * str )              throw ( Exception );
+        strToD ( const char    * str )              ;
 
         /**
          *  Add current date to a file name, before the file extension (if any)
@@ -215,7 +214,7 @@ class Util
         static char *
         fileAddDate ( const char * str,
                       const char * format = "[%m-%d-%Y-%H-%M-%S]" )
-                                                        throw ( Exception );
+                                                        ;
 
         /**
          *  Convert a string into base64 encoding.
@@ -227,7 +226,7 @@ class Util
          *  @exception Exception
          */
         static char *
-        base64Encode ( const char     * str )       throw ( Exception );
+        base64Encode ( const char     * str )       ;
 
         /**
          *  Convert an unsigned char buffer holding 8 or 16 bit PCM values
@@ -247,7 +246,7 @@ class Util
                 unsigned char     * pcmBuffer,
                 unsigned int        lenPcmBuffer,
                 short int         * outBuffer,
-                bool                isBigEndian = true )    throw ( Exception );
+                bool                isBigEndian = true )    ;
 
 
         /**
@@ -264,7 +263,7 @@ class Util
         conv (  short int         * shortBuffer,
                 unsigned int        lenShortBuffer,
                 float            ** floatBuffers,
-                unsigned int        channels )              throw ( Exception );
+                unsigned int        channels )              ;
 
         /**
          *  Convert a char buffer holding 8 bit PCM values to a short buffer
@@ -282,7 +281,7 @@ class Util
                     unsigned int        lenPcmBuffer,
                     short int         * leftBuffer,
                     short int         * rightBuffer,
-                    unsigned int        channels )          throw ( Exception );
+                    unsigned int        channels )          ;
 
         /**
          *  Convert a char buffer holding 16 bit PCM values to a short buffer
@@ -302,7 +301,7 @@ class Util
                     short int         * leftBuffer,
                     short int         * rightBuffer,
                     unsigned int        channels,
-                    bool                isBigEndian )       throw ( Exception );
+                    bool                isBigEndian )       ;
 
         /**
          *  Make a thread sleep for specified amount of time.
