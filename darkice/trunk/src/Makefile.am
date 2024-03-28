@@ -7,6 +7,7 @@ darkice_CXXFLAGS = \
  $(LAME_CFLAGS) \
  $(VORBIS_CFLAGS) \
  $(OPUS_CFLAGS) \
+ $(FLAC_CFLAGS) \
  $(FAAC_CFLAGS) \
  $(AACPLUS_CFLAGS) \
  $(TWOLAME_CFLAGS) \
@@ -20,6 +21,7 @@ darkice_LDADD = \
  $(LAME_LIBS) \
  $(VORBIS_LIBS) \
  $(OPUS_LIBS) \
+ $(FLAC_LIBS) \
  $(FAAC_LIBS) \
  $(AACPLUS_LIBS) \
  $(TWOLAME_LIBS) \
@@ -72,6 +74,8 @@ darkice_SOURCES =   AudioEncoder.h\
                     VorbisLibEncoder.h\
                     OpusLibEncoder.cpp\
                     OpusLibEncoder.h\
+                    FlacLibEncoder.cpp\
+                    FlacLibEncoder.h\
                     FaacEncoder.cpp\
                     FaacEncoder.h\
                     aacPlusEncoder.cpp\

@@ -104,6 +104,19 @@ AS_IF(test -n "$OPUS_LIBS",
     AC_DEFINE(HAVE_OPUS_LIB, 1, [build with Ogg Opus library]))
 
 dnl-----------------------------------------------------------------------------
+dnl link the ogg / FLAC libraries if requested
+dnl-----------------------------------------------------------------------------
+AC_ARG_WITH(flac,
+    AS_HELP_STRING([--with-flac], [use Ogg FLAC for encoding flac streams @<:@check@:>@]),
+    [], with_flac=check)
+AS_CASE([$with_flac],
+    check, [PKG_CHECK_MODULES(FLAC, [ogg flac], [], true)],
+    yes,   [PKG_CHECK_MODULES(FLAC, [ogg flac])],
+    AC_MSG_RESULT([building without Ogg FLAC]))
+AS_IF(test -n "$FLAC_LIBS",
+    AC_DEFINE(HAVE_FLAC_LIB, 1, [build with Ogg FLAC library]))
+
+dnl-----------------------------------------------------------------------------
 dnl link the faac library if requested
 dnl-----------------------------------------------------------------------------
 AC_SUBST(FAAC_CFLAGS)
@@ -172,10 +185,11 @@ dnl-----------------------------------------------------------------------------
 if test -z "x${LAME_LIBS}" \
      -a -z "${VORBIS_LIBS}" \
      -a -z "${OPUS_LIBS}" \
+     -a -z "${FLAC_LIBS}" \
      -a -z "${FAAC_LIBS}" \
      -a -z "${AACPLUS_LIBS}" \
      -a -z "${TWOLAME_LIBS}" ; then
-    AC_MSG_ERROR([neither lame, Ogg Vorbis, opus, faac, aac+ nor twolame configured])
+    AC_MSG_ERROR([neither lame, Ogg Vorbis, opus, FLAC, faac, aac+ nor twolame configured])
 fi
 
 

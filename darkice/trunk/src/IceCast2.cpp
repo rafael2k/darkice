@@ -159,6 +159,10 @@ IceCast2 :: sendLogin ( void )
             str = "application/ogg";
             break;
 
+        case oggFlac:
+            str = "application/ogg";
+            break;
+
         case aac:
             str = "audio/aac";
             break;
