@@ -1,4 +1,4 @@
-.TH darkice 1 "November 20, 2007" "DarkIce" "DarkIce live audio streamer"
+.TH darkice 1 "April 3, 2024" "DarkIce" "DarkIce live audio streamer"
 .SH NAME
 darkice \- an icecast / shoutcast live audio streamer
 .SH SYNOPSIS
@@ -6,7 +6,9 @@ darkice \- an icecast / shoutcast live audio streamer
 [options] -c config.file
 .SH DESCRIPTION
 .PP
-DarkIce as a live audio streamer. It records audio from an audio interface (e.g. sound card), encodes it and sends it to a streaming server.
+DarkIce as a live audio streamer. It records audio from an audio interface
+(e.g. sound card), encodes it and sends it to a streaming server.
+
 DarkIce can record from:
 
     * OSS audio devices
@@ -21,6 +23,7 @@ DarkIce can encode in the following formats:
     * mp2 - using the twolame library
     * Ogg Vorbis
     * Ogg Opus
+    * Ogg FLAC
     * AAC - using the faac library
     * AAC HEv2 - using the libaacplus (3GPP reference code)
 
@@ -64,13 +67,20 @@ Defaults to 1.
 Prints the help page and exits.
 
 
+.SH NOTES
+When using the FLAC encoder with an icecast streamer, make sure to increase the
+.I <queue-size>
+setting.
+
+
 .SH BUGS
-.PP
 Lots of bugs.
+.PP
+
 
 
 .SH "SEE ALSO"
-darkice.cfg(5)
+darkice.cfg(5), icecast(1)
 
 
 .SH AUTHOR
@@ -116,7 +126,7 @@ Developed with contributions by
   
 .SH LINKS
 Project homepage:
-.I http://code.google.com/p/darkice/
+.I http://www.darkice.org/
 
 .B IceCast
 homepage:

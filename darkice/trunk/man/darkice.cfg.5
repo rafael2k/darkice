@@ -1,4 +1,4 @@
-.TH darkice.cfg 5 "February 25, 2007" "DarkIce" "DarkIce live audio streamer"
+.TH darkice.cfg 5 "April 3, 2024" "DarkIce" "DarkIce live audio streamer"
 .SH NAME
 darkice.cfg \- configuration file for darkice
 .SH DESCRIPTION
@@ -210,6 +210,12 @@ Highpass filter setting for the lame encoder, in Hz. Frequencies below
 the specified value will be cut.
 If not set or set to 0, the encoder's default behaviour is used.
 If set to -1, the filter is disabled.
+.TP
+.I compression
+Compression level of the FLAC encoder.
+An integer value between 0 (fast, least compression)
+and 8 (slow, most compression).
+If not set, the encoder's default value (5) is used.
 
 .PP
 .B [icecast2-x]
@@ -236,7 +242,8 @@ Required values:
 .I format
 Format of the stream sent to the
 .B IceCast2
-server. Supported formats are 'vorbis', 'opus', 'mp3', 'mp2', 'aac' and 'aacp'.
+server. Supported formats are 'vorbis', 'opus', 'flac', 'mp3', 'mp2', 'aac'
+and 'aacp'.
 .TP
 .I bitrateMode
 The bit rate mode of the encoding, either "cbr", "abr" or "vbr",
@@ -665,7 +672,7 @@ Akos Maroy
 
 .SH LINKS
 Project homepage:
-.I http://code.google.com/p/darkice/
+.I http://darkice.org/
 
 .B IceCast
 homepage:
