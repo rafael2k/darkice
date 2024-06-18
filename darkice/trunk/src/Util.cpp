@@ -339,14 +339,14 @@ Util :: fileAddDate ( const char * str,
 
 /*------------------------------------------------------------------------------
  *  Convert an unsigned char buffer holding 8 or 16 bit PCM values with
- *  channels interleaved to a short int buffer, still with channels interleaved
+ *  channels interleaved to a int16_t buffer, still with channels interleaved
  *----------------------------------------------------------------------------*/
-void
+template <typename T> void
 Util :: conv (  unsigned int        bitsPerSample,
                 unsigned char     * pcmBuffer,
-                unsigned int        lenPcmBuffer,
-                short int         * outBuffer,
-                bool                isBigEndian )           
+                size_t              lenPcmBuffer,
+                T                 * outBuffer,
+                bool                isBigEndian )
 {
     if ( bitsPerSample == 8 ) {
         unsigned int    i, j;
@@ -361,7 +361,7 @@ Util :: conv (  unsigned int        bitsPerSample,
             unsigned int    i, j;
 
             for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-                short int       value;
+                int16_t         value;
 
                 value         = pcmBuffer[i++] << 8;
                 value        |= pcmBuffer[i++];
@@ -372,7 +372,7 @@ Util :: conv (  unsigned int        bitsPerSample,
             unsigned int    i, j;
 
             for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-                short int       value;
+                int16_t         value;
 
                 value         = pcmBuffer[i++];
                 value        |= pcmBuffer[i++] << 8;
@@ -386,6 +386,8 @@ Util :: conv (  unsigned int        bitsPerSample,
                          bitsPerSample);
     }
 }
+template void Util::conv<int16_t>(unsigned int, unsigned char *, size_t, int16_t *, bool);
+template void Util::conv<int32_t>(unsigned int, unsigned char *, size_t, int32_t *, bool);
 
 
 /*------------------------------------------------------------------------------
@@ -393,10 +395,10 @@ Util :: conv (  unsigned int        bitsPerSample,
  *  to one or more float buffers, one for each channel
  *----------------------------------------------------------------------------*/
 void
-Util :: conv (  short int         * shortBuffer,
-                unsigned int        lenShortBuffer,
+Util :: conv (  int16_t           * shortBuffer,
+                size_t              lenShortBuffer,
                 float            ** floatBuffers,
-                unsigned int        channels )              
+                unsigned int        channels )
 {
     unsigned int    i, j;
 
@@ -411,35 +413,28 @@ Util :: conv (  short int         * shortBuffer,
 
 /*------------------------------------------------------------------------------
  *  Convert an unsigned char buffer holding 8 bit PCM values with channels
- *  interleaved to two short int buffers (one for each channel)
+ *  interleaved to two int16_t buffers (one for each channel)
  *----------------------------------------------------------------------------*/
 void
 Util :: conv8 (     unsigned char     * pcmBuffer,
-                    unsigned int        lenPcmBuffer,
-                    short int         * leftBuffer,
-                    short int         * rightBuffer,
-                    unsigned int        channels )          
+                    size_t              lenPcmBuffer,
+                    int16_t           * leftBuffer,
+                    int16_t           * rightBuffer,
+                    unsigned int        channels )
 {
     if ( channels == 1 ) {
         unsigned int    i, j;
 
         for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-            unsigned short int  value;
-
-            value         = pcmBuffer[i++];
-            leftBuffer[j] = (short int) value;
+            leftBuffer[j] = pcmBuffer[i++];
             ++j;
         }
     } else if ( channels == 2 ) {
         unsigned int    i, j;
 
         for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-            unsigned short int  value;
-
-            value          = pcmBuffer[i++];
-            leftBuffer[j]  = (short int) value;
-            value          = pcmBuffer[i++];
-            rightBuffer[j] = (short int) value;
+            leftBuffer[j] = pcmBuffer[i++];
+            rightBuffer[j] = pcmBuffer[i++];
             ++j;
         }
     } else {
@@ -455,36 +450,36 @@ Util :: conv8 (     unsigned char     * pcmBuffer,
  *----------------------------------------------------------------------------*/
 void
 Util :: conv16 (    unsigned char     * pcmBuffer,
-                    unsigned int        lenPcmBuffer,
-                    short int         * leftBuffer,
-                    short int         * rightBuffer,
+                    size_t              lenPcmBuffer,
+                    int16_t           * leftBuffer,
+                    int16_t           * rightBuffer,
                     unsigned int        channels,
-                    bool                isBigEndian )       
+                    bool                isBigEndian )
 {
     if ( isBigEndian ) {
         if ( channels == 1 ) {
             unsigned int    i, j;
 
             for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-                unsigned short int   value;
+                int16_t           value;
 
                 value           = pcmBuffer[i++] << 8;
                 value          |= pcmBuffer[i++];
-                leftBuffer[j]  = (short int) value;
+                leftBuffer[j]  =  value;
                 ++j;
             }
         } else {
             unsigned int    i, j;
 
             for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-                unsigned short int   value;
+                int16_t           value;
 
                 value           = pcmBuffer[i++] << 8;
                 value          |= pcmBuffer[i++];
-                leftBuffer[j]   = (short int) value;
+                leftBuffer[j]   = value;
                 value           = pcmBuffer[i++] << 8;
                 value          |= pcmBuffer[i++];
-                rightBuffer[j]  = (short int) value;
+                rightBuffer[j]  = value;
                 ++j;
             }
         }
@@ -493,25 +488,25 @@ Util :: conv16 (    unsigned char     * pcmBuffer,
             unsigned int    i, j;
 
             for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-                unsigned short int   value;
+                int16_t          value;
 
                 value          = pcmBuffer[i++];
                 value         |= pcmBuffer[i++] << 8;
-                leftBuffer[j]  = (short int) value;
+                leftBuffer[j]  = value;
                 ++j;
             }
         } else {
             unsigned int    i, j;
 
             for ( i = 0, j = 0; i < lenPcmBuffer; ) {
-                unsigned short int   value;
+                int16_t           value;
 
                 value           = pcmBuffer[i++];
                 value          |= pcmBuffer[i++] << 8;
-                leftBuffer[j]   = (short int) value;
+                leftBuffer[j]   = value;
                 value           = pcmBuffer[i++];
                 value          |= pcmBuffer[i++] << 8;
-                rightBuffer[j]  = (short int) value;
+                rightBuffer[j]  = value;
                 ++j;
             }
         }

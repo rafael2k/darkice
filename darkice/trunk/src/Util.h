@@ -241,11 +241,11 @@ class Util
          *  @param outBuffer the output buffer, must be big enough
          *  @param isBigEndian true if the input is big endian, false otherwise
          */
-        static void
+        template <typename T=int16_t> static void
         conv (  unsigned int        bitsPerSample,
                 unsigned char     * pcmBuffer,
-                unsigned int        lenPcmBuffer,
-                short int         * outBuffer,
+                size_t              lenPcmBuffer,
+                T                 * outBuffer,
                 bool                isBigEndian = true )    ;
 
 
@@ -260,8 +260,8 @@ class Util
          *  @param channels number of channels to separate the input to
          */
         static void
-        conv (  short int         * shortBuffer,
-                unsigned int        lenShortBuffer,
+        conv (  int16_t           * shortBuffer,
+                size_t              lenShortBuffer,
                 float            ** floatBuffers,
                 unsigned int        channels )              ;
 
@@ -278,9 +278,9 @@ class Util
          */
         static void
         conv8 (     unsigned char     * pcmBuffer,
-                    unsigned int        lenPcmBuffer,
-                    short int         * leftBuffer,
-                    short int         * rightBuffer,
+                    size_t              lenPcmBuffer,
+                    int16_t           * leftBuffer,
+                    int16_t           * rightBuffer,
                     unsigned int        channels )          ;
 
         /**
@@ -297,9 +297,9 @@ class Util
          */
         static void
         conv16 (    unsigned char     * pcmBuffer,
-                    unsigned int        lenPcmBuffer,
-                    short int         * leftBuffer,
-                    short int         * rightBuffer,
+                    size_t              lenPcmBuffer,
+                    int16_t           * leftBuffer,
+                    int16_t           * rightBuffer,
                     unsigned int        channels,
                     bool                isBigEndian )       ;
 
