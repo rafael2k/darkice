@@ -40,10 +40,10 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_AACPLUS_LIB
-#include <aacplus.h>
+#ifdef HAVE_FDKAAC_LIB
+#include <fdk-aac/aacenc_lib.h>
 #else
-#error configure with aacplus
+#error configure with fdk-aac
 #endif
 
 #include <cassert>
@@ -110,7 +110,8 @@ class aacPlusEncoder : public AudioEncoder, public virtual Reporter
         /**
          *  The handle to the AAC+ encoder instance.
          */
-        aacplusEncHandle               encoderHandle;
+        HANDLE_AACENCODER encoderHandle;
+
 
         /**
          *  The maximum number of input samples to supply to the encoder.

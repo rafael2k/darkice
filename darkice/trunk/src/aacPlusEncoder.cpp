@@ -34,7 +34,7 @@
 #endif
 
 // compile the whole file only if aacplus support configured in
-#ifdef HAVE_AACPLUS_LIB
+#ifdef HAVE_FDKAAC_LIB
 
 
 
@@ -72,31 +72,98 @@ aacPlusEncoder :: open ( void )
     // open the underlying sink
     if ( !sink->open() ) {
         throw Exception( __FILE__, __LINE__,
-                         "aacplus lib opening underlying sink error");
+                         "fdk-aac lib opening underlying sink error");
     }
 
-    reportEvent(1, "Using aacplus codec");
-    
-    encoderHandle = aacplusEncOpen(getOutSampleRate(),
-                                getInChannel(),
-                                &inputSamples,
-                                &maxOutputBytes);
+    reportEvent(1, "Using fdk-aac codec");
 
-    aacplusEncConfiguration      * aacplusConfig;
+    int InChannels = getInChannel();
+    int OutChannels = getOutChannel();
 
-    aacplusConfig = aacplusEncGetCurrentConfiguration(encoderHandle);
+    if (aacEncOpen(&encoderHandle, 0, InChannels) != AACENC_OK) {
+        throw Exception( __FILE__, __LINE__,
+                         "fdk-aac unable to open encoder");
+		return 1;
+	}
 
-    aacplusConfig->bitRate       = getOutBitrate() * 1000;
-    aacplusConfig->bandWidth     = lowpass;
-    aacplusConfig->outputFormat  = 1;
-    aacplusConfig->inputFormat   = AACPLUS_INPUT_16BIT;
-    aacplusConfig->nChannelsOut  = getOutChannel();
+    int aot;
+    int bitrate = getOutBitrate() * 1000;
+    if (bitrate >= 64000)
+        aot = 2;
+    else
+        aot = (InChannels == 1)? 5 : 29; // HE-AAC / HE-AAC v2
 
-    if (!aacplusEncSetConfiguration(encoderHandle, aacplusConfig)) {
-        throw Exception(__FILE__, __LINE__,
-                        "error configuring libaacplus library");
+    if (aacEncoder_SetParam(encoderHandle, AACENC_AOT, aot) != AACENC_OK) {
+        throw Exception( __FILE__, __LINE__,
+                         "fdk-aac Unable to set the AOT");
+		return 1;
+	}
+
+    if (aacEncoder_SetParam(encoderHandle, AACENC_SAMPLERATE, getOutSampleRate()) != AACENC_OK) {
+        throw Exception( __FILE__, __LINE__,
+                         "fdk-aac unable to set the sample rate");
+		return 1;
+	}
+
+    CHANNEL_MODE mode;
+    switch (OutChannels) {
+	case 1:
+        mode = MODE_1;       break;
+	case 2:
+        mode = MODE_2;       break;
+	case 3:
+        mode = MODE_1_2;     break;
+	case 4:
+        mode = MODE_1_2_1;   break;
+	case 5:
+        mode = MODE_1_2_2;   break;
+	case 6:
+        mode = MODE_1_2_2_1; break;;
     }
 
+    if (aacEncoder_SetParam(encoderHandle, AACENC_CHANNELMODE, mode) != AACENC_OK) {
+        throw Exception( __FILE__, __LINE__,
+                         "fdk-aac unable to set the channel mode");
+		return 1;
+	}
+
+	if (aacEncoder_SetParam(encoderHandle, AACENC_CHANNELORDER, 1) != AACENC_OK) {
+        throw Exception( __FILE__, __LINE__,
+                         "fdk-aac unable to set the channel order");
+		return 1;
+	}
+
+	if (aacEncoder_SetParam(encoderHandle, AACENC_BITRATE, bitrate) != AACENC_OK) {
+        throw Exception( __FILE__, __LINE__,
+                         "fdk-aac unable to set the bitrate");
+        return 1;
+    }
+
+    if (aacEncoder_SetParam(encoderHandle, AACENC_TRANSMUX, TT_MP4_ADTS) != AACENC_OK) {
+        throw Exception( __FILE__, __LINE__,
+                         "fdk-aac unable to ADTS mux mode");
+		return 1;
+	}
+    if (aacEncEncode(encoderHandle, NULL, NULL, NULL, NULL) != AACENC_OK) {
+        throw Exception( __FILE__, __LINE__,
+                         "fdk-aac unable to initialize");
+		return 1;
+	}
+
+    if (aacEncoder_SetParam(encoderHandle, AACENC_BANDWIDTH, lowpass)) {
+        throw Exception( __FILE__, __LINE__,
+                         "fdk-aac unable to set lowpass");
+		return 1;
+    }
+
+    AACENC_InfoStruct info = { 0 };
+    if (aacEncInfo(encoderHandle, &info) != AACENC_OK) {
+        throw Exception( __FILE__, __LINE__,
+                         "fdk-aac unable to get encoder info initialize");
+		return 1;
+	}
+
+    inputSamples = InChannels * info.frameLength;
     // initialize the resampling coverter if needed
     if ( converter ) {
 #ifdef HAVE_SRC_LIB
@@ -122,8 +189,8 @@ aacPlusEncoder :: open ( void )
     }
 
     aacplusOpen = true;
-    reportEvent(10, "nChannelsAAC", aacplusConfig->nChannelsOut);
-    reportEvent(10, "sampleRateAAC", aacplusConfig->sampleRate);
+    reportEvent(10, "nChannelsAAC", OutChannels);
+    reportEvent(10, "sampleRateAAC", getOutSampleRate());
     reportEvent(10, "inSamples", inputSamples);
     return true;
 }
@@ -180,6 +247,7 @@ aacPlusEncoder :: write (  const void    * buf,
             short *shortData = new short[inputSamples];
             src_float_to_short_array(resampledOffset + (processedSamples * channels),
                                      shortData, inputSamples) ;
+
             int outputBytes = aacplusEncEncode(encoderHandle,
                                        (int32_t*) shortData,
                                         inputSamples,
@@ -187,6 +255,7 @@ aacPlusEncoder :: write (  const void    * buf,
                                         maxOutputBytes);
             delete [] shortData;
 #else
+
             int outputBytes = aacplusEncEncode(encoderHandle,
                                        (int32_t*) &resampledOffset[processedSamples*channels],
                                         inputSamples,
@@ -264,8 +333,8 @@ aacPlusEncoder :: close ( void )
 {
     if ( isOpen() ) {
         flush();
-    
-        aacplusEncClose(encoderHandle);
+
+        aacEncClose(&encoderHandle);
         aacplusOpen = false;
     
         sink->close();
