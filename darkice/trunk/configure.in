@@ -156,15 +156,15 @@ fi
 dnl-----------------------------------------------------------------------------
 dnl link the aacplus library if requested
 dnl-----------------------------------------------------------------------------
-AC_ARG_WITH(aacplus,
-    AS_HELP_STRING([--with-aacplus], [use aacplus for encoding AAC HEv2 streams @<:@check@:>@]),
-    [], with_aacplus=check)
-AS_CASE([$with_aacplus],
-    check, [PKG_CHECK_MODULES(AACPLUS, aacplus, [], true)],
-    yes,   [PKG_CHECK_MODULES(AACPLUS, aacplus)],
-    AC_MSG_RESULT([building without aacplus]))
-AS_IF(test -n "$AACPLUS_LIBS",
-    AC_DEFINE(HAVE_AACPLUS_LIB, 1, [build with aacplus library]))
+AC_ARG_WITH(fdkaac,
+    AS_HELP_STRING([--with-fdkaac], [use fdk-aac for encoding AAC HEv2 streams @<:@check@:>@]),
+    [], with_fdkaac=check)
+AS_CASE([$with_fdkaac],
+    check, [PKG_CHECK_MODULES(FDKAAC, fdk-aac, [], true)],
+    yes,   [PKG_CHECK_MODULES(FDKAAC, fdk-aac)],
+    AC_MSG_RESULT([building without fdk-aac]))
+AS_IF(test -n "$FDKAAC_LIBS",
+    AC_DEFINE(HAVE_FDKAAC_LIB, 1, [build with fdk-aac library]))
 
 dnl-----------------------------------------------------------------------------
 dnl link the twolame library if requested
@@ -187,9 +187,9 @@ if test -z "x${LAME_LIBS}" \
      -a -z "${OPUS_LIBS}" \
      -a -z "${FLAC_LIBS}" \
      -a -z "${FAAC_LIBS}" \
-     -a -z "${AACPLUS_LIBS}" \
+     -a -z "${FDKAAC_LIBS}" \
      -a -z "${TWOLAME_LIBS}" ; then
-    AC_MSG_ERROR([neither lame, Ogg Vorbis, opus, FLAC, faac, aac+ nor twolame configured])
+    AC_MSG_ERROR([neither lame, Ogg Vorbis, opus, FLAC, faac, fdk-aac nor twolame configured])
 fi
 
 
