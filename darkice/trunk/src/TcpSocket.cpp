@@ -225,7 +225,7 @@ TcpSocket :: open ( void )
         sockfd = 0;
         throw Exception( __FILE__, __LINE__, "gethostbyname error", errno);
     }
-    
+
     memset( &addr, 0, sizeof(addr));
     addr.sin_family      = AF_INET;
     addr.sin_port        = htons(port);
@@ -240,12 +240,25 @@ TcpSocket :: open ( void )
     // set TCP keep-alive
     optval = 1;
     optlen = sizeof(optval);
-    if (setsockopt(sockfd, SOL_SOCKET, SO_KEEPALIVE, &optval, optlen) == -1) {  
+    if (setsockopt(sockfd, SOL_SOCKET, SO_KEEPALIVE, &optval, optlen) == -1) {
         reportEvent(5, "can't set TCP socket keep-alive mode", errno);
     }
 
     // connect
-    if ( connect( sockfd, (struct sockaddr*)&addr, sizeof(addr)) == -1 ) {
+    socklen_t addrlen;
+    switch (addr.ss_family) {
+        case AF_INET:
+            addrlen = sizeof(struct sockaddr_in);
+            break;
+        case AF_INET6:
+            addrlen = sizeof(struct sockaddr_in6);
+            break;
+        default:
+            throw Exception( __FILE__, __LINE__, "invalid address family", errno);
+    }
+
+
+    if ( connect( sockfd, (struct sockaddr*)&addr, addrlen) == -1 ) {
         ::close( sockfd);
         sockfd = 0;
         throw Exception( __FILE__, __LINE__, "connect error", errno);
