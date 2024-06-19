@@ -111,7 +111,7 @@ aacPlusEncoder :: open ( void )
 		return 1;
 	}
 
-    CHANNEL_MODE mode;
+    CHANNEL_MODE mode = MODE_2;
     switch (OutChannels) {
 	case 1:
         mode = MODE_1;       break;
@@ -156,10 +156,13 @@ aacPlusEncoder :: open ( void )
 		return 1;
 	}
 
-    if (aacEncoder_SetParam(encoderHandle, AACENC_BANDWIDTH, lowpass)) {
-        throw Exception( __FILE__, __LINE__,
-                         "fdk-aac unable to set lowpass");
-		return 1;
+    if (lowpass >= 6000)
+    {
+        if (aacEncoder_SetParam(encoderHandle, AACENC_BANDWIDTH, lowpass)) {
+            throw Exception( __FILE__, __LINE__,
+                             "fdk-aac unable to set lowpass");
+            return 1;
+        }
     }
 
     if (aacEncoder_SetParam(encoderHandle, AACENC_AFTERBURNER, 1) != AACENC_OK) {
@@ -229,6 +232,29 @@ aacPlusEncoder :: write (  const void    * buf,
     int             samples          = (int) nSamples * channels;
     int             processedSamples = 0;
 
+    // aac encoder cruft
+    AACENC_ERROR err;
+    AACENC_BufDesc in_buf = { 0 }, out_buf = { 0 };
+    AACENC_InArgs in_args = { 0 };
+    AACENC_OutArgs out_args = { 0 };
+    int in_identifier = IN_AUDIO_DATA;
+    int in_elem_size;
+    int out_identifier = OUT_BITSTREAM_DATA;
+    int out_size, out_elem_size;
+    int input_size;
+
+    in_elem_size = (getInBitsPerSample() / 8);
+    in_buf.bufElSizes = &in_elem_size;
+    in_buf.numBufs = 1;
+    in_buf.bufferIdentifiers = &in_identifier;
+
+    out_size = maxOutputBytes;
+    out_elem_size = 1;
+    out_buf.numBufs = 1;
+    out_buf.bufs = (void **)&aacplusBuf;
+    out_buf.bufferIdentifiers = &out_identifier;
+    out_buf.bufSizes = &out_size;
+    out_buf.bufElSizes = &out_elem_size;
 
     if ( converter ) {
         unsigned int         converted;
@@ -253,35 +279,45 @@ aacPlusEncoder :: write (  const void    * buf,
 #endif
         resampledOffsetSize += converted;
 
-        AACENC_ERROR err;
         // encode samples (if enough)
         while(resampledOffsetSize - processedSamples >= inputSamples / channels) {
+            unsigned int outputBytes;
 #ifdef HAVE_SRC_LIB
-            short *shortData = new short[inputSamples];
+            short *shortData = (int16_t*) malloc(input_size);
+
             src_float_to_short_array(resampledOffset + (processedSamples * channels),
                                      shortData, inputSamples) ;
 
-            if ((err = aacEncEncode(encoderHandle, &shortData, &aacplusBuf, &in_args, &out_args)) != AACENC_OK) {
+            in_buf.bufs = (void **) &shortData;
+            input_size = inputSamples * (getInBitsPerSample() / 8);
+            in_args.numInSamples = inputSamples;
+            in_buf.bufSizes = &input_size;
+
+            if ((err = aacEncEncode(encoderHandle, &in_buf, &out_buf, &in_args, &out_args)) != AACENC_OK) {
                 if (err == AACENC_ENCODE_EOF)
                     break;
                 throw Exception( __FILE__, __LINE__,
                                  "fdk-aac Encoding failed");
                 return 1;
             }
+            outputBytes = out_args.numOutBytes;
 
-//            int outputBytes = aacplusEncEncode(encoderHandle,
-//                                       (int32_t*) shortData,
-//                                        inputSamples,
-//                                        aacplusBuf,
-//                                        maxOutputBytes);
-            delete [] shortData;
+            free(shortData);
 #else
+            in_buf.bufs = &(resampledOffset + (processedSamples * channels));
+            input_size = inputSamples * (getInBitsPerSample() / 8);
+            in_args.numInSamples = inputSamples;
+            in_buf.bufSizes = &input_size;
 
-            int outputBytes = aacplusEncEncode(encoderHandle,
-                                       (int32_t*) &resampledOffset[processedSamples*channels],
-                                        inputSamples,
-                                        aacplusBuf,
-                                        maxOutputBytes);
+            if ((err = aacEncEncode(encoderHandle, &in_buf, &out_buf, &in_args, &out_args)) != AACENC_OK) {
+                if (err == AACENC_ENCODE_EOF)
+                    break;
+                throw Exception( __FILE__, __LINE__,
+                                 "fdk-aac Encoding failed");
+                return 1;
+            }
+            outputBytes = out_args.numOutBytes;
+
 #endif
             unsigned int wrote = getSink()->write(aacplusBuf, outputBytes);
             
@@ -310,12 +346,21 @@ aacPlusEncoder :: write (  const void    * buf,
                               ? samples - processedSamples
                               : inputSamples;
 
-            int outputBytes = aacplusEncEncode(encoderHandle,
-                                       (int32_t*) (b + processedSamples/sampleSize),
-                                        inSamples,
-                                        aacplusBuf,
-                                        maxOutputBytes);
-            
+            void *tmp = &b[processedSamples/sampleSize];
+            in_buf.bufs = (void **) &tmp;
+            input_size = inSamples * (getInBitsPerSample() / 8);
+            in_args.numInSamples = inSamples;
+            in_buf.bufSizes = &input_size;
+
+            if ((err = aacEncEncode(encoderHandle, &in_buf, &out_buf, &in_args, &out_args)) != AACENC_OK) {
+                if (err == AACENC_ENCODE_EOF)
+                    break;
+                throw Exception( __FILE__, __LINE__,
+                                 "fdk-aac Encoding failed");
+                return 1;
+            }
+            unsigned int outputBytes = out_args.numOutBytes;
+
             unsigned int wrote = getSink()->write(aacplusBuf, outputBytes);
             
             if (wrote < outputBytes) {
