@@ -1,8 +1,10 @@
 /*------------------------------------------------------------------------------
 
-   Copyright (c) 2005 Tyrell Corporation. All rights reserved.
+   Copyright (c) 2005 Tyrell Corporation.
+   Copyright (c) 2024 Rafael Diniz.
+   All rights reserved.
 
-   Tyrell DarkIce
+   DarkIce
 
    File     : aacPlusEncoder.cpp
    Version  : $Revision$
@@ -33,7 +35,7 @@
 #include "config.h"
 #endif
 
-// compile the whole file only if aacplus support configured in
+// compile the whole file only if fdk-aac support configured in
 #ifdef HAVE_FDKAAC_LIB
 
 
@@ -408,4 +410,4 @@ aacPlusEncoder :: close ( void )
 }
 
 
-#endif // HAVE_AACPLUS_LIB
+#endif // HAVE_FDKAAC_LIB
