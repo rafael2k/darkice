@@ -88,10 +88,16 @@ aacPlusEncoder :: open ( void )
 
     int aot;
     int bitrate = getOutBitrate() * 1000;
+
     if (bitrate >= 64000)
-        aot = 2;
+        aot = AOT_AAC_LC;
     else
-        aot = (InChannels == 1)? 5 : 29; // HE-AAC / HE-AAC v2
+    {
+        if (bitrate < 64000 && bitrate > 32000)
+            aot = AOT_SBR;
+        else
+            aot = (InChannels == 1)? AOT_SBR : AOT_PS; // HE-AAC / HE-AAC v2
+    }
 
     if (aacEncoder_SetParam(encoderHandle, AACENC_AOT, aot) != AACENC_OK) {
         throw Exception( __FILE__, __LINE__,
@@ -153,6 +159,12 @@ aacPlusEncoder :: open ( void )
     if (aacEncoder_SetParam(encoderHandle, AACENC_BANDWIDTH, lowpass)) {
         throw Exception( __FILE__, __LINE__,
                          "fdk-aac unable to set lowpass");
+		return 1;
+    }
+
+    if (aacEncoder_SetParam(encoderHandle, AACENC_AFTERBURNER, 1) != AACENC_OK) {
+        throw Exception( __FILE__, __LINE__,
+                         "fdk-aac unable to set afterburner");
 		return 1;
     }
 
@@ -241,18 +253,27 @@ aacPlusEncoder :: write (  const void    * buf,
 #endif
         resampledOffsetSize += converted;
 
+        AACENC_ERROR err;
         // encode samples (if enough)
-        while(resampledOffsetSize - processedSamples >= inputSamples/channels) {
+        while(resampledOffsetSize - processedSamples >= inputSamples / channels) {
 #ifdef HAVE_SRC_LIB
             short *shortData = new short[inputSamples];
             src_float_to_short_array(resampledOffset + (processedSamples * channels),
                                      shortData, inputSamples) ;
 
-            int outputBytes = aacplusEncEncode(encoderHandle,
-                                       (int32_t*) shortData,
-                                        inputSamples,
-                                        aacplusBuf,
-                                        maxOutputBytes);
+            if ((err = aacEncEncode(encoderHandle, &shortData, &aacplusBuf, &in_args, &out_args)) != AACENC_OK) {
+                if (err == AACENC_ENCODE_EOF)
+                    break;
+                throw Exception( __FILE__, __LINE__,
+                                 "fdk-aac Encoding failed");
+                return 1;
+            }
+
+//            int outputBytes = aacplusEncEncode(encoderHandle,
+//                                       (int32_t*) shortData,
+//                                        inputSamples,
+//                                        aacplusBuf,
+//                                        maxOutputBytes);
             delete [] shortData;
 #else
 
