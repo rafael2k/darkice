@@ -346,8 +346,8 @@ aacPlusEncoder :: write (  const void    * buf,
                               ? samples - processedSamples
                               : inputSamples;
 
-            void *tmp = &b[processedSamples/sampleSize];
-            in_buf.bufs = (void **) &tmp;
+            void *tmp = b + processedSamples/sampleSize;
+            in_buf.bufs = &tmp;
             input_size = inSamples * (getInBitsPerSample() / 8);
             in_args.numInSamples = inSamples;
             in_buf.bufSizes = &input_size;
