@@ -42,6 +42,7 @@
 
 #ifdef HAVE_FAAC_LIB
 #include <faac.h>
+#include <cstring>
 #else
 #error configure with faac
 #endif
