@@ -96,7 +96,7 @@ aacPlusEncoder :: open ( void )
         aot = AOT_AAC_LC;
     else
     {
-        if (bitrate < 64000 && bitrate > 32000)
+        if (bitrate < 64000 && bitrate >= 32000)
             aot = AOT_SBR;
         else
             aot = (InChannels == 1)? AOT_SBR : AOT_PS; // HE-AAC / HE-AAC v2
@@ -111,7 +111,8 @@ aacPlusEncoder :: open ( void )
         reportEvent(1, "AAC_LC+SBR");
         break;
     case AOT_PS:
-        reportEvent(1, "AAC_LC+SBR+PS");
+        reportEvent(1, "AAC_LC+SBR but Parametric Stereo is strange. Keeping PS off for now");
+        aot = AOT_SBR;
         break;
     }
 
@@ -166,6 +167,13 @@ aacPlusEncoder :: open ( void )
                          "fdk-aac unable to ADTS mux mode");
 		return 1;
 	}
+
+    if (aacEncoder_SetParam(encoderHandle, AACENC_SIGNALING_MODE, SIG_IMPLICIT) != AACENC_OK) {
+        throw Exception( __FILE__, __LINE__,
+                         "fdk-aac unable to aot extension signaling");
+		return 1;
+	}
+
     if (aacEncEncode(encoderHandle, NULL, NULL, NULL, NULL) != AACENC_OK) {
         throw Exception( __FILE__, __LINE__,
                          "fdk-aac unable to initialize");
