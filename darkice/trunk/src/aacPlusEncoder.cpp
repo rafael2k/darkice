@@ -102,6 +102,19 @@ aacPlusEncoder :: open ( void )
             aot = (InChannels == 1)? AOT_SBR : AOT_PS; // HE-AAC / HE-AAC v2
     }
 
+    switch (aot)
+    {
+    case AOT_AAC_LC:
+        reportEvent(1, "AAC_LC");
+        break;
+    case AOT_SBR:
+        reportEvent(1, "AAC_LC+SBR");
+        break;
+    case AOT_PS:
+        reportEvent(1, "AAC_LC+SBR+PS");
+        break;
+    }
+
     if (aacEncoder_SetParam(encoderHandle, AACENC_AOT, aot) != AACENC_OK) {
         throw Exception( __FILE__, __LINE__,
                          "fdk-aac Unable to set the AOT");
@@ -297,26 +310,9 @@ aacPlusEncoder :: write (  const void    * buf,
             in_args.numInSamples = inputSamples;
             in_buf.bufSizes = &input_size;
 
-            if ((err = aacEncEncode(encoderHandle, &in_buf, &out_buf, &in_args, &out_args)) != AACENC_OK) {
-                if (err == AACENC_ENCODE_EOF){
-                    fprintf(stderr, "AACENC EOF Error.\n");
-                }
-                if (err == AACENC_INVALID_HANDLE){
-                    fprintf(stderr, "AACENC AACENC_INVALID_HANDLE Error.\n");
-                }
-                if (err == AACENC_MEMORY_ERROR){
-                    fprintf(stderr, "AACENC AACENC_MEMORY_ERROR Error.\n");
-                }
-                if (err == AACENC_UNSUPPORTED_PARAMETER){
-                    fprintf(stderr, "AACENC AACENC_UNSUPPORTED_PARAMETER Error.\n");
-                }
-                if (err == AACENC_INVALID_CONFIG){
-                    fprintf(stderr, "AACENC AACENC_INVALID_CONFIG Error.\n");
-                }
-                if (err == AACENC_ENCODE_ERROR){
-                    fprintf(stderr, "AACENC AACENC_ENCODE_ERROR Error.\n");
-                }
-            }
+            if ((err = aacEncEncode(encoderHandle, &in_buf, &out_buf, &in_args, &out_args)) != AACENC_OK)
+                throw Exception( __FILE__, __LINE__, "fdk-aac aacEncEncode error");
+
             outputBytes = out_args.numOutBytes;
 
             free(shortData);
@@ -326,28 +322,10 @@ aacPlusEncoder :: write (  const void    * buf,
             in_args.numInSamples = inputSamples;
             in_buf.bufSizes = &input_size;
 
-            if ((err = aacEncEncode(encoderHandle, &in_buf, &out_buf, &in_args, &out_args)) != AACENC_OK) {
-                if (err == AACENC_ENCODE_EOF){
-                    fprintf(stderr, "AACENC EOF Error.\n");
-                }
-                if (err == AACENC_INVALID_HANDLE){
-                    fprintf(stderr, "AACENC AACENC_INVALID_HANDLE Error.\n");
-                }
-                if (err == AACENC_MEMORY_ERROR){
-                    fprintf(stderr, "AACENC AACENC_MEMORY_ERROR Error.\n");
-                }
-                if (err == AACENC_UNSUPPORTED_PARAMETER){
-                    fprintf(stderr, "AACENC AACENC_UNSUPPORTED_PARAMETER Error.\n");
-                }
-                if (err == AACENC_INVALID_CONFIG){
-                    fprintf(stderr, "AACENC AACENC_INVALID_CONFIG Error.\n");
-                }
-                if (err == AACENC_ENCODE_ERROR){
-                    fprintf(stderr, "AACENC AACENC_ENCODE_ERROR Error.\n");
-                }
-            }
+            if ((err = aacEncEncode(encoderHandle, &in_buf, &out_buf, &in_args, &out_args)) != AACENC_OK)
+                throw Exception( __FILE__, __LINE__, "fdk-aac aacEncEncode error");
+
             outputBytes = out_args.numOutBytes;
-            fprintf(stderr, "output 2: %d\n", outputBytes);
 
 #endif
             unsigned int wrote = getSink()->write(aacplusBuf, outputBytes);
@@ -383,26 +361,8 @@ aacPlusEncoder :: write (  const void    * buf,
             in_args.numInSamples = inSamples;
             in_buf.bufSizes = &input_size;
 
-            if ((err = aacEncEncode(encoderHandle, &in_buf, &out_buf, &in_args, &out_args)) != AACENC_OK) {
-                if (err == AACENC_ENCODE_EOF){
-                    fprintf(stderr, "AACENC EOF Error.\n");
-                }
-                if (err == AACENC_INVALID_HANDLE){
-                    fprintf(stderr, "AACENC AACENC_INVALID_HANDLE Error.\n");
-                }
-                if (err == AACENC_MEMORY_ERROR){
-                    fprintf(stderr, "AACENC AACENC_MEMORY_ERROR Error.\n");
-                }
-                if (err == AACENC_UNSUPPORTED_PARAMETER){
-                    fprintf(stderr, "AACENC AACENC_UNSUPPORTED_PARAMETER Error.\n");
-                }
-                if (err == AACENC_INVALID_CONFIG){
-                    fprintf(stderr, "AACENC AACENC_INVALID_CONFIG Error.\n");
-                }
-                if (err == AACENC_ENCODE_ERROR){
-                    fprintf(stderr, "AACENC AACENC_ENCODE_ERROR Error.\n");
-                }
-            }
+            if ((err = aacEncEncode(encoderHandle, &in_buf, &out_buf, &in_args, &out_args)) != AACENC_OK)
+                throw Exception( __FILE__, __LINE__, "fdk-aac aacEncEncode error");
 
             outputBytes = out_args.numOutBytes;
 
