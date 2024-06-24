@@ -104,7 +104,7 @@
 #include "FaacEncoder.h"
 #endif
 
-#ifdef HAVE_AACPLUS_LIB
+#ifdef HAVE_FDKAAC_LIB
 #include "aacPlusEncoder.h"
 #endif
 
@@ -741,7 +741,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
                 break;
 
             case IceCast2::aacp:
-#ifndef HAVE_AACPLUS_LIB
+#ifndef HAVE_FDKAAC_LIB
                 throw Exception( __FILE__, __LINE__,
                                 "DarkIce not compiled with AAC+ support, "
                                 "thus can't aacp stream: ",
@@ -756,7 +756,7 @@ DarkIce :: configIceCast2 (  const Config      & config,
                                              sampleRate,
                                              channel );
 
-#endif // HAVE_AACPLUS_LIB
+#endif // HAVE_FDKAAC_LIB
                 break;
 
             default:
@@ -1178,7 +1178,7 @@ DarkIce :: configFileCast (  const Config      & config )
                                                 dsp->getChannel());
 #endif // HAVE_FAAC_LIB
         } else if ( Util::strEq( format, "aacp") ) {
-#ifndef HAVE_AACPLUS_LIB
+#ifndef HAVE_FDKAAC_LIB
                 throw Exception( __FILE__, __LINE__,
                                 "DarkIce not compiled with AAC+ support, "
                                 "thus can't aacplus stream: ",
@@ -1192,7 +1192,7 @@ DarkIce :: configFileCast (  const Config      & config )
                                                 quality,
                                                 sampleRate,
                                                 dsp->getChannel());
-#endif // HAVE_AACPLUS_LIB
+#endif // HAVE_FDKAAC_LIB
         } else {
                 throw Exception( __FILE__, __LINE__,
                                 "Illegal stream format: ", format);
