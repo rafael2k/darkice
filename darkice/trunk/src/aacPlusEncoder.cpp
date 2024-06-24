@@ -90,6 +90,7 @@ aacPlusEncoder :: open ( void )
 
     int aot;
     int bitrate = getOutBitrate() * 1000;
+    maxOutputBytes = 20480;
 
     if (bitrate >= 64000)
         aot = AOT_AAC_LC;
@@ -180,7 +181,7 @@ aacPlusEncoder :: open ( void )
 		return 1;
 	}
 
-    inputSamples = InChannels * info.frameLength;
+    inputSamples = info.frameLength * OutChannels;
     // initialize the resampling coverter if needed
     if ( converter ) {
 #ifdef HAVE_SRC_LIB
@@ -197,7 +198,7 @@ aacPlusEncoder :: open ( void )
 #else
         converter->initialize( resampleRatio, getInChannel());
         //needed 2x(converted input samples) to handle offsets
-    int outCount                 = 2 * getInChannel() * (inputSamples + 1);
+        int outCount                 = 2 * getInChannel() * (inputSamples + 1);
         if (resampleRatio > 1)
         outCount = (int) (outCount * resampleRatio);
         resampledOffset = new short int[outCount];
@@ -230,10 +231,11 @@ aacPlusEncoder :: write (  const void    * buf,
     unsigned char * b                = (unsigned char*) buf;
     unsigned int    processed        = len - (len % sampleSize);
     unsigned int    nSamples         = processed / sampleSize;
-    unsigned char * aacplusBuf          = new unsigned char[maxOutputBytes];
+    unsigned char * aacplusBuf          = (unsigned char *) malloc(maxOutputBytes);
     int             samples          = (int) nSamples * channels;
     int             processedSamples = 0;
 
+    unsigned int outputBytes;
     // aac encoder cruft
     AACENC_ERROR err;
     AACENC_BufDesc in_buf = { 0 }, out_buf = { 0 };
@@ -283,42 +285,69 @@ aacPlusEncoder :: write (  const void    * buf,
 
         // encode samples (if enough)
         while(resampledOffsetSize - processedSamples >= inputSamples / channels) {
-            unsigned int outputBytes;
 #ifdef HAVE_SRC_LIB
+            input_size = inputSamples * (bitsPerSample / 8);
             short *shortData = (int16_t*) malloc(input_size);
 
             src_float_to_short_array(resampledOffset + (processedSamples * channels),
                                      shortData, inputSamples) ;
 
             in_buf.bufs = (void **) &shortData;
-            input_size = inputSamples * (getInBitsPerSample() / 8);
+
             in_args.numInSamples = inputSamples;
             in_buf.bufSizes = &input_size;
 
             if ((err = aacEncEncode(encoderHandle, &in_buf, &out_buf, &in_args, &out_args)) != AACENC_OK) {
-                if (err == AACENC_ENCODE_EOF)
-                    break;
-                throw Exception( __FILE__, __LINE__,
-                                 "fdk-aac Encoding failed");
-                return 1;
+                if (err == AACENC_ENCODE_EOF){
+                    fprintf(stderr, "AACENC EOF Error.\n");
+                }
+                if (err == AACENC_INVALID_HANDLE){
+                    fprintf(stderr, "AACENC AACENC_INVALID_HANDLE Error.\n");
+                }
+                if (err == AACENC_MEMORY_ERROR){
+                    fprintf(stderr, "AACENC AACENC_MEMORY_ERROR Error.\n");
+                }
+                if (err == AACENC_UNSUPPORTED_PARAMETER){
+                    fprintf(stderr, "AACENC AACENC_UNSUPPORTED_PARAMETER Error.\n");
+                }
+                if (err == AACENC_INVALID_CONFIG){
+                    fprintf(stderr, "AACENC AACENC_INVALID_CONFIG Error.\n");
+                }
+                if (err == AACENC_ENCODE_ERROR){
+                    fprintf(stderr, "AACENC AACENC_ENCODE_ERROR Error.\n");
+                }
             }
             outputBytes = out_args.numOutBytes;
 
             free(shortData);
 #else
             in_buf.bufs = &(resampledOffset + (processedSamples * channels));
-            input_size = inputSamples * (getInBitsPerSample() / 8);
+            input_size = inputSamples * (bitsPerSample / 8);
             in_args.numInSamples = inputSamples;
             in_buf.bufSizes = &input_size;
 
             if ((err = aacEncEncode(encoderHandle, &in_buf, &out_buf, &in_args, &out_args)) != AACENC_OK) {
-                if (err == AACENC_ENCODE_EOF)
-                    break;
-                throw Exception( __FILE__, __LINE__,
-                                 "fdk-aac Encoding failed");
-                return 1;
+                if (err == AACENC_ENCODE_EOF){
+                    fprintf(stderr, "AACENC EOF Error.\n");
+                }
+                if (err == AACENC_INVALID_HANDLE){
+                    fprintf(stderr, "AACENC AACENC_INVALID_HANDLE Error.\n");
+                }
+                if (err == AACENC_MEMORY_ERROR){
+                    fprintf(stderr, "AACENC AACENC_MEMORY_ERROR Error.\n");
+                }
+                if (err == AACENC_UNSUPPORTED_PARAMETER){
+                    fprintf(stderr, "AACENC AACENC_UNSUPPORTED_PARAMETER Error.\n");
+                }
+                if (err == AACENC_INVALID_CONFIG){
+                    fprintf(stderr, "AACENC AACENC_INVALID_CONFIG Error.\n");
+                }
+                if (err == AACENC_ENCODE_ERROR){
+                    fprintf(stderr, "AACENC AACENC_ENCODE_ERROR Error.\n");
+                }
             }
             outputBytes = out_args.numOutBytes;
+            fprintf(stderr, "output 2: %d\n", outputBytes);
 
 #endif
             unsigned int wrote = getSink()->write(aacplusBuf, outputBytes);
@@ -348,20 +377,34 @@ aacPlusEncoder :: write (  const void    * buf,
                               ? samples - processedSamples
                               : inputSamples;
 
-            void *tmp = b + processedSamples/sampleSize;
+            void *tmp = &(b[processedSamples / sampleSize]);
             in_buf.bufs = &tmp;
-            input_size = inSamples * (getInBitsPerSample() / 8);
+            input_size = inputSamples * (bitsPerSample / 8);
             in_args.numInSamples = inSamples;
             in_buf.bufSizes = &input_size;
 
             if ((err = aacEncEncode(encoderHandle, &in_buf, &out_buf, &in_args, &out_args)) != AACENC_OK) {
-                if (err == AACENC_ENCODE_EOF)
-                    break;
-                throw Exception( __FILE__, __LINE__,
-                                 "fdk-aac Encoding failed");
-                return 1;
+                if (err == AACENC_ENCODE_EOF){
+                    fprintf(stderr, "AACENC EOF Error.\n");
+                }
+                if (err == AACENC_INVALID_HANDLE){
+                    fprintf(stderr, "AACENC AACENC_INVALID_HANDLE Error.\n");
+                }
+                if (err == AACENC_MEMORY_ERROR){
+                    fprintf(stderr, "AACENC AACENC_MEMORY_ERROR Error.\n");
+                }
+                if (err == AACENC_UNSUPPORTED_PARAMETER){
+                    fprintf(stderr, "AACENC AACENC_UNSUPPORTED_PARAMETER Error.\n");
+                }
+                if (err == AACENC_INVALID_CONFIG){
+                    fprintf(stderr, "AACENC AACENC_INVALID_CONFIG Error.\n");
+                }
+                if (err == AACENC_ENCODE_ERROR){
+                    fprintf(stderr, "AACENC AACENC_ENCODE_ERROR Error.\n");
+                }
             }
-            unsigned int outputBytes = out_args.numOutBytes;
+
+            outputBytes = out_args.numOutBytes;
 
             unsigned int wrote = getSink()->write(aacplusBuf, outputBytes);
             
@@ -373,7 +416,7 @@ aacPlusEncoder :: write (  const void    * buf,
         }
     }
 
-    delete[] aacplusBuf;
+    free(aacplusBuf);
 
 //    return processedSamples;
     return samples * sampleSize;
