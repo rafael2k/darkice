@@ -75,11 +75,15 @@ class FileSink : public Sink, public virtual Reporter
          *  @param configName the name of the configuration related to
          *         this file sink. something like "file-0" or "file-2".
          *  @param name name of the file to be represented by the object.
+         *  @param addDate add a date to the filename.
+         *  @param fileDateFormat optional date format of the added date
          *  @exception Exception
          */
         void
         init (  const char    * configName,
-                const char    * name )              ;
+                const char    * name,
+                const bool      addDate,
+                const char    * fileDateFormat );
 
         /**
          *  De-initialize the object.
@@ -108,6 +112,22 @@ class FileSink : public Sink, public virtual Reporter
         int         fileDescriptor;
 
         /**
+         *  Actual filename f.e. when using fileAddDate.
+         */
+        char      * fileNameActual;
+
+        /**
+         *  Whether a date is added to the filename or not.
+         */
+        bool        addDate;
+
+        /**
+         *  Date format of the added date.
+         */
+        char      * fileDateFormat;
+
+        /**
+
          *  Default constructor. Always throws an Exception.
          *  
          *  @exception Exception
@@ -127,13 +147,17 @@ class FileSink : public Sink, public virtual Reporter
          *  @param configName the name of the configuration related to
          *         this file sink. something like "file-0" or "file-2".
          *  @param name name of the file to be represented by the object.
+         *  @param addDate add a date to the filename.
+         *  @param fileDateFormat optional date format of the added date
          *  @exception Exception
          */
         inline
         FileSink(   const char        * configName,
-                    const char        * name )      
+                    const char        * name,
+                    const bool          addDate,
+                    const char        * fileDateFormat )
         {
-            init( configName, name);
+            init( configName, name, addDate, fileDateFormat );
         }
 
         /**

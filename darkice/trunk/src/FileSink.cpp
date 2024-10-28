@@ -119,11 +119,18 @@ static const char fileid[] = "$Id$";
  *----------------------------------------------------------------------------*/
 void
 FileSink :: init (  const char    * configName,
-                    const char    * name )          
+                    const char    * name,
+		    const bool      nameAddDate,
+		    const char    * fileDateFormat )
 {
     this->configName  = Util::strDup(configName);
     fileName          = Util::strDup(name);
+    addDate           = nameAddDate;
+    if (fileDateFormat) {
+        this->fileDateFormat = Util::strDup(fileDateFormat);
+    }
     fileDescriptor    = 0;
+    fileNameActual    = 0;
 }
 
 
@@ -138,6 +145,9 @@ FileSink :: strip ( void)
     }
 
     delete[] fileName;
+    delete[] fileNameActual;
+    if (fileDateFormat)
+        delete[] fileDateFormat;
 }
 
 
@@ -149,7 +159,7 @@ FileSink :: FileSink (  const FileSink &    fs )
 {
     int     fd;
     
-    init( fs.configName, fs.fileName);
+    init( fs.configName, fs.fileName, fs.addDate, fs.fileDateFormat);
     
     if ( (fd = fs.fileDescriptor ? dup( fs.fileDescriptor) : 0) == -1 ) {
         strip();
@@ -176,7 +186,7 @@ FileSink :: operator= (  const FileSink &    fs )
         /* then build up */
         Sink::operator=( fs );
         
-        init( fs.configName, fs.fileName);
+        init( fs.configName, fs.fileName, fs.addDate, fs.fileDateFormat);
         
         if ( (fd = fs.fileDescriptor ? dup( fs.fileDescriptor) : 0) == -1 ) {
             strip();
@@ -220,8 +230,26 @@ FileSink :: create ( void )
     /* filemode default to 0666 */
     const int filemode = (S_IRUSR|S_IWUSR|S_IWGRP|S_IRGRP|S_IROTH|S_IWOTH) ;
     /* create the file */
-    if ( (fd = ::creat( fileName, filemode )) == -1 ) {
-        reportEvent( 3, "can't create file", fileName, errno);
+    if (fileNameActual != 0) {
+        delete[] fileNameActual;
+    }
+
+    if ( addDate ) {
+         if (fileDateFormat == 0) {
+             fileNameActual = Util::fileAddDate(fileName);
+         }
+         else {
+             fileNameActual = Util::fileAddDate( fileName,
+                                                 fileDateFormat );
+         }
+    }
+    else {
+        fileNameActual = Util::strDup(fileName);
+    }
+
+
+    if ( (fd = ::creat( fileNameActual, filemode)) == -1 ) {
+        reportEvent( 3, "can't create file", fileNameActual, errno);
         return false;
     }
 
@@ -240,7 +268,7 @@ FileSink :: open ( void )
         return false;
     }
 
-    if ( (fileDescriptor = ::open( fileName, O_WRONLY | O_TRUNC, 0)) == -1 ) {
+    if ( (fileDescriptor = ::open( fileNameActual, O_WRONLY | O_TRUNC, 0)) == -1 ) {
         fileDescriptor = 0;
         return false;
     }
@@ -352,8 +380,8 @@ FileSink :: cut ( void )                            throw ()
     try {
         std::string     archiveFileName = getArchiveFileName();
 
-        if (::rename(fileName, archiveFileName.c_str()) != 0) {
-            reportEvent(2, "couldn't move file", fileName,
+        if (::rename(fileNameActual, archiveFileName.c_str()) != 0) {
+            reportEvent(2, "couldn't move file", fileNameActual,
                            "to", archiveFileName);
         }
 
