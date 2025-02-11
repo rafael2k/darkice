@@ -345,26 +345,15 @@ DarkIce :: configIceCast (  const Config      & config,
 
         // check for and create the local dump file if needed
         if ( localDumpName != 0 ) {
-            if ( fileAddDate ) {
-                if (fileDateFormat == 0) {
-                    localDumpName = Util::fileAddDate(localDumpName);
-                }
-                else {
-                    localDumpName = Util::fileAddDate(  localDumpName,
-                                                        fileDateFormat );
-                }
-            }
+            localDumpFile = new FileSink( stream, localDumpName,
+                                          fileAddDate, fileDateFormat );
 
-            localDumpFile = new FileSink( stream, localDumpName);
             if ( !localDumpFile->exists() ) {
                 if ( !localDumpFile->create() ) {
                     reportEvent( 1, "can't create local dump file",
                                     localDumpName);
                     localDumpFile = 0;
                 }
-            }
-            if ( fileAddDate ) {
-                delete[] localDumpName;
             }
         }
         // streaming related stuff
@@ -575,26 +564,14 @@ DarkIce :: configIceCast2 (  const Config      & config,
 
         // check for and create the local dump file if needed
         if ( localDumpName != 0 ) {
-            if ( fileAddDate ) {
-                if (fileDateFormat == 0) {
-                    localDumpName = Util::fileAddDate(localDumpName);
-                }
-                else {
-                    localDumpName = Util::fileAddDate(  localDumpName,
-                                                        fileDateFormat );
-                }
-            }
-
-            localDumpFile = new FileSink( stream, localDumpName);
+            localDumpFile = new FileSink( stream, localDumpName,
+                                          fileAddDate, fileDateFormat );
             if ( !localDumpFile->exists() ) {
                 if ( !localDumpFile->create() ) {
                     reportEvent( 1, "can't create local dump file",
                                     localDumpName);
                     localDumpFile = 0;
                 }
-            }
-            if ( fileAddDate ) {
-                delete[] localDumpName;
             }
         }
 
@@ -902,26 +879,15 @@ DarkIce :: configShoutCast (    const Config      & config,
 
         // check for and create the local dump file if needed
         if ( localDumpName != 0 ) {
-            if ( fileAddDate ) {
-                if (fileDateFormat == 0) {
-                    localDumpName = Util::fileAddDate(localDumpName);
-                }
-                else {
-                    localDumpName = Util::fileAddDate(  localDumpName,
-                                                        fileDateFormat );
-                }
-            }
+            localDumpFile = new FileSink( stream, localDumpName,
+                                          fileAddDate, fileDateFormat );
 
-            localDumpFile = new FileSink( stream, localDumpName);
             if ( !localDumpFile->exists() ) {
                 if ( !localDumpFile->create() ) {
                     reportEvent( 1, "can't create local dump file",
                                     localDumpName);
                     localDumpFile = 0;
                 }
-            }
-            if ( fileAddDate ) {
-                delete[] localDumpName;
             }
         }
 
@@ -1074,17 +1040,9 @@ DarkIce :: configFileCast (  const Config      & config )
         // go on and create the things
 
         // the underlying file
-        if ( fileAddDate ) {
-            if (fileDateFormat == 0) {
-                targetFileName = Util::fileAddDate( targetFileName);
-            }
-            else {
-                targetFileName = Util::fileAddDate( targetFileName,
-                                                    fileDateFormat );
-            }
-        }
+        FileSink  * targetFile = new FileSink( stream, targetFileName,
+                                               fileAddDate, fileDateFormat );
 
-        FileSink  * targetFile = new FileSink( stream, targetFileName);
         if ( !targetFile->exists() ) {
             if ( !targetFile->create() ) {
                 throw Exception( __FILE__, __LINE__,
