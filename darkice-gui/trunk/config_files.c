@@ -27,18 +27,11 @@
 #include <gtk/gtk.h>
 #endif
 
-
-#ifndef __GLOBAL_H__
 #include "global.h"
-#endif
 
-#ifndef __CONSTANTS_H__
 #include "constants.h"
-#endif
 
-#ifndef __CONFIG_FILES_H__
 #include "config_files.h"
-#endif
 
 gboolean darksnow_config_store(char opt, char *save_path) {
   int i;

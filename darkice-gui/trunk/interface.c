@@ -27,25 +27,17 @@
 #include <dirent.h>
 #include <signal.h>
 
-#ifndef __GLOBAL_H__
 #include "global.h"
-#endif
 
-#ifndef __CONSTANTS_H__
 #include "constants.h"
-#endif
 
 #ifndef __GTK_H__
 #include <gtk/gtk.h>
 #endif
 
-#ifndef __CONFIG_FILES_H__
 #include "config_files.h"
-#endif
 
-#ifndef __INTERFACE_H__
 #include "interface.h"
-#endif
 
 #ifdef FUNNY
 #define FUN 1
@@ -56,7 +48,7 @@
 /* callback that start darkice */
 void dark_start( GtkWidget *widget, gpointer data) {
   char *darkice_verbosity;
-  char command[512], foo, dark_output[512];
+  char command[512], foo, dark_output[1024];
 
   /* if the first char of shared area is 1, means that the streaming is running and we cannot start another darkice */
   sscanf((char *) shared_area, "%c", &foo);
@@ -127,7 +119,7 @@ void dark_put_in_box ( GtkWidget *widget, gint response_id, gpointer data ) {
   char localdump[256] = {0};
   char adddate;
   char radioname[128] = {0};
-  char description[256] = {0};
+  char description[512] = {0};
   char url[256] = {0};
   char genre[128] = {0};
   char icecast[128] = {0};
@@ -368,9 +360,9 @@ void darkice_not_found() {
 
   /* sets up the darkice not found dialog */
   if (!FUN)
-    sprintf(bar, gettext("Darkice binary 'darkice' not found on path!\nDownload darkice at http://code.google.com/p/darkice/"));
+    sprintf(bar, gettext("Darkice binary 'darkice' not found on path!\nDownload darkice at https://github.com/rafael2k/darkice"));
   else
-    sprintf(bar, gettext("Don't you know you should have the fucking\ndarkice to run this shit!!\nGet it at http://code.google.com/p/darkice/\n"));
+    sprintf(bar, gettext("Don't you know you should have the fucking\ndarkice to run this shit!!\nGet it at https://github.com/rafael2k/darkice\n"));
   
   dialog_darkdep = gtk_dialog_new ();
   label_darkdep = gtk_label_new ( bar );

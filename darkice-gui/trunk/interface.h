@@ -17,7 +17,7 @@
  *
  */
 
-
+#ifndef __INTERFACE_H__
 #define __INTERFACE_H__
 
 #ifndef __GTK_H__
@@ -67,3 +67,5 @@ void darkice_not_found();
 
 /* callback function that is called when Detail button is clicked */
 void dark_detail (GtkWidget *widget, gpointer data);
+
+#endif

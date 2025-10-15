@@ -17,9 +17,11 @@
  *
  */
 
+#ifndef __CONSTANTS_H__
 #define __CONSTANTS_H__
 
 /* the size of main window */
 #define SIZE_X 480
 #define SIZE_Y 505
 
+#endif // __CONSTANTS_H__

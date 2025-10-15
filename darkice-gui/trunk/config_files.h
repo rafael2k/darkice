@@ -17,9 +17,12 @@
  *
  */
 
+#ifndef __CONFIG_FILES_H__
 #define __CONFIG_FILES_H__
 
 /* writes darksnow config file to disk. if opt != 0, save in path, else, save in darksnow config directory */
 gboolean darksnow_config_store( char opt, char *save_path);
 
 gboolean darksnow2darkice_cfg();
+
+#endif

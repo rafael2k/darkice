@@ -17,6 +17,9 @@
  *
  */
 
+#ifndef __TOOLTIPS_H__
 #define __TOOLTIPS_H__
 
 void set_all_tooltips();
+
+#endif
