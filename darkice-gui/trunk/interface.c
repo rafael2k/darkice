@@ -277,7 +277,7 @@ gboolean status_loop (gboolean foo) {
       alarm_id = g_timeout_add (4000, (GSourceFunc) text_box_loop, 0);
     }
 
-    strncpy((char *) shared_area+1, "0", 1);  
+    memcpy(shared_area+1, "0", 1);  
   }
 
   /* I need nothing from child, just do this to prevent <defunct> processes */

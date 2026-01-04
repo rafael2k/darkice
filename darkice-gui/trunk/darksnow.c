@@ -170,7 +170,7 @@ int main( int  argc, char *argv[], char *envp[]) {
   DIR *directory;
   char *foo;
   char bar[256];
-  char locale[16];
+  char locale[128];
   int i = 0, j = 0, fd;
 
   if (!gtk_init_check (&argc, &argv)) {
