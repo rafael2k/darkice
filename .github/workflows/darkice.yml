@@ -1,0 +1,45 @@
+name: Build darkice CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v6
+    - run: |
+        sudo apt-get update && \
+        sudo apt-get install -y \
+          libogg-dev \
+          libvorbis-dev \
+          libflac-dev \
+          libopus-dev \
+          libfaac-dev \
+          libfdk-aac-dev \
+          libtwolame-dev \
+          libasound2-dev \
+          libpulse-dev \
+          libjack-dev \
+          libsamplerate0-dev
+    - name: autogen
+      run: ./autogen.sh
+      working-directory: ./darkice
+    - name: configure
+      run: ./configure
+      working-directory: ./darkice
+    - name: make
+      run: make -j
+      working-directory: ./darkice
+    - name: make check
+      run: make check
+      working-directory: ./darkice
+    - name: make distcheck
+      run: make distcheck
+      working-directory: ./darkice
