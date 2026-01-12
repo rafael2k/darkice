@@ -1,0 +1,26 @@
+name: Build darkice-gui CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v6
+    - run: sudo apt-get update && sudo apt-get install -y libgtk-3-dev
+    - name: autogen
+      run: ./autogen.sh
+      working-directory: ./darkice-gui
+    - name: configure
+      run: ./configure
+      working-directory: ./darkice-gui
+    - name: make
+      run: make -j
+      working-directory: ./darkice-gui
