@@ -10,9 +10,9 @@ libraries. Thus when configuring, add --prefix=/usr to the configure
 options.
 
 Grab the latest lame source tarball from a download site found at
-http://www.mp3dev.org/mp3/download/download.html
+https://sourceforge.net/projects/lame/files/lame/
 or from the DarkIce SourceForge project download area
-http://sourceforge.net/project/showfiles.php?group_id=14111
+https://sourceforge.net/project/showfiles.php?group_id=14111
 
 I took lame lame-3.91.tar.gz. Go to the directory where you saved it,
 and issue the following commands:
