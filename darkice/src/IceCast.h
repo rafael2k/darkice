@@ -121,6 +121,13 @@ class IceCast : public CastSink
         sendLogin ( void )              ;
 
 
+        /**
+         * unhide the base class assignment operator to prevent -Woverloaded-virtual warnings.
+         * this ensures the compiler sees both the CastSink::operator= and the local override.
+         */
+        using CastSink::operator=;
+
+
     public:
 
         /**

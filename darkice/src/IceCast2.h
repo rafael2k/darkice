@@ -204,6 +204,12 @@ class IceCast2 : public CastSink
         }
 
         /**
+         * Unhide the base class assignment operator to prevent -Woverloaded-virtual warnings.
+         * This ensures the compiler sees both the CastSink::operator= and the local override.
+         */
+        using CastSink::operator=;
+
+        /**
          *  Assignment operator.
          *
          *  @param cs the IceCast2 to assign this to.

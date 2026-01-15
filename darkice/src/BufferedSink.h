@@ -255,6 +255,12 @@ class BufferedSink : public Sink, public virtual Reporter
         store (     const void    * buffer,
                     unsigned int    bufferSize );
 
+        /**
+         * Unhide the base class assignment operator to prevent -Woverloaded-virtual warnings.
+         * This ensures the compiler sees both the Sink::operator= and the local override.
+         */
+        using Sink::operator=;
+
 
     public:
 

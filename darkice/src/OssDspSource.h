@@ -105,6 +105,11 @@ class OssDspSource : public AudioSource, public virtual Reporter
         void
         strip ( void )                              ;
 
+        /**
+         * Unhide the base class assignment operator to prevent -Woverloaded-virtual warnings.
+         * This ensures the compiler sees both the AudioSource::operator= and the local override.
+         */
+        using AudioSource::operator=;
 
     public:
 

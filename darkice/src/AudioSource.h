@@ -183,6 +183,12 @@ class AudioSource : public Source, public virtual Reporter
         }
 
         /**
+         * Unhide the base class assignment operator to prevent -Woverloaded-virtual warnings.
+         * This ensures the compiler sees both the Source::operator= and the local override.
+         */
+        using Source::operator=;
+
+        /**
          *  Assignment operator.
          *
          *  @param as the object to assign to this one.
