@@ -305,7 +305,7 @@ int main( int  argc, char *argv[], char *envp[]) {
   gtk_about_dialog_set_version( GTK_ABOUT_DIALOG( dialog_about), VERSION);
   gtk_about_dialog_set_authors( GTK_ABOUT_DIALOG(dialog_about), authors);
 /*  gtk_about_dialog_set_license_type( GTK_ABOUT_DIALOG(dialog_about), GTK_LICENSE_GPL_3_0);*/
-  gtk_about_dialog_set_website( GTK_ABOUT_DIALOG(dialog_about), "https://github.com/rafael2k/darkice/tree/master/darkice-gui/trunk");
+  gtk_about_dialog_set_website( GTK_ABOUT_DIALOG(dialog_about), "https://github.com/rafael2k/darkice/tree/master/darkice-gui");
 
   /* sets up the exit window */
   dialog_darkkill = gtk_dialog_new ();

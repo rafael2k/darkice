@@ -276,22 +276,22 @@ msgstr "Estado da Transmissao: Iniciada"
 #, c-format
 msgid ""
 "Darkice binary 'darkice' not found on path!\n"
-"Download darkice at http://code.google.com/p/darkice/"
+"Download darkice at https://github.com/rafael2k/darkice"
 msgstr ""
 "Darkice nao encontrado!\n"
-"Baixe o darkice de http://code.google.com/p/darkice/"
+"Baixe o darkice de https://github.com/rafael2k/darkice"
 
 #: interface.c:360
 #, c-format
 msgid ""
 "Don't you know you should have the fucking\n"
 "darkice to run this shit!!\n"
-"Get it at http://code.google.com/p/darkice/\n"
+"Get it at https://github.com/rafael2k/darkice\n"
 msgstr ""
 "Puta vida, caraio, se num tah ligado que\n"
 " vc tem que ter o darkice pra rodar essa merda??\n"
 " baixa logo daquela merda de \n"
-"http://code.google.com/p/darkice/\n"
+"https://github.com/rafael2k/darkice\n"
 "manu!!!\n"
 
 #: interface.c:365
