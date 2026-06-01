@@ -273,6 +273,12 @@ class MultiThreadedConnector : public virtual Connector
         }
 
         /**
+         * Unhide the base class assignment operator to prevent -Woverloaded-virtual warnings.
+         * This ensures the compiler sees both the Connector::operator= and the local override.
+         */
+        using Connector::operator=;
+
+        /**
          *  Assignment operator.
          *
          *  @param connector the object to assign to this one.

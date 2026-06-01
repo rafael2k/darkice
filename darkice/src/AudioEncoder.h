@@ -285,6 +285,12 @@ class AudioEncoder : public Sink, public virtual Referable
         }
 
         /**
+         * Unhide the base class assignment operator to prevent -Woverloaded-virtual warnings.
+         * This ensures the compiler sees both the Sink::operator= and the local override.
+         */
+        using Sink::operator=;
+
+        /**
          *  Assignment operator.
          *
          *  @param encoder the AudioEncoder to assign this to.

@@ -185,6 +185,12 @@ class CastSink : public Sink, public virtual Reporter
             return socket.get();
         }
 
+        /**
+         * unhide the base class assignment operator to prevent -Woverloaded-virtual warnings.
+         * this ensures the compiler sees both the Sink::operator= and the local override.
+         */
+        using Sink::operator=;
+
 
     public:
 

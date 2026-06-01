@@ -158,6 +158,12 @@ class LameLibEncoder : public AudioEncoder, public virtual Reporter
             throw Exception( __FILE__, __LINE__);
         }
 
+        /**
+         * unhide the base class assignment operator to prevent -Woverloaded-virtual warnings.
+         * this ensures the compiler sees both the AudioEncoder::operator= and the local override.
+         */
+        using AudioEncoder::operator=;
+
 
     public:
 

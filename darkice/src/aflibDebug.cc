@@ -110,27 +110,32 @@ void output_message(::aflibDebug::Level level, const char *msg) {
  * count.
  */
 void display_message(::aflibDebug::Level level, const char *msg) {
-  static char lastMsg[1024];
+  static const size_t MSG_BUF_SIZE = 1024;
+  static char lastMsg[MSG_BUF_SIZE];
   static ::aflibDebug::Level lastLevel;
   static int msgCount = 0;
 
-	if (!strncmp(msg, lastMsg, 1024))
-	{
-		msgCount++;
-	} else {
-		if (msgCount > 0)
-		{
-			char buff[1024];
-			sprintf(buff, "%s\n(The previous message was repeated %d times.)", lastMsg, msgCount);
-			output_message(lastLevel, buff);
-		}
-	
-		strncpy(lastMsg, msg, 1024);
-		lastLevel = level;
-		msgCount = 0;
-		output_message(level, msg);
-	}
+  if (!msg) return; // nullptr
 
+  if (!strncmp(msg, lastMsg, MSG_BUF_SIZE))
+  {
+    msgCount++;
+  } else {
+    if (msgCount > 0)
+    {
+      // Make buffer large enough to hold message + suffix
+      char buff[MSG_BUF_SIZE + 100];
+      snprintf(buff, sizeof(buff), "%s\n(The previous message was repeated %d times.)", lastMsg, msgCount);
+      output_message(lastLevel, buff);
+    }
+
+    strncpy(lastMsg, msg, MSG_BUF_SIZE -1);
+    lastMsg[MSG_BUF_SIZE - 1] = '\0'; // always null-terminate
+
+    lastLevel = level;
+    msgCount = 0;
+    output_message(level, msg);
+  }
 }
 
 static class DebugInitFromEnv {

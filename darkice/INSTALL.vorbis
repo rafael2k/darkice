@@ -16,7 +16,7 @@ libraries. Thus when configuring, add --prefix=/usr to the configure
 options.
 
 Grab the latest Ogg Vorbis tarballs from
-http://www.xiph.org/ogg/vorbis/download.html
+https://www.xiph.org/downloads/
 
 I took libogg-1.0.tar.gz and libvorbis-1.0.tar.gz. Go to the
 directory where you saved them, and issue the following commands:

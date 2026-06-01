@@ -138,6 +138,12 @@ class FileSink : public Sink, public virtual Reporter
             throw Exception( __FILE__, __LINE__);
         }
 
+        /**
+         * Unhide the base class assignment operator to prevent -Woverloaded-virtual warnings.
+         * This ensures the compiler sees both the Sink::operator= and the local override.
+         */
+        using Sink::operator=;
+
 
     public:
 
