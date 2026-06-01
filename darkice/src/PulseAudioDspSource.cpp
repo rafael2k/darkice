@@ -179,12 +179,10 @@ bool
 PulseAudioDspSource :: canRead ( unsigned int    sec,
                            unsigned int    usec )    
 {
-  
-  /** Strange have to remove this, need to investigate... */
-  /*  if ( !isOpen() ) {
+
+    if ( !isOpen() ) {
         return false;
-      }
-  */
+    }
 
     if (running == 0) {
       char         client_name[255];
@@ -232,6 +230,7 @@ PulseAudioDspSource :: close ( void )
 
     pa_simple_free(s);
     running = 0;
+    s = NULL;
 }
 
 #endif // HAVE_PULSEAUDIO_LIB

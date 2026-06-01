@@ -203,7 +203,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
         inline virtual bool
         isOpen ( void ) const                           throw ()
         {
-            return s==NULL;
+            return s != NULL;
         }
 
         /**
@@ -450,7 +450,7 @@ class PulseAudioDspSource : public AudioSource, public virtual Reporter
         inline virtual bool
         isOpen ( void ) const                           throw ()
         {
-            return s==NULL;
+            return s != NULL;
         }
 
         /**
