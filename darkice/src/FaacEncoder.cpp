@@ -56,6 +56,33 @@ static const char fileid[] = "$Id$";
 
 /* ===============================================  local function prototypes */
 
+#if FAAC_VERSION_MAJOR >= 1
+/*------------------------------------------------------------------------------
+ *  Map the removed faacEnc* calls used below onto the faac >= 2.0 API
+ *----------------------------------------------------------------------------*/
+static int
+faacEncEncode( faac_encoder   * encoder,
+               int32_t        * inputBuffer,
+               unsigned int     samplesInput,
+               unsigned char  * outputBuffer,
+               unsigned int     bufferSize )
+{
+    uint32_t    bytesWritten = 0;
+
+    if ( faac_encoder_encode( encoder, inputBuffer, samplesInput,
+                              outputBuffer, bufferSize, &bytesWritten) < 0 ) {
+        return -1;
+    }
+    return (int) bytesWritten;
+}
+
+static void
+faacEncClose( faac_encoder * encoder )
+{
+    faac_encoder_close( &encoder);
+}
+#endif // FAAC_VERSION_MAJOR >= 1
+
 
 /* =============================================================  module code */
 
@@ -76,6 +103,58 @@ FaacEncoder :: open ( void )
                          "faac lib opening underlying sink error");
     }
 
+#if FAAC_VERSION_MAJOR >= 1
+    faac_library_info     libInfo;
+
+    libInfo.struct_size = sizeof(libInfo);
+    if ( faac_get_library_info( &libInfo) == FAAC_OK ) {
+        reportEvent(1, "Using faac codec version", libInfo.version);
+    }
+
+    faac_params           params;
+    faac_status           status;
+
+#if FAAC_VERSION_MAJOR >= 2
+    if ( (status = faac_params_init( &params, sizeof( params))) < 0 ) {
+#else
+    if ( (status = faac_params_init( &params)) < 0 ) {
+#endif
+        throw Exception(__FILE__, __LINE__,
+                        "error initializing faac parameters",
+                        faac_strerror(status));
+    }
+
+    params.sample_rate   = getOutSampleRate();
+    params.num_channels  = getInChannel();
+    params.object_type   = FAAC_OBJ_LOW;
+    params.mpeg_version  = FAAC_MPEG2;
+    params.use_tns       = true;
+    params.short_control = FAAC_SHORTCTL_NORMAL;
+    params.use_lfe       = false;
+    params.joint_mode    = FAAC_JOINT_MS;
+    params.bit_rate      = getOutBitrate() * 1000 / getOutChannel();
+    params.bandwidth     = (uint32_t) lowpass;
+    params.quant_quality = (uint32_t) (getOutQuality() * 1000.0);
+    params.output_format = FAAC_STREAM_ADTS;
+    params.input_format  = FAAC_INPUT_16BIT;
+
+    if ( (status = faac_encoder_open( &params, &encoderHandle)) < 0 ) {
+        throw Exception(__FILE__, __LINE__,
+                        "error configuring faac library",
+                        faac_strerror(status));
+    }
+
+    faac_encoder_info     encInfo;
+
+    encInfo.struct_size = sizeof(encInfo);
+    if ( (status = faac_encoder_get_info( encoderHandle, &encInfo)) < 0 ) {
+        throw Exception(__FILE__, __LINE__,
+                        "error querying faac encoder properties",
+                        faac_strerror(status));
+    }
+    inputSamples   = encInfo.frame_samples * getInChannel();
+    maxOutputBytes = encInfo.max_output_bytes;
+#else
     char      * faacVersion;
     char      * faacCopyright;
     faacEncGetVersion(&faacVersion, &faacCopyright);
@@ -106,6 +185,7 @@ FaacEncoder :: open ( void )
         throw Exception(__FILE__, __LINE__,
                         "error configuring faac library");
     }
+#endif // FAAC_VERSION_MAJOR >= 1
 
     // initialize the resampling coverter if needed
     if ( converter ) {

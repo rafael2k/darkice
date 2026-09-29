@@ -47,6 +47,11 @@
 #error configure with faac
 #endif
 
+/* faac < 2.0 (legacy faacEnc* API) does not define version macros */
+#ifndef FAAC_VERSION_MAJOR
+#define FAAC_VERSION_MAJOR 0
+#endif
+
 
 #include "Ref.h"
 #include "Exception.h"
@@ -86,7 +91,11 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
         /**
          *  The handle to the AAC encoder instance.
          */
+#if FAAC_VERSION_MAJOR >= 1
+        faac_encoder              * encoderHandle;
+#else
         faacEncHandle               encoderHandle;
+#endif
 
         /**
          *  The maximum number of input samples to supply to the encoder.
@@ -392,11 +401,21 @@ class FaacEncoder : public AudioEncoder, public virtual Reporter
         inline const char *
         getFaacVersion( void )
         {
+#if FAAC_VERSION_MAJOR >= 1
+            faac_library_info   info;
+
+            info.struct_size = sizeof(info);
+            if ( faac_get_library_info( &info) < 0 ) {
+                return "unknown";
+            }
+            return info.version;
+#else
             char      * id;
             char      * copyright;
 
             faacEncGetVersion(&id, &copyright);
             return id;
+#endif
         }
 
         /**
