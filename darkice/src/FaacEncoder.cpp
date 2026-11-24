@@ -124,6 +124,43 @@ FaacEncoder :: open ( void )
                         faac_strerror(status));
     }
 
+#ifdef FAAC_MAX_PEAK_BIT_RATE
+    // faac ABI 3: renamed fields, whole-stream bit_rate, explicit rate control
+    params.sample_rate    = getOutSampleRate();
+    params.channels       = getInChannel();
+    params.object_type    = FAAC_OBJ_AUTO;           // LC or HE-AAC, by bit rate
+    params.input_format   = FAAC_INPUT_16BIT;
+    params.bandwidth      = (uint32_t) lowpass;
+
+    switch ( getOutBitrateMode() ) {
+        case vbr: {
+            double  q = getOutQuality() * 1000.0;
+
+            if ( q < 1.0 ) {
+                q = 1.0;
+            } else if ( q > 5000.0 ) {
+                q = 5000.0;
+            }
+            params.rate_control = FAAC_RC_VBR;
+            params.bit_rate     = 0;
+            params.quality      = (uint32_t) q;
+            break;
+        }
+
+        case cbr:
+            params.rate_control = FAAC_RC_CBR;
+            params.bit_rate     = getOutBitrate() * 1000;
+            params.quality      = 0;
+            break;
+
+        case abr:
+        default:
+            params.rate_control = FAAC_RC_ABR;
+            params.bit_rate     = getOutBitrate() * 1000;
+            params.quality      = 0;
+            break;
+    }
+#else
     params.sample_rate   = getOutSampleRate();
     params.num_channels  = getInChannel();
     params.object_type   = FAAC_OBJ_LOW;
@@ -137,6 +174,7 @@ FaacEncoder :: open ( void )
     params.quant_quality = (uint32_t) (getOutQuality() * 1000.0);
     params.output_format = FAAC_STREAM_ADTS;
     params.input_format  = FAAC_INPUT_16BIT;
+#endif // FAAC_MAX_PEAK_BIT_RATE
 
     if ( (status = faac_encoder_open( &params, &encoderHandle)) < 0 ) {
         throw Exception(__FILE__, __LINE__,
